@@ -7,6 +7,7 @@ from .QueryDSL import QueryDSLCompiler
 from .Splunk import SPLCompiler
 from .Hql import HqlCompiler
 from .Sql import SqlCompiler
+from .SCOT import SCOTCompiler
 
 from Hql.Exceptions import HqlExceptions as hqle
 

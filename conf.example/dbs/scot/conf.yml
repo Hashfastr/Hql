@@ -1,0 +1,20 @@
+# SCOT API keys are secrets. Replace this placeholder during deployment or
+# generate this file from your secret manager; never commit a usable key.
+#
+# Example HQL:
+#   database('scot').entity
+#   | where value == 'example.com'
+#   | take 100
+database:
+  name: 'scot'
+  type: 'SCOT'
+  conf:
+    # Required SCOT server root and API key.
+    base_url: 'https://scot.example.invalid'
+    api_key: '<INJECT_SCOT_API_KEY>'
+
+    # Optional settings and their defaults.
+    verify_tls: true
+    timeout: 10
+    page_size: 100
+    max_rows: 10000

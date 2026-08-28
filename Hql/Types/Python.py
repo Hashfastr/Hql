@@ -181,6 +181,12 @@ class PythonTypes():
                 return False
             return PythonTypes.hqlt.object.eq(self.schema, value.schema)
 
+        # I hate this, has to be a better way
+        def __hash__(self):
+            import json
+            from hashlib import sha1
+            return hash(sha1(json.dumps(self.schema, sort_keys=True, default=repr).encode()))
+
         def hql_schema(self) -> PythonTypes.hqlt.HqlType:
             new = dict()
             for i in self.schema:

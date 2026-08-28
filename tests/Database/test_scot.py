@@ -1,0 +1,390 @@
+from __future__ import annotations
+
+import copy
+from pathlib import Path
+
+import pytest
+import requests
+
+from Hql.Config import Config
+from Hql.Context import Context, get_database
+from Hql.Data import Data
+from Hql.Database import SCOT
+from Hql.Exceptions import HqlExceptions as hqle
+from Hql.Expressions.Literals import StringLiteral
+from Hql.Expressions.References import NamedReference
+from Hql.Functions.database import database
+from Hql.Database.SCOT.SCOTCatalog import EXCLUDED_RESOURCES, SCOT_ENDPOINTS
+from Hql.Database.SCOT.SCOT import (
+    DEFAULT_MAX_ROWS,
+    DEFAULT_PAGE_SIZE,
+    DEFAULT_TIMEOUT,
+)
+
+
+SCOT_EXAMPLE = (
+    Path(__file__).parents[2] / "conf.example" / "dbs" / "scot" / "conf.yml"
+)
+
+
+def scot_config(**overrides):
+    conf = {
+        "base_url": "https://scot.example.test/",
+        "api_key": "super-secret-test-key",
+    }
+    conf.update(overrides)
+    return {"name": "scot-test", "type": "SCOT", "conf": conf}
+
+
+def test_example_config_loads_and_matches_constructor_defaults():
+    config = Config()
+    config.load_file(SCOT_EXAMPLE)
+    documented = config.get_database("scot")
+
+    assert documented["type"] == "SCOT"
+    assert documented["conf"] == {
+        "base_url": "https://scot.example.invalid",
+        "api_key": "<INJECT_SCOT_API_KEY>",
+        "verify_tls": True,
+        "timeout": DEFAULT_TIMEOUT,
+        "page_size": DEFAULT_PAGE_SIZE,
+        "max_rows": DEFAULT_MAX_ROWS,
+    }
+
+    configured = copy.deepcopy(documented)
+    configured["conf"]["api_key"] = "injected-at-test-runtime"
+    adapter = SCOT(configured, session=NoNetworkSession())
+    assert adapter.name == "unnamed-scot"
+
+
+def test_example_config_contains_guidance_but_no_usable_secret():
+    example = SCOT_EXAMPLE.read_text(encoding="utf-8")
+
+    assert "database('scot').entity" in example
+    assert "<INJECT_SCOT_API_KEY>" in example
+    assert "secret manager" in example
+
+
+class NoNetworkSession:
+    def request(self, *args, **kwargs):
+        raise AssertionError("SCOT construction must not make a network request")
+
+
+class FakeResponse:
+    def __init__(self, payload=None, status_code=200, json_error=None):
+        self.payload = payload
+        self.status_code = status_code
+        self.json_error = json_error
+
+    def json(self):
+        if self.json_error:
+            raise self.json_error
+        return self.payload
+
+
+class FakeSession:
+    def __init__(self, response=None, error=None):
+        self.response = response
+        self.error = error
+        self.calls = []
+
+    def get(self, url, **kwargs):
+        self.calls.append((url, kwargs))
+        if self.error:
+            raise self.error
+        return self.response
+
+
+def test_scot_is_registered_and_resolves_through_database_function():
+    config = Config()
+    config.set_database("scot-test", scot_config())
+    ctx = Context(Data(), config=config)
+
+    resolved = database([StringLiteral("scot-test")]).eval(ctx)
+
+    assert get_database("SCOT") is SCOT
+    assert isinstance(resolved, SCOT)
+    assert resolved.name == "scot-test"
+
+
+def test_valid_config_is_normalized_without_network_access():
+    adapter = SCOT(
+        scot_config(
+            base_url="HTTPS://scot.example.test/root///",
+            verify_tls=False,
+            timeout=2,
+            page_size=25,
+            max_rows=250,
+        ),
+        name="scot-test",
+        session=NoNetworkSession(),
+    )
+
+    assert adapter.base_url == "https://scot.example.test/root"
+    assert adapter.verify_tls is False
+    assert adapter.timeout == 2.0
+    assert adapter.page_size == 25
+    assert adapter.max_rows == 250
+    assert adapter.endpoint is None
+    assert adapter.methods == ["index", "macro"]
+
+
+def test_safe_defaults():
+    adapter = SCOT(scot_config())
+
+    assert adapter.verify_tls is True
+    assert adapter.timeout == 10.0
+    assert adapter.page_size == 100
+    assert adapter.max_rows == 10_000
+
+
+@pytest.mark.parametrize("key", ["base_url", "api_key"])
+@pytest.mark.parametrize("value", [None, "", "   "])
+def test_required_values(key, value):
+    with pytest.raises(hqle.ConfigException, match=key):
+        SCOT(scot_config(**{key: value}))
+
+
+@pytest.mark.parametrize(
+    ("base_url", "message"),
+    [
+        ("scot.example.test", "HTTP"),
+        ("ftp://scot.example.test", "HTTP"),
+        ("https:///missing-host", "HTTP"),
+        ("https://user:password@scot.example.test", "credentials"),
+        ("https://scot.example.test?token=secret", "query string"),
+        ("https://scot.example.test/#fragment", "fragment"),
+    ],
+)
+def test_invalid_base_urls(base_url, message):
+    with pytest.raises(hqle.ConfigException, match=message):
+        SCOT(scot_config(base_url=base_url))
+
+
+@pytest.mark.parametrize("key", ["page_size", "max_rows"])
+@pytest.mark.parametrize("value", [True, 0, -1, 1.5, "10"])
+def test_invalid_integer_limits(key, value):
+    with pytest.raises(hqle.ConfigException, match=key):
+        SCOT(scot_config(**{key: value}))
+
+
+@pytest.mark.parametrize("value", [True, 0, -1, float("inf"), "10"])
+def test_invalid_timeout(value):
+    with pytest.raises(hqle.ConfigException, match="timeout"):
+        SCOT(scot_config(timeout=value))
+
+
+def test_page_size_cannot_exceed_max_rows():
+    with pytest.raises(hqle.ConfigException, match="page_size"):
+        SCOT(scot_config(page_size=101, max_rows=100))
+
+
+def test_verify_tls_must_be_boolean():
+    with pytest.raises(hqle.ConfigException, match="verify_tls"):
+        SCOT(scot_config(verify_tls="false"))
+
+
+def test_secret_is_absent_from_serialization_and_repr():
+    secret = "do-not-leak-this-key"
+    adapter = SCOT(scot_config(api_key=secret))
+
+    assert secret not in str(adapter.to_dict())
+    assert secret not in repr(adapter)
+    assert "api_key" not in adapter.to_dict()
+
+
+def test_authenticated_request_uses_normalized_url_and_settings():
+    session = FakeSession(FakeResponse({"result": [{"id": 1}]}))
+    adapter = SCOT(
+        scot_config(timeout=3, verify_tls=False),
+        session=session,
+    )
+
+    result = adapter._request_json(
+        "/api/v1/entity/", {"value": "example.com", "limit": 5}
+    )
+
+    assert result == {"result": [{"id": 1}]}
+    assert session.calls == [
+        (
+            "https://scot.example.test/api/v1/entity/",
+            {
+                "headers": {"Authorization": "apikey super-secret-test-key"},
+                "params": {"value": "example.com", "limit": 5},
+                "timeout": 3.0,
+                "verify": False,
+            },
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    ("error", "message"),
+    [
+        (requests.Timeout("secret transport detail"), "timed out"),
+        (requests.ConnectionError("secret transport detail"), "failed to connect"),
+    ],
+)
+def test_transport_failures_are_sanitized(error, message):
+    secret = "secret transport detail"
+    adapter = SCOT(scot_config(api_key=secret), session=FakeSession(error=error))
+
+    with pytest.raises(hqle.QueryException, match=message) as caught:
+        adapter._request_json("/api/v1/entity/")
+
+    assert secret not in str(caught.value)
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404, 500, 503])
+def test_http_failures_include_status_but_not_response_body(status):
+    secret = "sensitive response body"
+    adapter = SCOT(
+        scot_config(),
+        session=FakeSession(FakeResponse(status_code=status, payload=secret)),
+    )
+
+    with pytest.raises(hqle.QueryException, match=f"HTTP {status}") as caught:
+        adapter._request_json("/api/v1/entity/")
+
+    assert secret not in str(caught.value)
+
+
+def test_malformed_json_is_reported_without_parser_details():
+    adapter = SCOT(
+        scot_config(),
+        session=FakeSession(FakeResponse(json_error=ValueError("secret body"))),
+    )
+
+    with pytest.raises(hqle.QueryException, match="malformed JSON") as caught:
+        adapter._request_json("/api/v1/entity/")
+
+    assert "secret body" not in str(caught.value)
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["https://attacker.test/api/v1/entity/", "/api/v1/../apikey/", "/health"],
+)
+def test_request_rejects_paths_outside_scot_api(path):
+    session = FakeSession(FakeResponse({}))
+    adapter = SCOT(scot_config(), session=session)
+
+    with pytest.raises(hqle.QueryException, match="Invalid SCOT API path"):
+        adapter._request_json(path)
+
+    assert session.calls == []
+
+
+@pytest.mark.parametrize("endpoint", SCOT_ENDPOINTS, ids=lambda endpoint: endpoint.name)
+def test_each_catalog_table_selects_and_dispatches_to_its_path(endpoint):
+    session = FakeSession(FakeResponse({"result": []}))
+    adapter = SCOT(scot_config(), session=session)
+
+    assert adapter.get_variable(NamedReference(endpoint.name)) is adapter
+    assert adapter.endpoint is endpoint
+    assert adapter.compiler.endpoint is endpoint
+    assert adapter._fetch_selected() == {"result": []}
+    assert session.calls[0][0].endswith(endpoint.path)
+
+
+@pytest.mark.parametrize(
+    "name", sorted(EXCLUDED_RESOURCES | {"unknown", "entity/export", "file/download/1"})
+)
+def test_unknown_and_excluded_tables_fail_without_network(name):
+    session = FakeSession(FakeResponse({}))
+    adapter = SCOT(scot_config(), session=session)
+
+    with pytest.raises(hqle.QueryException, match="Unknown or unavailable"):
+        adapter.get_variable(NamedReference(name))
+
+    assert session.calls == []
+
+
+def test_selected_table_is_immutable():
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse({})))
+    adapter.get_variable(NamedReference("entity"))
+
+    with pytest.raises(hqle.QueryException, match="already selected"):
+        adapter.get_variable(NamedReference("entry"))
+
+
+def test_add_index_uses_the_same_catalog_validation():
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse({})))
+    adapter.add_index("entity")
+    assert adapter.endpoint is not None
+    assert adapter.endpoint.name == "entity"
+
+    with pytest.raises(hqle.QueryException, match="Unknown or unavailable"):
+        SCOT(scot_config()).add_index("users")
+
+
+def test_selected_dispatch_uses_shared_request_helper(monkeypatch):
+    adapter = SCOT(scot_config())
+    adapter.add_index("entity")
+    calls = []
+
+    def fake_request(path, params):
+        calls.append((path, params))
+        return {"result": []}
+
+    monkeypatch.setattr(adapter, "_request_json", fake_request)
+
+    assert adapter._fetch_selected() == {"result": []}
+    assert calls == [("/api/v1/entity/", {})]
+
+
+def test_dispatch_requires_a_selected_table():
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse({})))
+    with pytest.raises(hqle.QueryException, match="No SCOT table selected"):
+        adapter._fetch_selected()
+
+
+@pytest.mark.parametrize("table_name", ["entity", "entry"])
+def test_eval_returns_context_with_named_table_and_nested_rows(table_name):
+    rows = [
+        {
+            "id": 7,
+            "nullable": None,
+            "nested": {"source": "unit-test"},
+            "values": ["one", "two"],
+        }
+    ]
+    payload = {"result": rows, "resultCount": 1, "totalCount": 99}
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse(payload)))
+    adapter.add_index(table_name)
+    ctx = Context(Data())
+
+    result = adapter.eval(ctx)
+
+    assert result is ctx
+    assert list(result.data.tables) == [table_name]
+    assert result.data[table_name].to_dicts() == rows
+    assert "resultCount" not in result.data[table_name].to_dicts()[0]
+    assert "totalCount" not in result.data[table_name].to_dicts()[0]
+
+
+def test_eval_preserves_empty_table_identity():
+    payload = {"result": [], "resultCount": 0, "totalCount": 0}
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse(payload)))
+    adapter.add_index("entity")
+
+    result = adapter.eval(Context(Data()))
+
+    assert "entity" in result.data
+    assert len(result.data["entity"]) == 0
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        ({}, "missing result"),
+        ({"result": {}}, "non-list"),
+        ({"result": ["not-an-object"]}, "non-object"),
+    ],
+)
+def test_eval_rejects_malformed_response_envelopes(payload, message):
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse(payload)))
+    adapter.add_index("entity")
+
+    with pytest.raises(hqle.QueryException, match=message):
+        adapter.eval(Context(Data()))
