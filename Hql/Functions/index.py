@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from Hql.Context import Context
+    from Hql.Expressions.Literals import StringLiteral
+    from Hql.Expressions.References import Reference
 
 # This is a meta function resolved while parsing
 @register_func('index')
@@ -14,34 +16,49 @@ class index(Function):
 
     def __init__(self, args:list, conf:Optional[dict]=None):
         from Hql.Expressions.Literals import StringLiteral
+        Function.__init__(self, args, 1, 1)
+        self._index = StringLiteral('')
+        self.index = args[0]
+
+    @property
+    def index(self) -> Union[StringLiteral, Reference]:
+        return self._index
+
+    @index.setter
+    def index(self, val:Union[StringLiteral, Reference]):
+        from Hql.Expressions.Literals import StringLiteral
         from Hql.Expressions.References import Reference
 
-        Function.__init__(self, args, 1, 1)
+        if not isinstance(val, (StringLiteral, Reference)):
+            raise hqle.ArgumentException(f'Bad database index argument datatype {type(val)}')
 
-        name = self.args[0]
-        if not isinstance(name, (StringLiteral, Reference)):
-            raise hqle.ArgumentException(f'Bad database index argument datatype {args[0].type}')
-        self.name:Union[StringLiteral, Reference] = name
+        self._index = val
     
     def preprocess(self, ctx: Context, receiver=None) -> object:
         from Hql.Expressions.Literals import StringLiteral
         
-        name = self.name.preprocess(ctx)
-        if not isinstance(name, StringLiteral):
-            raise hqle.QueryException(f'File function give argument that doesn\'t resolve to string literal: {type(name)}')
+        index = self.index.preprocess(ctx)
+        
+        if not isinstance(index, StringLiteral):
+            raise hqle.QueryException(f'File function give argument that doesn\'t resolve to string literal: {type(index)}')
 
-        self.name = name
+        self.index = index
 
         return self
         
     def eval(self, ctx: Context, receiver=None) -> object:
         from Hql.Database import Database
+        from Hql.Expressions.Literals import StringLiteral
 
-        db = receiver
-        index_name = self.name.str()
+        if not isinstance(self.index, StringLiteral):
+            raise hqle.QueryException(f'Index function given {type(self.index)} instead of StringLiteral')
+                    
+        index_name = self.index.str()
         
-        if not db:
+        if not receiver:
             db = ctx.get_func('database')([]).eval(ctx)
+        else:
+            db = receiver
         
         if issubclass(type(db), Database):
             db.add_index(index_name)
