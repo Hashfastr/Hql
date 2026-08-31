@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import copy
 from dataclasses import replace
 import json
 from pathlib import Path
+import pickle
 
 import pytest
 
@@ -71,6 +73,17 @@ def test_catalog_describes_filters_response_and_controls():
     assert not handler.supports_skip
     assert handler.supports_limit
     assert not handler.supports_sort
+
+
+def test_endpoint_metadata_is_immutable_copyable_and_pickleable():
+    endpoint = SCOT_TABLES["alert"]
+
+    assert copy.deepcopy(endpoint) is endpoint
+    restored = pickle.loads(pickle.dumps(endpoint))
+    assert restored == endpoint
+
+    with pytest.raises(TypeError):
+        restored.filters["new"] = restored.filters["id"]
 
 
 def test_validation_rejects_duplicate_names(openapi):

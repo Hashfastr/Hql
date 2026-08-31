@@ -1,19 +1,25 @@
 from __future__ import annotations
 
 import copy
+import datetime
 from pathlib import Path
 
 import pytest
 import requests
 
 from Hql.Config import Config
+from Hql.Compiler import HqlCompiler
 from Hql.Context import Context, get_database
 from Hql.Data import Data
 from Hql.Database import SCOT
 from Hql.Exceptions import HqlExceptions as hqle
-from Hql.Expressions.Literals import StringLiteral
-from Hql.Expressions.References import NamedReference
+from Hql.Expressions.Literals import Integer, StringLiteral
+from Hql.Expressions.References import NamedExpression, NamedReference
 from Hql.Functions.database import database
+from Hql.Functions.typecasting import todatetime
+from Hql.Operators.Extend import Extend
+from Hql.Operators.Take import Take
+from Hql.Parser import Parser
 from Hql.Database.SCOT.SCOTCatalog import EXCLUDED_RESOURCES, SCOT_ENDPOINTS
 from Hql.Database.SCOT.SCOT import (
     DEFAULT_MAX_ROWS,
@@ -193,6 +199,18 @@ def test_secret_is_absent_from_serialization_and_repr():
     assert "api_key" not in adapter.to_dict()
 
 
+def test_selected_adapter_can_be_deepcopied():
+    adapter = SCOT(scot_config(), session=FakeSession(FakeResponse({})))
+    adapter.add_index("alert")
+    ctx = Context(Data(), symbol_table={"selected": adapter})
+
+    copied = ctx.copy().symbol_table["selected"]
+
+    assert copied is not adapter
+    assert copied.endpoint is adapter.endpoint
+    assert copied.compiler.endpoint is adapter.compiler.endpoint
+
+
 def test_authenticated_request_uses_normalized_url_and_settings():
     session = FakeSession(FakeResponse({"result": [{"id": 1}]}))
     adapter = SCOT(
@@ -330,13 +348,119 @@ def test_selected_dispatch_uses_shared_request_helper(monkeypatch):
     monkeypatch.setattr(adapter, "_request_json", fake_request)
 
     assert adapter._fetch_selected() == {"result": []}
-    assert calls == [("/api/v1/entity/", {})]
+    assert calls == [("/api/v1/entity/", {"limit": 10_000})]
 
 
 def test_dispatch_requires_a_selected_table():
     adapter = SCOT(scot_config(), session=FakeSession(FakeResponse({})))
     with pytest.raises(hqle.QueryException, match="No SCOT table selected"):
         adapter._fetch_selected()
+
+
+def test_alertgroup_take_is_sent_as_api_limit():
+    session = FakeSession(FakeResponse({"result": []}))
+    adapter = SCOT(scot_config(max_rows=500), session=session)
+    adapter.add_index("alertgroup")
+
+    accepted, rejected = adapter.add_op(Take(Integer(20), []))
+    adapter._fetch_selected()
+
+    assert accepted is not None
+    assert rejected is None
+    assert session.calls[0][1]["params"] == {"limit": 20}
+
+
+def test_alertgroup_result_supports_datetime_extend():
+    session = FakeSession(
+        FakeResponse(
+            {
+                "result": [
+                    {
+                        "id": 42,
+                        "created": "2026-08-31T12:34:56Z",
+                        "subject": "Example alertgroup",
+                    }
+                ]
+            }
+        )
+    )
+    adapter = SCOT(scot_config(), session=session)
+    adapter.add_index("alertgroup")
+    ctx = adapter.eval(Context(Data()))
+    extend = Extend(
+        [
+            NamedExpression(
+                [NamedReference("TimeGenerated")],
+                todatetime([NamedReference("created")]),
+            )
+        ]
+    )
+
+    result = extend.eval(ctx).data["alertgroup"].to_dicts()
+
+    assert len(result) == 1
+    assert result[0]["id"] == 42
+    assert result[0]["created"] == "2026-08-31T12:34:56Z"
+    assert result[0]["subject"] == "Example alertgroup"
+    assert isinstance(result[0]["TimeGenerated"], datetime.datetime)
+
+
+def test_alertgroup_to_alert_join_without_where_clause(monkeypatch):
+    subject = (
+        "New App Role Assigned to a Service Principal by a User involving "
+        "multiple users"
+    )
+
+    class RoutingSession:
+        def __init__(self):
+            self.calls = []
+
+        def get(self, url, **kwargs):
+            self.calls.append((url, kwargs))
+            if "/alertgroup/" in url:
+                return FakeResponse({"result": [{"id": 7, "subject": subject}]})
+            if "/alert/" in url:
+                return FakeResponse(
+                    {
+                        "result": [
+                            {"id": 99, "alertgroup_id": 7, "owner": "alice"}
+                        ]
+                    }
+                )
+            raise AssertionError(f"Unexpected SCOT URL: {url}")
+
+    session = RoutingSession()
+    monkeypatch.setattr(requests, "Session", lambda: session)
+    config = Config()
+    config.set_database("scot", scot_config())
+    parser = Parser(
+        "let Alert = database('scot').index('alert');\n"
+        "let Alertgroup = database('scot').index('alertgroup');\n"
+        "let Alerts = Alertgroup\n"
+        f"| where subject == '{subject}'\n"
+        "| take 10\n"
+        "| project alertgroup_id = id\n"
+        "| join Alert on alertgroup_id\n"
+        ";\n"
+        "Alerts"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    assert result["alertgroup"].to_dicts() == [
+        {"alertgroup_id": 7, "owner": "alice", "id": 99}
+    ]
+    assert [(url, call["params"]) for url, call in session.calls] == [
+        (
+            "https://scot.example.test/api/v1/alertgroup/",
+            {"limit": 10, "subject": subject},
+        ),
+        (
+            "https://scot.example.test/api/v1/alert/",
+            {"alertgroup_id": "7", "limit": 10_000},
+        ),
+    ]
 
 
 @pytest.mark.parametrize("table_name", ["entity", "entry"])

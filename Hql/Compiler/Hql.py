@@ -670,7 +670,7 @@ class HqlCompiler(Compiler):
             acc, _ = self.compile(op.where)
             desc.merge(acc)
             where = acc.get_expr()
-        assert isinstance(where, Logic.Logic)
+            assert isinstance(where, Logic.Logic)
 
         desc.op = Operators.Join(rh, params=params, on=on, where=where)
         return desc, None

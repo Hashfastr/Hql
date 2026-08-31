@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import datetime
+from dataclasses import replace
+
+import pytest
 
 from Hql.Compiler import SCOTCompiler
 from Hql.Database.SCOT.SCOTCatalog import SCOT_ENDPOINTS, SCOT_TABLES
 from Hql.Expressions.Literals import Bool, Datetime, Integer, StringLiteral
 from Hql.Expressions.Logic import BetweenEquality, BinaryLogic, Equality, Not, Regex
 from Hql.Expressions.References import NamedReference
+from Hql.Operators.Take import Take
 from Hql.Operators.Where import Where
 
 
@@ -150,13 +154,86 @@ def test_conflicting_parameter_is_left_for_local_evaluation():
 
 
 def test_empty_filter_set_and_non_where_operator():
-    from Hql.Operators.Take import Take
-
     compiler = SCOTCompiler()
     take = Take(Integer(5), [])
 
     assert compiler.simple_compile() == {}
     assert compiler.add_op(take) == (None, take)
+
+
+def test_take_sets_limit_for_alertgroup():
+    compiler = SCOTCompiler(SCOT_TABLES["alertgroup"], max_limit=1_000)
+    take = Take(Integer(25), [])
+
+    accepted, rejected = compiler.add_op(take)
+
+    assert accepted is take
+    assert rejected is None
+    assert compiler.simple_compile() == {"limit": 25}
+
+
+def test_take_never_increases_existing_limit():
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+
+    compiler.add_op(Take(Integer(20), []))
+    compiler.add_op(Take(Integer(50), []))
+    compiler.add_op(Take(Integer(10), []))
+
+    assert compiler.simple_compile() == {"limit": 10}
+
+
+def test_take_is_clamped_to_configured_maximum_by_default():
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+
+    assert compiler.simple_compile() == {"limit": 100}
+    compiler.add_op(Take(Integer(1_000), []))
+    assert compiler.simple_compile() == {"limit": 100}
+
+
+def test_zero_take_is_pushed_down():
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+
+    accepted, rejected = compiler.add_op(Take(Integer(0), []))
+
+    assert accepted is not None
+    assert rejected is None
+    assert compiler.simple_compile() == {"limit": 0}
+
+
+@pytest.mark.parametrize("target", ["entity", "ent*", "*"])
+def test_matching_and_wildcard_table_targets_apply(target):
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+    take = Take(Integer(5), [NamedReference(target)])
+
+    assert compiler.add_op(take) == (take, None)
+    assert compiler.simple_compile() == {"limit": 5}
+
+
+def test_nonmatching_table_target_is_rejected():
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+    take = Take(Integer(5), [NamedReference("alertgroup")])
+
+    assert compiler.add_op(take) == (None, take)
+    assert compiler.simple_compile() == {"limit": 100}
+
+
+@pytest.mark.parametrize("value", [-1, "invalid"])
+def test_invalid_take_is_rejected(value):
+    compiler = SCOTCompiler(SCOT_TABLES["entity"], max_limit=100)
+    literal = Integer(value) if isinstance(value, int) else StringLiteral(value)
+    take = Take(literal, [])
+
+    assert compiler.add_op(take) == (None, take)
+    assert compiler.simple_compile() == {"limit": 100}
+
+
+def test_endpoint_without_limit_support_rejects_take():
+    endpoint = replace(SCOT_TABLES["entity"], limit_parameter=None)
+    compiler = SCOTCompiler(endpoint, max_limit=100)
+    take = Take(Integer(5), [])
+
+    assert compiler.add_op(take) == (None, take)
+    assert compiler.simple_compile() == {}
 
 
 def compatible_value(parameter):
