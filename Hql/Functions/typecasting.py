@@ -7,6 +7,7 @@ from Hql.Types.Hql import HqlTypes as hqlt
 import polars as pl
 from Hql.Expressions import Literals
 from typing import Optional
+import logging
 
 class Typecast(Function):
     """Base function for casting literals and fields to an HQL type."""
@@ -29,6 +30,8 @@ class Typecast(Function):
             return self.expr(new[0])
 
         data = ctx.data.select(self.src).strip()
+        logging.debug(type(data))
+        logging.debug(data)
 
         tables = []
         for table in data:

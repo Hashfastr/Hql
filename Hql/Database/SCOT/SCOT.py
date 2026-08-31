@@ -11,6 +11,8 @@ from Hql.Context import register_database
 from Hql.Database.Database import Database
 from Hql.Exceptions import HqlExceptions as hqle
 
+import logging
+
 if TYPE_CHECKING:
     from Hql.Context import Context
     from Hql.Data import Data
@@ -114,7 +116,6 @@ class SCOT(Database):
         super().__init__(config, name=name)
         from Hql.Compiler import SCOTCompiler
 
-        self.compiler = SCOTCompiler()
         self.base_url = _normalize_base_url(conf.get("base_url"), name)
         self._api_key = _required_secret(conf, "api_key", name)
 
@@ -130,6 +131,7 @@ class SCOT(Database):
             raise hqle.ConfigException(
                 "SCOT config page_size must not exceed max_rows"
             )
+        self.compiler = SCOTCompiler(max_limit=self.max_rows)
 
         self.endpoint: Endpoint | None = None
         self.methods = ["index", "macro"]

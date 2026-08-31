@@ -40,6 +40,28 @@ class Endpoint:
     limit_parameter: str | None = None
     sort_parameter: str | None = None
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "filters", MappingProxyType(dict(self.filters)))
+
+    def __deepcopy__(self, _memo: dict[int, Any]) -> Endpoint:
+        return self
+
+    def __reduce__(self):
+        return (
+            type(self),
+            (
+                self.name,
+                self.path,
+                dict(self.filters),
+                self.response_model,
+                self.row_model,
+                self.result_path,
+                self.skip_parameter,
+                self.limit_parameter,
+                self.sort_parameter,
+            ),
+        )
+
     @property
     def supports_skip(self) -> bool:
         return self.skip_parameter is not None
@@ -65,7 +87,7 @@ def _endpoint(
     return Endpoint(
         name=name,
         path=f"/api/v1/{name}/",
-        filters=MappingProxyType(dict(filters)),
+        filters=filters,
         response_model=f"ListResponse_{row_model}_",
         row_model=row_model,
         skip_parameter="skip" if skip else None,

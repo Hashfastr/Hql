@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import polars as pl
 import logging
+import json
 from typing import TYPE_CHECKING, Iterator, Union, Optional, Mapping
 
 from Hql.Exceptions import HqlExceptions as hqle
@@ -499,6 +500,8 @@ class HqlTypes():
             def get(data:SchemaDT, key:Reference):
                 base = key[0]
                 if base not in data:
+                    logging.error(f'Error getting item from object: {base}')
+                    logging.error(json.dumps(data, default=repr))
                     raise IndexError
                 out = data[base]
 

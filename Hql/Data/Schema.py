@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Sequence, Union
 
-from numpy import isin
 import polars as pl
 
 from Hql.Exceptions import HqlExceptions as hqle
@@ -175,13 +174,9 @@ class Schema():
 
     # Isolate the schema at a given path
     def select(self, path:Reference) -> Schema:
-        meat = self.unnest(path)
-        cur = meat.schema if isinstance(meat, Schema) else meat
-        for part in path.list()[::-1]:
+        cur = self.unnest(path).schema.schema
+        for part in path.list()[1:][::-1]:
             cur = {part: cur}
-        # The above loop always runs even when path length is 1
-        # It it always be a dict, linter is unsure of this
-        assert isinstance(cur, dict)
         return Schema(schema=cur)
 
     def select_many(self, paths:Sequence[Reference]):
@@ -190,7 +185,7 @@ class Schema():
             schemas.append(self.select(path))
         return Schema.merge(schemas)
     
-    def unnest(self, path:Reference) -> Union[hqlt.HqlType, Schema]:
+    def unnest(self, path:Reference) -> Schema:
         def un(schema, path:list[str]):
             if path[0] not in schema:
                 raise hqle.CompilerException(f'Failed to unnest value {path} in {schema}')
@@ -248,9 +243,12 @@ class Schema():
     '''
     def strip(self) -> Union[Schema, hqlt.HqlType]:
         cur = self.schema
-        while isinstance(cur, dict) and len(cur) == 1:
-            key = list(cur.keys())[0]
-            cur = cur[key]
+        while True:
+            if isinstance(cur, hqlt.object):
+                cur = cur.schema
+            if not isinstance(cur, dict) or len(cur) != 1:
+                break
+            cur = next(iter(cur.values()))
 
         if isinstance(cur, dict):
             return Schema(schema=cur)
@@ -336,7 +334,7 @@ class Schema():
         if isinstance(htype, Schema):
             htype = htype.normalize().schema
 
-        def s(path:Reference, htype:Union[CompilerType, dict], schema:dict, idx:int=0):
+        def s(path:Reference, htype:Union[CompilerType, dict], schema, idx:int=0):
             split = path[idx]
 
             if idx == len(path) - 1:
@@ -350,7 +348,7 @@ class Schema():
 
             return schema
 
-        self.schema = s(path, htype, self.schema)
+        self.schema = hqlt.object(s(path, htype, self.schema.schema))
         self.normalize()
         return self
 

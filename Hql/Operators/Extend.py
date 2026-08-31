@@ -53,7 +53,7 @@ class Extend(Operator):
         for i in self.exprs:
             # skip just references if they exist, base case
             if isinstance(i, NamedExpression):
-                datum = i.eval(ctx).data
+                datum = i.eval(ctx, insert=False, unnest=False).data
                 data.append(datum)
 
                 for j in i.paths:

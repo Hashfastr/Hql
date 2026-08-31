@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fnmatch import fnmatchcase
 from typing import TYPE_CHECKING, Any, Mapping
 
 from Hql.Compiler.Compiler import Compiler
@@ -52,10 +53,15 @@ def _has_conflict(
 class SCOTCompiler(Compiler):
     """Compile safely representable HQL predicates into SCOT parameters."""
 
-    def __init__(self, endpoint: Endpoint | None = None) -> None:
+    def __init__(
+        self,
+        endpoint: Endpoint | None = None,
+        max_limit: int | None = None,
+    ) -> None:
         super().__init__()
         self.endpoint = endpoint
         self.parameters: dict[str, str] = {}
+        self.limit = max_limit
 
     def set_endpoint(self, endpoint: Endpoint) -> None:
         if self.endpoint is not None and self.endpoint != endpoint:
@@ -215,14 +221,36 @@ class SCOTCompiler(Compiler):
         compiled = self._compile_expression(processed)
         return dict(sorted(compiled.parameters.items())), compiled.rejected
 
+    def _take(self, op: Operator) -> tuple[Operator | None, Operator | None]:
+        from Hql.Expressions.Literals import Integer
+
+        if self.endpoint is None or not self.endpoint.supports_limit:
+            return None, op
+        if not isinstance(op.expr, Integer) or op.expr.value < 0:
+            return None, op
+
+        targets = [table.str() for table in op.tables]
+        applies = not targets or any(
+            fnmatchcase(self.endpoint.name, target) for target in targets
+        )
+        if not applies:
+            return None, op
+
+        requested = op.expr.value
+        self.limit = requested if self.limit is None else min(self.limit, requested)
+        return op, None
+
     def add_op(
         self, op: Operator | BranchDescriptor
     ) -> tuple[Operator | None, Operator | None]:
         from Hql.Compiler import BranchDescriptor
+        from Hql.Operators.Take import Take
         from Hql.Operators.Where import Where
 
         if isinstance(op, BranchDescriptor):
             op = op.get_op()
+        if isinstance(op, Take):
+            return self._take(op)
         if not isinstance(op, Where):
             return None, op
 
@@ -240,5 +268,12 @@ class SCOTCompiler(Compiler):
         )
         return accepted, rejected
 
-    def simple_compile(self) -> Mapping[str, str]:
-        return dict(sorted(self.parameters.items()))
+    def simple_compile(self) -> Mapping[str, str | int]:
+        parameters: dict[str, str | int] = dict(self.parameters)
+        if (
+            self.endpoint is not None
+            and self.endpoint.limit_parameter is not None
+            and self.limit is not None
+        ):
+            parameters[self.endpoint.limit_parameter] = self.limit
+        return dict(sorted(parameters.items()))

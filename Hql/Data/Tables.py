@@ -354,7 +354,7 @@ class Table():
         
         # Using this instead of strip to ensure we're in sync
         if path:
-            schema = self.schema.unnest(Path(path))
+            schema = self.schema.unnest(Path(path)).strip()
             if isinstance(schema, hqlt.object):
                 schema = schema.schema
         else:
