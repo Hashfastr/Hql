@@ -11,6 +11,7 @@ import pytest
 from Hql.Database.SCOT.SCOTCatalog import (
     EXCLUDED_RESOURCES,
     SCOT_ENDPOINTS,
+    SCOT_RELATIONSHIPS,
     SCOT_TABLES,
     validate_catalog,
 )
@@ -27,6 +28,10 @@ def openapi():
 
 def test_catalog_matches_checked_in_openapi(openapi):
     validate_catalog(openapi)
+
+
+def test_relationship_catalog_matches_checked_in_openapi(openapi):
+    validate_catalog(openapi, tuple(SCOT_RELATIONSHIPS.values()))
 
 
 def test_catalog_names_are_unique_and_stable():

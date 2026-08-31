@@ -8,6 +8,7 @@ import {
 } from '@codemirror/view'
 import { Token } from 'antlr4ng'
 import { createLexer, lexAll } from './parse.ts'
+import { codePointBoundaries, codeUnitOffset } from './positions.ts'
 
 const TYPE_WORDS = new Set([
   'bool', 'boolean', 'date', 'datetime', 'decimal', 'double', 'dynamic', 'float',
@@ -53,12 +54,23 @@ const categories: Map<number, Category> = (() => {
 function buildDecorations(view: EditorView): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>()
   const doc = view.state.doc.toString()
-  for (const token of lexAll(doc)) {
+  const boundaries = codePointBoundaries(doc)
+  let tokens: Token[]
+
+  try {
+    tokens = lexAll(doc)
+  } catch {
+    // Highlighting is cosmetic. An incomplete token must never interrupt a
+    // CodeMirror update and leave its state ahead of the rendered document.
+    return Decoration.none
+  }
+
+  for (const token of tokens) {
     if (token.type === Token.EOF) break
     const cat = categories.get(token.type)
     if (!cat) continue
-    const from = token.start
-    const to = Math.min(token.stop + 1, doc.length)
+    const from = codeUnitOffset(boundaries, token.start)
+    const to = codeUnitOffset(boundaries, token.stop + 1)
     if (to <= from) continue
     builder.add(from, to, Decoration.mark({ class: `hql-${cat}` }))
   }

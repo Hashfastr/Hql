@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from fnmatch import fnmatchcase
 from typing import TYPE_CHECKING, Any, Mapping
 
@@ -26,6 +26,7 @@ class _Compiled:
     parameters: dict[str, str]
     accepted: Logic | None
     rejected: Logic | None
+    path_values: dict[str, tuple[str, ...]] = field(default_factory=dict)
 
 
 def _and(expressions: list[Logic]) -> Logic | None:
@@ -61,7 +62,9 @@ class SCOTCompiler(Compiler):
         super().__init__()
         self.endpoint = endpoint
         self.parameters: dict[str, str] = {}
+        self.path_values: dict[str, tuple[str, ...]] = {}
         self.limit = max_limit
+        self.invalid_path = False
 
     def set_endpoint(self, endpoint: Endpoint) -> None:
         if self.endpoint is not None and self.endpoint != endpoint:
@@ -90,6 +93,10 @@ class SCOTCompiler(Compiler):
             )
         if parameter.type == "boolean":
             return isinstance(value, (Bool, bool))
+        if parameter.type == "integer":
+            return isinstance(value, (Integer, int)) and not isinstance(
+                value, (Bool, bool)
+            )
         if parameter.format == "date-time":
             return isinstance(value, (Datetime, datetime.datetime, StringLiteral, str))
         if parameter.type == "string":
@@ -123,9 +130,26 @@ class SCOTCompiler(Compiler):
         return expr.name if isinstance(expr, NamedReference) else None
 
     def _equality(self, expr, *, invert: bool = False) -> _Compiled:
+        from Hql.Expressions.Literals import Integer
+
         field = self._field(expr.lh)
         if field is None or not self._field_supported(field, expr.rh):
             return _Compiled({}, None, expr)
+
+        if self.endpoint is not None and field in self.endpoint.path_parameters:
+            valid = (
+                not expr.neq
+                and not invert
+                and bool(expr.rh)
+                and all(
+                    isinstance(value, Integer) and value.value >= 0
+                    for value in expr.rh
+                )
+            )
+            if not valid:
+                return _Compiled({}, None, expr)
+            values = tuple(sorted({str(value.value) for value in expr.rh}, key=int))
+            return _Compiled({}, expr, None, {field: values})
 
         try:
             negated = expr.neq != invert
@@ -140,6 +164,8 @@ class SCOTCompiler(Compiler):
     def _between(self, expr, *, invert: bool = False) -> _Compiled:
         field = self._field(expr.lh)
         if field is None or not self._field_supported(field, [expr.start, expr.end]):
+            return _Compiled({}, None, expr)
+        if self.endpoint is not None and field in self.endpoint.path_parameters:
             return _Compiled({}, None, expr)
         try:
             value = serialize_range(expr.start, expr.end, negated=expr.neq != invert)
@@ -163,6 +189,17 @@ class SCOTCompiler(Compiler):
 
         if field is None or not self._field_supported(field, values):
             return _Compiled({}, None, expr)
+        if self.endpoint is not None and field in self.endpoint.path_parameters:
+            from Hql.Expressions.Literals import Integer
+
+            if not all(
+                isinstance(value, Integer) and value.value >= 0 for value in values
+            ):
+                return _Compiled({}, None, expr)
+            path_values = tuple(
+                sorted({str(value.value) for value in values}, key=int)
+            )
+            return _Compiled({}, expr, None, {field: path_values})
 
         try:
             values.sort(key=serialize_value)
@@ -176,22 +213,33 @@ class SCOTCompiler(Compiler):
             return self._or(expr)
 
         parameters: dict[str, str] = {}
+        path_values: dict[str, tuple[str, ...]] = {}
         accepted = []
         rejected = []
         for branch in expr.exprs:
             compiled = self._compile_expression(branch)
-            conflict = _has_conflict(parameters, compiled.parameters)
+            compiled_path_values = compiled.path_values
+            conflict = _has_conflict(parameters, compiled.parameters) or any(
+                name in path_values and path_values[name] != values
+                for name, values in compiled_path_values.items()
+            )
             if conflict:
                 if compiled.accepted is not None:
                     rejected.append(compiled.accepted)
             else:
                 parameters.update(compiled.parameters)
+                path_values.update(compiled_path_values)
                 if compiled.accepted is not None:
                     accepted.append(compiled.accepted)
             if compiled.rejected is not None:
                 rejected.append(compiled.rejected)
 
-        return _Compiled(parameters, _and(accepted), _and(rejected))
+        return _Compiled(
+            parameters,
+            _and(accepted),
+            _and(rejected),
+            path_values,
+        )
 
     def _compile_expression(self, expr) -> _Compiled:
         from Hql.Expressions.Logic import BetweenEquality, BinaryLogic, Equality, Not
@@ -220,6 +268,22 @@ class SCOTCompiler(Compiler):
         processed = expr.preprocess(self.ctx)
         compiled = self._compile_expression(processed)
         return dict(sorted(compiled.parameters.items())), compiled.rejected
+
+    def _references_path_parameter(self, expr) -> bool:
+        from Hql.Expressions.Logic import BinaryLogic, Not
+
+        field = self._field(getattr(expr, "lh", None))
+        if (
+            self.endpoint is not None
+            and field is not None
+            and field in self.endpoint.path_parameters
+        ):
+            return True
+        if isinstance(expr, BinaryLogic):
+            return any(self._references_path_parameter(item) for item in expr.exprs)
+        if isinstance(expr, Not):
+            return self._references_path_parameter(expr.expr)
+        return False
 
     def _take(self, op: Operator) -> tuple[Operator | None, Operator | None]:
         from Hql.Expressions.Literals import Integer
@@ -256,10 +320,22 @@ class SCOTCompiler(Compiler):
 
         processed = op.expr.preprocess(self.ctx)
         compiled = self._compile_expression(processed)
-        if _has_conflict(self.parameters, compiled.parameters):
+        compiled_path_values = compiled.path_values
+        conflict = _has_conflict(self.parameters, compiled.parameters) or any(
+            name in self.path_values and self.path_values[name] != values
+            for name, values in compiled_path_values.items()
+        )
+        if conflict:
+            if self._references_path_parameter(processed):
+                self.invalid_path = True
             return None, op
+        if compiled.rejected is not None and self._references_path_parameter(
+            compiled.rejected
+        ):
+            self.invalid_path = True
 
         self.parameters.update(compiled.parameters)
+        self.path_values.update(compiled_path_values)
         accepted = (
             Where(compiled.accepted, op.parameters) if compiled.accepted else None
         )
@@ -277,3 +353,29 @@ class SCOTCompiler(Compiler):
         ):
             parameters[self.endpoint.limit_parameter] = self.limit
         return dict(sorted(parameters.items()))
+
+    def resolved_path(self) -> str | None:
+        requests = self.resolved_requests()
+        return requests[0][0] if len(requests) == 1 else None
+
+    def resolved_paths(self) -> list[str]:
+        return [path for path, _ in self.resolved_requests()]
+
+    def resolved_requests(self) -> list[tuple[str, dict[str, str]]]:
+        """Resolve endpoint paths together with the values placed into them."""
+
+        if self.endpoint is None or self.invalid_path:
+            return []
+
+        requests = [(self.endpoint.path, {})]
+        for parameter in self.endpoint.path_parameters:
+            values = self.path_values.get(parameter)
+            if not values:
+                return []
+            placeholder = f"{{{parameter}}}"
+            requests = [
+                (path.replace(placeholder, value), {**resolved, parameter: value})
+                for path, resolved in requests
+                for value in values
+            ]
+        return requests

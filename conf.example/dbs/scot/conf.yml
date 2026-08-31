@@ -16,5 +16,6 @@ database:
     # Optional settings and their defaults.
     verify_tls: true
     timeout: 10
+    requests_per_second: 10
     page_size: 100
     max_rows: 10000

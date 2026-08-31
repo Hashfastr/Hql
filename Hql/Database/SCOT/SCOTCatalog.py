@@ -24,6 +24,7 @@ class QueryParameter:
 STRING = QueryParameter("string")
 BOOL = QueryParameter("boolean")
 DATETIME = QueryParameter("string", "date-time")
+INTEGER = QueryParameter("integer")
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,6 +40,7 @@ class Endpoint:
     skip_parameter: str | None = None
     limit_parameter: str | None = None
     sort_parameter: str | None = None
+    path_parameters: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "filters", MappingProxyType(dict(self.filters)))
@@ -59,6 +61,7 @@ class Endpoint:
                 self.skip_parameter,
                 self.limit_parameter,
                 self.sort_parameter,
+                self.path_parameters,
             ),
         )
 
@@ -328,6 +331,19 @@ SCOT_TABLES: Mapping[str, Endpoint] = MappingProxyType(
     {endpoint.name: endpoint for endpoint in SCOT_ENDPOINTS}
 )
 
+SCOT_RELATIONSHIPS: Mapping[tuple[str, str], Endpoint] = MappingProxyType(
+    {
+        ("alert", "entity"): Endpoint(
+            name="entity",
+            path="/api/v1/alert/{id}/entity",
+            filters={"id": INTEGER},
+            response_model="ListResponse_Entity_",
+            row_model="Entity",
+            path_parameters=("id",),
+        )
+    }
+)
+
 # These names are useful for contract tests and make the security boundary
 # explicit. Paths below these resources are never exposed through the catalog.
 EXCLUDED_RESOURCES = frozenset(
@@ -378,6 +394,12 @@ def validate_catalog(
             for parameter in operation.get("parameters", [])
             if parameter.get("in") == "query"
         }
+        path_parameters = {
+            parameter["name"]: parameter.get("schema", {})
+            for parameter in operation.get("parameters", [])
+            if parameter.get("in") == "path"
+            and f"{{{parameter['name']}}}" in endpoint.path
+        }
         controls = {
             parameter
             for parameter in (
@@ -387,7 +409,15 @@ def validate_catalog(
             )
             if parameter is not None
         }
-        expected_filters = set(query_parameters) - {"skip", "limit", "sort"}
+        if set(endpoint.path_parameters) != set(path_parameters):
+            errors.append(
+                f"{endpoint.name}: path fields differ: "
+                f"catalog={sorted(endpoint.path_parameters)}, "
+                f"openapi={sorted(path_parameters)}"
+            )
+        expected_filters = (
+            set(query_parameters) - {"skip", "limit", "sort"}
+        ) | set(path_parameters)
         if set(endpoint.filters) != expected_filters:
             errors.append(
                 f"{endpoint.name}: filter fields differ: "
@@ -399,7 +429,7 @@ def validate_catalog(
             if control not in query_parameters:
                 errors.append(f"{endpoint.name}: missing query control {control}")
         for name, declared in endpoint.filters.items():
-            actual = query_parameters.get(name)
+            actual = query_parameters.get(name, path_parameters.get(name))
             if actual is None:
                 continue
             type_differs = actual.get("type") != declared.type

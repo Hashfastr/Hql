@@ -57,6 +57,7 @@ class macro(Function):
         
     def eval(self, ctx: Context, receiver=None) -> object:
         from Hql.Compiler import InstructionSet, HqlCompiler
+        from Hql.Database import Database
         from Hql.Expressions import PipeExpression
 
         self.preprocess(ctx)
@@ -74,6 +75,9 @@ class macro(Function):
             macro = db.get_macro(i)
             if not macro:
                 raise hqle.QueryException(f'Macro not found: {i}')
+            if isinstance(macro, (Database, InstructionSet)):
+                upstream.append(macro)
+                continue
             parsed = self.parse_macro(macro, f'{db.name}/{i}')
 
             if not isinstance(parsed, PipeExpression):

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import copy
 import datetime
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -24,6 +26,7 @@ from Hql.Database.SCOT.SCOTCatalog import EXCLUDED_RESOURCES, SCOT_ENDPOINTS
 from Hql.Database.SCOT.SCOT import (
     DEFAULT_MAX_ROWS,
     DEFAULT_PAGE_SIZE,
+    DEFAULT_REQUESTS_PER_SECOND,
     DEFAULT_TIMEOUT,
 )
 
@@ -53,6 +56,7 @@ def test_example_config_loads_and_matches_constructor_defaults():
         "api_key": "<INJECT_SCOT_API_KEY>",
         "verify_tls": True,
         "timeout": DEFAULT_TIMEOUT,
+        "requests_per_second": DEFAULT_REQUESTS_PER_SECOND,
         "page_size": DEFAULT_PAGE_SIZE,
         "max_rows": DEFAULT_MAX_ROWS,
     }
@@ -140,6 +144,7 @@ def test_safe_defaults():
 
     assert adapter.verify_tls is True
     assert adapter.timeout == 10.0
+    assert adapter.requests_per_second == 10.0
     assert adapter.page_size == 100
     assert adapter.max_rows == 10_000
 
@@ -167,17 +172,18 @@ def test_invalid_base_urls(base_url, message):
         SCOT(scot_config(base_url=base_url))
 
 
-@pytest.mark.parametrize("key", ["page_size", "max_rows"])
+@pytest.mark.parametrize("key", ["page_size", "max_rows", "requests_per_second"])
 @pytest.mark.parametrize("value", [True, 0, -1, 1.5, "10"])
 def test_invalid_integer_limits(key, value):
     with pytest.raises(hqle.ConfigException, match=key):
         SCOT(scot_config(**{key: value}))
 
 
+@pytest.mark.parametrize("key", ["timeout"])
 @pytest.mark.parametrize("value", [True, 0, -1, float("inf"), "10"])
-def test_invalid_timeout(value):
-    with pytest.raises(hqle.ConfigException, match="timeout"):
-        SCOT(scot_config(timeout=value))
+def test_invalid_positive_number(key, value):
+    with pytest.raises(hqle.ConfigException, match=key):
+        SCOT(scot_config(**{key: value}))
 
 
 def test_page_size_cannot_exceed_max_rows():
@@ -234,6 +240,27 @@ def test_authenticated_request_uses_normalized_url_and_settings():
             },
         )
     ]
+
+
+def test_requests_are_limited_to_ten_per_second(monkeypatch):
+    clock = [100.0]
+    sleeps = []
+
+    def sleep(delay):
+        sleeps.append(delay)
+        clock[0] += delay
+
+    monkeypatch.setattr(time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(time, "sleep", sleep)
+    adapter = SCOT(
+        scot_config(requests_per_second=10),
+        session=FakeSession(FakeResponse({"result": []})),
+    )
+
+    for _ in range(11):
+        adapter._request_json("/api/v1/entity/")
+
+    assert sleeps == pytest.approx([1.0])
 
 
 @pytest.mark.parametrize(
@@ -461,6 +488,172 @@ def test_alertgroup_to_alert_join_without_where_clause(monkeypatch):
             {"alertgroup_id": "7", "limit": 10_000},
         ),
     ]
+
+
+def test_alert_entity_macro_uses_id_as_path_and_filters_results_locally(
+    monkeypatch,
+):
+    session = FakeSession(
+        FakeResponse(
+            {
+                "result": [
+                    {"id": 41, "value": "keep"},
+                    {"id": 42, "value": "drop"},
+                ]
+            }
+        )
+    )
+    monkeypatch.setattr(requests, "Session", lambda: session)
+    config = Config()
+    config.set_database("scot", scot_config())
+    parser = Parser(
+        "let Entities = database('scot').index('alert').macro('entity');\n"
+        "Entities\n"
+        "| where id == 1 and value == 'keep'"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    assert result["entity"].to_dicts() == [
+        {"id": 1, "entity_id": 41, "value": "keep"}
+    ]
+    assert session.calls == [
+        (
+            "https://scot.example.test/api/v1/alert/1/entity",
+            {
+                "headers": {"Authorization": "apikey super-secret-test-key"},
+                "params": {},
+                "timeout": 10.0,
+                "verify": True,
+            },
+        )
+    ]
+
+
+def test_alert_entity_macro_without_id_returns_empty_without_request(monkeypatch):
+    session = FakeSession(FakeResponse({"result": [{"id": 41}]}))
+    monkeypatch.setattr(requests, "Session", lambda: session)
+    config = Config()
+    config.set_database("scot", scot_config())
+    parser = Parser(
+        "let Entities = database('scot').index('alert').macro('entity');\n"
+        "Entities"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    assert list(result.tables) == ["entity"]
+    assert len(result["entity"]) == 0
+    assert session.calls == []
+
+
+def test_alert_entity_macro_returns_all_entities_for_alert(monkeypatch):
+    alert_id = 42853281
+    session = FakeSession(
+        FakeResponse(
+            {
+                "result": [
+                    {"id": 71, "value": "one"},
+                    {"id": 72, "value": "two"},
+                ]
+            }
+        )
+    )
+    monkeypatch.setattr(requests, "Session", lambda: session)
+    config = Config()
+    config.set_database("scot", scot_config())
+    parser = Parser(
+        "let Entities = database('scot').index('alert').macro('entity');\n"
+        "Entities\n"
+        f"| where id == {alert_id}"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    assert result["entity"].to_dicts() == [
+        {"id": alert_id, "entity_id": 71, "value": "one"},
+        {"id": alert_id, "entity_id": 72, "value": "two"},
+    ]
+
+
+def test_alert_entity_macro_fans_out_join_ids(monkeypatch):
+    alert_ids = list(range(1, 11)) + [5]
+
+    class RoutingSession:
+        def __init__(self):
+            self.calls = []
+            self.active = 0
+            self.max_active = 0
+            self.lock = threading.Lock()
+            self.entity_requests_ready = threading.Barrier(10)
+
+        def __deepcopy__(self, _memo):
+            return self
+
+        def get(self, url, **kwargs):
+            self.calls.append((url, kwargs))
+            if url.endswith("/api/v1/alert/"):
+                return FakeResponse(
+                    {"result": [{"id": alert_id} for alert_id in alert_ids]}
+                )
+            if url.endswith("/entity"):
+                alert_id = int(url.rsplit("/", 2)[-2])
+                with self.lock:
+                    self.active += 1
+                    self.max_active = max(self.max_active, self.active)
+                self.entity_requests_ready.wait(timeout=2)
+                with self.lock:
+                    self.active -= 1
+                return FakeResponse(
+                    {
+                        "result": [
+                            {
+                                "id": alert_id + 1_000,
+                                "value": f"entity-{alert_id}",
+                                "status": "tracked",
+                                "type_name": "domain",
+                            }
+                        ]
+                    }
+                )
+            raise AssertionError(f"Unexpected SCOT URL: {url}")
+
+    session = RoutingSession()
+    monkeypatch.setattr(requests, "Session", lambda: session)
+    config = Config()
+    config.set_database("scot", scot_config())
+    parser = Parser(
+        "let Alerts = database('scot').index('alert');\n"
+        "let Entities = database('scot').index('alert').macro('entity');\n"
+        "Alerts\n"
+        "| project id\n"
+        "| join Entities on id\n"
+        "| where status == 'tracked' and type_name == 'domain'"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    rows = result["alert"].to_dicts()
+    assert len(rows) == len(alert_ids)
+    assert sorted(row["id"] for row in rows) == sorted(alert_ids)
+    assert sorted(row["entity_id"] for row in rows) == sorted(
+        alert_id + 1_000 for alert_id in alert_ids
+    )
+    assert session.max_active == 10
+    assert (session.calls[0][0], session.calls[0][1]["params"]) == (
+        "https://scot.example.test/api/v1/alert/",
+        {"limit": 10_000},
+    )
+    entity_calls = session.calls[1:]
+    assert sorted(url for url, _ in entity_calls) == sorted(
+        f"https://scot.example.test/api/v1/alert/{alert_id}/entity"
+        for alert_id in range(1, 11)
+    )
+    assert all(call["params"] == {} for _, call in entity_calls)
 
 
 @pytest.mark.parametrize("table_name", ["entity", "entry"])

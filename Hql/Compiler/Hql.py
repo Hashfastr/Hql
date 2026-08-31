@@ -635,6 +635,10 @@ class HqlCompiler(Compiler):
     def Join(self, op: Operators.Join, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Expressions import PipeExpression
         desc = BranchDescriptor()
+        # A join can add right-side columns and change row cardinality. Filters
+        # after it must not be hoisted onto the left input, where those columns
+        # may not exist yet.
+        desc.set_attr('row_mutable')
 
         # The case of recompiling a compiled join
         if isinstance(op.rh, InstructionSet):

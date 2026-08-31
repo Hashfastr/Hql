@@ -6,7 +6,11 @@ from dataclasses import replace
 import pytest
 
 from Hql.Compiler import SCOTCompiler
-from Hql.Database.SCOT.SCOTCatalog import SCOT_ENDPOINTS, SCOT_TABLES
+from Hql.Database.SCOT.SCOTCatalog import (
+    SCOT_ENDPOINTS,
+    SCOT_RELATIONSHIPS,
+    SCOT_TABLES,
+)
 from Hql.Expressions.Literals import Bool, Datetime, Integer, StringLiteral
 from Hql.Expressions.Logic import BetweenEquality, BinaryLogic, Equality, Not, Regex
 from Hql.Expressions.References import NamedReference
@@ -234,6 +238,75 @@ def test_endpoint_without_limit_support_rejects_take():
 
     assert compiler.add_op(take) == (None, take)
     assert compiler.simple_compile() == {}
+
+
+def test_relationship_consumes_id_and_rejects_result_filter():
+    compiler = SCOTCompiler(SCOT_RELATIONSHIPS[("alert", "entity")])
+    path_id = eq("id", Integer(1))
+    result_filter = eq("value", StringLiteral("example.com"))
+
+    accepted, rejected = compiler.add_op(
+        Where(BinaryLogic([path_id, result_filter], logic_and=True))
+    )
+
+    assert accepted is not None
+    assert accepted.expr.to_dict() == path_id.to_dict()
+    assert rejected is not None
+    assert rejected.expr.to_dict() == result_filter.to_dict()
+    assert compiler.resolved_path() == "/api/v1/alert/1/entity"
+    assert compiler.simple_compile() == {}
+
+
+@pytest.mark.parametrize(
+    "predicate",
+    [
+        eq("id", StringLiteral("1")),
+        eq("id", Integer(-1)),
+        eq("id", Integer(1), neq=True),
+    ],
+)
+def test_relationship_rejects_invalid_path_ids(predicate):
+    compiler = SCOTCompiler(SCOT_RELATIONSHIPS[("alert", "entity")])
+
+    accepted, rejected = compiler.add_op(Where(predicate))
+
+    assert accepted is None
+    assert rejected is not None
+    assert compiler.resolved_path() is None
+
+
+def test_relationship_resolves_multiple_or_ids_to_unique_paths():
+    compiler = SCOTCompiler(SCOT_RELATIONSHIPS[("alert", "entity")])
+    predicate = BinaryLogic(
+        [
+            eq("id", Integer(3)),
+            eq("id", Integer(1)),
+            eq("id", Integer(3)),
+        ],
+        logic_and=False,
+    )
+
+    accepted, rejected = compiler.add_op(Where(predicate))
+
+    assert accepted is not None
+    assert rejected is None
+    assert compiler.resolved_paths() == [
+        "/api/v1/alert/1/entity",
+        "/api/v1/alert/3/entity",
+    ]
+    assert compiler.resolved_requests() == [
+        ("/api/v1/alert/1/entity", {"id": "1"}),
+        ("/api/v1/alert/3/entity", {"id": "3"}),
+    ]
+
+
+def test_relationship_rejects_conflicting_path_ids():
+    compiler = SCOTCompiler(SCOT_RELATIONSHIPS[("alert", "entity")])
+
+    compiler.add_op(Where(eq("id", Integer(1))))
+    compiler.add_op(Where(eq("id", Integer(2))))
+
+    assert compiler.resolved_path() is None
 
 
 def compatible_value(parameter):

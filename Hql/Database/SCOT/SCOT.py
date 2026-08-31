@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import math
+import threading
+import time
+from collections import deque
 from collections.abc import Mapping as MappingABC
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING, Any, Mapping
 from urllib.parse import urlsplit, urlunsplit
 
@@ -23,6 +27,33 @@ if TYPE_CHECKING:
 DEFAULT_TIMEOUT = 10.0
 DEFAULT_PAGE_SIZE = 100
 DEFAULT_MAX_ROWS = 10_000
+DEFAULT_REQUESTS_PER_SECOND = 10
+
+
+class _RateLimiter:
+    """Permit bounded bursts and remain shared by deep-copied adapters."""
+
+    def __init__(self, requests_per_second: int) -> None:
+        self.requests_per_second = requests_per_second
+        self.request_times: deque[float] = deque()
+        self.lock = threading.Lock()
+
+    def wait(self) -> None:
+        with self.lock:
+            while True:
+                now = time.monotonic()
+                cutoff = now - 1
+                while self.request_times and self.request_times[0] <= cutoff:
+                    self.request_times.popleft()
+
+                if len(self.request_times) < self.requests_per_second:
+                    self.request_times.append(now)
+                    return
+
+                time.sleep(self.request_times[0] + 1 - now)
+
+    def __deepcopy__(self, _memo: dict[int, Any]) -> _RateLimiter:
+        return self
 
 
 def _positive_int(conf: dict[str, Any], key: str, default: int) -> int:
@@ -93,6 +124,7 @@ class SCOT(Database):
             timeout: 10
             page_size: 100
             max_rows: 10000
+            requests_per_second: 10
 
     Supply ``api_key`` at deployment time rather than committing a usable key.
     Select a table with an expression such as ``database('scot').entity``.
@@ -125,6 +157,11 @@ class SCOT(Database):
         self.verify_tls = verify_tls
 
         self.timeout = _positive_number(conf, "timeout", DEFAULT_TIMEOUT)
+        self.requests_per_second = _positive_int(
+            conf,
+            "requests_per_second",
+            DEFAULT_REQUESTS_PER_SECOND,
+        )
         self.page_size = _positive_int(conf, "page_size", DEFAULT_PAGE_SIZE)
         self.max_rows = _positive_int(conf, "max_rows", DEFAULT_MAX_ROWS)
         if self.page_size > self.max_rows:
@@ -136,6 +173,7 @@ class SCOT(Database):
         self.endpoint: Endpoint | None = None
         self.methods = ["index", "macro"]
         self._session = session if session is not None else requests.Session()
+        self._rate_limiter = _RateLimiter(self.requests_per_second)
 
     def get_variable(self, name: NamedReference) -> SCOT:
         from Hql.Database.SCOT.SCOTCatalog import SCOT_TABLES
@@ -156,10 +194,68 @@ class SCOT(Database):
 
         self.get_variable(NamedReference(index))
 
+    def get_macro(self, name: str) -> dict | SCOT | None:
+        from Hql.Compiler import SCOTCompiler
+        from Hql.Database.SCOT.SCOTCatalog import SCOT_RELATIONSHIPS
+
+        if self.endpoint is not None:
+            relationship = SCOT_RELATIONSHIPS.get((self.endpoint.name, name))
+            if relationship is not None:
+                self.endpoint = relationship
+                self.compiler = SCOTCompiler(
+                    relationship,
+                    max_limit=self.max_rows,
+                )
+                return self
+        return super().get_macro(name)
+
     def _fetch_selected(self) -> Any:
         if self.endpoint is None:
             raise hqle.QueryException("No SCOT table selected")
-        return self._request_json(self.endpoint.path, self.compiler.simple_compile())
+        requests_to_make = self.compiler.resolved_requests()
+        if not requests_to_make:
+            return {"result": []}
+
+        params = self.compiler.simple_compile()
+        if len(requests_to_make) == 1 and not requests_to_make[0][1]:
+            return self._request_json(requests_to_make[0][0], params)
+
+        def fetch(request: tuple[str, dict[str, str]]) -> list[dict[str, Any]]:
+            path, path_values = request
+            fetched = self._extract_rows(self._request_json(path, params))
+            return self._attach_path_values(fetched, path_values)
+
+        if len(requests_to_make) == 1:
+            return {"result": fetch(requests_to_make[0])}
+
+        workers = min(len(requests_to_make), self.requests_per_second)
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            batches = executor.map(fetch, requests_to_make)
+            rows = [row for batch in batches for row in batch]
+        return {"result": rows}
+
+    def _attach_path_values(
+        self,
+        rows: list[dict[str, Any]],
+        path_values: Mapping[str, str],
+    ) -> list[dict[str, Any]]:
+        """Expose relationship keys while retaining same-named result fields."""
+
+        assert self.endpoint is not None
+        attached = []
+        for row in rows:
+            row = dict(row)
+            for name, serialized in path_values.items():
+                if name in row:
+                    row[f"{self.endpoint.name}_{name}"] = row[name]
+                parameter = self.endpoint.filters[name]
+                row[name] = (
+                    int(serialized)
+                    if parameter.type == "integer"
+                    else serialized
+                )
+            attached.append(row)
+        return attached
 
     def _extract_rows(self, payload: Any) -> list[dict[str, Any]]:
         """Extract and validate rows using the selected endpoint descriptor."""
@@ -211,6 +307,7 @@ class SCOT(Database):
 
         url = f"{self.base_url}/{path.lstrip('/')}"
         headers = {"Authorization": f"apikey {self._api_key}"}
+        self._rate_limiter.wait()
         try:
             response = self._session.get(
                 url,
@@ -243,6 +340,7 @@ class SCOT(Database):
             "base_url": self.base_url,
             "verify_tls": self.verify_tls,
             "timeout": self.timeout,
+            "requests_per_second": self.requests_per_second,
             "page_size": self.page_size,
             "max_rows": self.max_rows,
             "table": self.endpoint.name if self.endpoint else None,
