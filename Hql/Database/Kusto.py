@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Optional, Union
 import logging
+import json
 
 from Hql.Context import register_database
 from Hql.Database.Database import Database
@@ -14,6 +15,7 @@ if TYPE_CHECKING:
     from Hql.Compiler import BranchDescriptor
     from Hql.Context import Context
     from Hql.Data import Schema
+    import datetime
 
 
 '''
@@ -108,6 +110,11 @@ class Kusto(Database):
         if not query.strip():
             raise hqle.QueryException('Kusto raw query cannot be empty')
         self._raw_query = query
+
+    def add_timebound(self, start: datetime.datetime, end: datetime.datetime) -> tuple[Database, Union[None, Operator]]:
+        if self._raw_query:
+            return self, None
+        return super().add_timebound(start, end)
 
     @staticmethod
     def _column_names(result:Any) -> list[str]:

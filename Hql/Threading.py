@@ -108,6 +108,7 @@ class QueryThread():
                 'traceback': traceback.format_exc(),
                 'exception': str(e)
             }
+            self.failed = True
 
     def is_alive(self) -> bool:
         if not self.thread or not self.threaded:
@@ -387,6 +388,7 @@ class HacThread():
             import traceback
             logging.critical(e)
             logging.critical(traceback.format_exc())
+            self.failed = True
 
     def is_alive(self) -> bool:
         if not self.thread or not self.threaded:

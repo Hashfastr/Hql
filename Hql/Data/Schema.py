@@ -551,25 +551,26 @@ class Schema():
     def assert_field(self, field:Reference):
         return field in self
         
-    def present_complex(self, df:pl.DataFrame, schema:Optional[dict]=None):
-        schema = schema if schema != None else self.schema
+    def present_complex(self, df:pl.DataFrame):
+        def pc(df:pl.DataFrame, schema:dict):
+            newdf = {}
+            for col in df:
+                if col.name not in schema:
+                    newdf[col.name] = col
+                    continue
+                
+                if isinstance(schema[col.name], dict):
+                    newdf[col.name] = pc(col.struct.unnest(), schema[col.name]).to_struct()
+                    continue
 
-        newdf = {}
-        for col in df:
-            if col.name not in schema:
-                newdf[col.name] = col
-                continue
-            
-            if isinstance(schema[col.name], dict):
-                newdf[col.name] = self.present_complex(col.struct.unnest(), schema[col.name]).to_struct()
-                continue
+                if schema[col.name].complex:
+                    newdf[col.name] = schema[col.name].human(col)
+                else:
+                    newdf[col.name] = col
 
-            if schema[col.name].complex:
-                newdf[col.name] = schema[col.name].human(col)
-            else:
-                newdf[col.name] = col
+            return pl.DataFrame(newdf)
 
-        return pl.DataFrame(newdf)
+        return pc(df, self.schema.schema)
 
     def join(self, right:Schema, on:Sequence[Reference], kind:str) -> Schema:
         # all of these are semantically the same schema wise
