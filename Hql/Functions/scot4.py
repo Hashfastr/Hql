@@ -40,6 +40,12 @@ class scot4(Function):
         if 'row_limit' not in self.conf:
             self.conf['row_limit'] = 100
 
+        self.verify_tls = self.conf.get('verify_tls', True)
+        if not isinstance(self.verify_tls, bool):
+            raise hqle.ConfigException(
+                'scot4 function config verify_tls must be a boolean'
+            )
+
         for i in self.args:
             if not isinstance(i, NamedExpression):
                 raise hqle.ArgumentException(f'Invalid argument expression given to scot4: {i}')
@@ -85,7 +91,13 @@ class scot4(Function):
             'Authorization': f'apikey {self.server["apikey"]}'
         }
 
-        res = requests.post(url=url, headers=headers, json=json, timeout=self.timeout)
+        res = requests.post(
+            url=url,
+            headers=headers,
+            json=json,
+            timeout=self.timeout,
+            verify=self.verify_tls,
+        )
 
         if res.status_code != 200:
             logging.error(f'Post to scot returned a {res.status_code}')
@@ -100,15 +112,29 @@ class scot4(Function):
         }
 
         if json:
-            res = requests.get(url=url, headers=headers, json=json, timeout=self.timeout)
+            res = requests.get(
+                url=url,
+                headers=headers,
+                json=json,
+                timeout=self.timeout,
+                verify=self.verify_tls,
+            )
         elif params:
             param_strs = []
             for i in params:
                 param_strs.append(f'{i}={urllib.parse.quote_plus(params[i])}')
             url += '?' + '&'.join(param_strs)
-            res = requests.get(url=url, headers=headers)
+            res = requests.get(
+                url=url,
+                headers=headers,
+                verify=self.verify_tls,
+            )
         else:
-            res = requests.get(url=url, headers=headers)
+            res = requests.get(
+                url=url,
+                headers=headers,
+                verify=self.verify_tls,
+            )
 
         if res.status_code != 200:
             logging.error(f'Get from scot returned a {res.status_code}')
@@ -122,7 +148,13 @@ class scot4(Function):
             'Authorization': f'apikey {self.server["apikey"]}'
         }
 
-        res = requests.put(url=url, headers=headers, json=json, timeout=self.timeout)
+        res = requests.put(
+            url=url,
+            headers=headers,
+            json=json,
+            timeout=self.timeout,
+            verify=self.verify_tls,
+        )
 
         if res.status_code != 200:
             logging.error(f'Put to scot returned a {res.status_code}')

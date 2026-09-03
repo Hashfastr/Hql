@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     from Hql.Context import Context
     import polars as pl
 
+from Hql.Exceptions import HqlExceptions as hqle
+
 class Literal(Expression):
     """Base expression for a typed, concrete HQL value."""
 
@@ -333,6 +335,88 @@ class Datetime(Literal):
             'type': self.type,
             'value': self.value.isoformat()
         }
+
+class TimeDelta(Literal):
+    def __init__(self, value:Union[StringLiteral, datetime.timedelta]) -> None:
+        import re
+
+        self._delta = None
+
+        def parse_time_spec(value:StringLiteral) -> dict:
+            ''''
+            maps = {
+                'days': r'd(ays?)?',
+                'seconds': r's((ec)(ond)?s?)?',
+                'microseconds': r'micro(s(((ec)(ond)?)?s?))?',
+                'milliseconds': r'milli(s(((ec)(ond)?)?s?))?',
+                'minutes': r'm((in)(ute)?s?)?',
+                'hours': r'h((our|r)s?)?',
+            }
+            '''
+            
+            maps = {
+                'days': r'd(ays?)?',
+                'seconds': r's((ec)(ond)?s?)?',
+                'microseconds': r'micro(s(((ec)(ond)?)?s?))?',
+                'milliseconds': r'milli(s(((ec)(ond)?)?s?))?',
+                'minutes': r'm((in)(ute)?s?)?',
+                'hours': r'h((our|r)s?)?',
+            }
+
+            value_pat = r'(?<value>\d+(\.\d+)?)'
+
+            for i in maps:
+                regex = value_pat + f'(?<spec>{maps[i]})'
+                match = re.fullmatch(regex, value.str())
+
+                if not match:
+                    continue
+
+                return {i: float(match.group('value'))}
+
+            raise hqle.CompilerException(f'Invalid timespan literal given: {value.str()}')
+
+        if isinstance(value, StringLiteral):
+            spec = parse_time_spec(value)
+            self.delta = datetime.timedelta(**spec)
+        else:
+            self.delta = value
+
+    def _timedelta_to_string(self) -> str:
+        td = self.delta
+
+        total_microseconds = (
+            td.days * 24 * 60 * 60 * 1_000_000
+            + td.seconds * 1_000_000
+            + td.microseconds
+        )
+
+        sign = "-" if total_microseconds < 0 else ""
+        total_microseconds = abs(total_microseconds)
+
+        units = [
+            ("d", 24 * 60 * 60 * 1_000_000),
+            ("h", 60 * 60 * 1_000_000),
+            ("m", 60 * 1_000_000),
+            ("s", 1_000_000),
+            ("ms", 1_000),
+            ("us", 1),
+        ]
+
+        parts = []
+
+        for suffix, unit_microseconds in units:
+            value, total_microseconds = divmod(total_microseconds, unit_microseconds)
+            if value:
+                parts.append(f"{value}{suffix}")
+
+        if not parts:
+            return "0s"
+
+        if len(parts) > 1:
+            raise ValueError("Compound timedelta values are not allowed")
+
+        return sign + parts[0]
 
 class Null(Literal):
     """Represent the HQL null literal."""

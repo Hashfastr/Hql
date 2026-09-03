@@ -7,4 +7,5 @@ from .Opensearch import Opensearch
 from .Elasticsearch import Elasticsearch
 from .Splunk import Splunk
 from .SQLite import SQLite
+from .Kusto import Kusto
 from .SCOT import SCOT

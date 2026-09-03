@@ -162,6 +162,14 @@ class BaseExpressions(HqlVisitor):
         lit = StringLiteral(datestr)
 
         return Datetime(lit)
+
+    def visitTimeSpanLiteralExpression(self, ctx: HqlParser.TimeSpanLiteralExpressionContext):
+        from Hql.Expressions.Literals import StringLiteral, TimeDelta
+
+        if ctx.Token == None:
+            raise hqle.ParseException('TimeSpanLiteral has no string token', ctx)
+
+        return TimeDelta(StringLiteral(ctx.Token.text))
     
     '''
     Sort specific

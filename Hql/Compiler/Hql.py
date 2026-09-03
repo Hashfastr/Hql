@@ -168,8 +168,7 @@ class HqlCompiler(Compiler):
 
         else:
             logging.error(expr.str())
-            logging.error(type(expr))
-            raise hqle.CompilerException('Could not compile Tabular expression')
+            raise hqle.CompilerException(f'Invalid tabular expression of type {type(expr)}')
 
         if isinstance(acc, Source):
             acc = acc.preprocess(self.ctx)

@@ -29,15 +29,6 @@ class Database(Operator):
         self._preamble:Optional[PipeExpression] = None
         self.methods = []
 
-    @property
-    def preamble(self) -> PipeExpression:
-        return self._preamble if self._preamble is not None else PipeExpression([])
-
-    @preamble.setter
-    def preamble(self, val):
-        assert isinstance(val, PipeExpression)
-        self._preamble = val
-
     def __eq__(self, value: object, /) -> bool:
         if isinstance(value, Database):
             if self.name == value.name and self.config == value.config:
@@ -62,7 +53,6 @@ class Database(Operator):
     def preamble(self, val:PipeExpression):
         from Hql.Expressions import PipeExpression
         assert isinstance(val, PipeExpression)
-        assert val.prepipe is None
         self._preamble = val
 
     def add_op(self, op:Union[Operator, BranchDescriptor]) -> tuple[Union[Operator, None], Union[Operator, None]]:
@@ -94,6 +84,11 @@ class Database(Operator):
 
     def add_index(self, index:str):
         self.index = index
+
+    def set_raw_query(self, query:str) -> None:
+        raise hqle.QueryException(
+            f'{self.type} database does not support raw queries'
+        )
 
     def to_dict(self):
         return {

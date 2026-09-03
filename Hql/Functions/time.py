@@ -22,4 +22,22 @@ class ago(Function):
         self.delta = val
 
     def preprocess(self, ctx: Context, receiver=None) -> object:
+        
         return self.delta
+
+'''
+Static function, can be precomputed
+Generates a time delta
+'''
+@register_func('now')
+class now(Function):
+    """Return a duration used to address a time in the past."""
+
+    def __init__(self, args:list, conf:Optional[dict]=None):
+        import datetime
+        Function.__init__(self, args, 0, 0)
+        self.time = datetime.datetime.now()
+
+    def preprocess(self, ctx: Context, receiver=None) -> object:
+        from Hql.Expressions.Literals import Datetime
+        return Datetime(self.time)
