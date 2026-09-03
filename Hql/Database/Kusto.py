@@ -148,6 +148,31 @@ class Kusto(Database):
             rows.append(row)
         return rows
 
+    @classmethod
+    def _response_schema(cls, response:Any) -> Schema:
+        from Hql.Data import Schema
+
+        if not response.primary_results:
+            return Schema()
+
+        fields = {}
+        for column in response.primary_results[0].columns:
+            name = getattr(column, 'column_name', None)
+            kusto_name = getattr(column, 'column_type', None)
+            if not isinstance(name, str) or not isinstance(kusto_name, str):
+                raise hqle.QueryException('Kusto returned invalid column metadata')
+
+            try:
+                kusto_type = KustoTypes.from_name(kusto_name.lower())()
+            except hqle.CompilerException:
+                logging.warning(
+                    f'Unknown Kusto result type {kusto_name}; treating {name} as string'
+                )
+                kusto_type = KustoTypes.string()
+            fields[name] = kusto_type.hql_schema()
+
+        return Schema(schema=fields)
+
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Table
 
@@ -156,7 +181,8 @@ class Kusto(Database):
 
         response = self.query_client.execute(self.database, self._raw_query)
         rows = self._response_rows(response)
-        ctx.data = Data([Table(init_data=rows, name=self.name)])
+        schema = self._response_schema(response)
+        ctx.data = Data([Table(init_data=rows, schema=schema, name=self.name)])
         return ctx
 
     def to_dict(self) -> dict:

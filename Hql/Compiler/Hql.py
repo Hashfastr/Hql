@@ -93,7 +93,15 @@ class HqlCompiler(Compiler):
         return self.root
 
     def LetStatement(self, statement:LetStatement, prep:bool=True) -> None:
-        acc, _ = self.compile(statement.root)
+        root = statement.root
+        if (
+            isinstance(root, PipeExpression)
+            and not root.pipes
+            and isinstance(root.prepipe, Literals.Literal)
+        ):
+            acc, _ = self.compile(root.prepipe)
+        else:
+            acc, _ = self.compile(root)
 
         if not isinstance(acc, InstructionSet):
             acc = acc.get_expr()

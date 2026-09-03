@@ -245,6 +245,7 @@ class HqlTypes():
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
+            self.proto = pl.Int64()
 
     @register_type('hql_xlong')
     class xlong(HqlType):

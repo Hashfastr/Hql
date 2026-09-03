@@ -50,15 +50,14 @@ class Reference(Expression):
         return NotImplemented
     
     def get_symbol(self, ctx:Context):
-        return ctx.symbol_table.get(self.name, None)
-        from copy import deepcopy
-        val = ctx.symbol_table.get(self.name, None)
-        if val:
-            val = deepcopy(val)
-        return val
+        if self.name in ctx.symbol_table:
+            return ctx.symbol_table[self.name]
+        return ctx.symbol_table.get(self, None)
 
     def preprocess(self, ctx: Context) -> object:
-        rec = ctx.symbol_table.get(self.name, self)
+        rec = self.get_symbol(ctx)
+        if rec is None:
+            return self
         if isinstance(rec, dict):
             return self
         return rec

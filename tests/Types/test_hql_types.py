@@ -30,6 +30,10 @@ class TestHqlTypeBase:
         import polars as pl
         assert hqlt.int().pl_schema() == pl.Int32()
 
+    def test_long_uses_64_bit_polars_schema(self):
+        import polars as pl
+        assert hqlt.long().pl_schema() == pl.Int64()
+
     def test_to_dict_includes_name(self):
         d = hqlt.int().to_dict()
         assert d["name"] == "int"

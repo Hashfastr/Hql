@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime, timezone
 from types import SimpleNamespace
 
 import pytest
@@ -41,7 +42,10 @@ class FakeClient:
 class FakeResult(list):
     def __init__(self, rows, columns):
         super().__init__(rows)
-        self.columns = [SimpleNamespace(column_name=name) for name in columns]
+        self.columns = [
+            SimpleNamespace(column_name=name, column_type=column_type)
+            for name, column_type in columns
+        ]
 
 
 def test_kusto_is_registered_for_database_resolution():
@@ -84,7 +88,12 @@ def test_table_creation_uses_kusto_type_system():
 
 def test_raw_query_executes_and_converts_kusto_rows():
     response = SimpleNamespace(
-        primary_results=[FakeResult([[1, 'first'], [2, 'second']], ['id', 'value'])]
+        primary_results=[
+            FakeResult(
+                [[1, 'first'], [2, 'second']],
+                [('id', 'long'), ('value', 'string')],
+            )
+        ]
     )
     client = FakeClient(response)
     adapter = Kusto(kusto_config(), name='kusto-test', query_client=client)
@@ -103,7 +112,7 @@ def test_raw_query_executes_and_converts_kusto_rows():
 
 def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch):
     response = SimpleNamespace(
-        primary_results=[FakeResult([[1], [2]], ['id'])]
+        primary_results=[FakeResult([[1], [2]], [('id', 'long')])]
     )
     client = FakeClient(response)
 
@@ -123,9 +132,34 @@ def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch)
     assert result['kusto'].to_dicts() == [{'id': 1}]
 
 
+def test_raw_query_accepts_a_let_bound_string(monkeypatch):
+    response = SimpleNamespace(
+        primary_results=[FakeResult([[1], [2]], [('id', 'long')])]
+    )
+    client = FakeClient(response)
+
+    class TestKusto(Kusto):
+        def __init__(self, config, name='Kusto Database'):
+            super().__init__(config, name=name, query_client=client)
+
+    monkeypatch.setitem(database_registry, 'Kusto', TestKusto)
+    config = Config()
+    config.set_database('kusto', kusto_config())
+    parser = Parser(
+        "let NativeQuery = 'Events | take 2';\n"
+        "database('kusto').raw(NativeQuery)"
+    )
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+
+    assert client.calls == [('test-database', 'Events | take 2')]
+    assert result['kusto'].to_dicts() == [{'id': 1}, {'id': 2}]
+
+
 def test_raw_query_accepts_mapping_rows():
     response = SimpleNamespace(
-        primary_results=[FakeResult([{'id': 7}], ['id'])]
+        primary_results=[FakeResult([{'id': 7}], [('id', 'long')])]
     )
     adapter = Kusto(kusto_config(), query_client=FakeClient(response))
     adapter.set_raw_query('Events')
@@ -133,6 +167,27 @@ def test_raw_query_accepts_mapping_rows():
     result = adapter.eval(Context(Data()))
 
     assert result.data[adapter.name].to_dicts() == [{'id': 7}]
+
+
+def test_result_metadata_preserves_datetime_after_null_values():
+    event_time = datetime(2026, 9, 1, 21, 31, 10, 811000, tzinfo=timezone.utc)
+    response = SimpleNamespace(
+        primary_results=[
+            FakeResult(
+                [[None], [event_time]],
+                [('EventTime', 'datetime')],
+            )
+        ]
+    )
+    adapter = Kusto(kusto_config(), query_client=FakeClient(response))
+    adapter.set_raw_query('Events | project EventTime')
+
+    table = adapter.eval(Context(Data())).data[adapter.name]
+
+    assert len(table) == 2
+    assert table.to_dicts()[0]['EventTime'] is None
+    assert table.to_dicts()[1]['EventTime'] == event_time.replace(tzinfo=None)
+    assert isinstance(table.schema.schema.schema['EventTime'], hqlt.datetime)
 
 
 def test_kusto_copy_preserves_query_and_shares_sdk_client():

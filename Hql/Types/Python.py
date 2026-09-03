@@ -111,6 +111,15 @@ class PythonTypes():
             self.priority = 4
             self.super = [PythonTypes.list]
 
+    @register_type('python_datetime')
+    class datetime(PythonType):
+        def __init__(self):
+            PythonTypes.PythonType.__init__(self)
+            self.HqlType = PythonTypes.hqlt.datetime()
+
+            self.priority = 4
+            self.super = [PythonTypes.str, PythonTypes.list]
+
     @register_type('python_complex') 
     class complex(str):
         """Map Python complex values to their HQL string representation."""
@@ -122,7 +131,6 @@ class PythonTypes():
     @register_type('python_bytes')
     class bytes(PythonType, hqlt.binary):
         """Map Python byte strings to the HQL binary type."""
-
         ...
     
     @register_type('python_bool') 

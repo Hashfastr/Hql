@@ -2,6 +2,7 @@ import pytest
 import polars as pl
 
 from Hql.Context import Context
+from Hql.Expressions.Literals import StringLiteral
 from Hql.Expressions.References import (
     EscapedNamedReference,
     NamedExpression,
@@ -33,6 +34,13 @@ class TestNamedReference:
     def test_polars_returns_col(self):
         expected = pl.col("foo")
         assert NamedReference("foo").polars().meta.eq(expected)
+
+    def test_preprocess_resolves_reference_keyed_symbol(self, empty_ctx: Context):
+        name = NamedReference("foo")
+        value = StringLiteral("bar")
+        empty_ctx.symbol_table[name] = value
+
+        assert NamedReference("foo").preprocess(empty_ctx) is value
 
 
 # ---------------------------------------------------------------------------
