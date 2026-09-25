@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, Mapping
 from urllib.parse import urlsplit, urlunsplit
 
 import requests
+from Hql.Cache import Session, Cache
 
 from Hql.Context import register_database
 from Hql.Database.Database import Database
@@ -135,7 +136,8 @@ class SCOT(Database):
         config: dict,
         name: str = "unnamed-scot",
         *,
-        session: requests.Session | None = None,
+        session: Session | None = None,
+        cache: Cache | None = None
     ):
         if not isinstance(config, dict):
             raise hqle.ConfigException("SCOT database configuration must be a mapping")
@@ -145,7 +147,7 @@ class SCOT(Database):
                 f"Missing conf mapping in SCOT config for {name}"
             )
 
-        super().__init__(config, name=name)
+        super().__init__(config, name=name, cache=cache)
         from Hql.Compiler import SCOTCompiler
 
         self.base_url = _normalize_base_url(conf.get("base_url"), name)
@@ -172,7 +174,7 @@ class SCOT(Database):
 
         self.endpoint: Endpoint | None = None
         self.methods = ["index", "macro"]
-        self._session = session if session is not None else requests.Session()
+        self._session = session if session is not None else Session(cache=cache)
         self._rate_limiter = _RateLimiter(self.requests_per_second)
 
     def get_variable(self, name: NamedReference) -> SCOT:
@@ -294,6 +296,7 @@ class SCOT(Database):
         """Fetch the selected SCOT collection into the current HQL context."""
 
         self.ctx = ctx
+        self.cache.parent = ctx.cache
         ctx.data = self._response_to_data(self._fetch_selected())
         return ctx
 

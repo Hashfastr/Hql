@@ -3,6 +3,8 @@ from Hql.Exceptions import HqlExceptions as hqle
 from typing import TYPE_CHECKING, Optional
 import logging
 
+from Hql.Cache import Cache
+
 from Hql.Config import Config
 
 if TYPE_CHECKING:
@@ -81,7 +83,7 @@ def get_type(name):
 class Context():
     """Carry data, symbols, registries, and configuration through execution."""
 
-    def __init__(self, data:Data, hac:Optional[Hac]=None, symbol_table:Optional[dict]=None, macros:Optional[dict]=None, config:Optional[Config]=None) -> None:
+    def __init__(self, data:Data, hac:Optional[Hac]=None, symbol_table:Optional[dict]=None, macros:Optional[dict]=None, config:Optional[Config]=None, cache:Optional[Cache]=None) -> None:
         import copy
 
         # contexts are copied a lot so want to make sure things don't linger
@@ -92,6 +94,7 @@ class Context():
         self.config = copy.deepcopy(config) if config else Config()
         self.hac = copy.deepcopy(hac)
         self.data = data
+        self.cache = Cache(parent=cache)
 
     def __bool__(self):
         return self.data.__bool__()

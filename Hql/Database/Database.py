@@ -4,6 +4,7 @@ from Hql.Operators.Operator import Operator
 from Hql.Exceptions import HqlExceptions as hqle
 import datetime
 import logging
+from Hql.Cache import Cache
 
 if TYPE_CHECKING:
     from Hql.Data import Data
@@ -21,6 +22,7 @@ class Database(Operator):
 
         self.type = self.__class__.__name__
         
+        self.cache = Cache()
         self.ctx = Context(Data())
         self.config = config
         self.compiler = Compiler()

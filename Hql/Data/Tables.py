@@ -59,8 +59,6 @@ class Table():
             pl_schema = self.schema.gen_pl_schema()
 
             try:
-                print(self.schema.schema.schema)
-                print(pl_schema)
                 self.df = pl.from_dicts(init_data, schema=pl_schema, strict=False)
             except pl.exceptions.ComputeError as e:
                 logging.error(e)
