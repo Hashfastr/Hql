@@ -271,14 +271,14 @@ class Detection():
             self.run_history = self.run_history[diff:]
         self.run_history.append(run)
 
-    def run(self, query_time:Optional[datetime.datetime]=None) -> Context:
+    def run(self, query_time:Optional[datetime.datetime]=None, ctx:Optional[Context]=None) -> Context:
         compiler = self.compile(query_time)
 
         if not compiler:
             raise Exception('Attempting to run detection without instructions!')
         
         start = time.perf_counter()
-        ctx = compiler.run()
+        ctx = compiler.run(ctx=ctx)
         end = time.perf_counter()
 
         run = {

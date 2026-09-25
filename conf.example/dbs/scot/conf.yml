@@ -14,6 +14,8 @@ database:
     api_key: '<INJECT_SCOT_API_KEY>'
 
     # Optional settings and their defaults.
+    # For internal CAs, set REQUESTS_CA_BUNDLE to the absolute PEM bundle path
+    # in the environment that launches HQL.
     verify_tls: true
     timeout: 10
     requests_per_second: 10

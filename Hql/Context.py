@@ -1,17 +1,17 @@
 from __future__ import annotations
 from Hql.Exceptions import HqlExceptions as hqle
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 import logging
-
-from Hql.Cache import Cache
 
 from Hql.Config import Config
 
 if TYPE_CHECKING:
     from Hql.Data import Data
     from Hql.Hac import Hac
+    from Hql.Database import Database
+    from Hql.Cache import Cache
 
-database_registry = {}
+database_registry:dict[str, type[Database]] = {}
 
 def register_database(name:str):
     def decorator(cls):
@@ -24,7 +24,7 @@ def register_database(name:str):
         return cls
     return decorator
 
-def get_database(name:str):
+def get_database(name:str) -> type[Database]:
     if name in database_registry:
         return database_registry[name]
     else:
@@ -85,6 +85,7 @@ class Context():
 
     def __init__(self, data:Data, hac:Optional[Hac]=None, symbol_table:Optional[dict]=None, macros:Optional[dict]=None, config:Optional[Config]=None, cache:Optional[Cache]=None) -> None:
         import copy
+        from Hql.Cache import Cache
 
         # contexts are copied a lot so want to make sure things don't linger
         self.dbs = copy.deepcopy(database_registry)
@@ -99,6 +100,9 @@ class Context():
     def __bool__(self):
         return self.data.__bool__()
 
+    # def __reduce__(self) -> str | tuple[Any, ...]:
+    #     return (self.__class__, (self.data, self.hac, self.symbol_table, self.macros, self.config, self.cache))
+
     '''
     Copy with pointer to data
     '''
@@ -108,7 +112,8 @@ class Context():
             hac=self.hac,
             symbol_table=self.symbol_table,
             macros=self.macros,
-            config=self.config
+            config=self.config,
+            cache=self.cache
         )
 
     @staticmethod
@@ -131,7 +136,7 @@ class Context():
 
         return Context(data, symbol_table=syms, macros=macros, hac=ctxs[0].hac)
 
-    def get_db(self, name:str):
+    def get_db(self, name:str) -> type[Database]:
         if name in self.dbs:
             return self.dbs[name]
         else:

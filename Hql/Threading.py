@@ -215,6 +215,8 @@ class HacPool():
 
     def __init__(self, auto_run:bool=True, max_threads:int=16) -> None:
         from threading import Semaphore
+        from Hql.Data import Data
+
         self.auto_run = auto_run
         self.pool:list[HacThread] = []
         self.queue:list[HacThread] = []
@@ -223,6 +225,8 @@ class HacPool():
 
         self.completed:list[HacThread] = []
         self.max_retained = 1000
+
+        self.ctx = Context(Data())
 
     def get_by_id(self, tid:str):
         for i in self.pool + self.completed + self.queue:
@@ -243,7 +247,7 @@ class HacPool():
         return runs
 
     def add_detection(self, detection:Detection, query_now:Optional[datetime.datetime]=None) -> str:
-        t = HacThread(detection, query_now=query_now)
+        t = HacThread(detection, query_now=query_now, ctx=self.ctx.copy())
         if self.auto_run and self.semaphore.acquire(blocking=False):
             logging.debug(f'{t.id} started execution')
             t.start()
@@ -309,7 +313,7 @@ class HacPool():
 class HacThread():
     """Execute one HQL analytic detection and retain its run metadata."""
 
-    def __init__(self, detection:Detection, query_now:Optional[datetime.datetime]=None) -> None:
+    def __init__(self, detection:Detection, query_now:Optional[datetime.datetime]=None, ctx:Optional[Context]=None) -> None:
         from Hql.Helpers import can_thread
         from Hql.Data import Data
 
@@ -328,6 +332,8 @@ class HacThread():
         self.id = '%08x' % random.getrandbits(32)
         self.run_date = datetime.datetime.now()
         self.duration = 0
+
+        self.ctx = ctx
 
     @property
     def output(self) -> Data:
@@ -364,7 +370,7 @@ class HacThread():
         logging.info(f'Starting detection {self.detection.id}')
 
         if not self.threaded:
-            self.run()
+            self.run(ctx=self.ctx)
             return
 
         from threading import Thread
@@ -372,11 +378,11 @@ class HacThread():
         self.thread.start()
 
     # Runs the query, function that is threaded
-    def run(self) -> None:
+    def run(self, ctx:Optional[Context]=None) -> None:
         from Hql.Data import Data
         try:
             start = time.perf_counter()
-            self.output = self.detection.run(self.query_now).data
+            self.output = self.detection.run(self.query_now, ctx=ctx).data
             end = time.perf_counter()
             
             self.duration = end - start

@@ -12,9 +12,10 @@ if TYPE_CHECKING:
     from Hql.Compiler import BranchDescriptor
     from Hql.Expressions.References import NamedReference
     from Hql.Expressions import PipeExpression
+    from Hql.Cache import Cache
 
 class Database(Operator):
-    def __init__(self, config:dict, name:str='unnamed-database'):
+    def __init__(self, config:dict, name:str='unnamed-database', cache:Optional[Cache]=None):
         from Hql.Compiler import Compiler
         from Hql.Context import Context
         from Hql.Data import Data
@@ -22,7 +23,7 @@ class Database(Operator):
 
         self.type = self.__class__.__name__
         
-        self.cache = Cache()
+        self.cache = Cache(parent=cache)
         self.ctx = Context(Data())
         self.config = config
         self.compiler = Compiler()

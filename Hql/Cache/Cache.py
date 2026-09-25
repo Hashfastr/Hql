@@ -30,15 +30,19 @@ class Cache():
         # Original hashmap size, key, datetime, and dataset
         self._data:list[CacheEntry] = [(None, None, None, None) for _ in range(self.table_size)]
 
+    # def __reduce__(self) -> str | tuple[Any, ...]:
+    #     return (self.__class__, (self.table_size, self.parent))
+    #
     def __del__(self):
         self.write_back()
 
-        count = 0
-        for i in self._data:
-            if i[0] is not None:
-                count += 1
-
-        logging.info(f'Cache freed with size {count}/{self.table_size}')
+        # count = 0
+        # for i in self._data:
+        #     if i[0] is not None:
+        #         count += 1
+        #
+        # if count:
+        #     logging.info(f'Cache freed with size {count}/{self.table_size}')
 
     # generates a hash for a key
     def _hash(self, key:str) -> int:
@@ -105,13 +109,6 @@ class Cache():
             self._set(key, expiration, data)
 
     def get(self, key:str) -> Any:
-        # doesn't require lock, we're accessing someone else's cache
-        # their cache handles the lock
-        if self.parent is not None:
-            hit = self.parent.get(key)
-            if hit is not None:
-                return hit
-
         # lock for our data
         with self.lock:
             data = self._data[self._find(key)]
@@ -119,4 +116,15 @@ class Cache():
             #     logging.debug(f'Cache hit for {key}')
             # else:
             #     logging.debug(f'Cache fail for {key}')
-            return data[3]
+            if data[3] is not None:
+                return data[3]
+
+        logging.debug('local miss')
+
+        # doesn't require lock, we're accessing someone else's cache
+        # their cache handles the lock
+        if self.parent is not None:
+            return self.parent.get(key)
+        else:
+            return None
+

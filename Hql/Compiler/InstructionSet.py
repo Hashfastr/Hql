@@ -130,7 +130,7 @@ class InstructionSet():
                 acc = InstructionSet(acc, operators=[rej])
             bounded.append(acc)
 
-        print(self.ops)
+        # print(self.ops)
 
         return InstructionSet(bounded, operators=self.ops), None
 
@@ -192,7 +192,7 @@ class InstructionSet():
         logging.debug(f'Starting InstructionSet {self.id}')
         start = time.perf_counter()
 
-        print(self.upstream)
+        # print(self.upstream)
 
         pool = InstructionPool(auto_run=False)
         for i in self.upstream:
