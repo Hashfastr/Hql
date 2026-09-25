@@ -702,6 +702,22 @@ def test_eval_binds_cache_session_to_active_context():
     assert session.cache is ctx.cache
 
 
+def test_cached_request_does_not_consume_rate_limit():
+    backing = FakeSession(FakeResponse({"result": []}))
+    session = CacheSession(session=backing)
+    adapter = SCOT(scot_config(), session=session)
+    adapter.add_index("entity")
+    rate_limit_calls = []
+    adapter._rate_limiter.wait = lambda: rate_limit_calls.append(True)
+    ctx = Context(Data())
+
+    adapter.eval(ctx)
+    adapter.eval(ctx)
+
+    assert len(backing.calls) == 1
+    assert len(rate_limit_calls) == 1
+
+
 def test_eval_preserves_empty_table_identity():
     payload = {"result": [], "resultCount": 0, "totalCount": 0}
     adapter = SCOT(scot_config(), session=FakeSession(FakeResponse(payload)))

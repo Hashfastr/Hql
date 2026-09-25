@@ -34,7 +34,6 @@ class Summarize(Operator):
 
         agg_data = []
         for expr in self.aggregate_exprs:
-            print(expr.to_dict())
             agg_data.append(expr.eval(ctx))
 
         new = []

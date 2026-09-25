@@ -316,15 +316,22 @@ class SCOT(Database):
 
         url = f"{self.base_url}/{path.lstrip('/')}"
         headers = {"Authorization": f"apikey {self._api_key}"}
-        self._rate_limiter.wait()
         try:
-            response = self._session.get(
-                url,
-                headers=headers,
-                params=dict(params or {}),
-                timeout=self.timeout,
-                verify=self.verify_tls,
-            )
+            request_kwargs = {
+                "headers": headers,
+                "params": dict(params or {}),
+                "timeout": self.timeout,
+                "verify": self.verify_tls,
+            }
+            if isinstance(self._session, Session):
+                response = self._session.get(
+                    url,
+                    on_miss=self._rate_limiter.wait,
+                    **request_kwargs,
+                )
+            else:
+                self._rate_limiter.wait()
+                response = self._session.get(url, **request_kwargs)
         except requests.Timeout:
             raise hqle.QueryException(f"SCOT GET {path} timed out") from None
         except requests.RequestException:

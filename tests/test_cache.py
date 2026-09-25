@@ -22,6 +22,7 @@ def test_empty_parent_accepts_child_write_back():
 
 def test_cache_session_delegates_once_and_reuses_response():
     response = object()
+    cache_misses = []
 
     class BackingSession:
         def __init__(self):
@@ -34,9 +35,11 @@ def test_cache_session_delegates_once_and_reuses_response():
     backing = BackingSession()
     session = CacheSession(session=backing)
 
-    first = session.get("https://example.test")
-    second = session.get("https://example.test")
+    on_miss = lambda: cache_misses.append(True)
+    first = session.get("https://example.test", on_miss=on_miss)
+    second = session.get("https://example.test", on_miss=on_miss)
 
     assert first is response
     assert second is response
     assert backing.calls == 1
+    assert len(cache_misses) == 1

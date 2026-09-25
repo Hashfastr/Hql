@@ -406,7 +406,7 @@ class HacThread():
             self.completed = True
             self.num_results = len(self.output) if isinstance(self.output, Data) else 0
 
-            logging.info(f'{self.detection.id} - {len(self.output)} results')
+            logging.info(f'{self.detection.id} - {self.duration} - {len(self.output)} results')
         except Exception as e:
             import traceback
             logging.critical(e)
