@@ -1,6 +1,6 @@
 from __future__ import annotations
 from Hql.Exceptions import HqlExceptions as hqle
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Optional
 import logging
 
 from Hql.Config import Config
@@ -100,30 +100,43 @@ class Context():
     def __bool__(self):
         return self.data.__bool__()
 
-    # def __reduce__(self) -> str | tuple[Any, ...]:
-    #     return (self.__class__, (self.data, self.hac, self.symbol_table, self.macros, self.config, self.cache))
-
     '''
     Copy with pointer to data
     '''
     def copy(self):
-        return Context(
-            self.data,
-            hac=self.hac,
-            symbol_table=self.symbol_table,
-            macros=self.macros,
-            config=self.config,
-            cache=self.cache
-        )
+        import copy
+
+        copied = object.__new__(Context)
+        copied.dbs = copy.deepcopy(self.dbs)
+        copied.funcs = copy.deepcopy(self.funcs)
+        copied.symbol_table = copy.deepcopy(self.symbol_table)
+        copied.macros = copy.deepcopy(self.macros)
+        copied.config = copy.deepcopy(self.config)
+        copied.hac = copy.deepcopy(self.hac)
+        copied.data = self.data
+        copied.cache = self.cache
+        return copied
+
+    def fork(self):
+        """Copy this context into a new child cache scope."""
+        from Hql.Cache import Cache
+
+        forked = self.copy()
+        forked.cache = Cache(parent=self.cache)
+        return forked
 
     @staticmethod
-    def merge(ctxs:list[Context], merge_rows=True):
+    def merge(ctxs:list[Context], merge_rows=True, target:Optional[Context]=None):
         from Hql.Data import Data
         
-        if len(ctxs) == 1:
+        if len(ctxs) == 1 and target is None:
             return ctxs[0]
 
-        data = Data.merge([x.data for x in ctxs], merge_rows=merge_rows)
+        data = (
+            ctxs[0].data
+            if len(ctxs) == 1
+            else Data.merge([x.data for x in ctxs], merge_rows=merge_rows)
+        )
 
         syms = dict()
         macros = dict()
@@ -134,7 +147,21 @@ class Context():
             for j in i.macros:
                 macros[j] = i.macros[j]
 
-        return Context(data, symbol_table=syms, macros=macros, hac=ctxs[0].hac)
+        if target is not None:
+            target.data = data
+            target.symbol_table = syms
+            target.macros = macros
+            target.hac = ctxs[0].hac
+            return target
+
+        return Context(
+            data,
+            symbol_table=syms,
+            macros=macros,
+            hac=ctxs[0].hac,
+            config=ctxs[0].config,
+            cache=ctxs[0].cache.parent,
+        )
 
     def get_db(self, name:str) -> type[Database]:
         if name in self.dbs:

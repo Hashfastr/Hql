@@ -7,8 +7,8 @@ import logging
 from Hql.Data import Data
 
 CacheEntry: TypeAlias = (
-    tuple[int, str, Optional[datetime], Data]
-    | tuple[None, None, None, None]
+    tuple[int, str, Optional[datetime], Data, bool]
+    | tuple[None, None, None, None, None]
 )
 
 '''
@@ -27,22 +27,20 @@ class Cache():
         '''
         self.lock = Lock()
 
-        # Original hashmap size, key, datetime, and dataset
-        self._data:list[CacheEntry] = [(None, None, None, None) for _ in range(self.table_size)]
+        # Original hashmap size, key, datetime, dataset, dirty flag
+        self._data:list[CacheEntry] = [(None, None, None, None, None) for _ in range(self.table_size)]
 
-    # def __reduce__(self) -> str | tuple[Any, ...]:
-    #     return (self.__class__, (self.table_size, self.parent))
-    #
-    def __del__(self):
-        self.write_back()
+    def __len__(self) -> int:
+        count = 0
+        for i in self._data:
+            if i[0] is not None:
+                count += 1
+        return count
 
-        # count = 0
-        # for i in self._data:
-        #     if i[0] is not None:
-        #         count += 1
-        #
-        # if count:
-        #     logging.info(f'Cache freed with size {count}/{self.table_size}')
+    def __deepcopy__(self, memo:dict[int, Any]) -> Cache:
+        """Keep cache ownership stable while copying execution state."""
+        memo[id(self)] = self
+        return self
 
     # generates a hash for a key
     def _hash(self, key:str) -> int:
@@ -61,7 +59,7 @@ class Cache():
         self._data = []
         for i in old:
             if i[2] is not None:
-                self.set(i[1], i[2], i[3])
+                self.set(i[1], i[2], i[3], i[4])
 
     '''
     Finds a place for a key
@@ -84,7 +82,7 @@ class Cache():
 
     def _merge(self, cache:Cache) -> Cache:
         for i in cache._data:
-            if i[1] is None:
+            if i[1] is None or i[4]:
                 continue
             self._set(*i[1:])
         return self
@@ -94,19 +92,19 @@ class Cache():
             return self._merge(cache)
 
     def write_back(self):
-        if not self.parent:
+        if self.parent is None:
             return
 
         with self.lock:
             self.parent.merge(self)
 
-    def _set(self, key:str, expiration:datetime | None, data:Any):
+    def _set(self, key:str, expiration:datetime | None, data:Any, dirty:bool=False):
         index = self._find(key)
-        self._data[index] = (self._hash(key), key, expiration, data)
+        self._data[index] = (self._hash(key), key, expiration, data, dirty)
 
-    def set(self, key:str, expiration:datetime | None, data:Any):
+    def set(self, key:str, expiration:datetime | None, data:Any, dirty:bool=False):
         with self.lock:
-            self._set(key, expiration, data)
+            self._set(key, expiration, data, dirty=dirty)
 
     def get(self, key:str) -> Any:
         # lock for our data
@@ -124,7 +122,12 @@ class Cache():
         # doesn't require lock, we're accessing someone else's cache
         # their cache handles the lock
         if self.parent is not None:
-            return self.parent.get(key)
+            hit = self.parent.get(key)
         else:
-            return None
+            hit = None
 
+        if hit is not None:
+            logging.debug('Parent hit')
+            self.set(key, None, hit, dirty=True)
+
+        return hit

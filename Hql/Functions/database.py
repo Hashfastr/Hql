@@ -59,7 +59,7 @@ class database(Function):
             logging.critical(f"Available DB types: {', '.join(ctx.get_db_types())}")
             raise hqle.ConfigException(f'Missing TYPE definition in database config for {dbname.str()}')
 
-        db = ctx.get_db(dbconf['type'])(dbconf, name=dbname.str(), cache=ctx.cache)
+        db = ctx.get_db(dbconf['type'])(dbconf, name=dbname.str())
         assert isinstance(db, Database)
 
         preamble = db.config.get('preamble', dict())

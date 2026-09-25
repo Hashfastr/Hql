@@ -14,6 +14,7 @@ from Hql.Compiler import HqlCompiler
 from Hql.Context import Context, get_database
 from Hql.Data import Data
 from Hql.Database import SCOT
+from Hql.Cache import Session as CacheSession
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Expressions.Literals import Integer, StringLiteral
 from Hql.Expressions.References import NamedExpression, NamedReference
@@ -102,6 +103,15 @@ class FakeSession:
         self.calls.append((url, kwargs))
         if self.error:
             raise self.error
+        return self.response
+
+
+class FakeCacheSession(CacheSession):
+    def __init__(self, response):
+        super().__init__()
+        self.response = response
+
+    def get(self, url, **kwargs):
         return self.response
 
 
@@ -678,6 +688,18 @@ def test_eval_returns_context_with_named_table_and_nested_rows(table_name):
     assert result.data[table_name].to_dicts() == rows
     assert "resultCount" not in result.data[table_name].to_dicts()[0]
     assert "totalCount" not in result.data[table_name].to_dicts()[0]
+
+
+def test_eval_binds_cache_session_to_active_context():
+    session = FakeCacheSession(FakeResponse({"result": []}))
+    adapter = SCOT(scot_config(), session=session)
+    adapter.add_index("entity")
+    ctx = Context(Data())
+
+    adapter.eval(ctx)
+
+    assert adapter.cache is ctx.cache
+    assert session.cache is ctx.cache
 
 
 def test_eval_preserves_empty_table_identity():

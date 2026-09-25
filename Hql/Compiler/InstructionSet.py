@@ -130,7 +130,7 @@ class InstructionSet():
                 acc = InstructionSet(acc, operators=[rej])
             bounded.append(acc)
 
-        # print(self.ops)
+        print(self.ops)
 
         return InstructionSet(bounded, operators=self.ops), None
 

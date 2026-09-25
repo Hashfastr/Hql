@@ -174,7 +174,11 @@ class SCOT(Database):
 
         self.endpoint: Endpoint | None = None
         self.methods = ["index", "macro"]
-        self._session = session if session is not None else Session(cache=cache)
+        self._session = (
+            session
+            if session is not None
+            else Session(cache=self.cache, session=requests.Session())
+        )
         self._rate_limiter = _RateLimiter(self.requests_per_second)
 
     def get_variable(self, name: NamedReference) -> SCOT:
@@ -296,7 +300,9 @@ class SCOT(Database):
         """Fetch the selected SCOT collection into the current HQL context."""
 
         self.ctx = ctx
-        self.cache.parent = ctx.cache
+        self.cache = ctx.cache
+        if isinstance(self._session, Session):
+            self._session.cache = ctx.cache
         ctx.data = self._response_to_data(self._fetch_selected())
         return ctx
 

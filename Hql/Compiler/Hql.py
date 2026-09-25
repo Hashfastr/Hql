@@ -56,7 +56,7 @@ class HqlCompiler(Compiler):
         return self.from_name(src.type)(src)
 
     def run(self, ctx: Optional[Context] = None) -> Context:
-        ctx = ctx if ctx else self.ctx
+        ctx = ctx if ctx is not None else self.ctx
         if not self.root:
             raise hqle.CompilerException('Attempting to run compiler with None-root')
         ctx.hac = self.hac

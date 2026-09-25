@@ -34,8 +34,7 @@ class Compiler():
         return getattr(self, name)
 
     def run(self, ctx:Union[Context, None]=None) -> Context:
-        ctx = ctx if ctx else self.ctx
-        return self.ctx
+        return ctx if ctx is not None else self.ctx
 
     '''
     Returns None, op as an auto denial

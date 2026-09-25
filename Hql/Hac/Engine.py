@@ -425,6 +425,8 @@ class HacEngine():
             self.pool.clear_queue()
             self.clean_old()
 
+            # logging.info(f'Cache size: {len(self.pool.ctx.cache)}')
+
             if self.pool.is_overloaded():
                 logging.warning(f'HaC queue is overloaded! {len(self.pool.queue)} queued {self.pool.max_threads} max threads')
 

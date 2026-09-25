@@ -10,6 +10,7 @@ from Hql.Context import Context
 from Hql.Data import Data
 
 if TYPE_CHECKING:
+    from Hql.Cache import Cache
     from Hql.Config import Config
     from Hql.Database import Database
     from Hql.Compiler import InstructionSet
@@ -18,14 +19,15 @@ if TYPE_CHECKING:
 class QueryPool():
     """Manage a collection of asynchronously executed HQL queries."""
 
-    def __init__(self, auto_run:bool=True) -> None:
+    def __init__(self, auto_run:bool=True, cache:Optional[Cache]=None) -> None:
         from threading import Semaphore
         self.auto_run = auto_run
         self.pool:list[QueryThread] = []
         self.semaphore = Semaphore()
+        self.ctx = Context(Data(), cache=cache)
 
     def add_query(self, text:str, config:Config, name:str='', **kwargs) -> None:
-        t = QueryThread(text, config, name=name, **kwargs)
+        t = QueryThread(text, config, name=name, ctx=self.ctx.fork(), **kwargs)
         if self.auto_run:
             t.start()
         self.pool.append(t)
@@ -41,17 +43,19 @@ class QueryPool():
     # Gets completed threads and frees them from the pool
     def get_completed(self) -> list[QueryThread]:
         completed = []
-        for t in self.pool:
+        for t in list(self.pool):
             if not t.is_alive():
                 t.join()
                 completed.append(t)
                 self.pool.remove(t)
+        if self.is_idle():
+            self.ctx.cache.write_back()
         return completed
 
 class QueryThread():
     """Execute one HQL query synchronously or in a worker thread."""
 
-    def __init__(self, text:str, config:Config, name:str='', **kwargs) -> None:
+    def __init__(self, text:str, config:Config, name:str='', ctx:Optional[Context]=None, **kwargs) -> None:
         from copy import deepcopy
         from Hql.Data import Data
         from Hql.Helpers import can_thread
@@ -61,6 +65,7 @@ class QueryThread():
         self.name = name
         self.threaded = can_thread()
         self.kwargs = kwargs
+        self.ctx = ctx if ctx is not None else Context(Data())
 
         self.started = False
         self.thread = None
@@ -95,7 +100,13 @@ class QueryThread():
     def run(self) -> None:
         from Hql.Helpers import run_query
         try:
-            output = run_query(self.text, self.config, name=self.name, **self.kwargs)
+            output = run_query(
+                self.text,
+                self.config,
+                name=self.name,
+                ctx=self.ctx,
+                **self.kwargs,
+            )
 
             if isinstance(output, str):
                 self.compiled = output
@@ -109,6 +120,8 @@ class QueryThread():
                 'exception': str(e)
             }
             self.failed = True
+        finally:
+            self.ctx.cache.write_back()
 
     def is_alive(self) -> bool:
         if not self.thread or not self.threaded:
@@ -146,7 +159,7 @@ class InstructionPool():
             self.pool[0].run()
             return
 
-        for t in self.pool:
+        for t in list(self.pool):
             if not t.started:
                 t.start()
 
@@ -198,7 +211,10 @@ class InstructionThread():
 
     # Runs the query, function that is threaded
     def run(self) -> None:
-        self.output = self.inst.eval(self.ctx)
+        try:
+            self.output = self.inst.eval(self.ctx)
+        finally:
+            self.ctx.cache.write_back()
 
     def is_alive(self) -> bool:
         if not self.thread or not self.threaded:
@@ -247,7 +263,7 @@ class HacPool():
         return runs
 
     def add_detection(self, detection:Detection, query_now:Optional[datetime.datetime]=None) -> str:
-        t = HacThread(detection, query_now=query_now, ctx=self.ctx.copy())
+        t = HacThread(detection, query_now=query_now, ctx=self.ctx.fork())
         if self.auto_run and self.semaphore.acquire(blocking=False):
             logging.debug(f'{t.id} started execution')
             t.start()
@@ -285,7 +301,7 @@ class HacPool():
             logging.debug(f'Moved {count} detections from queue to running')
 
     def gather_threads(self):
-        def join_thread(t):
+        def join_thread(t:HacThread):
             if not t.is_alive():
                 t.join()
                 self.pool.remove(t)
@@ -294,6 +310,7 @@ class HacPool():
                 if len(self.completed) >= self.max_retained:
                     self.completed = self.completed[1:]
                 self.completed.append(t)
+                self.ctx.cache.merge(t.ctx.cache)
         
         for t in self.pool:
             try:
@@ -333,7 +350,7 @@ class HacThread():
         self.run_date = datetime.datetime.now()
         self.duration = 0
 
-        self.ctx = ctx
+        self.ctx = ctx if ctx is not None else Context(Data())
 
     @property
     def output(self) -> Data:
@@ -370,7 +387,7 @@ class HacThread():
         logging.info(f'Starting detection {self.detection.id}')
 
         if not self.threaded:
-            self.run(ctx=self.ctx)
+            self.run()
             return
 
         from threading import Thread
@@ -378,11 +395,11 @@ class HacThread():
         self.thread.start()
 
     # Runs the query, function that is threaded
-    def run(self, ctx:Optional[Context]=None) -> None:
+    def run(self) -> None:
         from Hql.Data import Data
         try:
             start = time.perf_counter()
-            self.output = self.detection.run(self.query_now, ctx=ctx).data
+            self.output = self.detection.run(self.query_now, ctx=self.ctx).data
             end = time.perf_counter()
             
             self.duration = end - start
@@ -395,6 +412,8 @@ class HacThread():
             logging.critical(e)
             logging.critical(traceback.format_exc())
             self.failed = True
+        finally:
+            self.ctx.cache.write_back()
 
     def is_alive(self) -> bool:
         if not self.thread or not self.threaded:

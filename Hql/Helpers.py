@@ -1,10 +1,11 @@
 from __future__ import annotations
 import logging, time
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from Hql.Data import Data
     from Hql.Config import Config
+    from Hql.Context import Context
 
 def can_thread():
     import sys
@@ -12,7 +13,7 @@ def can_thread():
         return True
     return False
 
-def run_query(text:str, conf:Config, name:str='', **kwargs) -> Union[Data, str]:
+def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **kwargs) -> Union[Data, str]:
     from Hql.Exceptions import HqlExceptions as hqle
     from Hql.Exceptions import HacExceptions as hace
     from Hql.Parser import Parser
@@ -124,7 +125,7 @@ def run_query(text:str, conf:Config, name:str='', **kwargs) -> Union[Data, str]:
     logging.debug("Running")
     start = time.perf_counter()
     
-    results = compiler.run().data
+    results = compiler.run(ctx=ctx).data
    
     end = time.perf_counter() 
     logging.debug("Ran")
