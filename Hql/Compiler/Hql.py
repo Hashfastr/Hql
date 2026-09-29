@@ -14,6 +14,7 @@ from Hql.Expressions import Expression, ToClause, OpParameter, PipeExpression
 from Hql.Expressions import PipeExpression
 from Hql.Expressions import Aggregation
 import Hql.Functions as Functions
+from Hql.Functions.Logic import LogicFunction
 import Hql.Expressions.Functions as FuncExprs
 
 from Hql.Database import Database
@@ -375,9 +376,8 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(op.expr)
         expr = acc.get_expr()
 
-        if isinstance(expr, Functions.Function) and expr.logic:
-            expr = expr.preprocess(self.ctx)
         assert isinstance(expr, Logic.Logic)
+
         op = Operators.Where(expr, op.parameters)
 
         desc.op = op
@@ -810,6 +810,20 @@ class HqlCompiler(Compiler):
 
         if isinstance(expr, typecasting.Typecast):
             desc.set_attr('type_casting')
+
+        expr.args = args
+        desc.expr = expr
+
+        return desc, None
+
+    def LogicFunction(self,  expr: LogicFunction, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+
+        args = []
+        for i in expr.args:
+            acc, _ = self.compile(i)
+            desc.merge(acc)
+            args.append(acc.get_expr())
 
         expr.args = args
         desc.expr = expr
