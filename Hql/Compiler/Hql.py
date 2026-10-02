@@ -376,7 +376,8 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(op.expr)
         expr = acc.get_expr()
 
-        assert isinstance(expr, Logic.Logic)
+        if not isinstance(expr, Logic.Logic):
+            raise hqle.CompilerException(f'Where given {type(expr)} expression')
 
         op = Operators.Where(expr, op.parameters)
 
@@ -799,6 +800,9 @@ class HqlCompiler(Compiler):
     def Function(self, expr: Functions.Function, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Functions import typecasting
 
+        if isinstance(expr, LogicFunction):
+            return self.LogicFunction(expr)
+
         desc = BranchDescriptor()
         desc.set_attr('functions', expr.name)
 
@@ -826,7 +830,12 @@ class HqlCompiler(Compiler):
             args.append(acc.get_expr())
 
         expr.args = args
-        desc.expr = expr
+        shortcut = expr.preprocess(self.ctx)
+
+        if isinstance(shortcut, Expression):
+            desc.expr = shortcut
+        else:
+            desc.expr = expr
 
         return desc, None
 

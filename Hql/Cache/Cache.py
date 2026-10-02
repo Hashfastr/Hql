@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, TypeAlias, Any
 from datetime import datetime
 from threading import Lock
 import logging
+import sys
 
 from Hql.Data import Data
 
@@ -52,7 +53,10 @@ class Cache():
     def _grow(self):
         self.table_size *= 2
 
-        logging.debug(f'Cache growing to {self.table_size}')
+        if self.parent is None:
+            logging.info(f'Core cache growing to {self.table_size}')
+        else:
+            logging.debug(f'Cache growing to {self.table_size}')
 
         # swap old pointer here
         old = self._data
@@ -86,6 +90,18 @@ class Cache():
                 continue
             self._set(*i[1:])
         return self
+
+    def get_size(self) -> dict:
+        with self.lock:
+            size = 0
+            for i in self._data:
+                if i[3] is not None:
+                    size += sys.getsizeof(i[3])
+
+            return {
+                'num': self.__len__(),
+                'size': size
+            }
 
     def merge(self, cache:Cache) -> Cache:
         with self.lock:

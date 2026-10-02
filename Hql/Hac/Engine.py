@@ -436,6 +436,8 @@ class HacEngine():
                 continue
             last = cur.minute
 
+            logging.info(self.pool.ctx.cache.get_size())
+
             for i in self.detections:
                 det = self.detections[i]
                 if not det.should_fire(Schedule.gen_parts(cur)):
