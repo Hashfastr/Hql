@@ -16,6 +16,10 @@ statement:
     DeclarePattern=declarePatternStatement
     | DeclareQueryParameters=declareQueryParametersStatement
     | Let=letStatement
+    | Macro=macroStatement
+    | Class=classStatement
+    | Map=mapStatement
+    | Import=importStatement
     | Query=queryStatement
     | RestrictAccess=restrictAccessStatement
     | Set=setStatement
@@ -31,7 +35,6 @@ letStatement:
     | Variable=letVariableDeclaration
     | Materialized=letMaterializeDeclaration
     | EntityGroup=letEntityGroupDeclaration
-    | Macro=letMacroDeclaration
     | Logic=letLogicDeclaration
     ;
 
@@ -53,9 +56,6 @@ letMaterializeDeclaration:
 letEntityGroupDeclaration:
     LET Name=simpleNameReference '=' entityGroupExpression;
 
-letMacroDeclaration:
-    LET Name=simpleNameReference '=' Pipes=emptyPipedExpression;
-
 letLogicDeclaration:
     LET Name=simpleNameReference '=' Logic=unnamedExpression;
 
@@ -63,6 +63,33 @@ letFunctionParameterList:
     TabularParameters+=tabularParameter (',' TabularParameters+=tabularParameter) (',' ScalarParameters+=scalarParameter)
     | ScalarParameters+= scalarParameter (',' ScalarParameters+=scalarParameter)
     ;
+
+macroStatement:
+    MACRO Name=simpleNameReference '=' '{' Pipes=emptyPipedExpression '}';
+
+classStatement:
+    CLASS Name=simpleNameReference '=' '{' Query=query '}';
+
+mapStatement:
+    MAP Name=simpleNameReference '=' '{' Maps+=mapEntry (',' Maps+=mapEntry)* '}';
+
+mapEntry:
+    Source=simpleOrPathNameReference ':' (Dest=singleMapValue | MultiDest=multiMapValue);
+
+singleMapValue:
+    Value=simpleOrPathNameReference;
+
+multiMapValue:
+    '(' MapValues+=singleMapValue (',' MapValues+=singleMapValue)* ')';
+
+importStatement:
+    (Simple=simpleImportStatement | From=fromImportStatement);
+
+simpleImportStatement:
+    IMPORT Name=simpleOrPathNameReference;
+
+fromImportStatement:
+    FROM Src=simpleOrPathNameReference Import=simpleImportStatement;
 
 scalarParameter:
     Name=parameterName ':' Type=scalarType (Default=scalarParameterDefault)?;

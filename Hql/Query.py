@@ -251,3 +251,21 @@ class LetLogicStatement(LetStatement):
         name = self.name.str()
         ctx.symbol_table[name] = self.root
         return ctx
+
+class ClassStatement(Statement):
+    def __init__(self, name:Reference, query:Query):
+        Statement.__init__(self)
+        self.name = name
+        self.query = query
+
+    def to_dict(self) -> dict:
+        return {
+            'type': self.type,
+            'name': self.name.to_dict(),
+            'value': self.query.to_dict()
+        }
+
+    def eval(self, ctx:Context) -> Context:
+        name = self.name.str()
+        ctx.symbol_table[name] = self.query
+        return ctx

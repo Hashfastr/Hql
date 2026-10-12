@@ -59,11 +59,6 @@ class HqlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by HqlParser#letMacroDeclaration.
-    def visitLetMacroDeclaration(self, ctx:HqlParser.LetMacroDeclarationContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by HqlParser#letLogicDeclaration.
     def visitLetLogicDeclaration(self, ctx:HqlParser.LetLogicDeclarationContext):
         return self.visitChildren(ctx)
@@ -71,6 +66,51 @@ class HqlVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by HqlParser#letFunctionParameterList.
     def visitLetFunctionParameterList(self, ctx:HqlParser.LetFunctionParameterListContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#macroStatement.
+    def visitMacroStatement(self, ctx:HqlParser.MacroStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#classStatement.
+    def visitClassStatement(self, ctx:HqlParser.ClassStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#mapStatement.
+    def visitMapStatement(self, ctx:HqlParser.MapStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#mapEntry.
+    def visitMapEntry(self, ctx:HqlParser.MapEntryContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#singleMapValue.
+    def visitSingleMapValue(self, ctx:HqlParser.SingleMapValueContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#multiMapValue.
+    def visitMultiMapValue(self, ctx:HqlParser.MultiMapValueContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#importStatement.
+    def visitImportStatement(self, ctx:HqlParser.ImportStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#simpleImportStatement.
+    def visitSimpleImportStatement(self, ctx:HqlParser.SimpleImportStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by HqlParser#fromImportStatement.
+    def visitFromImportStatement(self, ctx:HqlParser.FromImportStatementContext):
         return self.visitChildren(ctx)
 
 
