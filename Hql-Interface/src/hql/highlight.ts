@@ -7,22 +7,15 @@ import {
   type ViewUpdate,
 } from '@codemirror/view'
 import { Token } from 'antlr4ng'
+import { tokenCategory, type Category } from './categories.ts'
 import { createLexer, lexAll } from './parse.ts'
-
-const TYPE_WORDS = new Set([
-  'bool', 'boolean', 'date', 'datetime', 'decimal', 'double', 'dynamic', 'float',
-  'guid', 'int', 'int8', 'int16', 'int32', 'int64', 'long', 'real', 'string',
-  'time', 'timespan', 'uint', 'uint8', 'uint16', 'uint32', 'uint64', 'ulong',
-  'uniqueid', 'ip4', 'ip6',
-])
-
-type Category = 'keyword' | 'type' | 'string' | 'literal' | 'comment' | 'operator'
+import { codePointBoundaries, codeUnitOffset, lineRanges } from './positions.ts'
 
 // Highlighting runs the real HqlLexer over the whole document and marks each
 // token with a CSS class (colors live in theme.ts). Chosen over a Lezer port
 // (1600-line grammar, would drift) and StreamLanguage (line-oriented; breaks
-// on multi-line strings/comments). getAllTokens() includes the hidden channel,
-// which is what makes comments highlight.
+// on multi-line strings/comments). Multi-line marks are split at every line
+// boundary below so they cannot disturb CodeMirror's blank-line rendering.
 
 // Derive token categories from the generated vocabulary once, so keywords
 // added to the grammar are picked up automatically on regeneration.
@@ -32,20 +25,8 @@ const categories: Map<number, Category> = (() => {
   for (let t = 1; t <= vocab.maxTokenType; t++) {
     const symbolic = vocab.getSymbolicName(t) ?? ''
     const literal = vocab.getLiteralName(t)?.replace(/^'|'$/g, '')
-
-    if (symbolic === 'COMMENT' || symbolic === 'MULTILINECOMMENT') {
-      map.set(t, 'comment')
-    } else if (symbolic === 'WHITESPACE' || symbolic === 'IDENTIFIER') {
-      continue
-    } else if (symbolic.includes('STRINGLITERAL')) {
-      map.set(t, 'string')
-    } else if (symbolic.endsWith('LITERAL')) {
-      map.set(t, 'literal')
-    } else if (literal && /^[a-zA-Z]/.test(literal)) {
-      map.set(t, TYPE_WORDS.has(literal) ? 'type' : 'keyword')
-    } else if (literal) {
-      map.set(t, 'operator')
-    }
+    const category = tokenCategory(symbolic, literal)
+    if (category) map.set(t, category)
   }
   return map
 })()
@@ -53,14 +34,28 @@ const categories: Map<number, Category> = (() => {
 function buildDecorations(view: EditorView): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>()
   const doc = view.state.doc.toString()
-  for (const token of lexAll(doc)) {
+  const boundaries = codePointBoundaries(doc)
+  let tokens: Token[]
+
+  try {
+    tokens = lexAll(doc)
+  } catch {
+    // Highlighting is cosmetic. An incomplete token must never interrupt a
+    // CodeMirror update and leave its state ahead of the rendered document.
+    return Decoration.none
+  }
+
+  for (const token of tokens) {
     if (token.type === Token.EOF) break
     const cat = categories.get(token.type)
     if (!cat) continue
-    const from = token.start
-    const to = Math.min(token.stop + 1, doc.length)
+    const from = codeUnitOffset(boundaries, token.start)
+    const to = codeUnitOffset(boundaries, token.stop + 1)
     if (to <= from) continue
-    builder.add(from, to, Decoration.mark({ class: `hql-${cat}` }))
+    const mark = Decoration.mark({ class: `hql-${cat}` })
+    for (const range of lineRanges(doc, from, to)) {
+      builder.add(range.from, range.to, mark)
+    }
   }
   return builder.finish()
 }

@@ -8,7 +8,7 @@ alias antlr4="java -Xmx500M -cp '$PWD/antlr4/antlr-$VERSION-complete.jar:$CLASSP
 # simplify the use of the tool to test the generated code
 alias grun="java -Xmx500M -cp '$PWD/antlr4/antlr-$VERSION-complete.jar:$CLASSPATH' org.antlr.v4.gui.TestRig"
 
-pip install antlr4-python3-runtime
+uv pip install antlr4-python3-runtime
 
 cat << EOF
 

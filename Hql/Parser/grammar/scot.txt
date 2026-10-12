@@ -1,0 +1,2 @@
+database('scot').index('entity')
+| take 1

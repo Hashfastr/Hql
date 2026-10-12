@@ -40,7 +40,7 @@ class Sort(Operator):
         orders = []
         nulls = []
         for ordering in self.exprs:
-            exprs.append(ordering.expr.eval(ctx, as_pl=True))
+            exprs.append(ordering.expr.polars())
             orders.append(ordering.order == 'desc')
             nulls.append(ordering.nulls == 'last')
 

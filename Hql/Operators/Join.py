@@ -52,35 +52,23 @@ class Join(Operator):
             raise hqle.CompilerException('Join attempting to get right without compilation, error?')
 
         # Add a right side filter
-        if self.where:
-            self.rh.add_op(Where(self.where))
+        if where:
+            self.rh.add_op(Where(where))
             self.rh.recompile(ctx.config)
 
         return self.rh.eval(ctx).data
 
     def gen_optimization(self, data:Data) -> Logic:
         from Hql.Operators.Summarize import Summarize
-        from Hql.Operators.Union import Union
-        from Hql.Expressions.References import Wildcard
         from Hql.Expressions.Aggregation import ByExpression
-        from Hql.Database import Static
-        from Hql.Compiler import InstructionSet
         from Hql.Context import Context
-        from Hql.Data import Data
         from Hql.Expressions.Logic import Equality, BinaryLogic
 
-        ops = [
-            Summarize([], ByExpression(self.on)),
-            Union([Wildcard('*')]),
-            # second summarize to dedup other tables
-            Summarize([], ByExpression(self.on))
-        ]
-
-        ctx = InstructionSet(Static(data), operators=ops).eval(Context(Data()))
-        table = [x for x in ctx.data][0].to_dicts()
+        grouped = Summarize([], ByExpression(self.on)).eval(Context(data)).data
+        rows = [row for table in grouped for row in table.to_dicts()]
 
         exprs = []
-        for i in table:
+        for i in rows:
             ands = []
             for j in self.explode_dict(i):
                 lh = self.name_from_dict(j)
@@ -162,6 +150,8 @@ class Join(Operator):
         self.process_params()
 
         left = ctx.data
+        if not left:
+            return ctx
         expr = self.gen_optimization(left)
         right = self.get_right(ctx, expr)
 

@@ -1062,7 +1062,7 @@ functionCallOrPathExpression:
     ;
 
 functionCallOrPathRoot:
-    dotCompositeFunctionCallExpression 
+    dotCompositeFunctionCallExpression
     | primaryExpression 
     | toScalarExpression
     ;

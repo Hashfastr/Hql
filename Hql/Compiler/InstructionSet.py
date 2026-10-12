@@ -22,22 +22,57 @@ class InstructionSet():
     def __init__(self, upstream:Union[Database, InstructionSet, Sequence[Union[Database, InstructionSet]]], operators:Optional[list[Operator]]=None) -> None:
         import random
         from Hql.Compiler import InstructionSet
+
+        self._upstream = []
+        self._ops = []
         
-        if not isinstance(upstream, Sequence):
-            upstream = [upstream]
-
-        if not upstream:
-            raise hqle.CompilerException('InstructionSet given empty upstream')
-
-        self.upstream = upstream
-
-        self.ops:list[Operator] = operators if operators else []
         self.id = '%08x' % random.getrandbits(32)
         self.attrs = dict()
+
+        self.upstream = upstream
+        self.ops = operators
 
         if len(self.upstream) == 1 and isinstance(self.upstream[0], InstructionSet):
             self.ops = self.upstream[0].ops + self.ops
             self.upstream = self.upstream[0].upstream
+
+    @property
+    def upstream(self) -> Sequence[Union[Database, InstructionSet]]:
+        return self._upstream
+
+    @upstream.setter
+    def upstream(self, val:Union[Database, InstructionSet, Sequence[Union[Database, InstructionSet]]]):
+        from Hql.Database import Database
+
+        if not isinstance(val, Sequence):
+            val = [val]
+
+        if not val:
+            raise hqle.CompilerException('InstructionSet given empty upstream')
+
+        for i in val:
+            logging.debug(f'{self.id}: Added upstream {i}')
+            if not isinstance(i, Union[Database, InstructionSet]):
+                raise hqle.CompilerException(f'InstructionSet upstream not given Database or InstructionSet, got: {type(i)}')
+
+        self._upstream = val
+
+    @property
+    def ops(self) -> list[Operator]:
+        return self._ops
+
+    @ops.setter
+    def ops(self, val:Optional[list[Operator]]=None):
+        from Hql.Operators import Operator
+
+        val = val if val else []
+
+        for i in val:
+            logging.debug(f'{self.id}: Added operator {i}')
+            if not isinstance(i, Operator):
+                raise hqle.CompilerException(f'InstructionSet given non-Operator as in operators, got: {type(i)}')
+
+        self._ops = val
 
     def preprocess(self, ctx:Context) -> Union[Database, InstructionSet]:
         new = self.recompile(ctx.config)
@@ -95,7 +130,7 @@ class InstructionSet():
                 acc = InstructionSet(acc, operators=[rej])
             bounded.append(acc)
 
-        print(self.ops)
+        # print(self.ops)
 
         return InstructionSet(bounded, operators=self.ops), None
 
@@ -156,6 +191,8 @@ class InstructionSet():
 
         logging.debug(f'Starting InstructionSet {self.id}')
         start = time.perf_counter()
+
+        # print(self.upstream)
 
         pool = InstructionPool(auto_run=False)
         for i in self.upstream:

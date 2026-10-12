@@ -38,7 +38,13 @@ class PolarsTypes():
 
         resolved = PolarsTypes.from_name(name)
 
-        if hasattr(pltype, 'inner'):
+        if isinstance(pltype, PolarsTypes.pl.Struct):
+            schema = {
+                field.name: PolarsTypes.from_pure_polars(field.dtype).hql_schema()
+                for field in pltype.fields
+            }
+            return resolved(schema=schema)
+        elif hasattr(pltype, 'inner'):
             inner = PolarsTypes.from_pure_polars(pltype.inner)
             return resolved(inner=inner)
         else:
@@ -160,6 +166,15 @@ class PolarsTypes():
             PolarsTypes.PolarsType.__init__(self)
             self.HqlType = PolarsTypes.hqlt.datetime()
             self.pltype = PolarsTypes.pl.Date()
+
+    @register_type('polars_Datetime')
+    class Datetime(PolarsType):
+        """Map Polars datetimes to HQL datetimes."""
+
+        def __init__(self):
+            PolarsTypes.PolarsType.__init__(self)
+            self.HqlType = PolarsTypes.hqlt.datetime()
+            self.pltype = PolarsTypes.pl.Datetime()
     
     @register_type('polars_Duration') 
     class Duration(PolarsType):

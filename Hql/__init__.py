@@ -8,4 +8,5 @@ from . import Compiler
 from . import Config
 from . import Data
 from . import Context
+from . import Cache
 from .Helpers import run_query, can_thread

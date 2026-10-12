@@ -1,6 +1,9 @@
 import pytest
 
 from Hql.Compiler.InstructionSet import InstructionSet
+from Hql.Context import Context
+from Hql.Data import Data
+from Hql.Database.Database import Database
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Expressions.Literals import Integer
 from Hql.Expressions.References import NamedReference
@@ -14,6 +17,16 @@ class _FakeUpstream:
 
     def to_dict(self):
         return {"type": "fake", "name": self.name}
+
+
+class _CachingDatabase(Database):
+    def __init__(self, key):
+        super().__init__({}, name=key)
+        self.key = key
+
+    def eval(self, ctx):
+        ctx.cache.set(self.key, None, self.key)
+        return ctx
 
 
 class TestInstructionSetInit:
@@ -33,6 +46,30 @@ class TestInstructionSetInit:
         iset = InstructionSet(_FakeUpstream())
         assert len(iset.id) == 8
         int(iset.id, 16)
+
+
+class TestInstructionSetCache:
+    def test_query_cache_writes_through_instruction_cache(self):
+        ctx = Context(Data())
+        iset = InstructionSet(_CachingDatabase("cached-result"))
+
+        result = iset.eval(ctx)
+
+        assert result.cache.parent is ctx.cache
+        assert ctx.cache.get("cached-result") == "cached-result"
+
+    def test_multi_upstream_merge_retains_instruction_cache(self):
+        ctx = Context(Data())
+        iset = InstructionSet([
+            _CachingDatabase("left"),
+            _CachingDatabase("right"),
+        ])
+
+        result = iset.eval(ctx)
+
+        assert result.cache.parent is ctx.cache
+        assert ctx.cache.get("left") == "left"
+        assert ctx.cache.get("right") == "right"
 
 
 class TestInstructionSetFlatten:

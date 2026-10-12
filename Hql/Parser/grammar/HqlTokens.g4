@@ -441,8 +441,8 @@ TIMESPANLITERAL:
     | TimespanNumber 'ms'
     | TimespanNumber 'milli' ('s' ((('ec') ('ond')?)? | 'econds'))?
     | TimespanNumber 'micro' ('s' ((('ec') ('ond')?)? | 'econds'))?
-    | TimespanNumber 'nano' ('s' ((('ec') ('ond')?)? | 'econds'))?
-    | TimespanNumber 'tick' ('s')?
+    // | TimespanNumber 'nano' ('s' ((('ec') ('ond')?)? | 'econds'))?
+    // | TimespanNumber 'tick' ('s')?
     | TIME LparenGooRparen
     | TIMESPAN LparenGooRparen
 ;

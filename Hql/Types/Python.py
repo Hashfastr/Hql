@@ -111,6 +111,15 @@ class PythonTypes():
             self.priority = 4
             self.super = [PythonTypes.list]
 
+    @register_type('python_datetime')
+    class datetime(PythonType):
+        def __init__(self):
+            PythonTypes.PythonType.__init__(self)
+            self.HqlType = PythonTypes.hqlt.datetime()
+
+            self.priority = 4
+            self.super = [PythonTypes.str, PythonTypes.list]
+
     @register_type('python_complex') 
     class complex(str):
         """Map Python complex values to their HQL string representation."""
@@ -122,7 +131,6 @@ class PythonTypes():
     @register_type('python_bytes')
     class bytes(PythonType, hqlt.binary):
         """Map Python byte strings to the HQL binary type."""
-
         ...
     
     @register_type('python_bool') 
@@ -180,6 +188,12 @@ class PythonTypes():
             if not isinstance(value, PythonTypes.dict):
                 return False
             return PythonTypes.hqlt.object.eq(self.schema, value.schema)
+
+        # I hate this, has to be a better way
+        def __hash__(self):
+            import json
+            from hashlib import sha1
+            return hash(sha1(json.dumps(self.schema, sort_keys=True, default=repr).encode()))
 
         def hql_schema(self) -> PythonTypes.hqlt.HqlType:
             new = dict()

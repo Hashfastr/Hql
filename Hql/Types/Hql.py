@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import polars as pl
 import logging
+import json
 from typing import TYPE_CHECKING, Iterator, Union, Optional, Mapping
 
 from Hql.Exceptions import HqlExceptions as hqle
@@ -21,15 +22,55 @@ class HqlTypes():
         """Base class for canonical HQL data types."""
 
         def __init__(self, inner:Optional[HqlTypes.HqlType]=None):
-            CompilerType.__init__(self, inner=inner)
-            self.proto:Optional[pl.DataType] = None
-                
+            CompilerType.__init__(self)
+
+            self._proto = None
+            self._super = []
+            self._inner = None
+
             self.complex:bool = False
             self.priority:int = 0
-            self.super:list[HqlTypes.HqlType] = [] # [HqlTypes.string(), HqlTypes.multivalue(self.__class__())]
+            self.super = [] # [HqlTypes.string(), HqlTypes.multivalue(self.__class__())]
+            self.proto = None
+            self.inner = inner
 
         def __len__(self) -> int:
             return 1
+
+        @property
+        def proto(self) -> Optional[pl.DataType]:
+            return self._proto
+
+        @proto.setter
+        def proto(self, val:Optional[pl.DataType]):
+            if val is not None and not isinstance(val, pl.DataType):
+                raise hqle.CompilerException(f'HqlType given non-pl.DataType proto: {val}')
+            self._proto = val
+
+        @property
+        def super(self) -> list[HqlTypes.HqlType]:
+            return self._super
+
+        @super.setter
+        def super(self, val:list[HqlTypes.HqlType]):
+            if not isinstance(val, list):
+                raise hqle.CompilerException(f'HqlType given non-list[HqlType] super: {val}')
+
+            for i in val:
+                if not isinstance(i, HqlTypes.HqlType):
+                    raise hqle.CompilerException(f'HqlType given non-HqlType super: {i}')
+
+            self._super = val
+
+        @property
+        def inner(self) -> Optional[HqlTypes.HqlType]:
+            return self._inner
+
+        @inner.setter
+        def inner(self, val:Optional[CompilerType]):
+            if val is not None and not isinstance(val, HqlTypes.HqlType):
+                raise hqle.CompilerException(f'HqlTypes.HqlType given non-HqlTypes.HqlType inner: {val}')
+            self._inner = val
 
         def pl_schema(self) -> pl.DataType:
             if self.proto == None:
@@ -204,6 +245,7 @@ class HqlTypes():
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
+            self.proto = pl.Int64()
 
     @register_type('hql_xlong')
     class xlong(HqlType):
@@ -459,6 +501,8 @@ class HqlTypes():
             def get(data:SchemaDT, key:Reference):
                 base = key[0]
                 if base not in data:
+                    logging.error(f'Error getting item from object: {base}')
+                    logging.error(json.dumps(data, default=repr))
                     raise IndexError
                 out = data[base]
 
@@ -481,6 +525,14 @@ class HqlTypes():
             for i in self.schema:
                 keys.append(NamedReference(i))
             return iter(keys)
+
+        @property
+        def proto(self) -> Optional[pl.DataType]:
+            return self.pl_schema()
+
+        @proto.setter
+        def proto(self, val):
+            ...
 
         def to_dict(self) -> dict:
             def td(schema:SchemaDT):
@@ -527,7 +579,7 @@ class HqlTypes():
 
             return True
         
-        def pl_schema(self) -> pl.DataType:
+        def pl_schema(self) -> pl.Struct:
             # returns list in the case of empty dict
             # polars likes it better
             def gs(schema:Union[SchemaDT, dict]) -> Union[dict, list]:

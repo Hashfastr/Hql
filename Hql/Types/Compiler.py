@@ -12,8 +12,11 @@ class CompilerType():
     def __init__(self, inner:Optional[CompilerType]=None):
         bases = type(self).__bases__
 
+        self._inner = None
+        self._HqlType = None
+
         self.type = bases[0]
-        self.HqlType:Optional[hqlt.HqlType] = None
+        self.HqlType = None
         self.inner = inner
         self.name = self.__class__.__name__
 
@@ -25,6 +28,28 @@ class CompilerType():
 
     def __hash__(self):
         return hash((self.name + self.type.__name__))
+
+    @property
+    def inner(self) -> Optional[CompilerType]:
+        return self._inner
+
+    @inner.setter
+    def inner(self, val:Optional[CompilerType]):
+        if val is not None and not isinstance(val, CompilerType):
+            raise hqle.CompilerException(f'CompilerType given non-CompilerType inner: {val}')
+        self._inner = val
+
+    @property
+    def HqlType(self) -> Optional[hqlt.HqlType]:
+        return self._HqlType
+
+    @HqlType.setter
+    def HqlType(self, val:Optional[hqlt.HqlType]):
+        from Hql.Types.Hql import HqlTypes as hqlt
+
+        if val is not None and not isinstance(val, hqlt.HqlType):
+            raise hqle.CompilerException(f'CompilerType given non-CompilerType inner: {val}')
+        self._HqlType = val
 
     def hql_schema(self) -> hqlt.HqlType:
         if self.HqlType == None:

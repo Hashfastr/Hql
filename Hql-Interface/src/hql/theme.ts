@@ -58,7 +58,7 @@ export function gruvboxTheme(isDark: boolean): Extension {
       '.hql-type': { color: c.yellow },
       '.hql-literal': { color: c.purple },
       '.hql-string': { color: c.green },
-      '.hql-comment': { color: c.gray, fontStyle: 'italic' },
+      '.hql-comment': { color: c.gray },
       '.hql-operator': { color: c.aqua },
       '.hql-identifier': { color: c.fg },
       '.hql-error': { textDecoration: `underline wavy ${c.red}` },

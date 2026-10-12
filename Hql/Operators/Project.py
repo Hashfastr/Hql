@@ -61,7 +61,7 @@ class Project(Operator):
         datasets = []
         for i in self.exprs:
             if isinstance(i, NamedExpression):
-                datasets.append(i.eval(ctx, insert=False).data)
+                datasets.append(i.eval(ctx, insert=False, unnest=False).data)
             else:
                 datasets.append(i.eval(ctx).data)
 

@@ -7,6 +7,7 @@ import {
   highlightActiveLineGutter,
   keymap,
   lineNumbers,
+  scrollPastEnd,
 } from '@codemirror/view'
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
 import { bracketMatching } from '@codemirror/language'
@@ -75,6 +76,7 @@ export function Editor({
 
     const extensions: Extension = [
       lineNumbers(),
+      scrollPastEnd(),
       highlightActiveLineGutter(),
       highlightActiveLine(),
       drawSelection(),

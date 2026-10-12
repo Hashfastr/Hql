@@ -271,14 +271,14 @@ class Detection():
             self.run_history = self.run_history[diff:]
         self.run_history.append(run)
 
-    def run(self, query_time:Optional[datetime.datetime]=None) -> Context:
+    def run(self, query_time:Optional[datetime.datetime]=None, ctx:Optional[Context]=None) -> Context:
         compiler = self.compile(query_time)
 
         if not compiler:
             raise Exception('Attempting to run detection without instructions!')
         
         start = time.perf_counter()
-        ctx = compiler.run()
+        ctx = compiler.run(ctx=ctx)
         end = time.perf_counter()
 
         run = {
@@ -425,6 +425,8 @@ class HacEngine():
             self.pool.clear_queue()
             self.clean_old()
 
+            # logging.info(f'Cache size: {len(self.pool.ctx.cache)}')
+
             if self.pool.is_overloaded():
                 logging.warning(f'HaC queue is overloaded! {len(self.pool.queue)} queued {self.pool.max_threads} max threads')
 
@@ -433,6 +435,8 @@ class HacEngine():
                 time.sleep(1)
                 continue
             last = cur.minute
+
+            logging.info(self.pool.ctx.cache.get_size())
 
             for i in self.detections:
                 det = self.detections[i]

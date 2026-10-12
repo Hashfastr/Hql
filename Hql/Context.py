@@ -8,8 +8,10 @@ from Hql.Config import Config
 if TYPE_CHECKING:
     from Hql.Data import Data
     from Hql.Hac import Hac
+    from Hql.Database import Database
+    from Hql.Cache import Cache
 
-database_registry = {}
+database_registry:dict[str, type[Database]] = {}
 
 def register_database(name:str):
     def decorator(cls):
@@ -22,7 +24,7 @@ def register_database(name:str):
         return cls
     return decorator
 
-def get_database(name:str):
+def get_database(name:str) -> type[Database]:
     if name in database_registry:
         return database_registry[name]
     else:
@@ -81,8 +83,9 @@ def get_type(name):
 class Context():
     """Carry data, symbols, registries, and configuration through execution."""
 
-    def __init__(self, data:Data, hac:Optional[Hac]=None, symbol_table:Optional[dict]=None, macros:Optional[dict]=None, config:Optional[Config]=None) -> None:
+    def __init__(self, data:Data, hac:Optional[Hac]=None, symbol_table:Optional[dict]=None, macros:Optional[dict]=None, config:Optional[Config]=None, cache:Optional[Cache]=None) -> None:
         import copy
+        from Hql.Cache import Cache
 
         # contexts are copied a lot so want to make sure things don't linger
         self.dbs = copy.deepcopy(database_registry)
@@ -92,6 +95,7 @@ class Context():
         self.config = copy.deepcopy(config) if config else Config()
         self.hac = copy.deepcopy(hac)
         self.data = data
+        self.cache = Cache(parent=cache)
 
     def __bool__(self):
         return self.data.__bool__()
@@ -100,22 +104,39 @@ class Context():
     Copy with pointer to data
     '''
     def copy(self):
-        return Context(
-            self.data,
-            hac=self.hac,
-            symbol_table=self.symbol_table,
-            macros=self.macros,
-            config=self.config
-        )
+        import copy
+
+        copied = object.__new__(Context)
+        copied.dbs = copy.deepcopy(self.dbs)
+        copied.funcs = copy.deepcopy(self.funcs)
+        copied.symbol_table = copy.deepcopy(self.symbol_table)
+        copied.macros = copy.deepcopy(self.macros)
+        copied.config = copy.deepcopy(self.config)
+        copied.hac = copy.deepcopy(self.hac)
+        copied.data = self.data
+        copied.cache = self.cache
+        return copied
+
+    def fork(self):
+        """Copy this context into a new child cache scope."""
+        from Hql.Cache import Cache
+
+        forked = self.copy()
+        forked.cache = Cache(parent=self.cache)
+        return forked
 
     @staticmethod
-    def merge(ctxs:list[Context], merge_rows=True):
+    def merge(ctxs:list[Context], merge_rows=True, target:Optional[Context]=None):
         from Hql.Data import Data
         
-        if len(ctxs) == 1:
+        if len(ctxs) == 1 and target is None:
             return ctxs[0]
 
-        data = Data.merge([x.data for x in ctxs], merge_rows=merge_rows)
+        data = (
+            ctxs[0].data
+            if len(ctxs) == 1
+            else Data.merge([x.data for x in ctxs], merge_rows=merge_rows)
+        )
 
         syms = dict()
         macros = dict()
@@ -126,9 +147,23 @@ class Context():
             for j in i.macros:
                 macros[j] = i.macros[j]
 
-        return Context(data, symbol_table=syms, macros=macros, hac=ctxs[0].hac)
+        if target is not None:
+            target.data = data
+            target.symbol_table = syms
+            target.macros = macros
+            target.hac = ctxs[0].hac
+            return target
 
-    def get_db(self, name:str):
+        return Context(
+            data,
+            symbol_table=syms,
+            macros=macros,
+            hac=ctxs[0].hac,
+            config=ctxs[0].config,
+            cache=ctxs[0].cache.parent,
+        )
+
+    def get_db(self, name:str) -> type[Database]:
         if name in self.dbs:
             return self.dbs[name]
         else:

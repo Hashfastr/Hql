@@ -14,6 +14,7 @@ from Hql.Expressions import Expression, ToClause, OpParameter, PipeExpression
 from Hql.Expressions import PipeExpression
 from Hql.Expressions import Aggregation
 import Hql.Functions as Functions
+from Hql.Functions.Logic import LogicFunction
 import Hql.Expressions.Functions as FuncExprs
 
 from Hql.Database import Database
@@ -56,7 +57,7 @@ class HqlCompiler(Compiler):
         return self.from_name(src.type)(src)
 
     def run(self, ctx: Optional[Context] = None) -> Context:
-        ctx = ctx if ctx else self.ctx
+        ctx = ctx if ctx is not None else self.ctx
         if not self.root:
             raise hqle.CompilerException('Attempting to run compiler with None-root')
         ctx.hac = self.hac
@@ -93,7 +94,15 @@ class HqlCompiler(Compiler):
         return self.root
 
     def LetStatement(self, statement:LetStatement, prep:bool=True) -> None:
-        acc, _ = self.compile(statement.root)
+        root = statement.root
+        if (
+            isinstance(root, PipeExpression)
+            and not root.pipes
+            and isinstance(root.prepipe, Literals.Literal)
+        ):
+            acc, _ = self.compile(root.prepipe)
+        else:
+            acc, _ = self.compile(root)
 
         if not isinstance(acc, InstructionSet):
             acc = acc.get_expr()
@@ -168,8 +177,7 @@ class HqlCompiler(Compiler):
 
         else:
             logging.error(expr.str())
-            logging.error(type(expr))
-            raise hqle.CompilerException('Could not compile Tabular expression')
+            raise hqle.CompilerException(f'Invalid tabular expression of type {type(expr)}')
 
         if isinstance(acc, Source):
             acc = acc.preprocess(self.ctx)
@@ -368,9 +376,9 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(op.expr)
         expr = acc.get_expr()
 
-        if isinstance(expr, Functions.Function) and expr.logic:
-            expr = expr.preprocess(self.ctx)
-        assert isinstance(expr, Logic.Logic)
+        if not isinstance(expr, Logic.Logic):
+            raise hqle.CompilerException(f'Where given {type(expr)} expression')
+
         op = Operators.Where(expr, op.parameters)
 
         desc.op = op
@@ -635,6 +643,10 @@ class HqlCompiler(Compiler):
     def Join(self, op: Operators.Join, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Expressions import PipeExpression
         desc = BranchDescriptor()
+        # A join can add right-side columns and change row cardinality. Filters
+        # after it must not be hoisted onto the left input, where those columns
+        # may not exist yet.
+        desc.set_attr('row_mutable')
 
         # The case of recompiling a compiled join
         if isinstance(op.rh, InstructionSet):
@@ -670,7 +682,7 @@ class HqlCompiler(Compiler):
             acc, _ = self.compile(op.where)
             desc.merge(acc)
             where = acc.get_expr()
-        assert isinstance(where, Logic.Logic)
+            assert isinstance(where, Logic.Logic)
 
         desc.op = Operators.Join(rh, params=params, on=on, where=where)
         return desc, None
@@ -788,6 +800,9 @@ class HqlCompiler(Compiler):
     def Function(self, expr: Functions.Function, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Functions import typecasting
 
+        if isinstance(expr, LogicFunction):
+            return self.LogicFunction(expr)
+
         desc = BranchDescriptor()
         desc.set_attr('functions', expr.name)
 
@@ -802,6 +817,25 @@ class HqlCompiler(Compiler):
 
         expr.args = args
         desc.expr = expr
+
+        return desc, None
+
+    def LogicFunction(self,  expr: LogicFunction, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+
+        args = []
+        for i in expr.args:
+            acc, _ = self.compile(i)
+            desc.merge(acc)
+            args.append(acc.get_expr())
+
+        expr.args = args
+        shortcut = expr.preprocess(self.ctx)
+
+        if isinstance(shortcut, Expression):
+            desc.expr = shortcut
+        else:
+            desc.expr = expr
 
         return desc, None
 
