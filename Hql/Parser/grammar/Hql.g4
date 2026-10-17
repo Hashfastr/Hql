@@ -927,6 +927,7 @@ queryOperatorProperty:
 namedExpression:
     (Name=namedExpressionNameClause)? Expression=unnamedExpression;
 
+// can this be removed
 staticNamedExpression:
     Name=pathReference '=' Value=pathReference;
 
@@ -1480,48 +1481,10 @@ pathOrExtendedKeyword:
     | ExtendedKeyword=extendedKeywordName
     ;
 
-// identifierOrKeywordName:
-//       Identifier=identifierName
-//     | Keyword=keywordName
-//     ;
-
-// identifierOrKeywordOrEscapedName:
-//       Identifier=identifierName
-//     | Keyword=keywordName
-//     | Escaped=escapedName
-//     ;
-
-// identifierOrExtendedKeywordOrEscapedName:
-//       Identifier=identifierName
-//     | Keyword=keywordName
-//     | ExtendedKeyword=extendedKeywordName
-//     | Escaped=escapedName
-//     ;
-
-// identifierOrExtendedKeywordName:
-//       Identifier=identifierName
-//     | Keyword=keywordName
-//     | ExtendedKeyword=extendedKeywordName
-//     ;
-
 wildcardedName:
       Name=WILDCARD
     | Star=starExpression
     ;
-//     (Prefix=wildcardedNamePrefix)? '*' (Segments+=wildcardedNameSegment)*;
-//
-// wildcardedNamePrefix:
-//       Identifier=IDENTIFIER 
-//     | Keyword=keywordName
-//     | ExtendedKeyword=extendedKeywordName
-//     ;
-//
-// wildcardedNameSegment:
-//       Identifier=IDENTIFIER 
-//     | Keyword=keywordName
-//     | ExtendedKeyword=extendedKeywordName
-//     | Number=LONGLITERAL 
-//     | Star='*';
 
 
 ///////////////////////////////////////

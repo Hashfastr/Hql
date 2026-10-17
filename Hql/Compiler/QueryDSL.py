@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from Hql.Compiler import BranchDescriptor
     import Hql.Expressions.Logic as Logic
     import Hql.Expressions.References as References
-    from Hql.Expressions import Literals
+    from Hql.Expressions import Literals, Operator
     from Hql.Functions import Function
 
 class QueryDSLCompiler(Compiler):
@@ -43,10 +43,10 @@ class QueryDSLCompiler(Compiler):
 
         # still missing a root
         if src == None:
-            return self.compile(Bool(True), prep=prep), None
+            return self.compile(Bool(True), prep=prep)
 
         if isinstance(src, Function):
-            return self.Function(src, prep=prep)
+            return self.Function(src, prep=prep), None
 
         return super().compile(src, prep=prep)
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Union
 from warnings import deprecated
+import logging
 
 from Hql.Exceptions import HqlExceptions as hqle
 
@@ -28,8 +29,6 @@ if TYPE_CHECKING:
 # Each statement is denoted by a ; with the exception of the root statement.
 # The root statement is denoted by EOF, but can have a ; regardless
 class Query():
-    """Represent and preprocess a complete sequence of HQL statements."""
-
     def __init__(self, statements:list[Statement]):
         from Hql.Context import Context
         from Hql.Data import Data
@@ -41,19 +40,23 @@ class Query():
         from Hql.Database.Database import Database
         from Hql.Expressions import PipeExpression
 
-        for i in self.statements:
+        for i in self.statements[:]:
             if isinstance(i, LetStatement):
                 self.ctx.symbol_table[i.name.name] = i.root.preprocess(self.ctx)
+
             elif isinstance(i, QueryStatement):
                 root = i.root.preprocess(self.ctx)
                 
                 if isinstance(root, Database):
-                    root = PipeExpression([], root)
+                    root = PipeExpression([], prepipe=root)
 
                 # Should be final statement
                 i.root = root
                 self.statements = [i]
                 break
+
+            else:
+                logging.error(f'Unsupported Statement {type(i)}')
 
     @deprecated('Dumb idea, maybe an idea in the future')
     def expand_iset(self):
@@ -185,7 +188,7 @@ class QueryStatement(Statement):
 
     def __init__(self, root:PipeExpression):
         Statement.__init__(self)
-        self.root:PipeExpression = root
+        self.root:Union[PipeExpression, InstructionSet] = root
 
     def to_dict(self):
         out = super().to_dict()
@@ -200,19 +203,18 @@ class QueryStatement(Statement):
 
         return self.root.deparse()
 
+'''
+Generic let
+'''
 class LetStatement(Statement):
-    """Bind a pipeline or macro expression to a name."""
-
-    def __init__(self, name:Reference, value:PipeExpression, macro:bool=False):
+    def __init__(self, name:Reference, value):
         Statement.__init__(self)
         self.root = value
         self.name = name
-        self.macro = macro
         
     def to_dict(self):
         return {
             'type': self.type,
-            'macro': self.macro,
             'name': self.name.to_dict(),
             'value': self.root.to_dict()
         }
@@ -224,13 +226,44 @@ class LetStatement(Statement):
         
     def eval(self, ctx:Context) -> Context:
         name = self.name.str()
-        
-        if self.macro:
-            ctx.macros[name] = self.root
-        else:
-            ctx.symbol_table[name] = self.root
-
+        ctx.symbol_table[name] = self.root
         return ctx
+
+class ClassStatement(LetStatement):
+    def __init__(self, name:Reference, value:Query):
+        LetStatement.__init__(self, name, value)
+        self.root = value
+
+    def to_dict(self) -> dict:
+        return {
+            'type': self.type,
+            'name': self.name.to_dict(),
+            'value': self.to_dict()
+        }
+
+    def deparse(self) -> str:
+        name = self.name.deparse()
+        value = self.root.deparse()
+        out = f'class {name} = ' + '{\n'
+        out += value + '\n}'
+        return out
+
+class MacroStatement(LetStatement):
+    def __init__(self, name: Reference, value: PipeExpression):
+        if not isinstance(value, PipeExpression) or not value.prepipe is None:
+            e = f'Macro value is set to {type(value)} not empty PipeExpression'
+            logging.error(e)
+            raise hqle.CompilerException(e)
+
+        LetStatement.__init__(self, name, value)
+        self.value = value
+
+    def deparse(self) -> str:
+        name = self.name.deparse()
+        value = self.root.deparse()
+        out = f'macro {name} = ' + '{\n'
+        out += value + '\n}'
+        return out
 
 class LetLogicStatement(LetStatement):
     """Bind a logical expression to a name in the query context."""
@@ -250,22 +283,4 @@ class LetLogicStatement(LetStatement):
     def eval(self, ctx:Context) -> Context:
         name = self.name.str()
         ctx.symbol_table[name] = self.root
-        return ctx
-
-class ClassStatement(Statement):
-    def __init__(self, name:Reference, query:Query):
-        Statement.__init__(self)
-        self.name = name
-        self.query = query
-
-    def to_dict(self) -> dict:
-        return {
-            'type': self.type,
-            'name': self.name.to_dict(),
-            'value': self.query.to_dict()
-        }
-
-    def eval(self, ctx:Context) -> Context:
-        name = self.name.str()
-        ctx.symbol_table[name] = self.query
         return ctx

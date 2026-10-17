@@ -63,7 +63,7 @@ class HqlCompiler(Compiler):
         ctx.hac = self.hac
         return self.root.eval(ctx)
 
-    def Query(self, query: Hql.Query.Query, prep:bool=True):
+    def Query(self, query: Query, prep:bool=True):
         res = None
         for i in query.statements:
             res = self.compile(i)
@@ -72,20 +72,24 @@ class HqlCompiler(Compiler):
         return res
 
     def Statement(self, statement: Statement, prep:bool=True) -> Optional[InstructionSet]:
-        logging.error("This shouldn't trigger? Compiling Statement directly")
-        acc, _ = self.compile(statement.root)
-        assert isinstance(acc, InstructionSet)
-        return acc
+        e = "This shouldn't trigger? Compiling Statement directly"
+        logging.error(e)
+        raise hqle.CompilerException(e)
 
     def QueryStatement(self, statement: QueryStatement, prep:bool=True) -> InstructionSet:
-        from Hql.Hac.Sources import Source
+        # from Hql.Hac.Sources import Source
         from Hql.Database import Database
+
+        if isinstance(statement.root, InstructionSet):
+            logging.debug('Attempt to compile already compiled QueryStatement, just passing through')
+            return statement.root
+
         acc, _ = self.compile(statement.root)
 
         if isinstance(acc, InstructionSet):
             self.root = acc
-        elif isinstance(acc, Source):
-            self.root = acc.assemble()
+        # elif isinstance(acc, Source):
+        #     self.root = acc.assemble()
         elif isinstance(acc, Database):
             self.root = InstructionSet(acc)
         else:

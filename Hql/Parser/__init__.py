@@ -159,14 +159,12 @@ class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, 
         value = self.visit(ctx.Expression)
         return LetStatement(name, value)
 
-    def visitLetMacroDeclaration(self, ctx: HqlParser.LetMacroDeclarationContext):
-        from Hql.Query import LetStatement
-        name = self.visit(ctx.Name)
-        pipes = self.visit(ctx.Pipes)
-        return LetStatement(name, pipes, macro=True)
-
     def visitLetLogicDeclaration(self, ctx: HqlParser.LetLogicDeclarationContext):
         from Hql.Query import LetLogicStatement
         name = self.visit(ctx.Name)
         logic = self.visit(ctx.Logic)
         return LetLogicStatement(name, logic)
+
+    def visitMacroStatement(self, ctx: HqlParser.MacroStatementContext):
+        from Hql.Query import PipeExpression
+

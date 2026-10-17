@@ -125,8 +125,6 @@ def _(Hql, conf_dir, sigma):
         # precompilation
         compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac())
 
-        # print(json.dumps(compiler.root.to_dict()))
-
         # compilation
         return compiler.root.upstream[0].simple_compile()
 

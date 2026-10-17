@@ -91,7 +91,7 @@ class Context():
         self.dbs = copy.deepcopy(database_registry)
         self.funcs = copy.deepcopy(func_registry)
         self.symbol_table = copy.deepcopy(symbol_table) if symbol_table else dict()
-        self.macros = copy.deepcopy(macros) if macros else dict()
+        # self.macros = copy.deepcopy(macros) if macros else dict()
         self.config = copy.deepcopy(config) if config else Config()
         self.hac = copy.deepcopy(hac)
         self.data = data
@@ -110,7 +110,7 @@ class Context():
         copied.dbs = copy.deepcopy(self.dbs)
         copied.funcs = copy.deepcopy(self.funcs)
         copied.symbol_table = copy.deepcopy(self.symbol_table)
-        copied.macros = copy.deepcopy(self.macros)
+        # copied.macros = copy.deepcopy(self.macros)
         copied.config = copy.deepcopy(self.config)
         copied.hac = copy.deepcopy(self.hac)
         copied.data = self.data
@@ -139,25 +139,25 @@ class Context():
         )
 
         syms = dict()
-        macros = dict()
+        # macros = dict()
         for i in ctxs:
             for j in i.symbol_table:
                 syms[j] = i.symbol_table[j]
             
-            for j in i.macros:
-                macros[j] = i.macros[j]
+            # for j in i.macros:
+            #     macros[j] = i.macros[j]
 
         if target is not None:
             target.data = data
             target.symbol_table = syms
-            target.macros = macros
+            # target.macros = macros
             target.hac = ctxs[0].hac
             return target
 
         return Context(
             data,
             symbol_table=syms,
-            macros=macros,
+            # macros=macros,
             hac=ctxs[0].hac,
             config=ctxs[0].config,
             cache=ctxs[0].cache.parent,

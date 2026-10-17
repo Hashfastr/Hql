@@ -78,6 +78,9 @@ class Elasticsearch(Database):
             max_retries=3
         )
 
+    def __str__(self) -> str:
+        return f'{self.type} - {self.name}'
+
     def to_dict(self):
         self.query, _ = self.compile()
         
@@ -96,7 +99,10 @@ class Elasticsearch(Database):
         compiler = copy.deepcopy(self.compiler)
 
         query, _ = compiler.compile(None, prep=False)
-        assert isinstance(query, (dict, str))
+        if not isinstance(query, (dict, str)):
+            e = f'Expected (dict, str) got {type(query)}'
+            logging.error(e)
+            raise hqle.CompilerException(e)
 
         if isinstance(query, str):
             query = {
