@@ -41,11 +41,15 @@ Works out preprocessor functions
 class HqlCompiler(Compiler):
     """Preprocess HQL into executable instruction sets."""
 
-    def __init__(self, config:Config, query:Optional[Query]=None, hac:Optional[Hac]=None):
+    def __init__(self, config:Config, query:Optional[Query]=None, hac:Optional[Hac]=None, time=True):
         Compiler.__init__(self)
         self.ctx.config = config
         self.root:Optional[InstructionSet] = None
         self.hac:Optional[Hac] = hac
+        self.time = time
+
+        # track to see if we already added hac time bound
+        self.bounded = False
 
         if query:
             self.Query(query)
@@ -194,9 +198,10 @@ class HqlCompiler(Compiler):
             raise hqle.CompilerException(f'Tabular compilation resulted in {type(acc)} not InstructionSet')
 
         # Add hac timebound
-        if self.hac:
+        if self.hac and self.time and not self.bounded:
             start, end = self.hac.get_timerange()
             acc, _ = acc.add_timebound(start, end)
+            self.bounded = True
 
         return acc, None
 
