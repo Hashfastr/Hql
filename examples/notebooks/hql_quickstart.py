@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.13"
+__generated_with = "0.24.0"
 app = marimo.App(width="medium")
 
 
@@ -14,7 +14,7 @@ def _():
     import Hql
 
     import logging
-    logging.getLogger().setLevel(logging.DEBUG)
+    logging.getLogger().setLevel(logging.INFO)
     return Hql, Path, json, mo
 
 
@@ -123,7 +123,7 @@ def _(Hql, conf_dir, sigma):
         conf.set_database('tf11-elastic', elastic_conf)
 
         # precompilation
-        compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac())
+        compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac(), time=False)
 
         # compilation
         return compiler.root.upstream[0].simple_compile()
@@ -165,7 +165,7 @@ def _(mo):
 def _(compile_with_target, json):
     dsl_compiled = compile_with_target('dsl')
     print('index: ' + dsl_compiled['index'])
-    print('query: ' + json.dumps(dsl_compiled['query'], indent=2))
+    print('query:\n' + json.dumps(dsl_compiled['query'], indent=2))
     return
 
 

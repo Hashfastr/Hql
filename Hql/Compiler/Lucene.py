@@ -4,6 +4,8 @@ from Hql.Exceptions import HqlExceptions as hqle
 from typing import Union, Optional, TYPE_CHECKING
 import logging
 
+from Hql.Expressions.Literals import StringLiteral
+
 from . import Compiler
 
 if TYPE_CHECKING:
@@ -319,6 +321,7 @@ class LuceneCompiler(Compiler):
 
     def Substring(self, expr: Logic.Substring, prep:bool=True) -> tuple[object, object]:
         from Hql.Expressions.Logic import Not
+        import re
         if prep:
             return expr, None
 
@@ -334,7 +337,10 @@ class LuceneCompiler(Compiler):
             if not i:
                 continue
 
-            rh = i.quote('/')[1:-1]
+            # this doesn't handle \s
+            rh = re.sub(r'\\', r'\\\\', i.quote(''))
+            rh = re.sub(r'\.', r'\\.', rh)
+            rh = StringLiteral(rh, verbatim=True).quote('/')[1:-1]
 
             if expr.startswith:
                 rh = f'{rh}.*'

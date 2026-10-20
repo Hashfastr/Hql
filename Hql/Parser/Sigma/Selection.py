@@ -86,6 +86,8 @@ class Selection():
 
     def substring(self, lh:NamedReference, modifiers:list, rh:list):
         from Hql.Expressions.Logic import Substring
+
+        # probably deadcode
         if not isinstance(rh, list):
             rh = [rh]
 
