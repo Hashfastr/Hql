@@ -658,16 +658,23 @@ class BinaryLogic(Logic):
             self.exprs = list(exprs[0].exprs)
             return
 
-        new = set([exprs[0]])
-        for i in exprs[1:]:
+        self.logic_and = logic_and
+
+        new = []
+        for i in exprs:
             if i == Bool(True) and logic_and:
                 continue
             if i == Bool(False) and not logic_and:
                 continue
-            new.add(i)
 
-        self.logic_and = logic_and
-        self.exprs = list(new)
+            # collapse logic
+            if isinstance(i, BinaryLogic) and i.logic_and == logic_and:
+                new += i.exprs
+                continue
+                
+            new.append(i)
+
+        self.exprs = list(set(new))
 
     def __new__(cls, exprs:Sequence[Logic], logic_and:bool=True) -> Union[Logic, Bool]:
         from Hql.Expressions.Literals import Bool
