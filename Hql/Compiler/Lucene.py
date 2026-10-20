@@ -338,8 +338,7 @@ class LuceneCompiler(Compiler):
                 continue
 
             # this doesn't handle \s
-            rh = re.sub(r'\\', r'\\\\', i.quote(''))
-            rh = re.sub(r'\.', r'\\.', rh)
+            rh = re.escape(i.str())
             rh = StringLiteral(rh, verbatim=True).quote('/')[1:-1]
 
             if expr.startswith:
