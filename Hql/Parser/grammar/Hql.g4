@@ -1382,6 +1382,7 @@ keywordName:
         | LOG
         | LOOKUP
         | LIST
+        | MACRO
         | MAP
         | NODES
         | NONE

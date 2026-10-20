@@ -15,7 +15,7 @@ def _():
 
     import logging
     logging.getLogger().setLevel(logging.INFO)
-    return Hql, Path, json, mo
+    return Path, json, mo
 
 
 @app.cell(hide_code=True)
@@ -56,7 +56,7 @@ def _(Path, mo):
             """
         ).callout(kind="danger"),
     )
-    return (conf_dir,)
+    return
 
 
 @app.cell
@@ -96,11 +96,11 @@ def _():
         - Unlikely
     level: high
     '''
-    return (sigma,)
+    return
 
 
-@app.cell
-def _(Hql, conf_dir, sigma):
+app._unparsable_cell(
+    r"""
     from Hql.Parser.Sigma import SigmaParser
 
     # sets the target in the config for a given database then compiles it with that target
@@ -118,17 +118,25 @@ def _(Hql, conf_dir, sigma):
             return {'index': '', 'query': ''}
         #print(json.dumps(parser.assembly.to_dict(), indent=2))
 
-        elastic_conf = conf.get_database('tf11-elastic')
-        elastic_conf['conf']['compiler'] = target
-        conf.set_database('tf11-elastic', elastic_conf)
+        if target in ('lucene', 'dsl'):
+            elastic_conf = conf.get_database('tf11-elastic')
+            elastic_conf['conf']['compiler'] = target
+            conf.set_database('tf11-elastic', elastic_conf)
+        elif target in ('spl', 'spl2'):
+            splunk_conf = conf.get_database('splunk')
+            splunk_conf['conf']['compiler'] = target
+            conf.get_database('splunk', splunk_conf)
+        else:
+            print(f'invalid target {target}}')    
 
         # precompilation
         compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac(), time=False)
 
         # compilation
         return compiler.root.upstream[0].simple_compile()
-
-    return (compile_with_target,)
+    """,
+    name="_"
+)
 
 
 @app.cell(hide_code=True)
@@ -151,7 +159,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Simple compilation
+    ## Simple compilation w/ Elastic
     This allows one to just get the compilation for a database without running the engine.
     If the backend supports multiple language targets then the configured target is used.
 
@@ -188,6 +196,19 @@ def _(compile_with_target):
     lucene_compiled = compile_with_target('lucene')
     print('index: ' + lucene_compiled['index'])
     print('query: ' + lucene_compiled['query'])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Splunk compilation
+    """)
+    return
+
+
+@app.cell
+def _():
     return
 
 

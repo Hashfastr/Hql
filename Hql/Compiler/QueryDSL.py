@@ -339,13 +339,14 @@ class QueryDSLCompiler(Compiler):
     def Substring(self, expr: Logic.Substring, prep:bool = True) -> tuple[object, object]:
         from Hql.Expressions.Logic import Regex
         from Hql.Expressions.Literals import StringLiteral
+        import re
 
         if prep:
             return expr, None
 
         exprs = []
         for i in expr.rh:
-            rh = i.quote('')
+            rh = re.escape(i.quote(''))
             if expr.startswith:
                 rh = f'{rh}.*'
             elif expr.endswith:
