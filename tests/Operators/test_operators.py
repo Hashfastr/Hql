@@ -114,6 +114,22 @@ class TestProject:
         p = Project([NamedReference("a"), NamedReference("b")])
         assert p.deparse() == "project a, b"
 
+    def test_project_eval_returns_all_requested_columns(self):
+        from Hql.Context import Context
+        from Hql.Data import Data, Table
+
+        ctx = Context(
+            data=Data(
+                [Table(init_data=[{"a": 1, "b": 2, "c": 3}], name="events")]
+            )
+        )
+
+        result = Project(
+            [NamedReference("a"), NamedReference("b")]
+        ).eval(ctx)
+
+        assert result.data["events"].to_dicts() == [{"a": 1, "b": 2}]
+
     def test_project_keep_deparse(self):
         p = ProjectKeep([NamedReference("a")])
         assert p.deparse() == "project-keep a"

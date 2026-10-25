@@ -56,8 +56,6 @@ class Project(Operator):
         from Hql.Data import Data
         from Hql.Expressions.References import NamedExpression
 
-        ctx = ctx.copy()
-
         datasets = []
         for i in self.exprs:
             if isinstance(i, NamedExpression):
