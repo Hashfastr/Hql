@@ -226,6 +226,25 @@ class Path(Reference):
         else:
             ctx.data = ctx.data.select(self)
         return ctx
+    
+class Mapping():
+    def __init__(self) -> None:
+        # Manages this list as if it were a set
+        self.mapping:dict[Reference, list[Reference]] = {}
+
+    def __iter__(self):
+        return iter(self.mapping.keys())
+
+    def add(self, src:Reference, dest:Reference):
+        if src not in self.mapping:
+            self.mapping[src] = [dest]
+            return
+
+        if dest not in self.mapping[src]:
+            self.mapping[src].append(dest)
+
+    def get(self, src:Reference) -> list[Reference]:
+        return list(self.mapping[src])
 
 '''
 Sets a name a value
@@ -291,29 +310,29 @@ class NamedExpression(Expression):
         return True
 
     ## TODO
-    def polars(self) -> plExpr:
-        return NotImplemented
-
-        if not self.can_polars():
-            logging.error(self.deparse())
-            raise hqle.CompilerException(f'Attempting to polars non-polars expression')
-
-        value = self.polars_value()
-        exprs = []
-
-        for i in self.paths:
-            i.polars()
-
-        return 
+    # def polars(self) -> plExpr:
+    #     return NotImplemented
+    #
+    #     if not self.can_polars():
+    #         logging.error(self.deparse())
+    #         raise hqle.CompilerException(f'Attempting to polars non-polars expression')
+    #
+    #     value = self.polars_value()
+    #     exprs = []
+    #
+    #     for i in self.paths:
+    #         i.polars()
+    #
+    #     return 
 
     ## TODO
-    def polars_value(self) -> plExpr:
-        return NotImplemented
-
-        if isinstance(self.value, Function):
-            logging.error(self.deparse())
-            raise hqle.CompilerException(f'Attempting to polars non-polars expression')
-        return self.value.polars()
+    # def polars_value(self) -> plExpr:
+    #     return NotImplemented
+    #
+    #     if isinstance(self.value, Function):
+    #         logging.error(self.deparse())
+    #         raise hqle.CompilerException(f'Attempting to polars non-polars expression')
+    #     return self.value.polars()
 
     def eval(self, ctx:Context, insert:bool=True, unnest:bool=True) -> Context:
         from Hql.Expressions.Literals import Literal
