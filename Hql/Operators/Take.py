@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from Hql.Operators.Operator import Operator
+from Hql.Expressions.Literals import Integer
 
 if TYPE_CHECKING:
     from Hql.Expressions.References import NamedReference
-    from Hql.Expressions.Literals import Integer
     from Hql.Context import Context
 
 # Take, limits the number of results given an integer
@@ -23,8 +23,13 @@ class Take(Operator):
     @property
     def expr(self) -> Integer:
         expr = self._expr
-        assert expr
+        assert isinstance(expr, Integer)
         return expr
+
+    @expr.setter
+    def expr(self, value):
+        assert isinstance(value, Integer)
+        self._expr = value
 
     def to_dict(self):
         return {
