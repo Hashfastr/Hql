@@ -35,11 +35,7 @@ class Take(Operator):
         }
 
     def get_limits(self):
-        from Hql.Context import Context
-        from Hql.Data import Data
-
-        ctx = Context(Data())
-        limit = self.expr.eval(ctx)
+        limit = self.expr.value
         tables = [x.str() for x in self.tables]
 
         return {

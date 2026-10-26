@@ -29,7 +29,7 @@ class CSV(Database):
         self.files = []
         self.urls = []
         self.local_base = Path(config.get('local-base', './'))
-        self.http_base:str|None = config.get('http-base', None)
+        self.http_base:str = config.get('http-base', '')
         
         self.methods = [
             'file',
@@ -54,7 +54,7 @@ class CSV(Database):
         
     def from_url(self, url:str, limit:Optional[int]=None) -> Table:
         try:
-            url = f'{self.http_base}/{url}' if self.http_base is not None else url
+            url = f'{self.http_base}/{url}' if self.http_base else url
             
             res = requests.get(url)
             if res.status_code != 200:

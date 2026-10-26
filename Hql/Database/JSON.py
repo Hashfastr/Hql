@@ -7,8 +7,13 @@ from Hql.Context import Context, register_database
 import os
 import requests
 import logging
+from pathlib import Path
 
-from typing import Optional
+from typing import TYPE_CHECKING, Optional, Union
+
+if TYPE_CHECKING:
+    from Hql.Operators import Operator
+    from Hql.Compiler import BranchDescriptor
 
 # Index in a database to grab data from, extremely simple.
 @register_database('JSON')
@@ -17,11 +22,11 @@ class JSON(Database):
         Database.__init__(self, config, name=name)
         
         self.name = name
-        self.files:list[Path] = []
+        self.files:list[str] = []
         self.urls:list[str] = []
         conf = config.get('conf', dict())
-        self.local_base = Path(conf.get('local-base', None))
-        self.http_base = conf.get('http-base', None)
+        self.local_base = Path(conf.get('local-base', './'))
+        self.http_base:str = conf.get('http-base', '')
 
         if not (self.local_base or self.http_base):
             raise hqle.ConfigException('JSON database config missing both local-base and http-base params')
@@ -34,14 +39,14 @@ class JSON(Database):
 
         self.limits:dict[str, int] = dict()
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'type': self.type,
-            'files': [self.local_base / x for x in self.files],
-            'urls': [self.http_base + x for x in self.urls],
-            'limits': self.limits
-        }
+    # def to_dict(self):
+    #     return {
+    #         'id': self.id,
+    #         'type': self.type,
+    #         'files': [(self.local_base / x).as_posix() for x in self.files],
+    #         'urls': [self.http_base + x for x in self.urls],
+    #         'limits': self.limits
+    #     }
 
     def add_op(self, op: Union['Operator', 'BranchDescriptor']) -> tuple[Union['Operator', None], Union['Operator', None]]:
         from Hql.Compiler import BranchDescriptor
@@ -55,6 +60,7 @@ class JSON(Database):
             return None, op
 
         limits = op.get_limits()
+        print(limits)
 
         if not limits['tables']:
             self.set_limit('*', limits['limit'])
@@ -140,11 +146,16 @@ class JSON(Database):
             logging.critical('If basepath is not specified it is taken as literal for http, or current dir for file.')
             raise hqle.QueryException('No file provided to JSON database')
 
+        def file_2_table(path:Path, name:str) -> Table:
+            with open(path) as f:
+                data = self.load_data(f, name)
+            return Table(init_data=data, name=name)
+
         files:list[Path] = []
         for i in self.files:
-            files += list((self.local_base / i).parent.glob(i.name))
+            files += list((self.local_base / i).parent.glob(i))
         
-        tables = []
+        tables:list[Table] = []
         for file in files:
             if file.is_file():
                 tables.append(file_2_table(file, file.name))
