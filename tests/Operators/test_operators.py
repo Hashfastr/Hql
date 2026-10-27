@@ -218,6 +218,70 @@ class TestUnnest:
         assert Unnest(NamedReference("f"), [Wildcard("*")]).gets_all(ctx) is True
         assert Unnest(NamedReference("f"), [NamedReference("t1")]).gets_all(ctx) is False
 
+    def test_eval_expands_and_flattens_multivalue_objects(self):
+        from Hql.Context import Context
+        from Hql.Data import Data, Table
+
+        table = Table(
+            init_data=[
+                {
+                    "associated_sig_guide_map": {},
+                    "tags": [
+                        {"id": 1, "name": "first"},
+                        {"id": 2, "name": "second"},
+                    ],
+                },
+                {
+                    "associated_sig_guide_map": {},
+                    "tags": [{"id": 3, "name": "third"}],
+                },
+                {
+                    "associated_sig_guide_map": {},
+                    "tags": [],
+                },
+            ],
+            name="events",
+        )
+        ctx = Context(data=Data([table]))
+
+        result = Unnest(
+            NamedReference("tags"), [Wildcard("*")]
+        ).eval(ctx)
+
+        assert result.data["events"].to_dicts() == [
+            {"id": 1, "name": "first"},
+            {"id": 2, "name": "second"},
+            {"id": 3, "name": "third"},
+        ]
+
+    def test_eval_expands_multivalue_scalars_into_typed_column(self):
+        from Hql.Context import Context
+        from Hql.Data import Data, Table
+        from Hql.Types.Hql import HqlTypes as hqlt
+
+        table = Table(
+            init_data=[
+                {"values": [1, 2]},
+                {"values": [3]},
+                {"values": []},
+            ],
+            name="events",
+        )
+        ctx = Context(data=Data([table]))
+
+        result = Unnest(
+            NamedReference("values"), [Wildcard("*")]
+        ).eval(ctx)
+        result_table = result.data["events"]
+
+        assert result_table.df.columns == ["int"]
+        assert result_table.to_dicts() == [
+            {"int": 1},
+            {"int": 2},
+            {"int": 3},
+        ]
+        assert isinstance(result_table.schema.schema.schema["int"], hqlt.int)
+
 
 # ---------------------------------------------------------------------------
 # Deepcopy regression — covers every operator in Hql/Operators/

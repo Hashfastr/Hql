@@ -618,14 +618,25 @@ class HqlTypes():
         """Represent a variable-length collection of one element type."""
 
         def __init__(self, inner:HqlTypes.HqlType):
-            self.inner = inner
             assert inner.proto
             self.proto = pl.List(inner.proto)
+            self._inner = inner
 
             HqlTypes.HqlType.__init__(self, inner=inner)
             
             self.priority = 5
             self.super = []
+
+        @property
+        def inner(self) -> HqlTypes.HqlType:
+            inner = self._inner
+            assert isinstance(inner, HqlTypes.HqlType)
+            return inner
+
+        @inner.setter
+        def inner(self, val:Optional[CompilerType]):
+            assert val is None or isinstance(val, HqlTypes.HqlType)
+            self._inner = val
         
         def pl_schema(self):
             if isinstance(self.inner, type):

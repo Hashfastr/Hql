@@ -204,7 +204,7 @@ class Schema():
             return {path[0]: val}
 
         new = un(self.schema.schema, path.list())
-        return Schema(schema=hqlt.object(new)).normalize()
+        return Schema(schema=hqlt.object(new))
 
     
     def copy(self):

@@ -297,7 +297,7 @@ class Table():
 
         return Table(df=df, schema=schema, name=self.name)
 
-    def unnest(self, field:Reference) -> Union[Series, Table]:
+    def unnest(self, field:Reference) -> Table:
         from Hql.Data import Schema
 
         if not isinstance(self.schema, Schema):
@@ -307,19 +307,31 @@ class Table():
             raise hqle.QueryException(f"Could not unnest field {field.deparse()} from table {self.name}")
         
         df = self.get_value(field)
-        dtype = self.schema.unnest(field)
-        if isinstance(dtype, hqlt.object):
-            dtype = dtype.schema
-        
-        if isinstance(df, pl.Series):
-            if not isinstance(dtype, hqlt.HqlType):
-                raise hqle.CompilerException('Attempting to initialize a series with a non-hqlt type')
+        dtype = self.schema.unnest(field).strip()
 
-            return Series(df, stype=dtype)            
-            
-        else:
+        if isinstance(df, pl.Series):
+            if isinstance(dtype, hqlt.multivalue):
+                df = df.explode(empty_as_null=False)
+                dtype = dtype.inner
+
+                if isinstance(dtype, hqlt.object):
+                    df = df.struct.unnest()
+                else:
+                    name = dtype.name
+                    df = df.to_frame(name=name)
+                    dtype = hqlt.object({name: dtype})
+
+        if not isinstance(df, pl.DataFrame):
+            raise hqle.CompilerException(f'Table unnest resulted in Non-DataFrame: {type(df)}')
+
+        if isinstance(dtype, hqlt.object):
             schema = Schema(schema=dtype)
-            return Table(df=df, schema=schema, name=self.name)
+        elif isinstance(dtype, Schema):
+            schema = dtype
+        else:
+            raise hqle.CompilerException(f'Table unnest resulted in invalid data type: {type(dtype)}')
+
+        return Table(df=df, schema=schema, name=self.name)
 
     '''
     Returns the deep stripped value of a DataFrame with a single value.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Sequence, Union
 from Hql.Operators.Operator import Operator
+from Hql.Exceptions import HqlExceptions as hqle
 
 if TYPE_CHECKING:
     from Hql.Expressions import Expression
@@ -53,7 +54,8 @@ class Unnest(Operator):
             # loop through matching tables
             for j in tables:
                 new_table = j.unnest(self.field)
-                assert isinstance(new_table, Table)
+                if not isinstance(new_table, Table):
+                    raise hqle.CompilerException(f'Unnesting table returned Non-table type {type(new_table)}')
                 ctx.data.replace_table(new_table)
 
         return ctx
