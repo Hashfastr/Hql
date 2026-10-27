@@ -13,7 +13,7 @@ class MvExpand(Operator):
 
     def __init__(self, exprs:list[ToClause], limit:Optional[Integer]=None):
         Operator.__init__(self)
-        self.exprs = exprs
+        self.exprs:list[ToClause] = exprs
         self.limit = limit
 
     @property

@@ -127,22 +127,29 @@ class ProjectRename(Project):
         super().__init__(exprs)
         self.optok = 'project-rename'
 
-    def rename(self, ctx:Context, table:Table):
-        for i in self.exprs:
-            vpath = i.value.eval(ctx, as_list=True)
-            value = table.get_value(vpath)
-            vtype = table.schema.get_type(vpath)
+        for i in exprs:
+            assert isinstance(i.value, Reference)
 
-            table.drop(vpath)
+    def rename(self, table:Table):
+        from Hql.Data import Schema
+
+        for i in self.exprs:
+            assert isinstance(i, NamedExpression)
+            assert isinstance(i.value, Reference)
+
+            value = table.get_value(i.value)
+            vtype = table.schema.get_type(i.value)
+            if isinstance(vtype, Schema):
+                vtype = vtype.schema
+            table.drop(i.value)
 
             for j in i.paths:
-                dest = j.eval(ctx, as_list=True)
-                table.insert(dest, value, vtype)
+                table.insert(j, value, vtype)
 
         return table
 
     def eval(self, ctx:Context) -> Context:
         for table in ctx.data:
-            self.rename(ctx, table)
+            self.rename(table)
 
         return ctx
