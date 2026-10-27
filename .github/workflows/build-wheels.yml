@@ -27,6 +27,10 @@ jobs:
             arch: arm64
             artifact: macos-arm64
             wheel_pattern: "*cp314-cp314t-macosx_11_0_arm64.whl"
+          - runner: macos-15-intel
+            arch: x86_64
+            artifact: macos-x86_64
+            wheel_pattern: "*cp314-cp314t-macosx_10_12_x86_64.whl"
           - runner: ubuntu-24.04-arm
             arch: aarch64
             artifact: manylinux-aarch64
