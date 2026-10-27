@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.24.0"
+__generated_with = "0.25.2"
 app = marimo.App(width="medium")
 
 
@@ -15,7 +15,7 @@ def _():
 
     import logging
     logging.getLogger().setLevel(logging.INFO)
-    return Path, json, mo
+    return Hql, Path, json, mo
 
 
 @app.cell(hide_code=True)
@@ -56,7 +56,7 @@ def _(Path, mo):
             """
         ).callout(kind="danger"),
     )
-    return
+    return (conf_dir,)
 
 
 @app.cell
@@ -96,11 +96,11 @@ def _():
         - Unlikely
     level: high
     '''
-    return
+    return (sigma,)
 
 
-app._unparsable_cell(
-    r"""
+@app.cell
+def _(Hql, conf_dir, sigma):
     from Hql.Parser.Sigma import SigmaParser
 
     # sets the target in the config for a given database then compiles it with that target
@@ -125,18 +125,17 @@ app._unparsable_cell(
         elif target in ('spl', 'spl2'):
             splunk_conf = conf.get_database('splunk')
             splunk_conf['conf']['compiler'] = target
-            conf.get_database('splunk', splunk_conf)
+            conf.set_database('splunk', splunk_conf)
         else:
-            print(f'invalid target {target}}')    
+            print(f'invalid target {target}')    
 
         # precompilation
         compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac(), time=False)
 
         # compilation
         return compiler.root.upstream[0].simple_compile()
-    """,
-    name="_"
-)
+
+    return (compile_with_target,)
 
 
 @app.cell(hide_code=True)
@@ -208,7 +207,10 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(compile_with_target, json):
+    spl_compiled = compile_with_target('spl')
+    print('index: ' + spl_compiled['index'])
+    print('query:\n' + json.dumps(spl_compiled['query'], indent=2))
     return
 
 

@@ -91,12 +91,10 @@ class SPLCompiler(Compiler):
     You'll want to replace this with something like a string that you'll query your database with.
     Default returns optimized operators for running in Hql-land
     '''
-    def compile(self, src:Union[Expression, Operator, Statement, None], prep:bool=True, **kwargs) -> tuple[Optional[object], Optional[object]]:
-        # from Hql.Expressions.Logic import Equality, NamedReference, Wildcard, StringLiteral
-        # from Hql.Operators.ProjectAway import ProjectAway
+    def compile(self, src:Union[Expression, Operator, Statement, None], prep:bool=True, where:bool=False) -> tuple[Optional[object], Optional[object]]:
         from Hql.Operators import ProjectAway
         from Hql.Expressions.References import Wildcard, NamedReference
-        from Hql.Expressions.Logic import Equality
+        from Hql.Expressions.Logic import Equality, Logic
         from Hql.Expressions.Literals import StringLiteral
 
         if src == None:
@@ -122,7 +120,10 @@ class SPLCompiler(Compiler):
 
             return '\n'.join(ops), None
 
-        return self.from_name(src.type)(src, prep=prep, where=kwargs.get('where', False))
+        # Only predicates care whether they're rendered for search or where
+        if isinstance(src, Logic):
+            return self.from_name(src.type)(src, prep=prep, where=where)
+        return self.from_name(src.type)(src, prep=prep)
 
     '''
     By default, all of these return themselves as they are being
@@ -340,6 +341,8 @@ class SPLCompiler(Compiler):
         if prep:
             return op, None
 
+        out = ''
+
         acc, _ = self.compile(op.name, prep=False)
         assert isinstance(acc, str)
         name = acc
@@ -421,8 +424,8 @@ class SPLCompiler(Compiler):
         row = dict()
         for i in range(0, len(op.values), len(keys)):
             for idx, j in enumerate(op.values[i:i+len(keys)]):
-                assert isinstance(i, Literal)
-                row[keys[idx]] = i.value
+                assert isinstance(j, Literal)
+                row[keys[idx]] = j.value
             data.append(row)
             row = dict()
 
@@ -521,13 +524,14 @@ class SPLCompiler(Compiler):
     def ByExpression(self, expr:Hql.Expressions.ByExpression, prep:bool=True) -> tuple[object, object]:
         return expr, None
 
+
     def Function(self, expr:Hql.Functions.Function, prep:bool=True) -> tuple[object, object]:
         if prep:
             if expr.name not in self.supported_functions:
                 return None, expr
 
             for i in expr.args:
-                acc, rej = self.compile(i, prep=False)
+                _, rej = self.compile(i)
                 if rej:
                     return None, expr
 
@@ -536,26 +540,39 @@ class SPLCompiler(Compiler):
         args = []
         for i in expr.args:
             acc, _ = self.compile(i, prep=False)
-            assert isinstance(acc, str)
-            args.append(acc)
+            args.append(str(acc))
         args = ', '.join(args)
         name = self.supported_functions[expr.name]
 
         return f'{name}({args})', None
 
-    def DotCompositeFunction(self, expr:Hql.Expressions.DotCompositeFunction, prep:bool=True) -> tuple[object, object]:
+    def LogicFunction(self, expr:Hql.Functions.Logic.LogicFunction, prep:bool=True, where:bool=False) -> tuple[object, object]:
         return None, expr
 
-    def Equality(self, expr:Equality, prep:bool=True, **kwargs) -> tuple[object, object]:
-        from Hql.Expressions.Logic import Equality
+    def DotCompositeFunction(self, expr:Hql.Functions.DotCompositeFunction, prep:bool=True) -> tuple[object, object]:
+        return None, expr
+
+    def Equality(self, expr:Equality, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Equality, BasicRange, BetweenEquality, BinaryLogic
         from Hql.Expressions.References import Reference
+        from Hql.Expressions import Expression
 
         if prep:
+            # Break out BasicRange right hands into BetweenEqualities
+            ranges = [x for x in expr.rh if isinstance(x, BasicRange)]
+            if ranges:
+                exprs = [BetweenEquality(expr.lh, x.start, x.end, neq=expr.neq) for x in ranges]
+                rest = [x for x in expr.rh if not isinstance(x, BasicRange)]
+                if rest:
+                    exprs.append(Equality(expr.lh, rest, cs=expr.cs, neq=expr.neq))
+                # x !in (a, b) == x != a and x != b
+                return self.compile(BinaryLogic(exprs, logic_and=expr.neq))
+
             lh, rej = self.compile(expr.lh)
             if rej:
                 return None, expr
             assert isinstance(lh, Reference)
-            
+
             rh = []
             for i in expr.rh:
                 acc, rej = self.compile(i)
@@ -563,230 +580,248 @@ class SPLCompiler(Compiler):
                     return None, expr
                 assert isinstance(acc, Expression)
                 rh.append(acc)
-            
-            return Equality(lh, rh, neq=expr.neq, cs=expr.cs), None
 
-        where = kwargs.get('where', False)
+            return Equality(lh, rh, neq=expr.neq, cs=expr.cs), None
 
         lh, _ = self.compile(expr.lh, prep=False)
 
         rh = []
         for i in expr.rh:
             acc, _ = self.compile(i, prep=False)
-            assert isinstance(acc, str)
-            rh.append(acc)
+            rh.append(str(acc))
 
         if where:
             if expr.cs:
                 if len(rh) > 1:
-                    out = f'{lh} in ('
-                    out += ', '.join(rh)
-                    out += ')'
+                    out = f'in({lh}, ' + ', '.join(rh) + ')'
                 else:
                     out = f'{lh} == {rh[0]}'
             else:
                 pairs = []
                 for i in rh:
                     pairs.append(f'lower({lh}) == lower({i})')
-                out = ' or '.join(pairs)
-                out = f'({out})'
-
-            if expr.neq:
-                out = 'not ' + out
+                out = ' OR '.join(pairs)
+                if len(pairs) > 1:
+                    out = f'({out})'
 
         else:
             pairs = []
             for i in rh:
                 pairs.append(f'{lh}={i}')
-            out = ' or '.join(pairs)
-
-            if expr.neq:
+            out = ' OR '.join(pairs)
+            if len(pairs) > 1:
                 out = f'({out})'
-                out = 'NOT ' + out
+
+        if expr.neq:
+            out = f'NOT ({out})'
 
         return out, None
 
-    def Substring(self, expr:Hql.Expressions.Substring, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.Logic import Substring, NamedReference, Path, Expression, StringLiteral
+    def Substring(self, expr:Hql.Expressions.Logic.Substring, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Substring
+        from Hql.Expressions.References import Reference
+        from Hql.Expressions.Literals import StringLiteral
+        import re
 
         if prep:
             lh, rej = self.compile(expr.lh)
             if rej:
                 return None, expr
-            assert isinstance(lh, (NamedReference, Path))
-           
+            assert isinstance(lh, Reference)
+
             rh = []
             for i in expr.rh:
                 acc, rej = self.compile(i)
                 if rej:
                     return None, expr
-                assert isinstance(acc, Expression)
+                assert isinstance(acc, StringLiteral)
                 rh.append(acc)
-            
-            return Substring(lh, expr.op, rh), None
+
+            new = Substring(
+                lh,
+                rh,
+                term=expr.term,
+                logic_and=expr.logic_and,
+                neq=expr.neq,
+                cs=expr.cs,
+                startswith=expr.startswith,
+                endswith=expr.endswith
+            )
+            return new, None
 
         lh, _ = self.compile(expr.lh, prep=False)
         assert isinstance(lh, str)
 
-        where = kwargs.get('where', False)
-
-        if where:
-            pairs = []
-            for i in expr.rh:
+        pairs = []
+        for i in expr.rh:
+            if where:
+                value = re.escape(i.str())
                 if expr.startswith:
-                    value = '^' + i.quote('')
+                    value = '^' + value
                 elif expr.endswith:
-                    value = i.quote('') + '$'
+                    value = value + '$'
+                if not expr.cs:
+                    value = '(?i)' + value
+            else:
+                if expr.startswith:
+                    value = i.str() + '*'
+                elif expr.endswith:
+                    value = '*' + i.str()
                 else:
-                    value = i.quote('')
+                    value = '*' + i.str() + '*'
 
-                new = StringLiteral(value, verbatim=True)
-                acc, _ = self.compile(new, prep=False)
-                assert isinstance(acc, str)
+            new = StringLiteral(value, verbatim=True)
+            acc, _ = self.compile(new, prep=False)
+            assert isinstance(acc, str)
+
+            if where:
                 pairs.append(f'match({lh}, {acc})')
-
-            if expr.logic_and:
-                out = ' AND '.join(pairs)
             else:
-                out = ' OR '.join(pairs)
+                pairs.append(f'{lh}={acc}')
 
-        else:
-            pairs = []
-            for i in expr.rh:
-                if expr.startswith:
-                    value = i.quote('') + '*'
-                elif expr.endswith:
-                    value = '*' + i.quote('')
-                else:
-                    value = '*' + i.quote('') + '*'
+        out = (' AND ' if expr.logic_and else ' OR ').join(pairs)
+        if len(pairs) > 1:
+            out = f'({out})'
 
-                new = StringLiteral(value, verbatim=True)
-                acc, _ = self.compile(new, prep=False)
-                assert isinstance(acc, str)
-                pairs.append(lh + '=' + acc)
-
-            if expr.logic_and:
-                out = ' AND '.join(pairs)
-            else:
-                out = ' OR '.join(pairs)
+        if expr.neq:
+            out = f'NOT ({out})'
 
         return out, None
 
-    def Relational(self, expr:Hql.Expressions.Relational, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.Logic import Relational, NamedReference, Path, Expression
+    def Relational(self, expr:Hql.Expressions.Logic.Relational, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Relational
+        from Hql.Expressions.References import Reference
+        from Hql.Expressions import Expression
+
         if prep:
             lh, rej = self.compile(expr.lh)
             if rej:
                 return None, expr
-            assert isinstance(lh, (NamedReference, Path))
-            
+            assert isinstance(lh, Reference)
+
             rh, rej = self.compile(expr.rh[0])
             if rej:
                 return None, expr
             assert isinstance(rh, Expression)
-            
-            return Relational(lh, expr.op, [rh]), None
+
+            return Relational(lh, rh, expr.gt, expr.eq), None
 
         lh, _ = self.compile(expr.lh, prep=False)
         assert isinstance(lh, str)
-        
+
         rh, _ = self.compile(expr.rh[0], prep=False)
-        assert isinstance(rh, str)
 
-        op = expr.op
+        return f'{lh} {expr.build_op()} {rh}', None
 
-        return f'{lh} {op} {rh}', None
-
-    def BetweenEquality(self, expr:Hql.Expressions.BetweenEquality, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.Logic import BinaryLogic, Relational
+    def BetweenEquality(self, expr:Hql.Expressions.Logic.BetweenEquality, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import BetweenEquality
+        from Hql.Expressions.References import Reference
+        from Hql.Expressions.Literals import Literal
 
         if prep:
-            return expr, None
-
-        new = BinaryLogic(
-            Relational(expr.lh, '>=', [expr.start]),
-            [Relational(expr.lh, '<=', [expr.end])],
-            'and'
-        )
-        acc, _ = self.compile(new, prep=False)
-
-        return acc, None
-
-    def BinaryLogic(self, expr:Hql.Expressions.BinaryLogic, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.Logic import BinaryLogic
-        if prep:
-            exprs = [expr.lh] + expr.rh
-            accs = []
-            rejs = []
-            for i in exprs:
-                acc, rej = self.compile(i)
-                if rej:
-                    rejs.append(rej)
-                if acc:
-                    accs.append(acc)
-            
-            if expr.bitype == 'or':
-                if rejs:
-                    return None, expr
-                else:
-                    return expr, None
-            else:
-                acc = None
-                rej = None
-                if accs:
-                    acc = BinaryLogic(accs[0], accs[1:], 'and')
-                if rejs:
-                    rej = BinaryLogic(rejs[0], rejs[1:], 'and')
-                return acc, rej
-        
-        exprs = []
-        for i in [expr.lh] + expr.rh:
-            acc, _ = self.compile(i, prep=False, where=kwargs.get('where', False))
-            exprs.append(acc)
-
-        if expr.bitype == 'or':
-            out = ' or '.join(exprs)
-        else:
-            out = ' and '.join(exprs)
-
-        return out, None
-
-    def Not(self, expr:Hql.Expressions.Not, prep:bool=True) -> tuple[object, object]:
-        if prep:
-            _, rej = self.compile(expr.expr)
+            lh, rej = self.compile(expr.lh)
             if rej:
                 return None, expr
-            return expr, None
+            assert isinstance(lh, Reference)
 
-        inner = self.compile(expr.expr, prep=False, where=kwargs.get('where', False))
-        out = f'not {inner}'
+            start, rej = self.compile(expr.start)
+            if rej:
+                return None, expr
+            assert isinstance(start, Literal)
+
+            end, rej = self.compile(expr.end)
+            if rej:
+                return None, expr
+            assert isinstance(end, Literal)
+
+            return BetweenEquality(lh, start, end, neq=expr.neq), None
+
+        lh, _ = self.compile(expr.lh, prep=False)
+        start, _ = self.compile(expr.start, prep=False)
+        end, _ = self.compile(expr.end, prep=False)
+
+        out = f'({lh} >= {start} AND {lh} <= {end})'
+        if expr.neq:
+            out = f'NOT {out}'
+
         return out, None
 
-    def BasicRange(self, expr:Hql.Expressions.BasicRange, prep:bool=True) -> tuple[object, object]:
+    def BinaryLogic(self, expr:Hql.Expressions.Logic.BinaryLogic, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import BinaryLogic
+
+        if prep:
+            accs = []
+            rejs = []
+            for i in expr:
+                acc, rej = self.compile(i)
+
+                # Partially accepted nested logic can't be split safely
+                if isinstance(i, BinaryLogic) and rej:
+                    rejs.append(i)
+                    continue
+
+                if acc:
+                    accs.append(acc)
+                if rej:
+                    rejs.append(rej)
+
+            # Cannot salvage an or with any rejected branch
+            if rejs and not expr.logic_and:
+                return None, expr
+
+            acc = BinaryLogic(accs, logic_and=expr.logic_and) if accs else None
+            rej = BinaryLogic(rejs, logic_and=expr.logic_and) if rejs else None
+            return acc, rej
+
+        exprs = []
+        for i in expr:
+            acc, _ = self.compile(i, prep=False, where=where)
+            assert isinstance(acc, str)
+            if isinstance(i, BinaryLogic):
+                acc = f'({acc})'
+            exprs.append(acc)
+
+        out = (' AND ' if expr.logic_and else ' OR ').join(exprs)
+        return out, None
+
+    def Not(self, expr:Hql.Expressions.Logic.Not, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Not, Logic
+
+        if prep:
+            if not isinstance(expr.expr, Logic):
+                return None, expr
+
+            acc, rej = self.compile(expr.expr)
+            if rej:
+                return None, expr
+            assert isinstance(acc, Logic)
+            return Not(acc), None
+
+        inner, _ = self.compile(expr.expr, prep=False, where=where)
+        return f'NOT ({inner})', None
+
+    def BasicRange(self, expr:Hql.Expressions.Logic.BasicRange, prep:bool=True, where:bool=False) -> tuple[object, object]:
         return None, expr
-        
-    def Regex(self, expr:Hql.Expressions.Regex, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions import Expression, NamedReference, Path, StringLiteral, MultiString
+
+    def Regex(self, expr:Hql.Expressions.Logic.Regex, prep:bool=True, where:bool=False) -> tuple[object, object]:
+        from Hql.Expressions.References import Reference
+        from Hql.Expressions.Literals import StringLiteral
 
         if prep:
             if expr.g:
                 return None, expr
 
-            acc, rej = self.compile(expr.lh)
+            lh, rej = self.compile(expr.lh)
             if rej:
                 return None, expr
-            assert isinstance(acc, Expression)
-            lh = acc
+            assert isinstance(lh, Reference)
 
-            acc, rej = self.compile(expr.rh)
+            rh, rej = self.compile(expr.rh)
             if rej:
                 return None, expr
-            assert isinstance(acc, Expression)
-            rh = acc
-
-            assert isinstance(lh, (NamedReference, Path, StringLiteral))
-            expr.lh = lh
             assert isinstance(rh, StringLiteral)
+
+            expr.lh = lh
             expr.rh = rh
 
             return expr, None
@@ -805,83 +840,75 @@ class SPLCompiler(Compiler):
         if flags == '(?)':
             flags = ''
 
-        rh = StringLiteral(flags + expr.rh.quote(''), verbatim=True)
+        rh = StringLiteral(flags + expr.rh.str(), verbatim=True)
         rh, _ = self.compile(rh, prep=False)
 
         out = f'match({lh}, {rh})'
         return out, None
 
-    def TypeExpression(self, expr:Hql.Expressions.TypeExpression, prep:bool=True) -> tuple[object, object]:
+    def TypeExpression(self, expr:Hql.Expressions.Literals.TypeExpression, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
-    def StringLiteral(self, expr:Hql.Expressions.StringLiteral, prep:bool=True) -> tuple[object, object]:
+    def StringLiteral(self, expr:Hql.Expressions.Literals.StringLiteral, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
         return expr.quote('"'), None
-    
-    def MultiString(self, expr:Hql.Expressions.MultiString, prep:bool=True) -> tuple[object, object]:
-        return None, expr
 
-    def Integer(self, expr:Hql.Expressions.Integer, prep:bool=True) -> tuple[object, object]:
+    def MultiString(self, expr:Hql.Expressions.Literals.MultiString, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Literals import StringLiteral
+
+        # Component strings are already escaped, don't escape again
+        return self.StringLiteral(StringLiteral(expr.str(), verbatim=True), prep=prep)
+
+    def Integer(self, expr:Hql.Expressions.Literals.Integer, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
         return expr.value, None
 
-    def IP4(self, expr:Hql.Expressions.IP4, prep:bool=True) -> tuple[object, object]:
+    def IP4(self, expr:Hql.Expressions.Literals.IP4, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
-    def Float(self, expr:Hql.Expressions.Float, prep:bool=True) -> tuple[object, object]:
+    def Float(self, expr:Hql.Expressions.Literals.Float, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
         return str(expr.value), None
 
-    def Bool(self, expr:Hql.Expressions.Bool, prep:bool=True) -> tuple[object, object]:
+    def Bool(self, expr:Hql.Expressions.Literals.Bool, prep:bool=True, where:bool=False) -> tuple[object, object]:
         if prep:
             return expr, None
         ret = 'true' if expr.value else 'false'
         return ret, None
 
-    def Multivalue(self, expr:Hql.Expressions.Multivalue, prep:bool=True) -> tuple[object, object]:
+    def Multivalue(self, expr:Hql.Expressions.Literals.Multivalue, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
-    def Datetime(self, expr:Hql.Expressions.Datetime, prep:bool=True) -> tuple[object, object]:
+    def Datetime(self, expr:Hql.Expressions.Literals.Datetime, prep:bool=True) -> tuple[object, object]:
         from Hql.Expressions.Literals import StringLiteral
         if prep:
             return expr, None
-        
+
         acc = StringLiteral(expr.render(self.time_format), verbatim=True)
         datelit, _ = self.compile(acc, prep=False)
         acc = StringLiteral(self.time_format, verbatim=True)
         time_format, _ = self.compile(acc, prep=False)
 
         func = f'strptime({datelit}, {time_format})'
-        return func, None 
-    
-    def NamedReference(self, expr:Hql.Expressions.NamedReference, prep:bool=True) -> tuple[object, object]:
+        return func, None
+
+    def NamedReference(self, expr:Hql.Expressions.References.NamedReference, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
         return expr.name, None
 
-    def EscapedNamedReference(self, expr:Hql.Expressions.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
+    def EscapedNamedReference(self, expr:Hql.Expressions.References.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
         return f'{repr(expr.name)}', None
 
-    def Keyword(self, expr:Hql.Expressions.Keyword, prep:bool=True) -> tuple[object, object]:
+    def Wildcard(self, expr:Hql.Expressions.References.Wildcard, prep:bool=True) -> tuple[object, object]:
         return self.NamedReference(expr, prep=prep)
 
-    def Identifier(self, expr:Hql.Expressions.Identifier, prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Wildcard(self, expr:Hql.Expressions.Wildcard, prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Path(self, expr:Hql.Expressions.Path, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.References import EscapedNamedReference, NamedReference
-        from Hql.Expressions.Literals import StringLiteral, NamedExpression
-        from Hql.Operators.ProjectRename import ProjectRename
-        import random
-
+    def Path(self, expr:Hql.Expressions.References.Path, prep:bool=True) -> tuple[object, object]:
         if prep:
 
             '''
@@ -918,9 +945,8 @@ class SPLCompiler(Compiler):
         out = repr('.'.join(parts))
         return out, None
 
-    def NamedExpression(self, expr:Hql.Expressions.NamedExpression, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.References import NamedExpression, Expression
-        from Hql.Functions import Function
+    def NamedExpression(self, expr:Hql.Expressions.References.NamedExpression, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.References import NamedExpression
 
         if prep:
             good_paths = []
@@ -932,16 +958,11 @@ class SPLCompiler(Compiler):
                 else:
                     good_paths.append(acc)
 
-            if isinstance(expr.value, Function):
-                if expr.value.name not in self.supported_functions:
-                    return None, expr
-                value = expr.value
-            else:
-                value, rej = self.compile(expr.value)
-                assert isinstance(value, Expression)
-                if rej or not good_paths:
-                    return None, expr
-    
+            # Function handles its own support checks
+            value, rej = self.compile(expr.value)
+            if rej or not good_paths:
+                return None, expr
+
             good = NamedExpression(good_paths, value)
             bad = None
             if bad_paths:
@@ -955,8 +976,9 @@ class SPLCompiler(Compiler):
             assert isinstance(acc, str)
             paths.append(acc)
 
-        value, _ = self.compile(expr.value, prep=False)
-        assert isinstance(value, str)
+        # eval context, so any logic needs where syntax
+        value, _ = self.compile(expr.value, prep=False, where=True)
+        value = str(value)
 
         exprs = []
         for i in paths:

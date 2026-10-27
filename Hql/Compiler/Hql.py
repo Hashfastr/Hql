@@ -993,7 +993,7 @@ class HqlCompiler(Compiler):
         lh = acc.get_expr()
         assert isinstance(lh, References.Reference)
 
-        acc, _ = self.compile(expr.rh)
+        acc, _ = self.compile(expr.rh[0])
         desc.merge(acc)
         rh = acc.get_expr()
         assert isinstance(rh, Expression)

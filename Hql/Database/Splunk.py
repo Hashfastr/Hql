@@ -1,19 +1,16 @@
 from __future__ import annotations
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Context import Context, register_database
-from Hql.Expressions.Logic import Equality
 from Hql.Database import Database
-from Hql.Data import Schema, Data, Table
+from Hql.Data import Data
 from Hql.Compiler import SPLCompiler
 
-from typing import TYPE_CHECKING, Union
-import json
+from typing import TYPE_CHECKING, Optional, Union
+import datetime
 import logging
 
 if TYPE_CHECKING:
     from Hql.Operators.Operator import Operator
-    from Hql.Compiler import BranchDescriptor
-    from Hql.Expressions.References import NamedReference
 
 # Index in a database to grab data from, extremely simple.
 @register_database('Splunk')
@@ -31,7 +28,7 @@ class Splunk(Database):
             'index',
             'macro'
         ]
-        
+
         # skips ssl verification for https
         self.verify_certs = conf.get('verify_certs', True)
         self.use_ssl = conf.get('use_ssl', True)
@@ -50,12 +47,26 @@ class Splunk(Database):
 
         self.indexes = []
 
+        # Passed as search job time bounds rather than compiled into SPL
+        self.earliest:Optional[datetime.datetime] = None
+        self.latest:Optional[datetime.datetime] = None
+
     def add_index(self, index:str):
         self.indexes.append(index)
 
+    def add_timebound(self, start:datetime.datetime, end:datetime.datetime) -> tuple[Database, Union[None, Operator]]:
+        if not self.config.get('timeseries', True):
+            # Fake consume it if we don't use it
+            logging.debug(f'Skipping timeseries for {self.type}')
+            return self, None
+
+        self.earliest = start
+        self.latest = end
+        return self, None
+
     def to_dict(self):
         self.query = self.compile()
-        
+
         return {
             'id': self.id,
             'type': self.type,
@@ -64,44 +75,42 @@ class Splunk(Database):
         }
 
     def compile(self) -> str:
-        from Hql.Operators.Take import Take, Where
-        from Hql.Expressions.Literals import Integer, BinaryLogic, StringLiteral, NamedReference, PipeExpression
+        from Hql.Operators.Take import Take
+        from Hql.Operators.Where import Where
+        from Hql.Expressions.Logic import Equality, BinaryLogic
+        from Hql.Expressions.Literals import Integer, StringLiteral
+        from Hql.Expressions.References import NamedReference
         from Hql.Compiler import HqlCompiler
         from Hql.Config import Config
         import copy
-            
+
         compiler = copy.deepcopy(self.compiler)
 
         # Add preamble and recompile
         if self.preamble:
-            new_ops = self.preamble.pipes
-            
+            new_ops = list(self.preamble.pipes)
+
             if compiler.top_level_expr:
-                op = Where(compiler.top_level_expr)
-                new_ops += [op]
+                new_ops.append(Where(compiler.top_level_expr))
 
             new_ops += compiler.ops
 
             vestigial = HqlCompiler(Config())
             desc = vestigial.optimize(new_ops)
 
-            ops = []
+            # Rerun everything through a fresh compiler so preamble ops get prepped
+            compiler = SPLCompiler(time_format=compiler.time_format)
             for i in desc:
-                ops.append(i.get_op())
-
-            if compiler.top_level_expr:
-                compiler.top_level_expr = None
-                compiler.add_top_level(ops[0])
-                compiler.ops = ops[1:]
-            else:
-                compiler.ops = ops
+                _, rej = compiler.add_op(i.get_op())
+                if rej:
+                    raise hqle.CompilerException(f'Splunk preamble for {self.name} cannot be compiled to SPL: {rej.deparse()}')
 
         if self.indexes:
             indexes = []
             for i in self.indexes:
-                expr = Equality(NamedReference('index'), '=~', [StringLiteral(i, verbatim=True)])
+                expr = Equality(NamedReference('index'), [StringLiteral(i, verbatim=True)], cs=False)
                 indexes.append(expr)
-            expr = BinaryLogic(indexes[0], indexes[1:], 'or')
+            expr = BinaryLogic(indexes, logic_and=False)
             compiler.add_top_level(Where(expr))
 
         if self.limit > 0:
@@ -116,7 +125,9 @@ class Splunk(Database):
 
         auth_params = {
             'host': self.host,
-            'port': self.port
+            'port': self.port,
+            'scheme': 'https' if self.use_ssl else 'http',
+            'verify': self.verify_certs
         }
 
         if self.token:
@@ -133,20 +144,35 @@ class Splunk(Database):
         service = client.connect(**auth_params)
         return service
 
-    def eval(self, ctx:Context, **kwargs):
+    def eval(self, ctx:Context, **kwargs) -> Context:
         self.query = self.compile()
-        return self.make_query()
+        ctx.data = self.make_query()
+        return ctx
 
     def make_query(self, **kwargs) -> Data:
         from splunklib import results
         from Hql.Data import Table
 
+        if self.earliest:
+            kwargs.setdefault('earliest_time', self.earliest.isoformat())
+        if self.latest:
+            kwargs.setdefault('latest_time', self.latest.isoformat())
+
+        logging.debug(f'{self.type} query:\n{self.query}')
+
         conn = self.connect()
-        job = conn.jobs.create(self.query, output_mode='json', rf='*', **kwargs)
-        res = job.results(output_mode='json')
+        # blocking so results are complete when read
+        job = conn.jobs.create(self.query, exec_mode='blocking', rf='*', **kwargs)
+        # count=0 returns all results instead of the default 100
+        res = job.results(output_mode='json', count=0)
         reader = results.JSONResultsReader(res)
 
-        data = [x for x in reader if isinstance(x, dict)]
+        data = []
+        for i in reader:
+            if isinstance(i, results.Message):
+                logging.debug(f'Splunk {i.type}: {i.message}')
+            elif isinstance(i, dict):
+                data.append(i)
         table = Table(init_data=data, name=self.name)
 
         job.delete()

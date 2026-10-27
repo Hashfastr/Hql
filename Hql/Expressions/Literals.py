@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Sequence, Union, override
 import datetime
 
 from .__proto__ import Expression
@@ -168,9 +168,20 @@ class StringLiteral(Literal):
 class MultiString(StringLiteral):
     """Combine adjacent string literals into one logical string value."""
 
-    def __init__(self, strlits:Optional[list[StringLiteral]]=None):
-        self.strlits:list[StringLiteral] = strlits if strlits else []
-        Literal.__init__(self, hqlt.string(), None)
+    @property
+    def strlits(self) -> list[StringLiteral]:
+        """The strlits property."""
+        return self._strlits
+
+    @strlits.setter
+    def strlits(self, value:list[StringLiteral]):
+        for i in value:
+            assert isinstance(i, StringLiteral)
+        self._strlits = value
+
+    def __init__(self, strlits:list[StringLiteral]):
+        self.strlits = strlits
+        StringLiteral.__init__(self, self.str())
 
     def str(self) -> str:
         running = ''
