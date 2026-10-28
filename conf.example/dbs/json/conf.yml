@@ -6,6 +6,5 @@ database:
     http-base:  'https://hql.dev/datasets/'
   macro:
     network:
-      mapping: 'so-network'
       hql: |
-        database('json').file('tf11-so-network.json')
+        database('json').http('tf11-so-network.json')
