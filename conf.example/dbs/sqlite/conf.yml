@@ -1,0 +1,16 @@
+# Example HQL:
+#   database('nist-rds').index('METADATA')
+#   | take 100
+database:
+  name: 'nist-rds'
+  type: 'SQLite'
+  # Optional, default true. Most SQLite tables have no _hqltimestamp column,
+  # so disable this to keep time bounds out of the generated SQL.
+  timeseries: false
+  conf:
+    # Required path to the database file; ~ is expanded.
+    path: '~/data/nist-rds.db'
+
+    # Optional settings and their defaults.
+    # Default row cap; take can only lower it.
+    max_rows: 100000

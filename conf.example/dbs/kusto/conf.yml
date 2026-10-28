@@ -1,0 +1,18 @@
+# The Kusto client secret is a secret. Replace this placeholder during
+# deployment or generate this file from your secret manager; never commit a
+# usable secret. Requires the azure-kusto-data package.
+#
+# Example HQL:
+#   database('kusto').raw('SecurityEvent | where EventID == 4688')
+#   | take 100
+database:
+  name: 'kusto'
+  type: 'Kusto'
+  conf:
+    # All keys are required. Authentication is an Azure AD application
+    # (service principal) with access to the database.
+    database: '<DATABASE_NAME>'
+    cluster: 'https://<CLUSTER>.<REGION>.kusto.windows.net'
+    client_id: '<APPLICATION_CLIENT_ID>'
+    client_secret: '<INJECT_CLIENT_SECRET>'
+    tenant_id: '<AZURE_TENANT_ID>'

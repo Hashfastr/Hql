@@ -1,0 +1,30 @@
+# Splunk credentials are secrets. Replace these placeholders during deployment
+# or generate this file from your secret manager; never commit usable
+# credentials.
+#
+# Example HQL:
+#   database('splunk').index('windows')
+#   | where EventCode == 4688
+#   | take 100
+database:
+  name: 'splunk'
+  type: 'Splunk'
+  # Optional, default true. Set false to skip passing time bounds as the
+  # search job's earliest/latest time.
+  timeseries: true
+  conf:
+    # Required management API host.
+    host: 'splunk.example.invalid'
+    port: 8089
+
+    # Authenticate with a token, or with username and password.
+    # The token is used if both are set.
+    token: '<INJECT_SPLUNK_TOKEN>'
+    # username: 'admin'
+    # password: '<INJECT_SPLUNK_PASSWORD>'
+
+    # Optional settings and their defaults.
+    use_ssl: true
+    verify_certs: true
+    # Default row cap; take can only lower it.
+    limit: 100000

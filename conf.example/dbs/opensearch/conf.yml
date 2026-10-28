@@ -1,0 +1,30 @@
+# OpenSearch credentials are secrets. Replace these placeholders during
+# deployment or generate this file from your secret manager; never commit
+# usable credentials.
+#
+# Example HQL:
+#   database('graylog').index('pfsense*')
+#   | take 100
+database:
+  name: 'graylog'
+  type: 'Opensearch'
+  conf:
+    # Optional, default ['localhost:9200'].
+    hosts:
+      - 'opensearch.example.invalid:9200'
+
+    # Authentication: 'userpass' (default) or 'aws'. Any other value disables
+    # auth. userpass requires username and password.
+    auth_type: 'userpass'
+    username: 'admin'
+    password: '<INJECT_OPENSEARCH_PASSWORD>'
+
+    # aws signs requests with SigV4 using the default boto3 credential chain.
+    # aws_region: 'us-west-2'
+
+    # Optional, sent as the X-API-Key header.
+    # api_key: '<INJECT_OPENSEARCH_API_KEY>'
+
+    # Optional settings and their defaults.
+    use_ssl: true
+    verify_certs: true

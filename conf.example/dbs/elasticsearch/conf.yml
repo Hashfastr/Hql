@@ -1,0 +1,32 @@
+# Elasticsearch credentials are secrets. Replace this placeholder during
+# deployment or generate this file from your secret manager; never commit a
+# usable password.
+#
+# Example HQL:
+#   database('tf11-elastic').index('so-beats-*')
+#   | where event.module == 'sysmon'
+#   | take 100
+database:
+  name: 'tf11-elastic'
+  type: 'Elasticsearch'
+  # Optional, default true. Set false if the indexes have no timestamp field
+  # so time bounds are applied locally instead of pushed to Elasticsearch.
+  timeseries: true
+  conf:
+    # Required. A list of hosts, or a single 'host' string.
+    hosts:
+      - 'https://elastic.example.invalid:9200'
+    username: 'elastic'
+    password: '<INJECT_ELASTIC_PASSWORD>'
+
+    # Optional settings and their defaults.
+    # 'lucene' compiles to a query_string query, 'dsl' to Query DSL.
+    compiler: 'lucene'
+    verify_certs: true
+    # Request timeout in seconds.
+    timeout: 10
+    # Default row cap; take can only lower it.
+    limit: 100000
+    # Scroll page size (max 10000) and scroll context keep-alive.
+    scroll_max: 10000
+    scroll_time: '1m'

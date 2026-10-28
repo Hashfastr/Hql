@@ -201,6 +201,10 @@ class Compiler():
     def Function(self, expr:Hql.Functions.Function, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
+    # Logic functions are still functions, fall back to Function handling by default
+    def LogicFunction(self, expr:Hql.Functions.Logic.LogicFunction, prep:bool=True) -> tuple[object, object]:
+        return self.Function(expr, prep=prep)
+
     def FuncExpr(self, expr:Hql.Expressions.FuncExpr, prep:bool=True) -> tuple[object, object]:
         return None, expr
 

@@ -1,0 +1,17 @@
+# Example HQL:
+#   database('csv').file('Tracer FIRE 14-solves.csv')
+#   database('csv').http('student_habits_performance.csv')
+#   database('csv').macro('solves')
+database:
+  name: 'csv'
+  type: 'CSV'
+  conf:
+    # Optional settings and their defaults.
+    # Directory that .file() paths are resolved against.
+    local-base: './'
+    # Prefix joined to .http() paths. Leave empty to pass full URLs to .http().
+    http-base: ''
+  macro:
+    solves:
+      hql: |
+        database('csv').file('Tracer FIRE 14-solves.csv')
