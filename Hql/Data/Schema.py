@@ -174,10 +174,8 @@ class Schema():
 
     # Isolate the schema at a given path
     def select(self, path:Reference) -> Schema:
-        cur = self.unnest(path).schema.schema
-        for part in path.list()[1:][::-1]:
-            cur = {part: cur}
-        return Schema(schema=cur)
+        # unnest already rebuilds the full path around the value
+        return self.unnest(path)
 
     def select_many(self, paths:Sequence[Reference]):
         schemas = []
