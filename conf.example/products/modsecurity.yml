@@ -1,7 +1,0 @@
-product:
-  modsecurity:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

@@ -1,7 +1,0 @@
-category:
-  file_change:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('file_change').product('*')

@@ -1,7 +1,0 @@
-category:
-  antivirus:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('antivirus').product('*')

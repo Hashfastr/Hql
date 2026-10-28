@@ -1,7 +1,0 @@
-category:
-  file_block_executable:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('file_block_executable').product('*')

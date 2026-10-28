@@ -1,7 +1,0 @@
-category:
-  raw_access_thread:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('raw_access_thread').product('*')

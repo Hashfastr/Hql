@@ -1,7 +1,0 @@
-category:
-  wmi_event:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('wmi_event').product('*')

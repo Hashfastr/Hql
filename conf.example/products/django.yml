@@ -1,7 +1,0 @@
-product:
-  django:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

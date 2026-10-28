@@ -1,7 +1,0 @@
-category:
-  file_rename:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('file_rename').product('*')

@@ -1,7 +1,0 @@
-category:
-  clipboard_capture:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('clipboard_capture').product('*')

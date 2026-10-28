@@ -1,7 +1,0 @@
-product:
-  juniper:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

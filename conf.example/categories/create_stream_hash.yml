@@ -1,7 +1,0 @@
-category:
-  create_stream_hash:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('create_stream_hash').product('*')

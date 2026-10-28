@@ -1,7 +1,0 @@
-category:
-  process_creation:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('process_creation').product('*')

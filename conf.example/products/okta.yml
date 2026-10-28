@@ -1,7 +1,0 @@
-product:
-  okta:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

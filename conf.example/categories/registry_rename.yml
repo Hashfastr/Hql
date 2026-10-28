@@ -1,7 +1,0 @@
-category:
-  registry_rename:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('registry_rename').product('*')

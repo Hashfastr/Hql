@@ -1,7 +1,0 @@
-category:
-  pipe_created:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('pipe_created').product('*')

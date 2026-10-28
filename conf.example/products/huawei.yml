@@ -1,7 +1,0 @@
-product:
-  huawei:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

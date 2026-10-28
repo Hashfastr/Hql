@@ -1,7 +1,0 @@
-category:
-  image_load:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('image_load').product('*')

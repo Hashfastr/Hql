@@ -1,7 +1,0 @@
-category:
-  sysmon_error:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('sysmon_error').product('*')

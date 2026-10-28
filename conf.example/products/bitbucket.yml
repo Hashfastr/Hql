@@ -1,7 +1,0 @@
-product:
-  bitbucket:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

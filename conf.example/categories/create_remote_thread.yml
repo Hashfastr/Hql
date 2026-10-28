@@ -1,7 +1,0 @@
-category:
-  create_remote_thread:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('create_remote_thread').product('*')

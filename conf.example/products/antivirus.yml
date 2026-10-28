@@ -1,7 +1,0 @@
-product:
-  antivirus:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

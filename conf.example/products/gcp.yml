@@ -1,7 +1,0 @@
-product:
-  gcp:
-    configured: False
-    services:
-      all:
-        hql: |
-          database('')

@@ -1,7 +1,0 @@
-category:
-  network_connection:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('network_connection').product('*')

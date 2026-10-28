@@ -1,7 +1,0 @@
-category:
-  file_access:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('file_access').product('*')

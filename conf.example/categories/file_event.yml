@@ -1,7 +1,0 @@
-category:
-  file_event:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('file_event').product('*')

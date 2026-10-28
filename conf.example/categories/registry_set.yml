@@ -1,7 +1,0 @@
-category:
-  registry_set:
-    configured: False
-    products:
-      all:
-        hql: |
-          category('registry_set').product('*')
