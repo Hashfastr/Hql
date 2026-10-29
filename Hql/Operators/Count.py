@@ -27,6 +27,7 @@ class Count(Operator):
         return d
 
     def eval(self, ctx:Context) -> Context:
+        from polars import DataFrame, String, Int64
         from Hql.Data import Data, Table
 
         counts = dict()
@@ -38,8 +39,13 @@ class Count(Operator):
             new_data = []
             for count in counts:
                 new_data.append({'Table': count, 'Count': counts[count]})
-            
-            new_table = Table(init_data=new_data, name=self.name.str())
+
+            # Data shared with other contexts, add to a copy
+            ctx = self.copy_tables(ctx)
+            if new_data:
+                new_table = Table(init_data=new_data, name=self.name.str())
+            else:
+                new_table = Table(df=DataFrame({'Table': [], 'Count': []}, schema={'Table': String, 'Count': Int64}), name=self.name.str())
             ctx.data.add_table(new_table)
             
             return ctx
@@ -47,6 +53,10 @@ class Count(Operator):
         # Replace tables with counts
         else:
             ctx = ctx.copy()
+
+            # Nothing left to count, e.g. a where dropped every table
+            if not counts:
+                counts['count'] = 0
 
             new_tables = []
             for name in counts:
