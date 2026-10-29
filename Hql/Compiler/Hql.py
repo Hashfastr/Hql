@@ -612,13 +612,15 @@ class HqlCompiler(Compiler):
             desc.merge(acc)
             exprs.append(acc.get_expr())
 
-        acc, _ = self.ByExpression(op.by_expr)
-        desc.merge(acc)
-        by_expr = acc.get_expr()
+        by_expr = None
+        if op.by_expr is not None:
+            acc, _ = self.ByExpression(op.by_expr)
+            desc.merge(acc)
+            by_expr = acc.get_expr()
 
-        # Mostly done to shut my linter up
-        if not isinstance(by_expr, Aggregation.ByExpression):
-            raise hqle.CompilerException(f'ByExpression returned non-ByExpression expr type {type(by_expr)}')
+            # Mostly done to shut my linter up
+            if not isinstance(by_expr, Aggregation.ByExpression):
+                raise hqle.CompilerException(f'ByExpression returned non-ByExpression expr type {type(by_expr)}')
 
         desc.op = Operators.Summarize(exprs, by_expr)
         return desc, None

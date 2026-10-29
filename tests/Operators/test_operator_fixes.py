@@ -394,3 +394,56 @@ class TestJoinEval:
         data["t"].df = data["t"].df.clear()
 
         assert join.gen_optimization(data) is None
+
+
+# ---------------------------------------------------------------------------
+# summarize
+# ---------------------------------------------------------------------------
+
+from Hql.Functions.count import count
+from Hql.Operators.Summarize import Summarize
+
+
+class TestSummarizeEval:
+    def test_without_by_aggregates_whole_table(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}, {"a": 2}, {"a": 2}], name="t"))
+
+        result = Summarize([count([])], None).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [{"count_": 3}]
+        # Input left alone
+        assert "__hql_summarize_all__" not in ctx.data["t"].df.columns
+
+    def test_without_by_per_table(self):
+        ctx = make_ctx(
+            Table(init_data=[{"a": 1}], name="l"),
+            Table(init_data=[{"a": 1}, {"a": 2}], name="u"),
+        )
+
+        result = Summarize([count([])], None).eval(ctx)
+
+        assert result.data["l"].to_dicts() == [{"count_": 1}]
+        assert result.data["u"].to_dicts() == [{"count_": 2}]
+
+    def test_with_by_still_groups(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}, {"a": 2}, {"a": 2}], name="t"))
+
+        result = Summarize([count([])], ByExpression([NamedReference("a")])).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [
+            {"a": 1, "count_": 1},
+            {"a": 2, "count_": 2},
+        ]
+
+    def test_compiles_without_by(self):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Config import Config
+        from Hql.Parser import Parser
+
+        parser = Parser("datatable (a: int) [1, 2] | summarize count()")
+        parser.assemble()
+        compiler = HqlCompiler(Config(), parser.assembly)
+
+        ops = [x for x in compiler.root.ops if isinstance(x, Summarize)]
+        assert len(ops) == 1
+        assert ops[0].by_expr is None

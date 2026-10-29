@@ -26,11 +26,29 @@ class Summarize(Operator):
 
         return out
 
+    # Placeholder group key used to aggregate a whole table when there's no by
+    ALL_KEY = '__hql_summarize_all__'
+
+    def group_all(self, ctx:Context) -> Context:
+        from polars import lit
+        from Hql.Data import Schema
+        from Hql.Expressions.References import NamedReference
+
+        ctx = self.copy_tables(ctx)
+        for table in ctx.data:
+            table.agg = table.df.group_by(lit(True).alias(self.ALL_KEY))
+            table.agg_paths = [NamedReference(self.ALL_KEY)]
+            table.agg_schema = Schema()
+        return ctx
+
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Table
+        from Hql.Expressions.References import NamedReference
 
         if self.by_expr is not None:
             ctx = self.by_expr.eval(ctx)
+        else:
+            ctx = self.group_all(ctx)
 
         agg_data = []
         for expr in self.aggregate_exprs:
@@ -38,8 +56,19 @@ class Summarize(Operator):
 
         new = []
         for table in ctx.data:
+            # Without a by there are no key columns to keep
+            if self.by_expr is None:
+                new.append(Table(name=table.name))
+                continue
             table = Table(table.agg.agg(), schema=table.agg_schema, name=table.name)
             new.append(table)
 
         ctx.data = Data.merge([Data(tables=new)] + agg_data)
+
+        if self.by_expr is None:
+            key = NamedReference(self.ALL_KEY)
+            for table in ctx.data:
+                if self.ALL_KEY in table.df.columns:
+                    table.drop(key)
+
         return ctx
