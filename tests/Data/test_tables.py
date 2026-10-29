@@ -275,3 +275,78 @@ class TestTableInitData:
 
         assert table.df.to_dicts() == [{'n': {'m': [1]}}, {'n': {'m': [2, 3]}}]
         assert isinstance(raw(table)['n']['m'], hqlt.multivalue)
+
+
+class TestTableStrip:
+    def test_single_multi_field_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}]}), name='t').strip()
+
+        assert table.df.to_dicts() == [{'b': 1, 'c': 2}]
+        assert set(raw(table)) == {'b', 'c'}
+
+    def test_extend_with_struct_value(self):
+        from Hql.Operators.Extend import Extend
+
+        ctx = Context(Data([Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}], 'z': [0]}), name='t')]))
+        out = Extend([NamedExpression([N('y')], N('a'))]).eval(ctx)
+
+        assert out.data['t'].df.to_dicts() == [{'y': {'b': 1, 'c': 2}, 'a': {'b': 1, 'c': 2}, 'z': 0}]
+
+
+class TestTableUnnest:
+    def test_single_key_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1}], 'z': [0]}), name='t').unnest(N('a'))
+
+        assert table.df.to_dicts() == [{'b': 1}]
+        assert list(raw(table)) == ['b']
+
+    def test_stops_at_requested_level(self):
+        df = pl.DataFrame({'a': [{'b': {'c': 1, 'd': 2}}], 'z': [0]})
+        table = Table(df=df, name='t').unnest(N('a'))
+
+        assert table.df.columns == ['b']
+        assert set(raw(table)['b']) == {'c', 'd'}
+
+    def test_multivalue_of_structs(self):
+        df = pl.DataFrame({'a': [[{'b': 1, 'c': 2}], [{'b': 3, 'c': 4}]]})
+        table = Table(df=df, name='t').unnest(N('a'))
+
+        assert table.df.to_dicts() == [{'b': 1, 'c': 2}, {'b': 3, 'c': 4}]
+        assert set(raw(table)) == {'b', 'c'}
+
+
+class TestDropThroughScalar:
+    def test_table_drop_keeps_scalar(self):
+        table = Table(df=pl.DataFrame({'a': [1], 'z': [0]}), name='t')
+        table.drop(P('a', 'b'))
+
+        assert table.df.columns == ['a', 'z']
+        assert set(raw(table)) == {'a', 'z'}
+
+    def test_schema_drop_keeps_scalar(self):
+        schema = Schema(schema={'a': hqlt.long(), 'z': hqlt.long()})
+        schema.drop(P('a', 'b'))
+
+        assert set(schema.schema.schema) == {'a', 'z'}
+
+
+class TestZeroRowTables:
+    def test_assert_field(self):
+        table = Table(df=pl.DataFrame({'x': pl.Series([], dtype=pl.Int64)}))
+
+        assert table.assert_field(N('x'))
+
+    def test_keeps_explicit_schema(self):
+        df = pl.DataFrame({'x': pl.Series([], dtype=pl.Int64)})
+        table = Table(df=df, schema={'x': hqlt.string()})
+
+        assert table.df.schema == pl.Schema({'x': pl.String})
+        assert isinstance(raw(table)['x'], hqlt.string)
+
+    def test_drop_keeps_struct(self):
+        df = pl.DataFrame({'a': pl.Series([], dtype=pl.Struct({'b': pl.Int64, 'c': pl.Int64}))})
+        table = Table(df=df)
+        table.drop(P('a', 'b'))
+
+        assert table.df.schema == pl.Schema({'a': pl.Struct({'c': pl.Int64})})
+        assert list(raw(table)['a']) == ['c']

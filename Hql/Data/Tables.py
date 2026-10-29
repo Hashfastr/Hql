@@ -78,11 +78,11 @@ class Table():
             pl_schema = schema.gen_pl_schema()
             self.df = pl.from_dicts(init_data, schema=pl_schema)
         
-        elif not self.df.is_empty() and schema:
+        elif self.df.width and schema:
             self.schema = schema
             self.df = schema.apply(self.df)
 
-        elif not self.df.is_empty() and not schema:
+        elif self.df.width and not schema:
             self.schema = Schema(data=self.df)
 
         elif schema:
@@ -147,8 +147,13 @@ class Table():
                     if not isinstance(rec, pl.DataFrame):
                         raise hqle.CompilerException('Logic error? Final recursion step hit before end.')
 
-                    if not rec.is_empty():
-                        new[col.name] = rec.to_struct()
+                    # width, zero row structs still have fields
+                    if rec.width:
+                        new[col.name] = rec.to_struct(col.name)
+
+                # Path goes deeper than this scalar, nothing to drop
+                else:
+                    new[col.name] = col
                 
             # Not dropping
             else:
@@ -344,7 +349,8 @@ class Table():
             raise hqle.QueryException(f"Could not unnest field {field.deparse()} from table {self.name}")
         
         df = self.get_value(field)
-        dtype = self.schema.unnest(field).strip()
+        # Exactly the field's type, strip would also descend through single key children
+        dtype = self.schema.schema[field]
 
         if isinstance(df, pl.Series):
             if isinstance(dtype, hqlt.multivalue):
@@ -404,7 +410,8 @@ class Table():
         # Using this instead of strip to ensure we're in sync
         if path:
             schema = self.schema.unnest(Path(path)).strip()
-            if isinstance(schema, hqlt.object):
+            # strip hands back a Schema when it stops on a multi field object
+            if isinstance(schema, Schema):
                 schema = schema.schema
         else:
             schema = self.schema.schema

@@ -308,6 +308,10 @@ class Schema():
                         if rec:
                             new[key] = rec
 
+                    # Path goes deeper than this scalar, nothing to drop
+                    else:
+                        new[key] = schema[key]
+
                 # Don't have to do anything
                 else:
                     new[key] = schema[key]
