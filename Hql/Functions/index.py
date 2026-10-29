@@ -56,7 +56,7 @@ class index(Function):
         index_name = self.index.str()
         
         if not receiver:
-            db = ctx.get_func('database')([]).eval(ctx)
+            db = self.default_db(ctx)
         else:
             db = receiver
         

@@ -35,6 +35,7 @@ class http(Function):
             i = i.preprocess(ctx)
             if not isinstance(i, StringLiteral):
                 raise hqle.QueryException(f'File function give argument that doesn\'t resolve to string literal: {type(i)}')
+            new.append(i)
 
         self.names = new
 
@@ -43,14 +44,16 @@ class http(Function):
     def eval(self, ctx: Context, receiver=None) -> object:
         from Hql.Database import Database
 
+        self.preprocess(ctx)
+
         db = receiver
         urls = [x.str() for x in self.names]
         
         if not db:
-            db = ctx.get_func('database')([]).eval(ctx)
+            db = self.default_db(ctx)
         
         if db and issubclass(type(db), Database) and db.has_method(self.name):
-            db.urls = urls
+            db.urls += urls
         else:
             raise hqle.CompilerException(f'Function {self.name} cannot be called on {type(db)}')
         

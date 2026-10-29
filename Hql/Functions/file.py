@@ -35,6 +35,7 @@ class file(Function):
             i = i.preprocess(ctx)
             if not isinstance(i, StringLiteral):
                 raise hqle.QueryException(f'File function give argument that doesn\'t resolve to string literal: {type(i)}')
+            new.append(i)
 
         self.names = new
 
@@ -43,11 +44,13 @@ class file(Function):
     def eval(self, ctx: Context, receiver=None) -> object:
         from Hql.Database import Database
 
+        self.preprocess(ctx)
+
         db = receiver
-        files = [x.str() for x in self.args]
+        files = [x.str() for x in self.names]
         
         if not db:
-            db = ctx.get_func('database')([]).eval(ctx)
+            db = self.default_db(ctx)
         
         if db and issubclass(type(db), Database) and db.has_method(self.name):
             db.files += files

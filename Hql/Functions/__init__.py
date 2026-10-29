@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from Hql.Expressions import Expression
     from Hql.Expressions.Literals import Literal
     from Hql.Data import Data, Series
+    from Hql.Database import Database
     from polars import Expr as plExpr
 
 class Function():
@@ -82,6 +83,14 @@ class Function():
         for table in ctx.data:
             data.add_table(Table(name=table.name, series=series))
         return data
+
+    def default_db(self, ctx:Context) -> Database:
+        '''
+        The configured default database, used when a database function
+        such as file() or index() is called without a receiver.
+        '''
+        dbconf = ctx.config.get_default_db()
+        return ctx.get_db(dbconf['type'])(dbconf, name=dbconf.get('name', 'default'))
 
     def polars(self) -> plExpr:
         return NotImplemented
