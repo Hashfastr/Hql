@@ -42,8 +42,9 @@ class Summarize(Operator):
         return ctx
 
     def eval(self, ctx:Context) -> Context:
+        from Hql.Context import Context
         from Hql.Data import Data, Table
-        from Hql.Expressions.References import NamedReference
+        from Hql.Expressions.References import NamedReference, NamedExpression
 
         if self.by_expr is not None:
             ctx = self.by_expr.eval(ctx)
@@ -51,8 +52,28 @@ class Summarize(Operator):
             ctx = self.group_all(ctx)
 
         agg_data = []
+        taken:dict[str, set] = dict()
         for expr in self.aggregate_exprs:
-            agg_data.append(expr.eval(ctx))
+            # Named aggregates build only their own renamed column
+            if isinstance(expr, NamedExpression):
+                res = expr.eval(ctx, insert=False, unnest=False)
+            else:
+                res = expr.eval(ctx)
+            res = res.data if isinstance(res, Context) else res
+
+            # Unnamed aggregates share default names, so suffix repeats
+            for table in res:
+                names = taken.setdefault(table.name, set())
+                for col in list(table.df.columns):
+                    if col not in names:
+                        continue
+                    i = 1
+                    while f'{col}{i}' in names:
+                        i += 1
+                    table.rename(NamedReference(col), NamedReference(f'{col}{i}'))
+                names.update(table.df.columns)
+
+            agg_data.append(res)
 
         new = []
         for table in ctx.data:
