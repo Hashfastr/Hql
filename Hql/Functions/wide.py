@@ -22,8 +22,22 @@ class wide(Function):
             
         self.val:Union[StringLiteral, Reference] = args[0]
 
-    def eval(self, ctx: Context, receiver=None) -> object:
+    def preprocess(self, ctx: Context, receiver=None) -> object:
         val = self.val.preprocess(ctx)
         if not isinstance(val, StringLiteral):
             raise hqle.ArgumentException(f'Invalid argument type {type(val)} passed to {self.name}') 
-        return StringLiteral(val.str().encode('utf-16le').decode('utf-8'))
+
+        # Use the raw value, str() gives the escaped form
+        raw = val.value.decode('utf-8').encode('utf-16le')
+        return StringLiteral(raw)
+
+    def eval(self, ctx: Context, receiver=None) -> object:
+        import polars as pl
+        from Hql.Data import Series
+        from Hql.Types.Hql import HqlTypes as hqlt
+
+        # UTF-16 bytes aren't valid UTF-8 in general, so keep them binary
+        wide = self.preprocess(ctx)
+        assert isinstance(wide, StringLiteral)
+        series = Series(pl.Series([wide.value], dtype=pl.Binary), hqlt.binary())
+        return self.broadcast(ctx, series)
