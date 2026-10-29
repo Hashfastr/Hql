@@ -267,6 +267,9 @@ class Compiler():
 
     def Datetime(self, expr:Hql.Expressions.Datetime, prep:bool=True) -> tuple[object, object]:
         return None, expr
+
+    def TimeDelta(self, expr:Hql.Expressions.Literals.TimeDelta, prep:bool=True) -> tuple[object, object]:
+        return None, expr
     
     def NamedReference(self, expr:Hql.Expressions.NamedReference, prep:bool=True) -> tuple[object, object]:
         return None, expr

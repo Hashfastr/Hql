@@ -1190,6 +1190,13 @@ class HqlCompiler(Compiler):
         desc.expr = expr
 
         return desc, None
+
+    def TimeDelta(self, expr: Literals.TimeDelta, prep:bool=True) -> tuple[BranchDescriptor, object]:
+        desc = BranchDescriptor()
+        desc.set_attr('types', hqlt.duration())
+        desc.expr = expr
+
+        return desc, None
     
     def NamedReference(self, expr:References.NamedReference, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Database import Database

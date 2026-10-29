@@ -366,19 +366,20 @@ class TimeDelta(Literal):
             }
             '''
             
+            # ms and us are the short forms deparse emits
             maps = {
                 'days': r'd(ays?)?',
                 'seconds': r's((ec)(ond)?s?)?',
-                'microseconds': r'micro(s(((ec)(ond)?)?s?))?',
-                'milliseconds': r'milli(s(((ec)(ond)?)?s?))?',
+                'microseconds': r'us|micro(s(((ec)(ond)?)?s?))?',
+                'milliseconds': r'ms|milli(s(((ec)(ond)?)?s?))?',
                 'minutes': r'm((in)(ute)?s?)?',
                 'hours': r'h((our|r)s?)?',
             }
 
-            value_pat = r'(?<value>\d+(\.\d+)?)'
+            value_pat = r'(?P<value>\d+(\.\d+)?)'
 
             for i in maps:
-                regex = value_pat + f'(?<spec>{maps[i]})'
+                regex = value_pat + f'(?P<spec>{maps[i]})'
                 match = re.fullmatch(regex, value.str())
 
                 if not match:
@@ -393,6 +394,17 @@ class TimeDelta(Literal):
             self.delta = datetime.timedelta(**spec)
         else:
             self.delta = value
+
+        Literal.__init__(self, hqlt.duration(), self.delta)
+
+    def str(self) -> str:
+        return self._timedelta_to_string()
+
+    def to_dict(self):
+        return {
+            'type': self.type,
+            'value': self.str()
+        }
 
     def _timedelta_to_string(self) -> str:
         td = self.delta
@@ -415,20 +427,15 @@ class TimeDelta(Literal):
             ("us", 1),
         ]
 
-        parts = []
-
-        for suffix, unit_microseconds in units:
-            value, total_microseconds = divmod(total_microseconds, unit_microseconds)
-            if value:
-                parts.append(f"{value}{suffix}")
-
-        if not parts:
+        if not total_microseconds:
             return "0s"
 
-        if len(parts) > 1:
-            raise ValueError("Compound timedelta values are not allowed")
+        # Literals hold a single unit, so use the largest one that divides evenly
+        for suffix, unit_microseconds in units:
+            if total_microseconds % unit_microseconds == 0:
+                return f"{sign}{total_microseconds // unit_microseconds}{suffix}"
 
-        return sign + parts[0]
+        return f"{sign}{total_microseconds}us"
 
 class Null(Literal):
     """Represent the HQL null literal."""
