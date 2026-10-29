@@ -130,3 +130,121 @@ class TestTableMergeRows:
         table = data['t']
         assert table.df.to_dicts() == [{'a': {'b': [1, 2], 'c': 1}}]
         assert isinstance(raw(table)['a']['b'], hqlt.multivalue)
+
+
+JOIN_KINDS = [
+    'inner', 'innerunique', 'leftsemi', 'rightsemi',
+    'leftouter', 'rightouter', 'fullouter', 'leftanti', 'rightanti',
+]
+
+
+def join_tables():
+    left = Table(
+        df=pl.DataFrame({
+            'k': [1, 2],
+            'v': ['a', 'b'],
+            'a': [{'b': 1, 'c': 1}, {'b': 2, 'c': 2}],
+            's': [1, 2],
+        }),
+        name='t',
+    )
+    right = Table(
+        df=pl.DataFrame({
+            'k': [2, 3],
+            'v': [5, 6],
+            'a': [{'b': 2, 'd': 'x'}, {'b': 3, 'd': 'y'}],
+            's': [{'q': 1}, {'q': 2}],
+            'y': ['c', 'd'],
+        }),
+        name='t',
+    )
+    return left, right
+
+
+class TestTableJoin:
+    @pytest.mark.parametrize('kind', JOIN_KINDS)
+    @pytest.mark.parametrize('on', [
+        [N('k')],
+        [P('a', 'b')],
+        [N('k'), P('a', 'b')],
+    ], ids=['name', 'path', 'mixed'])
+    def test_schema_matches_df(self, kind, on):
+        left, right = join_tables()
+        joined = left.join(right, on, kind)
+
+        assert set(raw(joined)) == set(joined.df.columns)
+        assert dict(joined.schema.gen_pl_schema()) == dict(joined.df.schema)
+        # schema paths must all be selectable
+        for path, _ in joined.schema:
+            joined.df.select(path.polars_value())
+
+    @pytest.mark.parametrize('kind', JOIN_KINDS)
+    def test_schema_not_aliased(self, kind):
+        left, right = join_tables()
+        joined = left.join(right, [N('k')], kind)
+
+        assert joined.schema is not left.schema
+        assert joined.schema is not right.schema
+        joined.schema.drop(N('k'))
+        assert 'k' in raw(left)
+        assert 'k' in raw(right)
+
+    def test_rightanti_keeps_unmatched_right_rows(self):
+        left = Table(df=pl.DataFrame({'k': [1, 2], 'x': ['a', 'b']}), name='t')
+        right = Table(df=pl.DataFrame({'k': [2, 3], 'y': ['c', 'd']}), name='t')
+
+        assert left.join(right, [N('k')], 'rightanti').df.to_dicts() == [{'k': 3, 'y': 'd'}]
+        assert left.join(right, [N('k')], 'leftanti').df.to_dicts() == [{'k': 1, 'x': 'a'}]
+
+    def test_semi_joins_only_keep_one_side(self):
+        left = Table(df=pl.DataFrame({'k': [1, 2], 'x': ['a', 'b']}), name='t')
+        right = Table(df=pl.DataFrame({'k': [2, 3], 'y': ['c', 'd']}), name='t')
+
+        semi = left.join(right, [N('k')], 'leftsemi')
+        assert semi.df.to_dicts() == [{'k': 2, 'x': 'b'}]
+        assert set(raw(semi)) == {'k', 'x'}
+
+        semi = left.join(right, [N('k')], 'rightsemi')
+        assert semi.df.to_dicts() == [{'k': 2, 'y': 'c'}]
+        assert set(raw(semi)) == {'k', 'y'}
+
+    def test_rightouter_suffixes_left_conflict_on_right(self):
+        left = Table(
+            df=pl.DataFrame({'k': [1, 2], 'v': ['a', 'b']}),
+            schema={'k': hqlt.long(), 'v': hqlt.string()},
+            name='t',
+        )
+        right = Table(
+            df=pl.DataFrame({'k': [2, 3], 'v': [5, 6]}),
+            schema={'k': hqlt.long(), 'v': hqlt.long()},
+            name='t',
+        )
+
+        joined = left.join(right, [N('k')], 'rightouter')
+
+        assert sorted(joined.df.to_dicts(), key=lambda r: r['k']) == [
+            {'v': 'b', 'k': 2, 'v_right': 5},
+            {'v': None, 'k': 3, 'v_right': 6},
+        ]
+        assert isinstance(raw(joined)['v'], hqlt.string)
+        assert isinstance(raw(joined)['v_right'], hqlt.long)
+
+    def test_fullouter_keeps_both_keys(self):
+        left = Table(df=pl.DataFrame({'k': [1, 2], 'x': ['a', 'b']}), name='t')
+        right = Table(df=pl.DataFrame({'k': [2, 3], 'y': ['c', 'd']}), name='t')
+
+        joined = left.join(right, [N('k')], 'fullouter')
+
+        assert set(raw(joined)) == {'k', 'x', 'k_right', 'y'}
+        assert joined.df.select(N('k_right').polars()).to_series().to_list().count(None) == 1
+
+    def test_join_on_nested_path(self):
+        left = Table(df=pl.DataFrame({'a': [{'b': 1}, {'b': 2}], 'x': ['l1', 'l2']}), name='t')
+        right = Table(df=pl.DataFrame({'a': [{'b': 2}, {'b': 3}], 'y': ['r2', 'r3']}), name='t')
+
+        joined = left.join(right, [P('a', 'b')], 'inner')
+
+        assert joined.df.to_dicts() == [
+            {'a': {'b': 2}, 'x': 'l2', 'a_right': {'b': 2}, 'y': 'r2'},
+        ]
+        assert set(raw(joined)) == {'a', 'x', 'a_right', 'y'}

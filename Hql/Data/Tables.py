@@ -553,7 +553,7 @@ class Table():
     
     def join(self, right:Table, on:Sequence[Reference], kind:str):
         from Hql.Context import Context
-        from Hql.Data import Data
+        from Hql.Data import Data, Schema
 
         # faux ctx
         ctx = Context(Data())
@@ -567,12 +567,16 @@ class Table():
 
         schema = self.schema.join(right.schema, on, kind)
 
+        # Join keys must be bare values, Path.polars() rebuilds the struct with an alias
         pl_on = []
         for i in on:
-            pl_on.append(i.polars())
+            pl_on.append(i.polars_value())
+
+        # Keep key coalescing explicit, Schema.join mirrors this behavior
+        coalesce = Schema.join_coalesces(on, kind)
 
         if kind == 'inner':
-            df = self.df.join(right.df, on=pl_on, how='inner')
+            df = self.df.join(right.df, on=pl_on, how='inner', coalesce=coalesce)
         
         elif kind == 'leftsemi':
             df = self.df.join(right.df, on=pl_on, how='semi')
@@ -581,23 +585,23 @@ class Table():
             df = right.df.join(self.df, on=pl_on, how='semi')
 
         elif kind == 'leftouter':
-            df = self.df.join(right.df, on=pl_on, how='left')
+            df = self.df.join(right.df, on=pl_on, how='left', coalesce=coalesce)
 
         elif kind == 'rightouter':
-            df = right.df.join(self.df, on=pl_on, how='left')
+            df = self.df.join(right.df, on=pl_on, how='right', coalesce=coalesce)
 
         elif kind == 'fullouter':
-            df = self.df.join(right.df, on=pl_on, how='full')
+            df = self.df.join(right.df, on=pl_on, how='full', coalesce=coalesce)
 
         elif kind == 'leftanti':
             df = self.df.join(right.df, on=pl_on, how='anti')
 
         elif kind == 'rightanti':
-            df = right.df.join(right.df, on=pl_on, how='anti')
+            df = right.df.join(self.df, on=pl_on, how='anti')
 
         elif kind == 'innerunique':
             left = self.df.unique(subset=pl_on)
-            df = left.join(right.df, on=pl_on, how='inner')
+            df = left.join(right.df, on=pl_on, how='inner', coalesce=coalesce)
 
         else:
             raise hqle.QueryException(f'Invalid join kind {kind} used')

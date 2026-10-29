@@ -570,32 +570,46 @@ class Schema():
 
         return pc(df, self.schema.schema)
 
+    # Whether polars coalesces the join keys into a single column
+    # Only possible for plain column keys, full joins keep both sides
+    @staticmethod
+    def join_coalesces(on:Sequence[Reference], kind:str) -> bool:
+        from Hql.Expressions.References import NamedReference
+
+        if kind in ('fullouter', 'leftsemi', 'rightsemi', 'leftanti', 'rightanti'):
+            return False
+        return all(isinstance(x, NamedReference) for x in on)
+
+    # Mirrors the columns produced by Table.join's polars join
     def join(self, right:Schema, on:Sequence[Reference], kind:str) -> Schema:
-        # all of these are semantically the same schema wise
-        if kind in ('inner', 'leftsemi', 'rightsemi', 'innerunique', 'leftouter', 'rightouter', 'fullouter'):
-            new = self.copy()
-            for path, stype in right:
-                # change naming for duplicates
-                if path in new and path not in on:
-                    path[-1] += '_right'
-                    new.set(path, stype)
+        # semi and anti joins only keep one side
+        if kind in ('leftsemi', 'leftanti'):
+            return self.copy()
 
-                # No duplicate, matches both sets
-                elif path in new and path in on:
-                    ...
+        elif kind in ('rightsemi', 'rightanti'):
+            return right.copy()
 
-                # Not yet existing in schema
-                elif path not in new:
-                    new.set(path, stype)
+        elif kind in ('inner', 'innerunique', 'leftouter', 'rightouter', 'fullouter'):
+            left = self.copy().normalize().schema.schema
+            rhs = right.copy().normalize().schema.schema
+
+            # Coalesced keys only appear once, rightouter takes the right's value
+            keys = set()
+            if Schema.join_coalesces(on, kind):
+                keys = {x.name for x in on}
+
+            new = dict(left)
+            for key in rhs:
+                if key in keys:
+                    if kind == 'rightouter':
+                        new[key] = rhs[key]
+                    continue
+
+                # polars only suffixes top level columns, structs are renamed whole
+                name = f'{key}_right' if key in left else key
+                new[name] = rhs[key]
             
-            return new
-
-        elif kind == 'leftanti':
-            return self
-
-        elif kind == 'rightanti':
-            return right
+            return Schema(schema=new)
 
         else:
             raise hqle.QueryException(f'Invalid join kind {kind} used')
-            
