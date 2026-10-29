@@ -766,7 +766,11 @@ class HqlCompiler(Compiler):
         from Hql.Types.Hql import HqlTypes as hqlt
         desc = BranchDescriptor()
 
-        if isinstance(expr.to, hqlt.HqlType):
+        # to is optional (mv-expand), a type (casting) or a reference (rename)
+        if expr.to is None:
+            to = None
+
+        elif isinstance(expr.to, hqlt.HqlType):
             desc.set_attr('type_casting')
             desc.set_attr('types', expr.to)
             to = expr.to
@@ -776,12 +780,12 @@ class HqlCompiler(Compiler):
             desc.merge(acc)
             to = acc.get_expr()
 
-        assert isinstance(to, hqlt.HqlType)
+        assert to is None or isinstance(to, (hqlt.HqlType, References.Reference))
 
         acc, _ = self.compile(expr.expr)
         desc.merge(acc)
         name = acc.get_expr()
-        assert isinstance(name, NamedReference)
+        assert isinstance(name, References.Reference)
     
         desc.expr = ToClause(name, to)
         return desc, None

@@ -26,46 +26,79 @@ class MvExpand(Operator):
             out.append(e)
         return out
 
-    def explode_table(self, table:Table, limit:int):
+    # Temp column used to hold the exploded values
+    TMP_COL = '__hql_mvexpand__'
+
+    def explode_table(self, table:Table, limit:Optional[int]):
+        import polars as pl
         from Hql.Types.Hql import HqlTypes as hqlt
         from Hql.Data import Table
 
-        schema = table.schema
+        schema = table.schema.copy()
         df = table.df
 
         for to in self.to_clauses:
-            path = to.expr.list()
-            pl_expr = to.expr.polars()
+            path = to.expr
 
-            to_schema = schema.get_type(path).schema
+            # Might reference a field that exists in another table but not this one
+            if not schema.assert_field(path):
+                continue
+
+            to_schema = schema.get_type(path).strip()
 
             # Short circuit case
             if not isinstance(to_schema, hqlt.multivalue):
                 continue
 
-            new_type = to_schema.inner
-            # need to fix the typing on this
-            df = df.with_columns(
-                pl_expr.list.slice(0, limit)
-            ).explode(pl_expr)
+            # Explode a copy of the values then write them back in place,
+            # handles nested paths without flattening their parent structs
+            names = path.list()
+            value = pl.col(names[0])
+            for i in names[1:]:
+                value = value.struct.field(i)
 
+            df = df.with_columns(
+                value.list.slice(0, limit).alias(self.TMP_COL)
+            ).explode(self.TMP_COL, empty_as_null=True)
+
+            new_type = to_schema.inner
             if to.to:
                 new_type = to.to
+                df = df.with_columns(new_type.cast(df[self.TMP_COL]).alias(self.TMP_COL))
 
+            df = df.with_columns(self.replace_expr(names, pl.col(self.TMP_COL))).drop(self.TMP_COL)
             schema.set(path, new_type)
 
         return Table(df=df, schema=schema, name=table.name)
+
+    # Builds an expression replacing the value at a path with expr
+    @staticmethod
+    def replace_expr(names:list[str], expr):
+        import polars as pl
+
+        if len(names) == 1:
+            return expr.alias(names[0])
+
+        def rec(names:list[str]):
+            if len(names) == 1:
+                return expr.alias(names[0])
+            return pl.field(names[0]).struct.with_fields(rec(names[1:]))
+
+        return pl.col(names[0]).struct.with_fields(rec(names[1:]))
 
     def deparse(self) -> str:
         out = 'mvexpand '
 
         exprs = []
-        for i in self.exprs:
-            exprs.append(i.deparse())
+        for i in self.to_clauses:
+            expr = i.expr.deparse()
+            if i.to:
+                expr += ' to ' + i.to.deparse()
+            exprs.append(expr)
         out += ', '.join(exprs)
 
         if self.limit:
-            out += ' '
+            out += ' limit '
             out += self.limit.deparse()
 
         return out
@@ -76,7 +109,7 @@ class MvExpand(Operator):
         ctx = ctx.copy()
 
         # Long literal, just get us the number
-        limit = -1
+        limit = None
         if self.limit:
             limit = self.limit.value
 

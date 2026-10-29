@@ -447,3 +447,100 @@ class TestSummarizeEval:
         ops = [x for x in compiler.root.ops if isinstance(x, Summarize)]
         assert len(ops) == 1
         assert ops[0].by_expr is None
+
+
+# ---------------------------------------------------------------------------
+# mv-expand
+# ---------------------------------------------------------------------------
+
+from Hql.Expressions import ToClause
+from Hql.Operators.MvExpand import MvExpand
+
+
+def to_clause(ref, to=None):
+    # ToClause's `to` is being made optional on another branch, build it
+    # with a type and clear it so these tests don't depend on that
+    clause = ToClause(ref, hqlt.int())
+    clause.to = to
+    return clause
+
+
+MV_ROWS = [
+    {"a": 1, "c": [1, 2, 3]},
+    {"a": 2, "c": []},
+    {"a": 3, "c": None},
+    {"a": 4, "c": [9]},
+]
+
+
+class TestMvExpandEval:
+    def test_expands_rows(self):
+        ctx = make_ctx(Table(init_data=MV_ROWS, name="t"))
+
+        result = MvExpand([to_clause(NamedReference("c"))]).eval(ctx)
+        table = result.data["t"]
+
+        assert [(r["a"], r["c"]) for r in table.to_dicts()] == [
+            (1, 1), (1, 2), (1, 3), (2, None), (3, None), (4, 9),
+        ]
+        assert isinstance(table.schema.schema.schema["c"], hqlt.int)
+
+    def test_limit(self):
+        ctx = make_ctx(Table(init_data=MV_ROWS, name="t"))
+
+        result = MvExpand([to_clause(NamedReference("c"))], limit=Integer(1)).eval(ctx)
+
+        assert [r["c"] for r in result.data["t"].to_dicts()] == [1, None, None, 9]
+
+    def test_to_type_casts(self):
+        ctx = make_ctx(Table(init_data=[{"c": [1, 2]}], name="t"))
+
+        result = MvExpand([to_clause(NamedReference("c"), hqlt.string())]).eval(ctx)
+        table = result.data["t"]
+
+        assert table.to_dicts() == [{"c": "1"}, {"c": "2"}]
+        assert isinstance(table.schema.schema.schema["c"], hqlt.string)
+
+    def test_nested_path(self):
+        ctx = make_ctx(Table(init_data=[{"n": {"c": [1, 2], "x": "p"}}], name="t"))
+        path = Path([NamedReference("n"), NamedReference("c")])
+
+        result = MvExpand([to_clause(path)]).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [
+            {"n": {"c": 1, "x": "p"}},
+            {"n": {"c": 2, "x": "p"}},
+        ]
+
+    def test_does_not_mutate_input_schema(self):
+        table = Table(init_data=MV_ROWS, name="t")
+        ctx = make_ctx(table)
+
+        MvExpand([to_clause(NamedReference("c"))]).eval(ctx)
+
+        assert isinstance(table.schema.schema.schema["c"], hqlt.multivalue)
+        assert len(table) == 4
+
+    def test_skips_tables_missing_field(self):
+        ctx = make_ctx(
+            Table(init_data=MV_ROWS, name="t"),
+            Table(init_data=[{"b": 1}], name="u"),
+        )
+
+        result = MvExpand([to_clause(NamedReference("c"))]).eval(ctx)
+
+        assert len(result.data["t"]) == 6
+        assert result.data["u"].to_dicts() == [{"b": 1}]
+
+    def test_deparse(self):
+        mv = MvExpand([to_clause(NamedReference("c"), hqlt.int())], limit=Integer(2))
+        assert mv.deparse() == "mvexpand c to int limit 2"
+        assert MvExpand([to_clause(NamedReference("c"))]).deparse() == "mvexpand c"
+
+    def test_compiler_accepts_missing_to(self):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Config import Config
+
+        acc, _ = HqlCompiler(Config()).compile(to_clause(NamedReference("c")))
+
+        assert acc.get_expr().to is None
