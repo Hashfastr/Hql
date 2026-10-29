@@ -195,14 +195,15 @@ class Table():
         schemas = []
         for table in tables:
             schemas.append(table.schema)
-        schema = Schema.merge(schemas).schema
+        # Work on the raw dict, hqlt.object is keyed by references and immutable
+        schema = Schema.merge(schemas).schema.schema
         
         # generate col groups
         longest_len = 0
         col_groups = dict()
         for table in tables:
-            # skip empty dataframes
-            if isinstance(table.df, type(None)) or table.df.is_empty():
+            # skip tables without columns, zero row tables still carry columns
+            if isinstance(table.df, type(None)) or not table.df.width:
                 continue
 
             for col in table.df:
@@ -216,10 +217,10 @@ class Table():
             for col in col_groups[key]:
                 if longest_len > len(col):
                     if len(col) == 1:
-                        col = pl.Series([col[0]] * longest_len)
+                        col = col.new_from_index(0, longest_len)
                     else:
                         pad = longest_len - len(col)
-                        col = col.extend(pl.Series([None] * pad))
+                        col = col.extend_constant(None, pad)
 
                 if key not in new:
                     new[key] = col
@@ -230,14 +231,34 @@ class Table():
                     l = Table(df=new[key].struct.unnest(), name=name)
                     r = Table(df=col.struct.unnest(), name=name)
                     
-                    new[key] = Table.merge_rows([l, r]).df.to_struct()
+                    merged = Table.merge_rows([l, r])
+                    new[key] = merged.df.to_struct(key)
+                    schema[key] = merged.schema.schema.schema
                     continue
 
-                if not isinstance(schema[key], hqlt.multivalue):
-                    schema[key] = hqlt.multivalue(schema[key])
+                if not isinstance(new[key], list):
                     new[key] = [new[key], col]
                 else:
-                    new[key].append(col)                
+                    new[key].append(col)
+
+        # Conflicting columns become a multivalue holding each table's value per row
+        for key in new:
+            if not isinstance(new[key], list):
+                continue
+
+            new[key] = pl.select(pl.concat_list(new[key]).alias(key)).to_series()
+
+            cur = schema.get(key)
+            if isinstance(cur, dict):
+                cur = hqlt.object(cur)
+            if isinstance(cur, hqlt.HqlType) and not isinstance(cur, hqlt.multivalue):
+                cur = hqlt.multivalue(cur)
+
+            if isinstance(cur, hqlt.multivalue) and cur.pl_schema() == new[key].dtype:
+                schema[key] = cur
+            else:
+                # Polars had to resolve differing types, follow its lead
+                schema[key] = Schema.from_df(new[key].to_frame()).schema.schema[key]
         
         df = pl.DataFrame(new)
         schema = Schema(schema=schema)
@@ -271,22 +292,22 @@ class Table():
         schemas = []
         for table in tables:
             schemas.append(table.schema)
-        schema = Schema.merge(schemas).schema
+        schema = Schema.merge(schemas)
 
         # Makes an assumption that the above merge converted field names accurately
         # in the case of a conflict, e.g. they get split into types.
         new = []
         for table in tables:
             cur = table.df
-            curs = table.schema.schema
+            # raw dict, iterating hqlt.object yields references rather than names
+            curs = table.schema.schema.schema
             for key in curs:
                 if isinstance(curs[key], CompilerType):
                     dup_key = f'{key}_{curs[key].name}'
                 else:
                     dup_key = f'{key}_object'
 
-                # Linter hates this one simple trick!
-                if dup_key in schema:
+                if dup_key in schema.schema.schema:
                     cur = cur.rename({key: dup_key})
             new.append(cur)
 
