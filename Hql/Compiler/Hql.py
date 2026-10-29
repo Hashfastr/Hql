@@ -480,6 +480,10 @@ class HqlCompiler(Compiler):
         expr = acc.get_expr()
         assert isinstance(expr, Literals.Integer)
 
+        # Databases push take down, so reject here before the operator runs
+        if expr.value < 0:
+            raise hqle.CompilerException(f'Take given negative limit {expr.value}')
+
         tables = []
         for i in op.tables:
             acc, _ = self.compile(i)

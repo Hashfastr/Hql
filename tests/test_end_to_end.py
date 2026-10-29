@@ -155,3 +155,10 @@ class TestNumericLiterals:
 
     def test_large_integer_literal(self, nums):
         assert rows(nums, "database('json').file('f.json') | where n == 3000000000 | count", 'f.json') == [{'Count': 1}]
+
+
+class TestTake:
+    def test_negative_limit_rejected(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            query(conf, f'{T} | take -1')
