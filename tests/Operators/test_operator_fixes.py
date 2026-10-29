@@ -182,3 +182,60 @@ class TestDatatableEval:
         assert d["id"] == dt.id
         assert d["schema"] == {"a": "int", "b": "string"}
         assert [v["value"] for v in d["values"]] == [1, "x"]
+
+
+# ---------------------------------------------------------------------------
+# top
+# ---------------------------------------------------------------------------
+
+from Hql.Expressions.Aggregation import ByExpression, OrderedExpression
+from Hql.Operators.Top import Top
+
+
+def top_values(limit, by, rows=None):
+    rows = rows if rows is not None else [{"a": 1}, {"a": 3}, {"a": 2}, {"a": 5}]
+    ctx = make_ctx(Table(init_data=rows, name="t"))
+    result = Top(Integer(limit), by).eval(ctx)
+    return [r["a"] for r in result.data["t"].to_dicts()]
+
+
+class TestTopEval:
+    def test_sorts_desc_before_truncating(self):
+        by = OrderedExpression(NamedReference("a"), order="desc")
+        assert top_values(2, by) == [5, 3]
+
+    def test_sorts_asc(self):
+        by = OrderedExpression(NamedReference("a"), order="asc")
+        assert top_values(2, by) == [1, 2]
+
+    def test_nulls_last(self):
+        rows = [{"a": 1}, {"a": None}, {"a": 2}]
+        by = OrderedExpression(NamedReference("a"), order="asc", nulls="last")
+        assert top_values(1, by, rows) == [1]
+
+    def test_accepts_by_expression(self):
+        assert top_values(2, ByExpression([NamedReference("a")])) == [5, 3]
+
+    def test_does_not_mutate_input(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}, {"a": 3}], name="t"))
+        Top(Integer(1), OrderedExpression(NamedReference("a"))).eval(ctx)
+        assert len(ctx.data["t"]) == 2
+
+    def test_to_dict_and_deparse(self):
+        t = Top(Integer(2), OrderedExpression(NamedReference("a"), order="asc"))
+        assert t.to_dict()["id"] == t.id
+        assert t.deparse() == "top 2 by a asc"
+
+    def test_compiles_from_parser(self):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Config import Config
+        from Hql.Parser import Parser
+
+        parser = Parser("datatable (a: int) [1, 3, 2] | top 2 by a desc")
+        parser.assemble()
+        compiler = HqlCompiler(Config(), parser.assembly)
+        assert compiler.root is not None
+        ops = [x for x in compiler.root.ops if isinstance(x, Top)]
+        assert len(ops) == 1
+        assert ops[0].expr.value == 2
+        assert [(x.expr.deparse(), x.order) for x in ops[0].by] == [("a", "desc")]

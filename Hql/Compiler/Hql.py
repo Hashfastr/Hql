@@ -538,18 +538,23 @@ class HqlCompiler(Compiler):
 
     def Top(self, op: Operators.Top, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Operators.Top import Top
-        from Hql.Expressions.Aggregation import ByExpression
+        from Hql.Expressions.Aggregation import OrderedExpression
         desc = BranchDescriptor()
+        # Filters must not be moved across a top
+        desc.set_attr('row_dependent')
 
         acc, _ = self.compile(op.expr)
         desc.merge(acc)
         expr = acc.get_expr()
         assert isinstance(expr, Literals.Integer)
 
-        acc, _ = self.compile(op.by)
-        desc.merge(acc)
-        by = acc.get_expr()
-        assert isinstance(by, ByExpression)
+        by = []
+        for i in op.by:
+            acc, _ = self.compile(i)
+            desc.merge(acc)
+            ordered = acc.get_expr()
+            assert isinstance(ordered, OrderedExpression)
+            by.append(ordered)
 
         desc.op = Top(expr, by)
         return desc, None
