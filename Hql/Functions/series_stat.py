@@ -17,7 +17,8 @@ class series_stats(Function):
 
     def __init__(self, args:list, conf:Optional[dict]=None):
         from Hql.Expressions.Literals import Bool
-        Function.__init__(self, args, 1, 3)
+        # series_stats(series [, ignore_nonfinite])
+        Function.__init__(self, args, 1, 2)
         self.ignore_nonfinite:Bool = Bool(False)
         self.src = args[0]
 
@@ -88,8 +89,8 @@ class series_stats(Function):
         from Hql.Data import Data, Table
         
         # Returns tables of series
-        data = self.src.eval(ctx)
-        name = self.src.eval(ctx, as_list=True)
+        data = self.src.eval(ctx).data.strip()
+        name = self.src.list()
         prefix = f"series_stats_{'_'.join(name)}"
 
         overall = {
@@ -103,8 +104,15 @@ class series_stats(Function):
         serieses = []
         tables = []
         for table in data:
+            if not table.series:
+                continue
+
             s = table.series.series
             stype = table.series.type.pl_schema()
+            rows = len(s)
+
+            if self.ignore_nonfinite.value and s.dtype.is_float():
+                s = s.filter(s.is_finite())
             serieses.append(s)
 
             min, min_idx = self.cal_min(s)
@@ -132,7 +140,7 @@ class series_stats(Function):
             # Explode out the rows so the number of rows of the source
             # Reasoning is that if we don't do this, all of the data extra data
             # will be marked as null and would suck
-            df = df.select(pl.all().repeat_by(len(s))).explode(pl.all())
+            df = df.select(pl.all().repeat_by(rows)).explode(pl.all())
 
             tables.append(Table(df=df, name=table.name))
        

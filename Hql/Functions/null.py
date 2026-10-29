@@ -16,7 +16,7 @@ class isnull(LogicFunction):
 
         expr = args[0]
         if not isinstance(expr, Reference):
-            hqle.ArgumentException(f'Invalid argument type to isnull: {type(expr)}')
+            raise hqle.ArgumentException(f'Invalid argument type to isnull: {type(expr)}')
         self.expr:Reference = expr
 
         self.logic = True
