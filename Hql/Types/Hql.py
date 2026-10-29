@@ -3,6 +3,8 @@ from __future__ import annotations
 import polars as pl
 import logging
 import json
+import uuid
+import ipaddress
 from typing import TYPE_CHECKING, Iterator, Union, Optional, Mapping
 
 from Hql.Exceptions import HqlExceptions as hqle
@@ -87,6 +89,11 @@ class HqlTypes():
 
         def hql_schema(self):
             return self
+
+        # Combines two differently parameterized instances of the same type,
+        # e.g. decimal(10, 2) and decimal(20, 4). None if they can't be combined.
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            return None
     
     @staticmethod
     def from_name(name:str) -> HqlTypes.HqlType:
@@ -190,9 +197,29 @@ class HqlTypes():
     class decimal(HqlType):
         """Represent decimal numeric values."""
 
-        def __init__(self):
+        promotes_to = ('double',)
+
+        # polars caps decimals at 38 digits, default to an even integer/fraction split
+        def __init__(self, precision:int=38, scale:int=18):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Decimal()
+            self.precision = precision
+            self.scale = scale
+            self.proto = pl.Decimal(precision, scale)
+
+        def params(self) -> tuple:
+            return (self.precision, self.scale)
+
+        def cast(self, series:pl.Series):
+            # polars can't cast booleans straight to decimals
+            if series.dtype == pl.Boolean:
+                series = series.cast(pl.Int8)
+            return series.cast(self.pl_schema())
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.decimal)
+            scale = max(self.scale, other.scale)
+            digits = max(self.precision - self.scale, other.precision - other.scale)
+            return HqlTypes.decimal(min(38, digits + scale), scale)
     
     @register_type('hql_float') 
     class float(HqlType):
@@ -255,13 +282,39 @@ class HqlTypes():
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.Int128()
 
-    @register_type('hql_guid')
-    class guid(HqlType):
-        """Represent globally unique identifier values."""
+    @register_type('hql_uxlong')
+    class uxlong(HqlType):
+        """Represent unsigned 128-bit integer values."""
+
+        promotes_to = ('double',)
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Int128()
+            self.proto = pl.UInt128()
+
+    @register_type('hql_guid')
+    @register_type('hql_uniqueid')
+    class guid(HqlType):
+        """Represent globally unique identifiers as canonical strings."""
+
+        def __init__(self):
+            HqlTypes.HqlType.__init__(self)
+            self.proto = pl.String()
+
+        def cast_single(self, value) -> Optional[str]:
+            try:
+                if isinstance(value, int):
+                    return str(uuid.UUID(int=value))
+                return str(uuid.UUID(str(value)))
+            except ValueError:
+                return None
+
+        def cast(self, series:pl.Series):
+            if series.dtype == pl.Null:
+                return series.cast(self.pl_schema())
+
+            guids = [self.cast_single(i) if i is not None else None for i in series]
+            return pl.Series(series.name, guids, dtype=self.proto)
     
     @register_type('hql_ubyte') 
     class ubyte(HqlType):
@@ -313,24 +366,17 @@ class HqlTypes():
 
             self.complex = True
 
-        def cast_single(self, ip:Union[StringLiteral, str]) -> int:
+        def cast_single(self, ip:Union[StringLiteral, str]) -> Optional[int]:
             from Hql.Expressions.Literals import StringLiteral
 
             if isinstance(ip, StringLiteral):
                 ip = ip.str()
 
-            split = ip.split('.')
-            num = 0
-            for idx, j in enumerate(split):
-                try:
-                    # magnitude scales with the index
-                    num += int(split[idx]) << (8 * (3 - idx))
-                
-                # Likely IPv6 if we hit this
-                # Or trash garbo data
-                except ValueError:
-                    continue
-            return num
+            # Likely IPv6 or trash garbo data if this fails
+            try:
+                return int(ipaddress.IPv4Address(ip.strip()))
+            except ValueError:
+                return None
 
         def cast(self, series:pl.Series):
             # lazy if not string
@@ -368,11 +414,42 @@ class HqlTypes():
 
     @register_type('hql_ip6')
     class ip6(HqlType):
-        """Represent IPv6 addresses as signed 128-bit integers."""
+        """Represent IPv6 addresses as unsigned 128-bit integers."""
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Int128()
+            self.proto = pl.UInt128()
+
+            self.complex = True
+
+        def cast_single(self, ip:Union[StringLiteral, str]) -> Optional[int]:
+            from Hql.Expressions.Literals import StringLiteral
+
+            if isinstance(ip, StringLiteral):
+                ip = ip.str()
+
+            try:
+                return int(ipaddress.IPv6Address(ip.strip()))
+            except ValueError:
+                return None
+
+        def cast(self, series:pl.Series):
+            # lazy if not string
+            if series.dtype != pl.String:
+                return series.cast(self.pl_schema())
+
+            ips = [self.cast_single(i) if i is not None else None for i in series]
+            return pl.Series(series.name, ips, dtype=self.proto)
+
+        def human_single(self, ip:int) -> str:
+            return str(ipaddress.IPv6Address(ip))
+
+        def human(self, series:pl.Series):
+            if series.dtype != self.proto:
+                raise hqle.CompilerException('Attempting to human a non-converted ip6 field')
+
+            ips = [self.human_single(i) if i is not None else None for i in series]
+            return pl.Series(ips, dtype=pl.String)
     
     @register_type('hql_datetime')     
     class datetime(HqlType):

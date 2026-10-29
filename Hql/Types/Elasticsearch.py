@@ -40,11 +40,12 @@ class ESTypes():
 
     @register_type('elasticsearch_scaled_float')
     class scaled_float(ESType):
-        """Map Elasticsearch scaled floats to HQL decimals."""
+        """Map Elasticsearch scaled floats to HQL doubles."""
 
+        # returned as doubles in _source, scaling only affects storage
         def __init__(self):
             ESTypes.ESType.__init__(self)
-            self.HqlType = ESTypes.hqlt.decimal()
+            self.HqlType = ESTypes.hqlt.double()
 
     @register_type('elasticsearch_half_float')
     class half_float(ESType):
