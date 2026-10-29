@@ -544,3 +544,56 @@ class TestMvExpandEval:
         acc, _ = HqlCompiler(Config()).compile(to_clause(NamedReference("c")))
 
         assert acc.get_expr().to is None
+
+
+# ---------------------------------------------------------------------------
+# rename / push
+# ---------------------------------------------------------------------------
+
+from Hql.Operators.Push import Push
+from Hql.Operators.Rename import Rename
+
+
+def table_rename(src, dst):
+    clause = ToClause(NamedReference(src), hqlt.int())
+    clause.to = NamedReference(dst)
+    return clause
+
+
+class TestRenameEval:
+    def test_renames_table_and_returns_context(self):
+        ctx = make_ctx(
+            Table(init_data=[{"a": 1}], name="l"),
+            Table(init_data=[{"a": 2}], name="u"),
+        )
+
+        result = Rename([table_rename("u", "q")]).eval(ctx)
+
+        assert isinstance(result, Context)
+        assert sorted(t.name for t in result.data) == ["l", "q"]
+        assert result.data["q"].name == "q"
+        assert result.data["q"].to_dicts() == [{"a": 2}]
+        # Input left alone
+        assert sorted(t.name for t in ctx.data) == ["l", "u"]
+        assert ctx.data["u"].name == "u"
+
+    def test_missing_table_is_ignored(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}], name="l"))
+
+        result = Rename([table_rename("nope", "q")]).eval(ctx)
+
+        assert [t.name for t in result.data] == ["l"]
+
+    def test_deparse(self):
+        r = Rename([table_rename("u", "q"), table_rename("l", "m")])
+        assert r.deparse() == "rename u to q, l to m"
+
+
+class TestPush:
+    def test_deparse(self):
+        p = Push([NamedReference("a"), NamedReference("b")])
+        assert p.deparse() == "push a, b"
+
+    def test_eval_returns_context(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}], name="t"))
+        assert Push([NamedReference("a")]).eval(ctx) is ctx

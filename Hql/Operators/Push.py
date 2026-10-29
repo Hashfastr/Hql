@@ -15,18 +15,10 @@ class Push(Operator):
         self.exprs = exprs
         self.dbs:list[Database] = []
 
-    def decompile(self, ctx: 'Context', split: bool = False) -> str:
-        out = 'push'
+    def deparse(self) -> str:
+        return 'push ' + ', '.join([x.deparse() for x in self.exprs])
 
-        out += ' '
-        exprs = []
-        for i in self.exprs:
-            exprs.append(i.decompile(ctx))
-        out += ', '.join(exprs)
-
-        return out
-
-    def eval(self, ctx:'Context', **kwargs):
+    def eval(self, ctx:'Context', **kwargs) -> 'Context':
         for i in self.dbs:
             if not i.can_push:
                 logging.error(f'Cannot push to DB {i.name}')
@@ -34,4 +26,4 @@ class Push(Operator):
 
             i.push(ctx)
 
-        return ctx.data
+        return ctx
