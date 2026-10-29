@@ -68,7 +68,13 @@ class Take(Operator):
     Unimplemented.
     '''
     def eval(self, ctx:Context):
+        from Hql.Exceptions import HqlExceptions as hqle
+
         limit = self.expr.value
+        if limit < 0:
+            raise hqle.QueryException(f'Take given negative limit {limit}')
+
+        ctx = self.copy_tables(ctx)
 
         table_names = []
         for i in self.tables:

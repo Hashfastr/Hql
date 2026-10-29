@@ -4,6 +4,7 @@ from Hql.Context import Context
 from Hql.Data import Data, Table
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Expressions.Literals import Integer
+from Hql.Expressions.Logic import Equality
 from Hql.Expressions.References import NamedExpression, NamedReference, Path
 from Hql.Operators.Project import ProjectRename
 
@@ -597,3 +598,83 @@ class TestPush:
     def test_eval_returns_context(self):
         ctx = make_ctx(Table(init_data=[{"a": 1}], name="t"))
         assert Push([NamedReference("a")]).eval(ctx) is ctx
+
+
+# ---------------------------------------------------------------------------
+# where / unnest on partial schemas, and copy isolation
+# ---------------------------------------------------------------------------
+
+from Hql.Operators.Sort import Sort
+from Hql.Operators.Take import Take
+from Hql.Operators.Unnest import Unnest
+from Hql.Operators.Where import Where
+from Hql.Expressions.References import Wildcard
+
+
+class TestWhereMissingField:
+    def test_missing_struct_subfield_drops_table(self):
+        ctx = make_ctx(Table(init_data=[{"n": {"x": 1}}], name="t"))
+        expr = Equality(Path([NamedReference("n"), NamedReference("zz")]), Integer(1))
+
+        result = Where(expr).eval(ctx)
+
+        assert "t" not in result.data
+
+    def test_existing_struct_subfield_filters(self):
+        ctx = make_ctx(Table(init_data=[{"n": {"x": 1}}, {"n": {"x": 2}}], name="t"))
+        expr = Equality(Path([NamedReference("n"), NamedReference("x")]), Integer(1))
+
+        result = Where(expr).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [{"n": {"x": 1}}]
+
+
+class TestUnnestPartial:
+    def test_skips_tables_missing_field(self):
+        ctx = make_ctx(
+            Table(init_data=[{"a": 1}], name="l"),
+            Table(init_data=[{"n": {"x": 1, "y": "p"}}], name="t"),
+        )
+
+        result = Unnest(NamedReference("n"), [Wildcard("*")]).eval(ctx)
+
+        assert result.data["l"].to_dicts() == [{"a": 1}]
+        assert result.data["t"].to_dicts() == [{"x": 1, "y": "p"}]
+
+
+class TestCopyIsolation:
+    def make(self):
+        return make_ctx(Table(init_data=[{"a": 1}, {"a": 3}, {"a": 2}], name="t"))
+
+    def test_take(self):
+        c1 = self.make()
+        c2 = c1.copy()
+
+        Take(Integer(1), []).eval(c2)
+
+        assert len(c1.data["t"]) == 3
+
+    def test_take_negative_rejected(self):
+        with pytest.raises(hqle.QueryException):
+            Take(Integer(-1), []).eval(self.make())
+
+    def test_sort(self):
+        c1 = self.make()
+
+        Sort([OrderedExpression(NamedReference("a"))]).eval(c1.copy())
+
+        assert [r["a"] for r in c1.data["t"].to_dicts()] == [1, 3, 2]
+
+    def test_where(self):
+        c1 = self.make()
+
+        Where(Equality(NamedReference("a"), Integer(1))).eval(c1.copy())
+
+        assert len(c1.data["t"]) == 3
+
+    def test_unnest(self):
+        c1 = make_ctx(Table(init_data=[{"n": {"x": 1, "y": "p"}}], name="t"))
+
+        Unnest(NamedReference("n"), [Wildcard("*")]).eval(c1.copy())
+
+        assert c1.data["t"].to_dicts() == [{"n": {"x": 1, "y": "p"}}]
