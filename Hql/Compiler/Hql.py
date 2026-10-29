@@ -140,6 +140,11 @@ class HqlCompiler(Compiler):
 
         elif isinstance(expr, FuncExprs.FuncProto):
             acc, _ = self.compile_expr(expr)
+
+            # A bare call such as file('x') runs against the default database
+            if isinstance(acc, BranchDescriptor) and isinstance(acc.get_expr(), Functions.Function):
+                acc = acc.get_expr().eval(self.ctx)
+
             if not isinstance(acc, _PREPIPE_TYPES):
                 raise hqle.CompilerException(f'Tabular function call returned non-prepipe type {type(acc)}')
             return self.Tabular(acc)

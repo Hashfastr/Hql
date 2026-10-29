@@ -134,3 +134,11 @@ class TestJoin:
 
     def test_fullouter_keeps_right_only_rows(self, conf):
         assert rows(conf, f'{L} | join kind=fullouter ({U}) on a | count', 'l.json') == [{'Count': 4}]
+
+
+class TestDefaultDatabase:
+    def test_bare_file_uses_default_db(self, conf):
+        assert rows(conf, "file('t.json') | count") == [{'Count': 4}]
+
+    def test_bare_file_with_let(self, conf):
+        assert rows(conf, "let f = 't.json'; file(f) | count") == [{'Count': 4}]
