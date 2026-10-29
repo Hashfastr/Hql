@@ -37,13 +37,34 @@ class PolarsTypes():
             name = type(pltype).__name__
 
         resolved = PolarsTypes.from_name(name)
+        pl = PolarsTypes.pl
 
-        if isinstance(pltype, PolarsTypes.pl.Struct):
+        # bare classes (pl.Int64 vs pl.Int64()) carry no parameters
+        if isinstance(pltype, type):
+            if name in ('Struct', 'Object'):
+                return resolved(schema={})
+            if name in ('List', 'Array'):
+                return resolved(inner=PolarsTypes.Null())
+            if name == 'Enum':
+                return resolved(values=[])
+            return resolved()
+
+        if isinstance(pltype, pl.Struct):
             schema = {
                 field.name: PolarsTypes.from_pure_polars(field.dtype).hql_schema()
                 for field in pltype.fields
             }
             return resolved(schema=schema)
+        elif isinstance(pltype, pl.Enum):
+            return resolved(values=pltype.categories.to_list())
+        elif isinstance(pltype, pl.Datetime):
+            return resolved(time_unit=pltype.time_unit, time_zone=pltype.time_zone)
+        elif isinstance(pltype, pl.Duration):
+            return resolved(time_unit=pltype.time_unit)
+        elif isinstance(pltype, pl.Decimal):
+            return resolved(precision=pltype.precision, scale=pltype.scale)
+        elif isinstance(pltype, pl.Object):
+            return resolved(schema={})
         elif hasattr(pltype, 'inner'):
             inner = PolarsTypes.from_pure_polars(pltype.inner)
             return resolved(inner=inner)
@@ -54,10 +75,21 @@ class PolarsTypes():
     class Decimal(PolarsType):
         """Map Polars decimals to HQL decimals."""
 
+        def __init__(self, precision:Optional[int]=None, scale:int=0):
+            PolarsTypes.PolarsType.__init__(self)
+            # no precision means polars' maximum
+            precision = 38 if precision is None else precision
+            self.HqlType = PolarsTypes.hqlt.decimal(precision, scale)
+            self.pltype = PolarsTypes.pl.Decimal(precision, scale)
+
+    @register_type('polars_Float16')
+    class Float16(PolarsType):
+        """Map 16-bit Polars floats to HQL floats."""
+
         def __init__(self):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.decimal()
-            self.pltype = PolarsTypes.pl.Decimal()
+            self.HqlType = PolarsTypes.hqlt.float()
+            self.pltype = PolarsTypes.pl.Float32()
 
     @register_type('polars_Float32')
     class Float32(PolarsType):
@@ -120,7 +152,7 @@ class PolarsTypes():
         def __init__(self):
             PolarsTypes.PolarsType.__init__(self)
             self.HqlType = PolarsTypes.hqlt.xlong()
-            self.pltype = PolarsTypes.pl.UInt128()
+            self.pltype = PolarsTypes.pl.Int128()
     
     @register_type('polars_UInt8') 
     class UInt8(PolarsType):
@@ -158,32 +190,41 @@ class PolarsTypes():
             self.HqlType = PolarsTypes.hqlt.ulong()
             self.pltype = PolarsTypes.pl.UInt64()
     
-    @register_type('polars_Date') 
-    class Date(PolarsType):
-        """Map Polars dates to HQL datetimes."""
+    @register_type('polars_UInt128') 
+    class UInt128(PolarsType):
+        """Map unsigned 128-bit Polars integers to HQL unsigned extended longs."""
 
         def __init__(self):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.datetime()
+            self.HqlType = PolarsTypes.hqlt.uxlong()
+            self.pltype = PolarsTypes.pl.UInt128()
+    
+    @register_type('polars_Date') 
+    class Date(PolarsType):
+        """Map Polars dates to HQL dates."""
+
+        def __init__(self):
+            PolarsTypes.PolarsType.__init__(self)
+            self.HqlType = PolarsTypes.hqlt.date()
             self.pltype = PolarsTypes.pl.Date()
 
     @register_type('polars_Datetime')
     class Datetime(PolarsType):
         """Map Polars datetimes to HQL datetimes."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us', time_zone:Optional[str]=None):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.datetime()
-            self.pltype = PolarsTypes.pl.Datetime()
+            self.HqlType = PolarsTypes.hqlt.datetime(time_unit, time_zone)
+            self.pltype = PolarsTypes.pl.Datetime(time_unit, time_zone)
     
     @register_type('polars_Duration') 
     class Duration(PolarsType):
         """Map Polars durations to HQL durations."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us'):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.duration()
-            self.pltype = PolarsTypes.pl.Duration()
+            self.HqlType = PolarsTypes.hqlt.duration(time_unit)
+            self.pltype = PolarsTypes.pl.Duration(time_unit)
     
     @register_type('polars_Time') 
     class Time(PolarsType):
@@ -196,12 +237,12 @@ class PolarsTypes():
     
     @register_type('polars_Array') 
     class Array(PolarsType):
-        """Map fixed-size Polars arrays to HQL matrices."""
+        """Map fixed-size Polars arrays to HQL multivalues until matrix is implemented."""
 
         def __init__(self, inner:PolarsTypes.PolarsType):
             PolarsTypes.PolarsType.__init__(self, inner=inner)
-            self.HqlType = PolarsTypes.hqlt.matrix(inner.hql_schema())
-            self.pltype = PolarsTypes.pl.Array(inner.pl_schema())
+            self.HqlType = PolarsTypes.hqlt.multivalue(inner.hql_schema())
+            self.pltype = PolarsTypes.pl.List(inner.pl_schema())
     
     @register_type('polars_List') 
     class List(PolarsType):
@@ -223,12 +264,22 @@ class PolarsTypes():
         
     @register_type('polars_Enum')
     class Enum(PolarsType):
-        """Map a Polars enumeration and its values to HQL."""
+        """Map a Polars enumeration to HQL strings until enum is implemented."""
 
         def __init__(self, values:list[str]):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.enum(values)
-            self.pltype = PolarsTypes.pl.Enum(values)
+            self.values = values
+            self.HqlType = PolarsTypes.hqlt.string()
+            self.pltype = PolarsTypes.pl.String()
+
+    @register_type('polars_Categorical')
+    class Categorical(PolarsType):
+        """Map Polars categoricals to HQL strings."""
+
+        def __init__(self):
+            PolarsTypes.PolarsType.__init__(self)
+            self.HqlType = PolarsTypes.hqlt.string()
+            self.pltype = PolarsTypes.pl.String()
     
     @register_type('polars_Utf8') 
     class Utf8(PolarsType):
@@ -268,17 +319,12 @@ class PolarsTypes():
         
     @register_type('polars_Object')   
     class Object(PolarsType):
-        """Map a Polars object schema to an HQL object."""
+        """Map arbitrary Python objects to HQL dynamic values."""
 
-        def __init__(self, schema:dict):
+        def __init__(self, schema:Optional[dict]=None):
             PolarsTypes.PolarsType.__init__(self)
-            self.HqlType = PolarsTypes.hqlt.object(schema)
-            self.pltype = self.HqlType.pl_schema()
-
-        def pl_schema(self) -> PolarsTypes.pl.DataType:
-            assert self.HqlType
-            self.pltype = self.HqlType.pl_schema()
-            return self.pltype
+            self.HqlType = PolarsTypes.hqlt.dynamic()
+            self.pltype = PolarsTypes.pl.Object()
 
     @register_type('polars_Struct')   
     class Struct(PolarsType):

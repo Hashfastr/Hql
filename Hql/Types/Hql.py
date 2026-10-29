@@ -507,11 +507,22 @@ class HqlTypes():
     class datetime(HqlType):
         """Represent date and time values."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us', time_zone:Optional[str]=None):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Datetime()
+            self.time_unit = time_unit
+            self.time_zone = time_zone
+            self.proto = pl.Datetime(time_unit, time_zone)
 
             self.complex = True
+
+        def params(self) -> tuple:
+            return (self.time_unit, self.time_zone)
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.datetime)
+            unit = HqlTypes.finer_unit(self.time_unit, other.time_unit)
+            zone = self.time_zone if self.time_zone == other.time_zone else 'UTC'
+            return HqlTypes.datetime(unit, zone)
 
         def human(self, series:pl.Series):
             dates = []
@@ -526,9 +537,17 @@ class HqlTypes():
     class duration(HqlType):
         """Represent elapsed time values."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us'):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Duration()
+            self.time_unit = time_unit
+            self.proto = pl.Duration(time_unit)
+
+        def params(self) -> tuple:
+            return (self.time_unit,)
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.duration)
+            return HqlTypes.duration(HqlTypes.finer_unit(self.time_unit, other.time_unit))
         
     @register_type('hql_time')  
     class time(HqlType):
