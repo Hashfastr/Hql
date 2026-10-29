@@ -75,12 +75,12 @@ class make_mv(Function):
         # Generates our mv
         df = table.agg.agg(cols)
                     
+        schema = self.gen_schema(table.schema, paths)
+
         # Drop the aggregation fields as they can be added back later
         # Such as with a summarize
-        # df = df.drop(table.agg_paths)
-        schema = self.gen_schema(table.schema, paths)
-        
-        return Table(df=df, schema=schema, name=table.name)
+        new = Table(df=df, schema=schema, name=table.name)
+        return new.drop_many(table.agg_paths)
     
     '''
     Recursively create a list of series for each value referenced in a schema
@@ -128,11 +128,9 @@ class make_mv(Function):
         
         return Series(series, mv_type)
         
-    def eval(self, ctx: Context, receiver=None) -> object:
+    def eval(self, ctx: Context, receiver=None, as_value:bool=False) -> object:
         import polars as pl
         import polars.dataframe.group_by as group_by
-
-        as_value = kwargs.get('as_value', False)
         
         new = []
         for table in ctx.data:
