@@ -11,11 +11,21 @@ if TYPE_CHECKING:
 
 @register_func('isnotempty')
 class isnotempty(LogicFunction):
-    """Build a predicate requiring every argument to be non-null."""
+    """Build a predicate requiring every argument to be non-null and non-empty."""
 
     def __init__(self, args:list, conf:Optional[dict]=None):
         # allows 1 to infinity args
         LogicFunction.__init__(self, args, 1, -1)
+
+    @staticmethod
+    def nonempty(series:pl.Series) -> pl.Series:
+        import polars as pl
+
+        # Empty strings count as empty, dtype is only known at runtime
+        out = series.is_not_null()
+        if series.dtype == pl.String:
+            out = out & (series != '')
+        return out
 
     def polars(self) -> pl.Expr:
         import polars as pl
@@ -23,7 +33,7 @@ class isnotempty(LogicFunction):
         expr:pl.Expr = pl.lit(True)
 
         for i in self.args:
-            cur = i.polars().is_null().not_()
+            cur = i.polars().map_batches(self.nonempty, return_dtype=pl.Boolean)
             expr = expr.and_(cur)
 
         return expr
