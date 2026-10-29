@@ -452,6 +452,28 @@ class TestTableCastInPlace:
         assert out.data['t2'].df.to_dicts() == [{'b': 2}]
 
 
+class TestSchemaApplyNulls:
+    def test_null_struct_rows_stay_null(self):
+        df = pl.DataFrame({'a': [{'b': 1}, None]})
+        table = Table(df=df, schema={'a': {'b': hqlt.long()}})
+
+        assert table.df.to_dicts() == [{'a': {'b': 1}}, {'a': None}]
+        assert table.df['a'].is_null().to_list() == [False, True]
+
+    def test_nested_null_struct_rows_stay_null(self):
+        df = pl.DataFrame({'a': [{'b': {'c': 1}}, None, {'b': None}]})
+        table = Table(df=df, schema={'a': {'b': {'c': hqlt.string()}}})
+
+        assert table.df.to_dicts() == [{'a': {'b': {'c': '1'}}}, {'a': None}, {'a': {'b': None}}]
+
+    def test_drop_keeps_null_struct_rows(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}, None]}))
+
+        table.drop(P('a', 'b'))
+
+        assert table.df.to_dicts() == [{'a': {'c': 2}}, {'a': None}]
+
+
 class TestSchemaPopRename:
     def test_pop(self):
         schema = Schema(schema={'x': hqlt.long(), 'y': hqlt.string()})

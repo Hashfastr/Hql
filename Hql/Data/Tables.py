@@ -125,6 +125,8 @@ class Table():
         return None
 
     def drop(self, path:Reference, df:Union[pl.DataFrame, None]=None, idx:int=0) -> Union[pl.DataFrame, Table]:
+        from Hql.Data import Schema
+
         if isinstance(df, type(None)) and idx != 0:
             raise hqle.CompilerException('Logic error? Would reinit df with a non-zero index.')
 
@@ -149,7 +151,7 @@ class Table():
 
                     # width, zero row structs still have fields
                     if rec.width:
-                        new[col.name] = rec.to_struct(col.name)
+                        new[col.name] = Schema.keep_nulls(col, rec.to_struct(col.name))
 
                 # Path goes deeper than this scalar, nothing to drop
                 else:

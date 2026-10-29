@@ -568,7 +568,12 @@ class Schema():
                     if isinstance(cur, hqlt.object):
                         cur = cur.schema
 
-                    new[key] = rec_apply(pl.DataFrame(col).unnest(key), cur).to_struct()
+                    if col.dtype != pl.Struct:
+                        new[key] = col
+                        continue
+
+                    st = rec_apply(pl.DataFrame(col).unnest(key), cur).to_struct(key)
+                    new[key] = Schema.keep_nulls(col, st)
                     continue
                 
                 new[key] = cur.cast(col)
@@ -577,6 +582,15 @@ class Schema():
 
         return rec_apply(df, self.schema.schema)
     
+    # Rebuilding a struct from its fields turns null rows into structs of nulls
+    @staticmethod
+    def keep_nulls(orig:pl.Series, rebuilt:pl.Series) -> pl.Series:
+        if not orig.null_count():
+            return rebuilt
+        return pl.select(
+            pl.when(orig.is_null()).then(None).otherwise(rebuilt).alias(orig.name)
+        ).to_series()
+
     # Asserts by attempting to retrieve the field's value
     def assert_field(self, field:Reference):
         return field in self
