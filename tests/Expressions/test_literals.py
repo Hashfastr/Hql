@@ -10,6 +10,7 @@ from Hql.Expressions.Literals import (
     Integer,
     Literal,
     MultiString,
+    Multivalue,
     Null,
     StringLiteral,
     TypeExpression,
@@ -215,11 +216,24 @@ class TestNull:
 # ---------------------------------------------------------------------------
 
 class TestMultivalue:
-    @pytest.mark.skip(
-        reason="Multivalue.__init__ references self.hql_type before it is set"
-    )
     def test_construction(self):
-        pass
+        mv = Multivalue([Integer(1), Integer(2)])
+        assert len(mv) == 2
+        assert mv.value.to_list() == [1, 2]
+
+    def test_type_is_multivalue_of_super_type(self):
+        mv = Multivalue([Integer(1), Integer(2)])
+        assert isinstance(mv.hql_type, hqlt.multivalue)
+        assert isinstance(mv.hql_type.inner, hqlt.int)
+
+    def test_mixed_numeric_promotes(self):
+        mv = Multivalue([Integer(1), Float(2.5)])
+        assert isinstance(mv.hql_type.inner, (hqlt.float, hqlt.double))
+        assert mv.value.to_list() == [1.0, 2.5]
+
+    def test_equality(self):
+        assert Multivalue([Integer(1), Integer(2)]) == Multivalue([Integer(1), Integer(2)])
+        assert Multivalue([Integer(1), Integer(2)]) != Multivalue([Integer(1), Integer(3)])
 
 
 # ---------------------------------------------------------------------------

@@ -179,8 +179,8 @@ class MultiString(StringLiteral):
             assert isinstance(i, StringLiteral)
         self._strlits = value
 
-    def __init__(self, strlits:list[StringLiteral]):
-        self.strlits = strlits
+    def __init__(self, strlits:Optional[list[StringLiteral]]=None):
+        self.strlits = strlits if strlits else []
         StringLiteral.__init__(self, self.str())
 
     def str(self) -> str:
@@ -284,9 +284,10 @@ class Multivalue(Literal):
         import polars as pl
         super_type = hqlt.resolve_conflict([x.hql_type for x in value])
 
-        series = pl.Series([x.value for x in value])
-        self.value = self.hql_type.cast(series)
-        
+        # value holds the elements, so cast them to the element type
+        series = pl.Series([x.value for x in value], strict=False)
+        self.value = super_type.cast(series)
+
         Literal.__init__(self, hqlt.multivalue(super_type), self.value)
 
     def __len__(self):
