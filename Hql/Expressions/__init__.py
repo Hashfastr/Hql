@@ -139,30 +139,36 @@ class OpParameter(Expression):
 class ToClause(Expression):
     """Associate a reference with its target HQL type for casting."""
 
-    def __init__(self, expr:Reference, to:Union[TypeExpression, hqlt.HqlType]):
-        from Hql.Expressions.Literals import TypeExpression 
+    # to is optional, e.g. mv-expand a without a 'to typeof(...)'
+    def __init__(self, expr:Reference, to:Union[TypeExpression, hqlt.HqlType, None]=None):
+        from Hql.Expressions.Literals import TypeExpression
 
         Expression.__init__(self)
         self.expr = expr
         if isinstance(to, TypeExpression):
             to = to.dtype()
         self.to = to
-        
+
     def to_dict(self):
         return {
             'type': self.type,
             'expr': self.expr.to_dict(),
-            'to': self.to.to_dict()
+            'to': self.to.to_dict() if self.to is not None else None
         }
 
     def deparse(self) -> str:
         expr = self.expr.deparse()
-        expr += ' to ' + self.to.deparse()
+        if self.to is not None:
+            expr += ' to ' + self.to.deparse()
         return expr
-        
+
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data
         ctx = ctx.copy()
+
+        # Nothing to cast to
+        if self.to is None:
+            return ctx
 
         new = []
         for table in ctx.data:
