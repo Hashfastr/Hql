@@ -31,7 +31,7 @@ class Data():
 
         # Give names to names-less tables
         for idx, i in enumerate(tables):
-            if i.name == None:
+            if not i.name:
                 i.name = f'Table {idx}'
 
         # Form table groups for merging
@@ -208,7 +208,9 @@ class Data():
         return cur
 
     def drop(self, path:Reference):
+        # Table.drop works in place, copy so the tables shared with the
+        # caller (e.g. through Context.copy) keep their fields
         new = []
         for table in self:
-            new.append(table.drop(path))
+            new.append(table.copy().drop(path))
         return Data(tables=new)

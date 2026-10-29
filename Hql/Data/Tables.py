@@ -99,6 +99,17 @@ class Table():
     def get_schema(self):
         return self.schema.to_dict()
 
+    # Shallow copy, polars frames are immutable but our schema is not
+    def copy(self) -> Table:
+        new = Table(name=self.name)
+        new.df = self.df
+        new.series = self.series
+        new.schema = self.schema.copy()
+        new.agg = self.agg
+        new.agg_paths = list(self.agg_paths)
+        new.agg_schema = self.agg_schema
+        return new
+
     def set_schema(self, schema:Schema):
         self.df = schema.apply(self.df)
         self.schema = schema
