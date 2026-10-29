@@ -123,3 +123,62 @@ class TestRangeEval:
         r = Range(NamedReference("x"), Integer(1), Integer(5), Integer(2))
         assert r.to_dict()["id"] == r.id
         assert r.deparse() == "range x from 1 to 5 step 2"
+
+
+# ---------------------------------------------------------------------------
+# datatable
+# ---------------------------------------------------------------------------
+
+from Hql.Expressions.Literals import StringLiteral, TypeExpression
+from Hql.Operators.Datatable import Datatable
+from Hql.Types.Hql import HqlTypes as hqlt
+
+
+def make_datatable(values, name=None):
+    schema = [
+        (NamedReference("a"), TypeExpression("int")),
+        (NamedReference("b"), TypeExpression("string")),
+    ]
+    return Datatable(schema, values, name=name)
+
+
+class TestDatatableEval:
+    def test_eval_from_type_expressions(self):
+        dt = make_datatable(
+            [Integer(1), StringLiteral("x"), Integer(2), StringLiteral("y")]
+        )
+
+        ctx = dt.eval(make_ctx())
+        table = ctx.data["datatable"]
+
+        assert table.to_dicts() == [{"a": 1, "b": "x"}, {"a": 2, "b": "y"}]
+        assert isinstance(table.schema.schema.schema["a"], hqlt.int)
+        assert isinstance(table.schema.schema.schema["b"], hqlt.string)
+
+    def test_eval_with_hql_types_and_name(self):
+        dt = Datatable(
+            [(NamedReference("a"), hqlt.int())],
+            [Integer(1), Integer(2)],
+            name=NamedReference("tbl"),
+        )
+
+        ctx = dt.eval(make_ctx())
+
+        assert ctx.data["tbl"].to_dicts() == [{"a": 1}, {"a": 2}]
+
+    def test_ragged_values_rejected(self):
+        dt = make_datatable([Integer(1), StringLiteral("x"), Integer(2)])
+        with pytest.raises(hqle.QueryException):
+            dt.eval(make_ctx())
+
+    def test_deparse_uses_type_names(self):
+        dt = make_datatable([Integer(1), StringLiteral("x")])
+        assert dt.deparse() == "datatable (a: int, b: string)\n[\n    1, 'x'\n]"
+
+    def test_to_dict_includes_schema_and_values(self):
+        dt = make_datatable([Integer(1), StringLiteral("x")])
+        d = dt.to_dict()
+
+        assert d["id"] == dt.id
+        assert d["schema"] == {"a": "int", "b": "string"}
+        assert [v["value"] for v in d["values"]] == [1, "x"]
