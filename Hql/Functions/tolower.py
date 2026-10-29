@@ -12,25 +12,26 @@ class tolower(Function):
     """Convert string literals or field values to lowercase."""
 
     def __init__(self, args:list, conf:Optional[dict]=None):
-        import polars as pl
         Function.__init__(self, args, 1, 1, conf)
         self.src = args[0]
 
-        if self.src.literal:
-            self.src = pl.Series([self.src.value]).str.to_lowercase()
+    def preprocess(self, ctx: Context, receiver=None) -> object:
+        from Hql.Expressions.Literals import StringLiteral
+
+        src = self.src.preprocess(ctx)
+        if isinstance(src, StringLiteral):
+            return StringLiteral(src.value.decode('utf-8').lower())
+        return self
         
     def eval(self, ctx: Context, receiver=None) -> object:
-        import polars as pl
         from Hql.Data import Data, Table
         from Hql.Expressions.Literals import StringLiteral
         from Hql.Types.Hql import HqlTypes as hqlt
-        
-        if isinstance(self.src, pl.Series):
-            new = self.src.str.to_lowercase()
-            return StringLiteral(new[0])
 
-        path = self.src.eval(ctx, as_list=True)
-        data = ctx.data.select(path).strip()
+        if isinstance(self.src, StringLiteral):
+            return self.broadcast(ctx, self.preprocess(ctx))
+
+        data = self.src.eval(ctx).data.strip()
         
         tables = []
         for table in data:
@@ -40,7 +41,7 @@ class tolower(Function):
             series = table.series.series.str.to_lowercase()
 
             new = Table(name=table.name)
-            new.insert(path, series, hqlt.string())
+            new.insert(self.src, series, hqlt.string())
             tables.append(new)
 
         return Data(tables=tables)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from . import Function
 from Hql.Context import register_func
-from Hql.Data import Data, Table, Schema
+from Hql.Data import Data, Table, Series
 from Hql.Types.Hql import HqlTypes as hqlt
 from typing import TYPE_CHECKING, Optional
 
@@ -21,8 +21,8 @@ class hql_len(Function):
         self.count_type = hqlt.ulong()
         
     def eval(self, ctx: Context, receiver=None) -> object:
-        path = self.args[0].eval(ctx, as_list=True)
-        filter = self.args[0].eval(ctx, as_pl=True)
+        path = self.args[0]
+        filter = path.polars_value()
         
         new = []
         for table in ctx.data:            
@@ -30,14 +30,14 @@ class hql_len(Function):
                 new.append(Table(name=table.name))
                 continue
             
-            if not isinstance(table.schema.get_type(path).schema, hqlt.multivalue):
-                logging.warning(f"Skipping over evaluating length of {'.'.join(path)} in {table.name}")
+            if not isinstance(table.schema.get_type(path).strip(), hqlt.multivalue):
+                logging.warning(f"Skipping over evaluating length of {path.deparse()} in {table.name}")
                 new.append(Table(name=table.name))
                 continue
             
-            count = table.df.with_columns(filter.list.len())
-            schema = Schema().set(path, self.count_type)
+            count = table.df.select(filter.list.len()).to_series()
+            count = self.count_type.cast(count)
             
-            new.append(Table(df=count, schema=Schema(schema=schema), name=table.name))
+            new.append(Table(series=Series(count, self.count_type), name=table.name))
             
         return Data(tables=new)

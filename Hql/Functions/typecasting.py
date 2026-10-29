@@ -17,17 +17,34 @@ class Typecast(Function):
         self.src = args[0]
         
         if self.src.literal:
-            self.src = pl.Series([self.src.value])
+            # StringLiteral values are stored as bytes
+            value = self.src.str() if isinstance(self.src, Literals.StringLiteral) else self.src.value
+            self.src = pl.Series([value])
         
         # default cast type
         self.cast_type = hqlt.string()
         self.expr = Literals.StringLiteral
+
+    def cast(self, series:pl.Series) -> pl.Series:
+        # Unconvertible values become null rather than failing the query
+        if series.dtype == pl.Binary:
+            series = series.cast(pl.String)
+        try:
+            return self.cast_type.cast(series)
+        except pl.exceptions.PolarsError:
+            return series.cast(self.cast_type.pl_schema(), strict=False)
         
+    def preprocess(self, ctx:Context, receiver=None) -> object:
+        # Literal casts can be resolved statically
+        if isinstance(self.src, pl.Series):
+            new = self.cast(self.src)
+            return Literals.Null() if new[0] is None else self.expr(new[0])
+        return self
+
     def eval(self, ctx:Context, receiver=None):
         # represents a single value literal 
         if isinstance(self.src, pl.Series):
-            new = self.cast_type.cast(self.src)
-            return self.expr(new[0])
+            return self.broadcast(ctx, Series(self.cast(self.src), self.cast_type))
 
         data = ctx.data.select(self.src).strip()
         logging.debug(type(data))
@@ -38,7 +55,7 @@ class Typecast(Function):
             if table.series is None:
                 continue
 
-            series = table.series.cast(self.cast_type).series
+            series = self.cast(table.series.series)
 
             new = Table(name=table.name)
             new.insert(self.src, series, self.cast_type)
@@ -62,7 +79,8 @@ class tofloat(Typecast):
 
     def __init__(self, args:list, conf:Optional[dict]=None):
         Typecast.__init__(self, args)
-        self.cast_type = hqlt.float()
+        # KQL tofloat is an alias of toreal, 64-bit
+        self.cast_type = hqlt.double()
         self.expr = Literals.Float
         
 @register_func('todouble')

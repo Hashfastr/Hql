@@ -19,14 +19,16 @@ class count(Function):
         
     def get_count_name(self, agg) -> Reference:
         from Hql.Expressions.References import NamedReference
-        name = self.count_name
+        base = self.count_name
+        name = base
         
-        # Unsure if this is a performant solution
-        # Does .agg compute? or does it just output what already has?
+        # Only need the column names, not a computed aggregation
+        taken = agg.df.columns
+
         i = 0
-        while name in agg.agg():
+        while name in taken:
             i += 1
-            name = f'{name}{i}'
+            name = f'{base}{i}'
             
         return NamedReference(name)
         

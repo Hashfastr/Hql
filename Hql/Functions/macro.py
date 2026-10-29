@@ -63,7 +63,7 @@ class macro(Function):
         self.preprocess(ctx)
         
         db = receiver
-        macros = [x.str() for x in self.args]
+        macros = [x.str() for x in self.names]
         compiler = HqlCompiler(ctx.config)
         
         if not db:

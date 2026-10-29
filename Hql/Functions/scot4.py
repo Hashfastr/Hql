@@ -19,13 +19,14 @@ class scot4(Function):
     """Publish HQL detection results to a SCOT 4 server."""
 
     def __init__(self, args:list, conf:Optional[dict]=None):
-        from Hql.Expressions.Literals import StringLiteral
-        from Hql.Expressions.References import NamedExpression
+        from Hql.Expressions.Literals import StringLiteral, Bool
+        from Hql.Expressions.References import NamedExpression, NamedReference
 
         Function.__init__(self, args, 0, -1, conf)
         self.params = {
             'server': self.conf.get('default', None),
-            'union': self.conf.get('union', True)
+            # always_union is the older config name, the effective default stays off
+            'union': self.conf.get('union', self.conf.get('always_union', False))
         }
 
         if 'source_tags' not in self.conf:
@@ -49,14 +50,21 @@ class scot4(Function):
         for i in self.args:
             if not isinstance(i, NamedExpression):
                 raise hqle.ArgumentException(f'Invalid argument expression given to scot4: {i}')
-            if not isinstance(i.paths[0], StringLiteral) or len(i.paths) > 1:
+            # The parser gives names as NamedReferences
+            if not isinstance(i.paths[0], (StringLiteral, NamedReference)) or len(i.paths) > 1:
                 raise hqle.ArgumentException(f'Invalid parameter name(s) given to scot4: {i.paths}')
-            val = i.paths[0].quote('')
+            val = i.paths[0].str()
 
             if val not in self.params:
                 raise hqle.ArgumentException(f'Invalid parameter given to scot4: {val}')
 
-            self.params[val] = i.value
+            # Unwrap literals so they compare against config values
+            if isinstance(i.value, StringLiteral):
+                self.params[val] = i.value.str()
+            elif isinstance(i.value, Bool):
+                self.params[val] = i.value.value
+            else:
+                raise hqle.ArgumentException(f'Invalid value given to scot4 parameter {val}: {i.value.deparse()}')
 
         for i in self.params:
             if self.params[i] == None:
@@ -127,12 +135,14 @@ class scot4(Function):
             res = requests.get(
                 url=url,
                 headers=headers,
+                timeout=self.timeout,
                 verify=self.verify_tls,
             )
         else:
             res = requests.get(
                 url=url,
                 headers=headers,
+                timeout=self.timeout,
                 verify=self.verify_tls,
             )
 
@@ -167,7 +177,7 @@ class scot4(Function):
         from Hql.Operators.Union import Union as HqlUnion
         from Hql.Context import Context
 
-        union = self.conf.get('always_union', False)
+        union = self.params['union']
         if union:
            data = HqlUnion([Wildcard('*')], NamedReference('scot4_unioned')).eval(Context(data))
 
@@ -325,7 +335,7 @@ class scot4(Function):
         # check if we're already linked
         guide_sigs = self.get_guide_signatures(guide)
         for i in guide_sigs:
-            if guide['id'] == signature['id']:
+            if i.get('id') == signature['id']:
                 return ''
         
         title = guide.get('title')

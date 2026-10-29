@@ -20,25 +20,29 @@ class ip4subnet(Function):
         self.subnet:StringLiteral = args[0]
 
     def eval(self, ctx: Context, receiver=None) -> BasicRange:
-        from Hql.Expressions.Literals import Integer
-        from Hql.Types.Hql import HqlTypes as hqlt
-        import polars as pl
+        from Hql.Expressions.Literals import Integer, StringLiteral
         import re
         
-        subnet_regex = '(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\/(\\d{1,2})'
+        # resolve let variables
+        subnet = self.subnet.preprocess(ctx)
+        if not isinstance(subnet, StringLiteral):
+            raise hqle.QueryException(f'ip4subnet given non-string subnet {self.subnet.deparse()}')
 
-        subnet_text = self.subnet.str()
-        ip_text   = re.match(subnet_regex, subnet_text)
-        mask_text = re.match(subnet_regex, subnet_text)
+        subnet_regex = r'(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
 
-        if ip_text == None or mask_text == None:
+        subnet_text = subnet.str()
+        match = re.fullmatch(subnet_regex, subnet_text)
+        if match == None:
             raise hqle.QueryException(f'Invalid subnet given {subnet_text}')
 
-        ip_text = ip_text.group(1)
-        mask_text = mask_text.group(2)
+        octets = [int(x) for x in match.groups()[:4]]
+        prefix = int(match.group(5))
+
+        if any(x > 255 for x in octets) or prefix > 32:
+            raise hqle.QueryException(f'Invalid subnet given {subnet_text}')
         
-        mask = 0xFFFFFFFF - ((1 << (32 - int(mask_text))) - 1)        
-        ip_int = hqlt.ip4().cast(pl.Series([ip_text]))[0]
+        mask = 0xFFFFFFFF - ((1 << (32 - prefix)) - 1)
+        ip_int = (octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]
 
         ip_start = ip_int &  mask
         ip_end   = ip_int | (mask ^ 0xFFFFFFFF)
