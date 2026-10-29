@@ -47,7 +47,6 @@ class Join(Operator):
 
     # Gets the data resulting from a compiled right side
     def get_right(self, ctx:Context, where:Optional[Logic]) -> Data:
-        from copy import deepcopy
         from Hql.Operators.Where import Where
         from Hql.Compiler import InstructionSet
 
@@ -62,10 +61,39 @@ class Join(Operator):
         # Add right side filters to a copy, compiling them in pushes ops into
         # the upstream databases so don't touch ours
         if filters:
-            rh = InstructionSet(deepcopy(self.rh), [Where(x) for x in filters])
+            rh = InstructionSet(self.copy_rh(), [Where(x) for x in filters])
             rh = rh.recompile(ctx.config)
 
         return rh.eval(ctx).data
+
+    # Deep copies the right side, sharing HTTP sessions as requests.Session
+    # drops subclass attributes when copied
+    def copy_rh(self) -> InstructionSet:
+        from copy import deepcopy
+        # sessions module, requests.Session may be patched in tests
+        from requests.sessions import Session
+        from Hql.Compiler import InstructionSet
+
+        memo:dict = {}
+
+        def share(obj, seen:set):
+            if id(obj) in seen:
+                return
+            seen.add(id(obj))
+
+            if isinstance(obj, InstructionSet):
+                for i in list(obj.upstream) + list(obj.ops):
+                    share(i, seen)
+                return
+
+            for value in vars(obj).values():
+                if isinstance(value, Session):
+                    memo[id(value)] = value
+                elif isinstance(value, (InstructionSet, Operator)):
+                    share(value, seen)
+
+        share(self.rh, set())
+        return deepcopy(self.rh, memo)
 
     # Join kinds where right rows without a matching left key can't affect the
     # output, so the right side can be filtered down to the left keys
