@@ -61,23 +61,28 @@ class Table():
             try:
                 self.df = pl.from_dicts(init_data, schema=pl_schema, strict=False)
             except pl.exceptions.ComputeError as e:
-                logging.error(e)
-                logging.error('Possible typing issue caught when loading dicts')
-                logging.error(f'Offending table: {self.name}')
-                logging.error(f'Offending schema: {json.dumps(self.schema.to_dict())}')
-                logging.error('Just giving an empty dataframe')
-                self.df = pl.DataFrame()
+                logging.warning(e)
+                logging.warning(f'Possible typing issue caught when loading dicts into table {self.name}')
+                logging.warning(f'Offending schema: {json.dumps(self.schema.to_dict())}')
+                logging.warning('Retrying with polars inference over all rows')
+
+                # Serialize values polars can't put in a string column (e.g. dict vs str),
+                # then let polars infer widths (e.g. ints overflowing the inferred type).
+                # Never drop the data, if this fails we want the error.
+                init_data = self.schema.adjust_str(init_data)
+                self.df = pl.from_dicts(init_data, infer_schema_length=None, strict=False)
+                self.schema = Schema(data=self.df)
         
         elif init_data and schema:
             self.schema = schema
             pl_schema = schema.gen_pl_schema()
             self.df = pl.from_dicts(init_data, schema=pl_schema)
         
-        elif not self.df.is_empty() and schema:
+        elif self.df.width and schema:
             self.schema = schema
             self.df = schema.apply(self.df)
 
-        elif not self.df.is_empty() and not schema:
+        elif self.df.width and not schema:
             self.schema = Schema(data=self.df)
 
         elif schema:
@@ -99,6 +104,17 @@ class Table():
     def get_schema(self):
         return self.schema.to_dict()
 
+    # Shallow copy, polars frames are immutable but our schema is not
+    def copy(self) -> Table:
+        new = Table(name=self.name)
+        new.df = self.df
+        new.series = self.series
+        new.schema = self.schema.copy()
+        new.agg = self.agg
+        new.agg_paths = list(self.agg_paths)
+        new.agg_schema = self.agg_schema
+        return new
+
     def set_schema(self, schema:Schema):
         self.df = schema.apply(self.df)
         self.schema = schema
@@ -109,6 +125,8 @@ class Table():
         return None
 
     def drop(self, path:Reference, df:Union[pl.DataFrame, None]=None, idx:int=0) -> Union[pl.DataFrame, Table]:
+        from Hql.Data import Schema
+
         if isinstance(df, type(None)) and idx != 0:
             raise hqle.CompilerException('Logic error? Would reinit df with a non-zero index.')
 
@@ -131,8 +149,13 @@ class Table():
                     if not isinstance(rec, pl.DataFrame):
                         raise hqle.CompilerException('Logic error? Final recursion step hit before end.')
 
-                    if not rec.is_empty():
-                        new[col.name] = rec.to_struct()
+                    # width, zero row structs still have fields
+                    if rec.width:
+                        new[col.name] = Schema.keep_nulls(col, rec.to_struct(col.name))
+
+                # Path goes deeper than this scalar, nothing to drop
+                else:
+                    new[col.name] = col
                 
             # Not dropping
             else:
@@ -184,14 +207,15 @@ class Table():
         schemas = []
         for table in tables:
             schemas.append(table.schema)
-        schema = Schema.merge(schemas).schema
+        # Work on the raw dict, hqlt.object is keyed by references and immutable
+        schema = Schema.merge(schemas).schema.schema
         
         # generate col groups
         longest_len = 0
         col_groups = dict()
         for table in tables:
-            # skip empty dataframes
-            if isinstance(table.df, type(None)) or table.df.is_empty():
+            # skip tables without columns, zero row tables still carry columns
+            if isinstance(table.df, type(None)) or not table.df.width:
                 continue
 
             for col in table.df:
@@ -205,10 +229,10 @@ class Table():
             for col in col_groups[key]:
                 if longest_len > len(col):
                     if len(col) == 1:
-                        col = pl.Series([col[0]] * longest_len)
+                        col = col.new_from_index(0, longest_len)
                     else:
                         pad = longest_len - len(col)
-                        col = col.extend(pl.Series([None] * pad))
+                        col = col.extend_constant(None, pad)
 
                 if key not in new:
                     new[key] = col
@@ -219,14 +243,34 @@ class Table():
                     l = Table(df=new[key].struct.unnest(), name=name)
                     r = Table(df=col.struct.unnest(), name=name)
                     
-                    new[key] = Table.merge_rows([l, r]).df.to_struct()
+                    merged = Table.merge_rows([l, r])
+                    new[key] = merged.df.to_struct(key)
+                    schema[key] = merged.schema.schema.schema
                     continue
 
-                if not isinstance(schema[key], hqlt.multivalue):
-                    schema[key] = hqlt.multivalue(schema[key])
+                if not isinstance(new[key], list):
                     new[key] = [new[key], col]
                 else:
-                    new[key].append(col)                
+                    new[key].append(col)
+
+        # Conflicting columns become a multivalue holding each table's value per row
+        for key in new:
+            if not isinstance(new[key], list):
+                continue
+
+            new[key] = pl.select(pl.concat_list(new[key]).alias(key)).to_series()
+
+            cur = schema.get(key)
+            if isinstance(cur, dict):
+                cur = hqlt.object(cur)
+            if isinstance(cur, hqlt.HqlType) and not isinstance(cur, hqlt.multivalue):
+                cur = hqlt.multivalue(cur)
+
+            if isinstance(cur, hqlt.multivalue) and cur.pl_schema() == new[key].dtype:
+                schema[key] = cur
+            else:
+                # Polars had to resolve differing types, follow its lead
+                schema[key] = Schema.from_df(new[key].to_frame()).schema.schema[key]
         
         df = pl.DataFrame(new)
         schema = Schema(schema=schema)
@@ -260,22 +304,22 @@ class Table():
         schemas = []
         for table in tables:
             schemas.append(table.schema)
-        schema = Schema.merge(schemas).schema
+        schema = Schema.merge(schemas)
 
         # Makes an assumption that the above merge converted field names accurately
         # in the case of a conflict, e.g. they get split into types.
         new = []
         for table in tables:
             cur = table.df
-            curs = table.schema.schema
+            # raw dict, iterating hqlt.object yields references rather than names
+            curs = table.schema.schema.schema
             for key in curs:
                 if isinstance(curs[key], CompilerType):
                     dup_key = f'{key}_{curs[key].name}'
                 else:
                     dup_key = f'{key}_object'
 
-                # Linter hates this one simple trick!
-                if dup_key in schema:
+                if dup_key in schema.schema.schema:
                     cur = cur.rename({key: dup_key})
             new.append(cur)
 
@@ -307,7 +351,8 @@ class Table():
             raise hqle.QueryException(f"Could not unnest field {field.deparse()} from table {self.name}")
         
         df = self.get_value(field)
-        dtype = self.schema.unnest(field).strip()
+        # Exactly the field's type, strip would also descend through single key children
+        dtype = self.schema.schema[field]
 
         if isinstance(df, pl.Series):
             if isinstance(dtype, hqlt.multivalue):
@@ -367,7 +412,8 @@ class Table():
         # Using this instead of strip to ensure we're in sync
         if path:
             schema = self.schema.unnest(Path(path)).strip()
-            if isinstance(schema, hqlt.object):
+            # strip hands back a Schema when it stops on a multi field object
+            if isinstance(schema, Schema):
                 schema = schema.schema
         else:
             schema = self.schema.schema
@@ -391,14 +437,11 @@ class Table():
         #if self.assert_field(dest):
         #    raise hqle.QueryException('Attempting to rename field into an existing field')
         
-        value = self.pop(src).unnest(src)
-        if isinstance(value, Series):
-            schema = value.type
-            value = value.series
-
-        else:
-            schema = value.schema.schema
-            value = value.df
+        popped = self.pop(src)
+        value = popped.get_value(src)
+        schema = popped.schema.schema[src]
+        if isinstance(schema, hqlt.object):
+            schema = schema.schema
 
         if not isinstance(schema, (dict, hqlt.HqlType)):
             raise hqle.CompilerException(f'Attempting to rename with schema of type {type(schema)}')
@@ -416,6 +459,11 @@ class Table():
         ) -> pl.DataFrame:
         if isinstance(cur_df, type(None)):
             cur_df = self.df
+
+        # Conflicts rename path segments, work on a copy rather than the caller's reference
+        if idx == 0:
+            parts = name.list() if isinstance(name, (NamedReference, Path)) else list(name)
+            name = Path([NamedReference(x) for x in parts])
             
         split = name[idx]
                 
@@ -441,7 +489,7 @@ class Table():
         elif cur_df[split].dtype == pl.Struct:        
             recurse = self.insert(name, value, vtype, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
             cur_df = cur_df.drop(split)
-            new = pl.DataFrame({split: recurse})
+            new = pl.DataFrame({split: recurse.to_struct(split)})
         
         # Conflict, a base type is where we're trying to put a struct
         else:
@@ -454,12 +502,13 @@ class Table():
             split = f'{split}_{i}'
             name[idx] = split
          
-            if cur_df[split].dtype == pl.Struct:
+            if split in cur_df and cur_df[split].dtype == pl.Struct:
                 recurse = self.insert(name, value, vtype, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
+                cur_df = cur_df.drop(split)
             else:
                 recurse = self.insert(name, value, vtype, cur_df=pl.DataFrame(), idx=idx + 1)
             
-            new = pl.DataFrame({split: recurse})
+            new = pl.DataFrame({split: recurse.to_struct(split)})
         
         new = pl.concat([new, cur_df], how='horizontal')
         
@@ -482,10 +531,10 @@ class Table():
             return mask
         
         if cur_df[split].dtype == pl.Struct:
-            recurse = self.remove(name, cur_df=cur_df.unnest(split), idx=idx + 1)
+            recurse = self.remove(name, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
             
-            if not recurse.is_empty():
-                recurse = pl.DataFrame({split: recurse})
+            if recurse.width:
+                recurse = pl.DataFrame({split: recurse.to_struct(split)})
                 merged = pl.concat([mask, recurse], how='horizontal')
             else:
                 merged = mask
@@ -500,8 +549,9 @@ class Table():
         
         # Schema is tracked through the select
         value = self.select(name)
+        # remove checks the schema, so pop it afterwards
+        self.df = self.remove(name)
         self.schema.pop(name)
-        self.remove(name)
         
         return value
     
@@ -512,7 +562,7 @@ class Table():
     
     def cast_in_place(self, path:Reference, cast_type:hqlt.HqlType):
         if not self.assert_field(path):
-            return None
+            return self
         
         self.schema.set(path, cast_type)
         self.df = self.schema.apply(self.df)
@@ -521,7 +571,7 @@ class Table():
     
     def join(self, right:Table, on:Sequence[Reference], kind:str):
         from Hql.Context import Context
-        from Hql.Data import Data
+        from Hql.Data import Data, Schema
 
         # faux ctx
         ctx = Context(Data())
@@ -535,12 +585,16 @@ class Table():
 
         schema = self.schema.join(right.schema, on, kind)
 
+        # Join keys must be bare values, Path.polars() rebuilds the struct with an alias
         pl_on = []
         for i in on:
-            pl_on.append(i.polars())
+            pl_on.append(i.polars_value())
+
+        # Keep key coalescing explicit, Schema.join mirrors this behavior
+        coalesce = Schema.join_coalesces(on, kind)
 
         if kind == 'inner':
-            df = self.df.join(right.df, on=pl_on, how='inner')
+            df = self.df.join(right.df, on=pl_on, how='inner', coalesce=coalesce)
         
         elif kind == 'leftsemi':
             df = self.df.join(right.df, on=pl_on, how='semi')
@@ -549,23 +603,23 @@ class Table():
             df = right.df.join(self.df, on=pl_on, how='semi')
 
         elif kind == 'leftouter':
-            df = self.df.join(right.df, on=pl_on, how='left')
+            df = self.df.join(right.df, on=pl_on, how='left', coalesce=coalesce)
 
         elif kind == 'rightouter':
-            df = right.df.join(self.df, on=pl_on, how='left')
+            df = self.df.join(right.df, on=pl_on, how='right', coalesce=coalesce)
 
         elif kind == 'fullouter':
-            df = self.df.join(right.df, on=pl_on, how='full')
+            df = self.df.join(right.df, on=pl_on, how='full', coalesce=coalesce)
 
         elif kind == 'leftanti':
             df = self.df.join(right.df, on=pl_on, how='anti')
 
         elif kind == 'rightanti':
-            df = right.df.join(right.df, on=pl_on, how='anti')
+            df = right.df.join(self.df, on=pl_on, how='anti')
 
         elif kind == 'innerunique':
             left = self.df.unique(subset=pl_on)
-            df = left.join(right.df, on=pl_on, how='inner')
+            df = left.join(right.df, on=pl_on, how='inner', coalesce=coalesce)
 
         else:
             raise hqle.QueryException(f'Invalid join kind {kind} used')

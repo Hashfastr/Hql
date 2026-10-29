@@ -261,33 +261,16 @@ class Schema():
             raise hqle.QueryException('Attempting to rename field into an existing field')
         
         src_type = self.pop(src)
-        
-        cur = self.schema
-        for idx, i in enumerate(dest):
-            # the previous assertion functions guarantee a destination path will work
-            # adding to please the linter
-            assert isinstance(cur, dict)
-
-            if idx == len(dest) - 1:
-                cur[i] = src_type
-            else:
-                cur = cur[i]
+        self.set(dest, src_type)
+        return self
                 
     def pop(self, name:Reference):
         if not self.assert_field(name):
             raise hqle.QueryException(f'Attempting to pop a non-existing field {name}')
         
-        src_type = hqlt.null()
-        cur = self.schema
-        for idx, i in enumerate(name):
-            # the previous assertion function guarantees our path exists
-            # adding to please the linter
-            assert isinstance(cur, dict)
-
-            if idx == len(name) - 1:
-                src_type = cur.pop(i)
-            else:
-                cur = cur[i]
+        # drop also prunes parents left empty, as Table.remove does
+        src_type = self.schema[name]
+        self.drop(name)
                 
         return src_type
 
@@ -307,6 +290,10 @@ class Schema():
                         rec = d(path, cur, idx+1)
                         if rec:
                             new[key] = rec
+
+                    # Path goes deeper than this scalar, nothing to drop
+                    else:
+                        new[key] = schema[key]
 
                 # Don't have to do anything
                 else:
@@ -480,24 +467,69 @@ class Schema():
     def adjust_mv(self, data:list[dict], schema:Union[dict, None]=None) -> list[dict]:
         from Hql.Types.Hql import HqlTypes as hqlt
 
-        schema = schema if schema != None else self.schema
+        # Raw dict, iterating hqlt.object yields references instead of names
+        schema = schema if schema != None else self.schema.schema
         
         # Loop through each defined multivalue field
         for key in schema:
-            if isinstance(schema[key], dict):
+            cur = schema[key]
+            if isinstance(cur, hqlt.object):
+                cur = cur.schema
+
+            if isinstance(cur, dict):
                 rows = []
                 for row in data:
-                    if key in row:
+                    if isinstance(row, dict) and isinstance(row.get(key), dict):
                         rows.append(row[key])
                         
-                self.adjust_mv(data, schema=schema[key])
+                self.adjust_mv(rows, schema=cur)
+                continue
             
-            if not isinstance(schema[key], hqlt.multivalue):
+            if not isinstance(cur, hqlt.multivalue):
                 continue
             
             for row in data:
-                if key in row and not isinstance(row[key], list):
+                if isinstance(row, dict) and key in row and row[key] is not None and not isinstance(row[key], list):
                     row[key] = [row[key]]
+
+        return data
+    
+    # Serializes non-string json values found in string typed fields
+    def adjust_str(self, data:list[dict], schema:Union[dict, None]=None) -> list[dict]:
+        import json
+        from Hql.Types.Hql import HqlTypes as hqlt
+
+        schema = schema if schema != None else self.schema.schema
+
+        def to_str(value):
+            if value is None or isinstance(value, str):
+                return value
+            if isinstance(value, (dict, list)):
+                return json.dumps(value, default=str)
+            return str(value)
+
+        for key in schema:
+            cur = schema[key]
+            if isinstance(cur, hqlt.object):
+                cur = cur.schema
+
+            if isinstance(cur, dict):
+                rows = []
+                for row in data:
+                    if isinstance(row, dict) and isinstance(row.get(key), dict):
+                        rows.append(row[key])
+
+                self.adjust_str(rows, schema=cur)
+                continue
+
+            for row in data:
+                if not isinstance(row, dict) or key not in row:
+                    continue
+
+                if isinstance(cur, hqlt.string):
+                    row[key] = to_str(row[key])
+                elif isinstance(cur, hqlt.multivalue) and isinstance(cur.inner, hqlt.string) and isinstance(row[key], list):
+                    row[key] = [to_str(x) for x in row[key]]
 
         return data
     
@@ -536,7 +568,12 @@ class Schema():
                     if isinstance(cur, hqlt.object):
                         cur = cur.schema
 
-                    new[key] = rec_apply(pl.DataFrame(col).unnest(key), cur).to_struct()
+                    if col.dtype != pl.Struct:
+                        new[key] = col
+                        continue
+
+                    st = rec_apply(pl.DataFrame(col).unnest(key), cur).to_struct(key)
+                    new[key] = Schema.keep_nulls(col, st)
                     continue
                 
                 new[key] = cur.cast(col)
@@ -545,6 +582,15 @@ class Schema():
 
         return rec_apply(df, self.schema.schema)
     
+    # Rebuilding a struct from its fields turns null rows into structs of nulls
+    @staticmethod
+    def keep_nulls(orig:pl.Series, rebuilt:pl.Series) -> pl.Series:
+        if not orig.null_count():
+            return rebuilt
+        return pl.select(
+            pl.when(orig.is_null()).then(None).otherwise(rebuilt).alias(orig.name)
+        ).to_series()
+
     # Asserts by attempting to retrieve the field's value
     def assert_field(self, field:Reference):
         return field in self
@@ -570,32 +616,46 @@ class Schema():
 
         return pc(df, self.schema.schema)
 
+    # Whether polars coalesces the join keys into a single column
+    # Only possible for plain column keys, full joins keep both sides
+    @staticmethod
+    def join_coalesces(on:Sequence[Reference], kind:str) -> bool:
+        from Hql.Expressions.References import NamedReference
+
+        if kind in ('fullouter', 'leftsemi', 'rightsemi', 'leftanti', 'rightanti'):
+            return False
+        return all(isinstance(x, NamedReference) for x in on)
+
+    # Mirrors the columns produced by Table.join's polars join
     def join(self, right:Schema, on:Sequence[Reference], kind:str) -> Schema:
-        # all of these are semantically the same schema wise
-        if kind in ('inner', 'leftsemi', 'rightsemi', 'innerunique', 'leftouter', 'rightouter', 'fullouter'):
-            new = self.copy()
-            for path, stype in right:
-                # change naming for duplicates
-                if path in new and path not in on:
-                    path[-1] += '_right'
-                    new.set(path, stype)
+        # semi and anti joins only keep one side
+        if kind in ('leftsemi', 'leftanti'):
+            return self.copy()
 
-                # No duplicate, matches both sets
-                elif path in new and path in on:
-                    ...
+        elif kind in ('rightsemi', 'rightanti'):
+            return right.copy()
 
-                # Not yet existing in schema
-                elif path not in new:
-                    new.set(path, stype)
+        elif kind in ('inner', 'innerunique', 'leftouter', 'rightouter', 'fullouter'):
+            left = self.copy().normalize().schema.schema
+            rhs = right.copy().normalize().schema.schema
+
+            # Coalesced keys only appear once, rightouter takes the right's value
+            keys = set()
+            if Schema.join_coalesces(on, kind):
+                keys = {x.name for x in on}
+
+            new = dict(left)
+            for key in rhs:
+                if key in keys:
+                    if kind == 'rightouter':
+                        new[key] = rhs[key]
+                    continue
+
+                # polars only suffixes top level columns, structs are renamed whole
+                name = f'{key}_right' if key in left else key
+                new[name] = rhs[key]
             
-            return new
-
-        elif kind == 'leftanti':
-            return self
-
-        elif kind == 'rightanti':
-            return right
+            return Schema(schema=new)
 
         else:
             raise hqle.QueryException(f'Invalid join kind {kind} used')
-            
