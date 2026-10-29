@@ -1163,7 +1163,7 @@ class HqlCompiler(Compiler):
 
     def Integer(self, expr:Literals.Integer, prep:bool=True) -> tuple[BranchDescriptor, None]:
         desc = BranchDescriptor()
-        desc.set_attr('types', hqlt.int())
+        desc.set_attr('types', hqlt.long())
         desc.expr = expr
 
         return desc, None
@@ -1177,7 +1177,7 @@ class HqlCompiler(Compiler):
 
     def Float(self, expr:Literals.Float, prep:bool=True) -> tuple[BranchDescriptor, None]:
         desc = BranchDescriptor()
-        desc.set_attr('types', hqlt.float())
+        desc.set_attr('types', hqlt.double())
         desc.expr = expr
 
         return desc, None

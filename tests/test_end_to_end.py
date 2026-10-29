@@ -142,3 +142,16 @@ class TestDefaultDatabase:
 
     def test_bare_file_with_let(self, conf):
         assert rows(conf, "let f = 't.json'; file(f) | count") == [{'Count': 4}]
+
+
+class TestNumericLiterals:
+    @pytest.fixture
+    def nums(self, conf, tmp_path):
+        (tmp_path / 'f.json').write_text(json.dumps([{'x': 1.1, 'n': 3000000000}, {'x': 2.5, 'n': 1}]))
+        return conf
+
+    def test_float_literal_matches_double_column(self, nums):
+        assert rows(nums, "database('json').file('f.json') | where x == 1.1 | count", 'f.json') == [{'Count': 1}]
+
+    def test_large_integer_literal(self, nums):
+        assert rows(nums, "database('json').file('f.json') | where n == 3000000000 | count", 'f.json') == [{'Count': 1}]

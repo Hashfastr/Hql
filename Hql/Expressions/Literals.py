@@ -206,7 +206,7 @@ class Integer(Literal):
 
     def __init__(self, value:Union[str, int]):
         self.value = int(value)
-        Literal.__init__(self, hqlt.int(), self.value)
+        Literal.__init__(self, hqlt.long(), self.value)
 
     def __eq__(self, value: object, /) -> bool:
         if not isinstance(value, Integer):
@@ -252,7 +252,7 @@ class Float(Literal):
 
     def __init__(self, value:Union[str, float]):
         self.value = float(value)
-        Literal.__init__(self, hqlt.float(), self.value)
+        Literal.__init__(self, hqlt.double(), self.value)
 
     def __eq__(self, value: object, /) -> bool:
         if not isinstance(value, Float):

@@ -224,7 +224,7 @@ class TestMultivalue:
     def test_type_is_multivalue_of_super_type(self):
         mv = Multivalue([Integer(1), Integer(2)])
         assert isinstance(mv.hql_type, hqlt.multivalue)
-        assert isinstance(mv.hql_type.inner, hqlt.int)
+        assert isinstance(mv.hql_type.inner, hqlt.long)
 
     def test_mixed_numeric_promotes(self):
         mv = Multivalue([Integer(1), Float(2.5)])
