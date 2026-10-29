@@ -65,11 +65,6 @@ class TestBase64Offset:
         parts = f.calc_offset(b'http')
         assert [x.str() for x in parts] == ['aHR0c', 'h0dH', 'odHRw']
 
-    @pytest.mark.xfail(
-        raises=AttributeError,
-        strict=False,
-        reason='Literals.Multivalue uses hql_type before assignment (workspace-qgw.83)',
-    )
     def test_preprocess_returns_offsets(self, empty_ctx):
         from Hql.Expressions.Literals import Multivalue
 

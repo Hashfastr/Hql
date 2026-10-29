@@ -261,8 +261,9 @@ class TestTableInitData:
         table = Table(init_data=[{'a': {'b': 1}}, {'a': 's'}])
 
         assert table.df.shape == (2, 1)
-        assert table.df['a'].to_list()[1] == 's'
-        assert isinstance(raw(table)['a'], hqlt.string)
+        assert table.df['a'].to_list() == [{'b': 1}, 's']
+        # struct and scalar values can't share a typed column
+        assert isinstance(raw(table)['a'], hqlt.dynamic)
 
     def test_scalars_wrapped_in_mixed_multivalue(self):
         table = Table(init_data=[{'a': 1}, {'a': [2, 3]}, {'a': None}])

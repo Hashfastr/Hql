@@ -274,13 +274,14 @@ class TestUnnest:
         ).eval(ctx)
         result_table = result.data["events"]
 
-        assert result_table.df.columns == ["int"]
+        # python ints infer as long
+        assert result_table.df.columns == ["long"]
         assert result_table.to_dicts() == [
-            {"int": 1},
-            {"int": 2},
-            {"int": 3},
+            {"long": 1},
+            {"long": 2},
+            {"long": 3},
         ]
-        assert isinstance(result_table.schema.schema.schema["int"], hqlt.int)
+        assert isinstance(result_table.schema.schema.schema["long"], hqlt.long)
 
 
 # ---------------------------------------------------------------------------

@@ -484,7 +484,7 @@ class TestMvExpandEval:
         assert [(r["a"], r["c"]) for r in table.to_dicts()] == [
             (1, 1), (1, 2), (1, 3), (2, None), (3, None), (4, 9),
         ]
-        assert isinstance(table.schema.schema.schema["c"], hqlt.int)
+        assert isinstance(table.schema.schema.schema["c"], hqlt.long)
 
     def test_limit(self):
         ctx = make_ctx(Table(init_data=MV_ROWS, name="t"))
