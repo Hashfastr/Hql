@@ -284,3 +284,113 @@ class TestUnionEval:
         ).eval(ctx)
 
         assert [r["a"] for r in result.data["both"].to_dicts()] == [1, 2, 3]
+
+
+# ---------------------------------------------------------------------------
+# join
+# ---------------------------------------------------------------------------
+
+from Hql.Compiler import InstructionSet
+from Hql.Database.Static import Static
+from Hql.Expressions import OpParameter
+from Hql.Expressions.Logic import Equality
+from Hql.Expressions.Literals import Bool, Float
+from Hql.Operators.Join import Join
+
+
+class ContextStatic(Static):
+    # Static.eval returns Data, wrap it so it can be used as an upstream
+    # independent of the Database fix
+    def eval(self, ctx, **kwargs):
+        ctx = ctx.copy()
+        ctx.data = self.data
+        return ctx
+
+
+def right_set():
+    right = Data([
+        Table(init_data=[
+            {"a": 1, "k": "one"},
+            {"a": 2, "k": "two"},
+            {"a": 5, "k": "five"},
+        ], name="u")
+    ])
+    return InstructionSet(ContextStatic(right))
+
+
+def make_join(kind="inner", where=None):
+    params = [OpParameter(NamedReference("kind"), StringLiteral(kind))]
+    return Join(right_set(), [NamedReference("a")], params=params, where=where)
+
+
+def join_rows(join, left_rows, empty=False):
+    table = Table(init_data=left_rows, name="l")
+    if empty:
+        table.df = table.df.clear()
+    ctx = make_ctx(table)
+    result = join.eval(ctx)
+    return sorted(
+        (r for t in result.data for r in t.to_dicts()),
+        key=lambda r: (r.get("k") or "", r.get("a") or 0),
+    )
+
+
+LEFT = [{"a": 1, "v": "L1"}, {"a": 3, "v": "L3"}, {"a": 2, "v": "L2"}]
+
+
+class TestJoinEval:
+    def test_inner(self):
+        rows = join_rows(make_join("inner"), LEFT)
+        assert [(r["a"], r["k"]) for r in rows] == [(1, "one"), (2, "two")]
+
+    def test_null_left_key_does_not_break_pushdown(self):
+        rows = join_rows(make_join("inner"), [{"a": 1}, {"a": None}])
+        assert [(r["a"], r["k"]) for r in rows] == [(1, "one")]
+
+    def test_rightouter_keeps_unmatched_right(self):
+        rows = join_rows(make_join("rightouter"), LEFT)
+        assert sorted(r["k"] for r in rows) == ["five", "one", "two"]
+
+    def test_fullouter_keeps_unmatched_right(self):
+        rows = join_rows(make_join("fullouter"), LEFT)
+        assert "five" in [r["k"] for r in rows]
+        assert len(rows) == 4
+
+    def test_rightouter_with_empty_left(self):
+        rows = join_rows(make_join("rightouter"), LEFT, empty=True)
+        assert sorted(r["k"] for r in rows) == ["five", "one", "two"]
+
+    def test_inner_with_empty_left_short_circuits(self):
+        assert join_rows(make_join("inner"), LEFT, empty=True) == []
+
+    def test_repeated_eval_does_not_accumulate_filters(self):
+        join = make_join("inner")
+
+        first = join_rows(join, [{"a": 1}])
+        second = join_rows(join, [{"a": 2}])
+
+        assert [r["k"] for r in first] == ["one"]
+        assert [r["k"] for r in second] == ["two"]
+        assert join.rh.ops == []
+
+    def test_where_prefilters_right(self):
+        where = Equality(NamedReference("k"), StringLiteral("two"))
+        rows = join_rows(make_join("inner", where=where), LEFT)
+        assert [(r["a"], r["k"]) for r in rows] == [(2, "two")]
+
+    def test_gen_optimization_literals(self):
+        join = Join(NamedReference("r"), [NamedReference("a")])
+
+        expr = join.gen_optimization(
+            Data([Table(init_data=[{"a": True}, {"a": None}], name="t")])
+        )
+
+        assert expr is not None
+        assert expr.deparse() == "a == True"
+
+    def test_gen_optimization_all_null_is_none(self):
+        join = Join(NamedReference("r"), [NamedReference("a")])
+        data = Data([Table(init_data=[{"a": 1}], name="t")])
+        data["t"].df = data["t"].df.clear()
+
+        assert join.gen_optimization(data) is None
