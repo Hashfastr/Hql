@@ -6,10 +6,11 @@ from Hql.Data import Data, Table
 from Hql.Expressions import ToClause
 from Hql.Expressions.Arithmetic import BinaryArithmetic, Negate
 from Hql.Expressions.Literals import Float, Integer
-from Hql.Expressions.References import NamedReference
+from Hql.Expressions.References import NamedReference, Wildcard
 from Hql.Operators.Extend import Extend
 from Hql.Operators.MvExpand import MvExpand
 from Hql.Operators.Take import Take
+from Hql.Operators.Union import Union
 from Hql.Operators.Where import Where
 from Hql.Parser import Parser
 
@@ -131,3 +132,18 @@ class TestMvExpand:
     def test_parses_with_to(self):
         op = first_pipe("t | mv-expand a to string")
         assert op.exprs[0].to.name == "string"
+
+
+# ---------------------------------------------------------------------------
+# Wildcards
+# ---------------------------------------------------------------------------
+
+class TestWildcard:
+    def test_union_wildcard_name(self):
+        union = root("union u*").prepipe
+        assert isinstance(union, Union)
+        assert isinstance(union.exprs[0], Wildcard)
+        assert union.exprs[0].name == "u*"
+
+    def test_union_wildcard_and_name(self):
+        assert roundtrip("union u*, v") == "union u*, v"

@@ -27,7 +27,8 @@ class BaseExpressions(HqlVisitor):
         if ctx.Star:
             txt = ctx.Star.getText()
         elif ctx.Name:
-            txt = ctx.Name.getText()
+            # Name is a token, Star is a rule context
+            txt = ctx.Name.text
         else:
             raise hqle.ParseException("Wildcarded name given nothing", ctx)
         return Wildcard(txt)
