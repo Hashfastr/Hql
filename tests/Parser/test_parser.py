@@ -147,3 +147,29 @@ class TestWildcard:
 
     def test_union_wildcard_and_name(self):
         assert roundtrip("union u*, v") == "union u*, v"
+
+
+# ---------------------------------------------------------------------------
+# Static database, as produced for let-bound datatables/ranges
+# ---------------------------------------------------------------------------
+
+class TestStatic:
+    def test_eval_returns_context(self):
+        from Hql.Database import Static
+
+        data = table()
+        out = Static(data).eval(Context(Data()))
+        assert isinstance(out, Context)
+        assert out.data is data
+
+    def test_compiled_query_over_static_runs(self):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Config import Config
+        from Hql.Database import Static
+
+        compiler = HqlCompiler(Config())
+        compiler.ctx.symbol_table[NamedReference("t")] = Static(table())
+        compiler.Query(parse("t | take 1"))
+
+        result = compiler.run().data
+        assert result["t"].to_dicts() == [{"a": 1, "b": 4}]
