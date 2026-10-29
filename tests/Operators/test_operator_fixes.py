@@ -239,3 +239,48 @@ class TestTopEval:
         assert len(ops) == 1
         assert ops[0].expr.value == 2
         assert [(x.expr.deparse(), x.order) for x in ops[0].by] == [("a", "desc")]
+
+
+# ---------------------------------------------------------------------------
+# union
+# ---------------------------------------------------------------------------
+
+from Hql.Operators.Union import Union
+
+
+def union_tables():
+    return (
+        Table(init_data=[{"a": 1}, {"a": 2}], name="t1"),
+        Table(init_data=[{"a": 3}], name="t2"),
+        Table(init_data=[{"c": True}], name="t3"),
+    )
+
+
+class TestUnionEval:
+    def test_returns_context_and_renames(self):
+        ctx = make_ctx(*union_tables())
+
+        result = Union([NamedReference("t1")], name=NamedReference("both")).eval(ctx)
+
+        assert isinstance(result, Context)
+        assert sorted(t.name for t in result.data) == ["both", "t2", "t3"]
+        assert result.data["both"].to_dicts() == [{"a": 1}, {"a": 2}]
+        # Input left alone
+        assert "t1" in ctx.data
+
+    def test_no_match_passes_through(self):
+        ctx = make_ctx(*union_tables())
+
+        result = Union([NamedReference("nomatch")]).eval(ctx)
+
+        assert sorted(t.name for t in result.data) == ["t1", "t2", "t3"]
+
+    @pytest.mark.skip(reason="needs Table.merge(merge_rows=False) fix (workspace-qgw.3, Hql/Data)")
+    def test_merges_multiple_tables(self):
+        ctx = make_ctx(*union_tables())
+
+        result = Union(
+            [NamedReference("t1"), NamedReference("t2")], name=NamedReference("both")
+        ).eval(ctx)
+
+        assert [r["a"] for r in result.data["both"].to_dicts()] == [1, 2, 3]
