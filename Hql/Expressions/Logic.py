@@ -62,6 +62,15 @@ class Comparator(Logic):
             return [rh]
         return list(rh)
 
+    '''
+    If an expression can resolve to row values, such as a field or arithmetic on one
+    '''
+    @staticmethod
+    def is_row_value(expr:object) -> bool:
+        from Hql.Expressions.References import Reference
+        from Hql.Expressions.Arithmetic import Arithmetic
+        return isinstance(expr, (Reference, Arithmetic))
+
     def set_rh(self, rh:Union[Sequence[Expression], Expression]):
         self.rh = self._coerce_rh(rh)
     
@@ -127,8 +136,8 @@ class Comparator(Logic):
         assert isinstance(lh, Expression)
         assert isinstance(rh, Expression)
 
-        if not isinstance(lh, Reference):
-            if isinstance(rh, Reference):
+        if not self.is_row_value(lh):
+            if self.is_row_value(rh):
                 tmp = lh
                 lh = rh
                 rh = tmp
@@ -139,7 +148,6 @@ class Comparator(Logic):
                 raise hqle.QueryException(f'Invalid preprocessed expression')
 
         new = self.dupe()
-        assert isinstance(lh, Reference)
         new.lh = lh
         new.rh = [rh]
         return new
@@ -517,20 +525,19 @@ class Relational(Comparator):
 
         new = self.dupe()
 
-        if not isinstance(lh, Reference):
-            if isinstance(rh, Reference):
+        if not self.is_row_value(lh):
+            if self.is_row_value(rh):
                 tmp = lh
                 lh = rh
                 rh = tmp
 
+                # 3 > a is a < 3, inclusivity is unchanged by the swap
                 new.gt = not self.gt
-                new.eq = not self.eq
             else:
                 logging.error(f'Expression: {self.deparse()}')
                 logging.error(f'Is invalid with preprocessed operands {lh.deparse()} and {rh.deparse()}')
                 raise hqle.QueryException(f'Invalid preprocessed expression')
 
-        assert isinstance(lh, Reference)
         new.lh = lh
         new.rh = [rh]
         return new

@@ -137,6 +137,16 @@ class TestRelational:
         r = Relational(NamedReference("f"), Integer(5), gt=True, eq=True)
         assert r.deparse() == "f >= 5"
 
+    @pytest.mark.parametrize("gt, eq, expected", [
+        (True, False, "f < 5"),   # 5 > f
+        (True, True, "f <= 5"),   # 5 >= f
+        (False, False, "f > 5"),  # 5 < f
+        (False, True, "f >= 5"),  # 5 <= f
+    ])
+    def test_preprocess_swap_keeps_inclusivity(self, empty_ctx, gt, eq, expected):
+        r = Relational(Integer(5), NamedReference("f"), gt=gt, eq=eq)
+        assert r.preprocess(empty_ctx).deparse() == expected
+
 
 # ---------------------------------------------------------------------------
 # BetweenEquality
