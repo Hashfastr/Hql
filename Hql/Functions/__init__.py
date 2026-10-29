@@ -10,6 +10,8 @@ from Hql.Exceptions import HqlExceptions as hqle
 if TYPE_CHECKING:
     from Hql.Context import Context
     from Hql.Expressions import Expression
+    from Hql.Expressions.Literals import Literal
+    from Hql.Data import Data, Series
     from polars import Expr as plExpr
 
 class Function():
@@ -65,6 +67,21 @@ class Function():
         
     def eval(self, ctx:Context, receiver=None) -> object:
         return NotImplemented
+
+    def broadcast(self, ctx:Context, value:Union[Literal, Series]) -> Data:
+        '''
+        Gives each table in the context a copy of a static value.
+        Lets functions that resolve to a single value be used in an extend.
+        '''
+        from Hql.Data import Data, Table
+        from Hql.Expressions.Literals import Literal
+
+        series = value.series() if isinstance(value, Literal) else value
+
+        data = Data()
+        for table in ctx.data:
+            data.add_table(Table(name=table.name, series=series))
+        return data
 
     def polars(self) -> plExpr:
         return NotImplemented
