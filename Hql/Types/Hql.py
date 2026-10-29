@@ -3,6 +3,8 @@ from __future__ import annotations
 import polars as pl
 import logging
 import json
+import uuid
+import ipaddress
 from typing import TYPE_CHECKING, Iterator, Union, Optional, Mapping
 
 from Hql.Exceptions import HqlExceptions as hqle
@@ -21,16 +23,19 @@ class HqlTypes():
     class HqlType(CompilerType):
         """Base class for canonical HQL data types."""
 
+        # Registered names of the types this type can be widened to, nearest first.
+        # Every list must follow the same overall ordering so resolve_conflict is order independent.
+        promotes_to:tuple[str, ...] = ()
+
         def __init__(self, inner:Optional[HqlTypes.HqlType]=None):
             CompilerType.__init__(self)
 
             self._proto = None
-            self._super = []
+            self._super:Optional[list[HqlTypes.HqlType]] = None
             self._inner = None
 
             self.complex:bool = False
             self.priority:int = 0
-            self.super = [] # [HqlTypes.string(), HqlTypes.multivalue(self.__class__())]
             self.proto = None
             self.inner = inner
 
@@ -49,6 +54,9 @@ class HqlTypes():
 
         @property
         def super(self) -> list[HqlTypes.HqlType]:
+            # built on demand, constructing every promotion target on init is wasteful
+            if self._super is None:
+                return [HqlTypes.from_name(x) for x in self.promotes_to]
             return self._super
 
         @super.setter
@@ -87,94 +95,114 @@ class HqlTypes():
 
         def hql_schema(self):
             return self
+
+        # Combines two differently parameterized instances of the same type,
+        # e.g. decimal(10, 2) and decimal(20, 4). None if they can't be combined.
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            return None
     
     @staticmethod
     def from_name(name:str) -> HqlTypes.HqlType:
         return get_type(f'hql_{name}')()
+
+    @staticmethod
+    def finer_unit(l:str, r:str) -> str:
+        units = ['ms', 'us', 'ns']
+        return units[max(units.index(l), units.index(r))]
+
+    @staticmethod
+    def dedupe(types:list) -> list:
+        # order preserving, set() iteration order depends on the hash seed
+        out = []
+        for i in types:
+            if i not in out:
+                out.append(i)
+        return out
     
     @staticmethod
     def resolve_conflict(types:list[HqlType]) -> HqlType:
         if len(types) == 0:
             raise hqle.CompilerException('Passed empty types list to resolve conflict')
 
+        types = HqlTypes.dedupe(types)
         if len(types) == 1:
             return types[0]
 
-        # dedupe
-        types = list(set(types))
-
-        def res_obj(objs:list[HqlTypes.HqlType]) -> HqlTypes.HqlType:
-            for i in objs:
-                # only common type is string
-                if not isinstance(i, HqlTypes.object):
-                    return HqlTypes.string()
-
-            keyset:dict[str, set] = dict()
-            for i in list(set(objs)):
-                # ew, linter
-                assert isinstance(i, HqlTypes.object)
-                for j in i.schema:
-                    if j not in keyset:
-                        keyset[j] = set()
-                    keyset[j].add(i.schema[j])
-
-            out:dict[str, HqlTypes.HqlType] = dict()
-            for i in keyset:
-                if len(keyset[i]) == 1:
-                    out[i] = list(keyset[i])[0]
-                else:
-                    out[i] = HqlTypes.resolve_conflict(list(keyset[i]))
-
-            return HqlTypes.object(out)
+        # null merges into anything
+        types = [x for x in types if not isinstance(x, HqlTypes.null)]
+        if len(types) == 0:
+            return HqlTypes.null()
+        if len(types) == 1:
+            return types[0]
 
         ### objs
 
-        obj = True
-        for i in types:
-            if not isinstance(i, HqlTypes.object):
-                obj = False
+        if all(isinstance(x, HqlTypes.object) for x in types):
+            keyset:dict[str, list] = dict()
+            for i in types:
+                # ew, linter
+                assert isinstance(i, HqlTypes.object)
+                for j in i.schema:
+                    cur = i.schema[j]
+                    if isinstance(cur, dict):
+                        cur = HqlTypes.object(cur)
+                    keyset.setdefault(j, []).append(cur)
 
-        if obj:
-            return res_obj(types)
+            # keys missing from some objects are null there, so just resolve the present ones
+            out:dict[str, HqlTypes.HqlType] = dict()
+            for i in keyset:
+                out[i] = HqlTypes.resolve_conflict(keyset[i])
+
+            return HqlTypes.object(out)
 
         ### multivalue
-        
-        # Check to see if there's a multivalue we need to handle
-        mv = False
-        for i in types:
-            if isinstance(i, HqlTypes.multivalue):
-                mv = True
-        
-        # Handle multivalue
-        if mv:
-            inner_set = set()
+
+        # A scalar mixed with multivalues becomes a single element multivalue
+        if any(isinstance(x, HqlTypes.multivalue) for x in types):
+            inners = []
             for i in types:
                 if isinstance(i, HqlTypes.multivalue):
-                    inner_set.add(i.inner)
+                    inners.append(i.inner)
                 else:
-                    inner_set.add(i)
+                    inners.append(i)
 
-            inner = HqlTypes.resolve_conflict(list(inner_set))
+            inner = HqlTypes.resolve_conflict(inners)
+            # polars can't hold a list of arbitrary objects
+            if isinstance(inner, HqlTypes.dynamic):
+                return inner
             return HqlTypes.multivalue(inner)
 
         ### base types
 
-        # set to default basecase, always lowest rung
-        l = HqlTypes.null()
-        for r in types:
-            if l.priority > r.priority:
-                continue
-            
-            # promotion case
-            if r in l.super:
-                l = r
-            
-            # find common super case
-            # this might be the source of a bug in the future
-            else:
-                for i in l.super:
-                    if i in r.super:
-                        l = i
+        def promote(l:HqlTypes.HqlType, r:HqlTypes.HqlType) -> HqlTypes.HqlType:
+            if l == r:
+                return l
+
+            if isinstance(l, HqlTypes.dynamic) or isinstance(r, HqlTypes.dynamic):
+                return HqlTypes.dynamic()
+
+            if type(l) == type(r):
+                widened = l.widen(r)
+                if widened is not None:
+                    return widened
+
+            if r.name in l.promotes_to:
+                return r
+
+            if l.name in r.promotes_to:
+                return l
+
+            # nearest common promotion
+            for i in l.promotes_to:
+                if i in r.promotes_to:
+                    return HqlTypes.from_name(i)
+
+            # only common type is string
+            return HqlTypes.string()
+
+        l = types[0]
+        for r in types[1:]:
+            l = promote(l, r)
 
         return l
 
@@ -190,9 +218,29 @@ class HqlTypes():
     class decimal(HqlType):
         """Represent decimal numeric values."""
 
-        def __init__(self):
+        promotes_to = ('double',)
+
+        # polars caps decimals at 38 digits, default to an even integer/fraction split
+        def __init__(self, precision:int=38, scale:int=18):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Decimal()
+            self.precision = precision
+            self.scale = scale
+            self.proto = pl.Decimal(precision, scale)
+
+        def params(self) -> tuple:
+            return (self.precision, self.scale)
+
+        def cast(self, series:pl.Series):
+            # polars can't cast booleans straight to decimals
+            if series.dtype == pl.Boolean:
+                series = series.cast(pl.Int8)
+            return series.cast(self.pl_schema())
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.decimal)
+            scale = max(self.scale, other.scale)
+            digits = max(self.precision - self.scale, other.precision - other.scale)
+            return HqlTypes.decimal(min(38, digits + scale), scale)
     
     @register_type('hql_float') 
     class float(HqlType):
@@ -204,7 +252,10 @@ class HqlTypes():
 
             self.priority = 3
 
+        promotes_to = ('double',)
+
     @register_type('hql_double')
+    @register_type('hql_real')
     class double(HqlType):
         """Represent double-precision floating-point values."""
 
@@ -213,22 +264,29 @@ class HqlTypes():
             self.proto = pl.Float64()
     
     @register_type('hql_byte') 
+    @register_type('hql_int8')
     class byte(HqlType):
         """Represent signed 8-bit integer values."""
+
+        promotes_to = ('short', 'int', 'long', 'xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.Int8()
 
     @register_type('hql_short')
+    @register_type('hql_int16')
     class short(HqlType):
         """Represent signed 16-bit integer values."""
+
+        promotes_to = ('int', 'long', 'xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.Int16()
 
     @register_type('hql_int')
+    @register_type('hql_int32')
     class int(HqlType):
         """Represent signed 32-bit integer values."""
 
@@ -237,11 +295,15 @@ class HqlTypes():
             self.proto = pl.Int32()
             
             self.priority = 2
-            self.super += [HqlTypes.float()]
+
+        promotes_to = ('long', 'xlong', 'decimal', 'double')
     
     @register_type('hql_long') 
+    @register_type('hql_int64')
     class long(HqlType):
         """Represent signed long integer values."""
+
+        promotes_to = ('xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
@@ -251,45 +313,86 @@ class HqlTypes():
     class xlong(HqlType):
         """Represent signed 128-bit integer values."""
 
+        promotes_to = ('double',)
+
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.Int128()
+
+    @register_type('hql_uxlong')
+    class uxlong(HqlType):
+        """Represent unsigned 128-bit integer values."""
+
+        promotes_to = ('double',)
+
+        def __init__(self):
+            HqlTypes.HqlType.__init__(self)
+            self.proto = pl.UInt128()
 
     @register_type('hql_guid')
+    @register_type('hql_uniqueid')
     class guid(HqlType):
-        """Represent globally unique identifier values."""
+        """Represent globally unique identifiers as canonical strings."""
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Int128()
+            self.proto = pl.String()
+
+        def cast_single(self, value) -> Optional[str]:
+            try:
+                if isinstance(value, int):
+                    return str(uuid.UUID(int=value))
+                return str(uuid.UUID(str(value)))
+            except ValueError:
+                return None
+
+        def cast(self, series:pl.Series):
+            if series.dtype == pl.Null:
+                return series.cast(self.pl_schema())
+
+            guids = [self.cast_single(i) if i is not None else None for i in series]
+            return pl.Series(series.name, guids, dtype=self.proto)
     
     @register_type('hql_ubyte') 
+    @register_type('hql_uint8')
     class ubyte(HqlType):
         """Represent unsigned 8-bit integer values."""
+
+        promotes_to = ('ushort', 'short', 'uint', 'int', 'ulong', 'long', 'uxlong', 'xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.UInt8()
         
     @register_type('hql_ushort')
+    @register_type('hql_uint16')
     class ushort(HqlType):
         """Represent unsigned 16-bit integer values."""
+
+        promotes_to = ('uint', 'int', 'ulong', 'long', 'uxlong', 'xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.UInt16()
     
     @register_type('hql_uint') 
+    @register_type('hql_uint32')
     class uint(HqlType):
         """Represent unsigned 32-bit integer values."""
+
+        promotes_to = ('ulong', 'long', 'uxlong', 'xlong', 'decimal', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
             self.proto = pl.UInt32()
     
     @register_type('hql_ulong') 
+    @register_type('hql_uint64')
     class ulong(HqlType):
         """Represent unsigned 64-bit integer values."""
+
+        # not decimal, that would make the join with signed types (xlong) order dependent
+        promotes_to = ('uxlong', 'xlong', 'double')
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
@@ -313,24 +416,17 @@ class HqlTypes():
 
             self.complex = True
 
-        def cast_single(self, ip:Union[StringLiteral, str]) -> int:
+        def cast_single(self, ip:Union[StringLiteral, str]) -> Optional[int]:
             from Hql.Expressions.Literals import StringLiteral
 
             if isinstance(ip, StringLiteral):
                 ip = ip.str()
 
-            split = ip.split('.')
-            num = 0
-            for idx, j in enumerate(split):
-                try:
-                    # magnitude scales with the index
-                    num += int(split[idx]) << (8 * (3 - idx))
-                
-                # Likely IPv6 if we hit this
-                # Or trash garbo data
-                except ValueError:
-                    continue
-            return num
+            # Likely IPv6 or trash garbo data if this fails
+            try:
+                return int(ipaddress.IPv4Address(ip.strip()))
+            except ValueError:
+                return None
 
         def cast(self, series:pl.Series):
             # lazy if not string
@@ -368,21 +464,75 @@ class HqlTypes():
 
     @register_type('hql_ip6')
     class ip6(HqlType):
-        """Represent IPv6 addresses as signed 128-bit integers."""
+        """Represent IPv6 addresses as unsigned 128-bit integers."""
 
         def __init__(self):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Int128()
+            self.proto = pl.UInt128()
+
+            self.complex = True
+
+        def cast_single(self, ip:Union[StringLiteral, str]) -> Optional[int]:
+            from Hql.Expressions.Literals import StringLiteral
+
+            if isinstance(ip, StringLiteral):
+                ip = ip.str()
+
+            try:
+                return int(ipaddress.IPv6Address(ip.strip()))
+            except ValueError:
+                return None
+
+        def cast(self, series:pl.Series):
+            # lazy if not string
+            if series.dtype != pl.String:
+                return series.cast(self.pl_schema())
+
+            ips = [self.cast_single(i) if i is not None else None for i in series]
+            return pl.Series(series.name, ips, dtype=self.proto)
+
+        def human_single(self, ip:int) -> str:
+            return str(ipaddress.IPv6Address(ip))
+
+        def human(self, series:pl.Series):
+            if series.dtype != self.proto:
+                raise hqle.CompilerException('Attempting to human a non-converted ip6 field')
+
+            ips = [self.human_single(i) if i is not None else None for i in series]
+            return pl.Series(ips, dtype=pl.String)
     
+    # Not registered as hql_date, in queries date is KQL's synonym for datetime.
+    # Exists so python dates and polars Date columns load without conversion.
+    class date(HqlType):
+        """Represent calendar date values."""
+
+        promotes_to = ('datetime',)
+
+        def __init__(self):
+            HqlTypes.HqlType.__init__(self)
+            self.proto = pl.Date()
+
     @register_type('hql_datetime')     
+    @register_type('hql_date')
     class datetime(HqlType):
         """Represent date and time values."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us', time_zone:Optional[str]=None):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Datetime()
+            self.time_unit = time_unit
+            self.time_zone = time_zone
+            self.proto = pl.Datetime(time_unit, time_zone)
 
             self.complex = True
+
+        def params(self) -> tuple:
+            return (self.time_unit, self.time_zone)
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.datetime)
+            unit = HqlTypes.finer_unit(self.time_unit, other.time_unit)
+            zone = self.time_zone if self.time_zone == other.time_zone else 'UTC'
+            return HqlTypes.datetime(unit, zone)
 
         def human(self, series:pl.Series):
             dates = []
@@ -394,12 +544,21 @@ class HqlTypes():
             return pl.Series(dates, dtype=pl.String)
         
     @register_type('hql_duration')
+    @register_type('hql_timespan')
     class duration(HqlType):
         """Represent elapsed time values."""
 
-        def __init__(self):
+        def __init__(self, time_unit:str='us'):
             HqlTypes.HqlType.__init__(self)
-            self.proto = pl.Duration()
+            self.time_unit = time_unit
+            self.proto = pl.Duration(time_unit)
+
+        def params(self) -> tuple:
+            return (self.time_unit,)
+
+        def widen(self, other:HqlTypes.HqlType) -> Optional[HqlTypes.HqlType]:
+            assert isinstance(other, HqlTypes.duration)
+            return HqlTypes.duration(HqlTypes.finer_unit(self.time_unit, other.time_unit))
         
     @register_type('hql_time')  
     class time(HqlType):
@@ -444,8 +603,31 @@ class HqlTypes():
             self.proto = pl.String()
             
             self.priority = 4
-            self.super = []
+
+        def cast(self, series:pl.Series):
+            # polars can't cast these to strings (or does it poorly), so serialize to JSON
+            if isinstance(series.dtype, (pl.Object, pl.Struct, pl.List, pl.Array)):
+                def single(value):
+                    if value is None or isinstance(value, str):
+                        return value
+                    return json.dumps(value, default=str)
+                return pl.Series(series.name, [single(x) for x in series.to_list()], dtype=pl.String)
+
+            return series.cast(self.pl_schema())
         
+    @register_type('hql_dynamic')
+    class dynamic(HqlType):
+        """Represent schemaless values (scalars, lists, or objects) as Python objects."""
+
+        def __init__(self):
+            HqlTypes.HqlType.__init__(self)
+            self.proto = pl.Object()
+
+        def cast(self, series:pl.Series):
+            if series.dtype == pl.Object:
+                return series
+            return pl.Series(series.name, series.to_list(), dtype=pl.Object)
+
     @register_type('hql_enum') 
     class enum(HqlType):
         """Represent values restricted to a string enumeration."""
@@ -463,6 +645,7 @@ class HqlTypes():
             self.proto = pl.Binary()
     
     @register_type('hql_bool') 
+    @register_type('hql_boolean')
     class bool(HqlType):
         """Represent Boolean values."""
 
@@ -471,7 +654,8 @@ class HqlTypes():
             self.proto = pl.Boolean()
             
             self.priority = 1
-            self.super = [HqlTypes.int()]
+
+        promotes_to = ('ubyte', 'byte', 'ushort', 'short', 'uint', 'int', 'ulong', 'long', 'uxlong', 'xlong', 'decimal', 'float', 'double')
 
     '''
     This is a generic object, unspecified the contents
@@ -492,6 +676,18 @@ class HqlTypes():
                 return False
             return self.eq(self.schema, value.schema)
 
+        def __hash__(self):
+            # nested dicts and nested objects hash the same, eq treats them alike
+            def h(schema:SchemaDT):
+                items = []
+                for key in sorted(schema):
+                    cur = schema[key]
+                    if isinstance(cur, HqlTypes.object):
+                        cur = cur.schema
+                    items.append((key, h(cur) if isinstance(cur, Mapping) else hash(cur)))
+                return hash(tuple(items))
+            return h(self.schema)
+
         def __len__(self):
             return len(self.schema)
 
@@ -507,9 +703,11 @@ class HqlTypes():
                 out = data[base]
 
                 if isinstance(key, Path):
-                    if isinstance(out, HqlTypes.HqlType):
+                    if isinstance(out, HqlTypes.object):
+                        out = out.schema
+                    elif isinstance(out, HqlTypes.HqlType):
                         raise IndexError
-                    return get(out, Path(key.list()[1:]))
+                    return get(out, Path(key.path[1:]))
 
                 return out
 
@@ -545,7 +743,7 @@ class HqlTypes():
                     elif isinstance(cur, dict):
                         out[key] = td(cur)
                     
-                    elif isinstance(cur, HqlTypes.type):
+                    elif isinstance(cur, HqlTypes.HqlType):
                         out[key] = cur.name
 
                 return out
@@ -568,10 +766,17 @@ class HqlTypes():
                 lv = l[i]
                 rv = r[i]
 
+                # nested dicts and nested objects are interchangeable
+                if isinstance(lv, HqlTypes.object):
+                    lv = lv.schema
+                if isinstance(rv, HqlTypes.object):
+                    rv = rv.schema
+
                 # dict check
                 if isinstance(lv, Mapping) and isinstance(rv, Mapping):
                     if not HqlTypes.object.eq(lv, rv):
                         return False
+                    continue
 
                 # everything else
                 if lv != rv:
@@ -602,7 +807,8 @@ class HqlTypes():
             self.proto = pl.Null()
             
             self.priority = 0
-            self.super += [HqlTypes.bool(), HqlTypes.int(), HqlTypes.float()]
+
+        # null merges into anything, resolve_conflict special cases it
         
     @register_type('hql_unknown')
     class unknown(HqlType, pl.Unknown):
@@ -618,14 +824,20 @@ class HqlTypes():
         """Represent a variable-length collection of one element type."""
 
         def __init__(self, inner:HqlTypes.HqlType):
-            assert inner.proto
-            self.proto = pl.List(inner.proto)
-            self._inner = inner
-
             HqlTypes.HqlType.__init__(self, inner=inner)
+            # fail early on inner types without a polars representation
+            assert inner.pl_schema() is not None
             
             self.priority = 5
-            self.super = []
+
+        # derived from inner, which can be swapped out after init
+        @property
+        def proto(self) -> Optional[pl.DataType]:
+            return self.pl_schema()
+
+        @proto.setter
+        def proto(self, val):
+            ...
 
         @property
         def inner(self) -> HqlTypes.HqlType:
@@ -645,7 +857,8 @@ class HqlTypes():
         
         # Casts a polars series to List
         def cast(self, series:pl.Series):
-            if not self.inner:
+            # empty objects are falsy, so check for None explicitly
+            if self._inner is None:
                 logging.critical('Cannot cast to empty multivalue!')
                 raise TypeError('Attempted to cast to empty multivalue')
             

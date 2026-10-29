@@ -21,13 +21,21 @@ class CompilerType():
         self.name = self.__class__.__name__
 
     def __eq__(self, value: object, /) -> bool:
-        return type(value) == type(self)
+        if type(value) != type(self):
+            return False
+        # parameterized types (multivalue(int), decimal(10, 2), ...) differ by their parameters
+        assert isinstance(value, CompilerType)
+        return self.inner == value.inner and self.params() == value.params()
 
     def __len__(self) -> int:
         return 1
 
     def __hash__(self):
-        return hash((self.name + self.type.__name__))
+        return hash((self.name, self.type.__name__, self.inner, self.params()))
+
+    # Type parameters other than inner that distinguish two instances of a type
+    def params(self) -> tuple:
+        return ()
 
     @property
     def inner(self) -> Optional[CompilerType]:
@@ -71,7 +79,7 @@ class CompilerType():
 
     def to_dict(self):
         return {
-            'type': self.type,
+            'type': self.type.__name__,
             'name': self.name
         }
 

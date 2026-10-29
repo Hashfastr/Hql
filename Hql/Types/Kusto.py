@@ -45,16 +45,16 @@ class KustoTypes:
     @register_type('kusto_int')
     @register_type('kusto_ubyte')
     @register_type('kusto_ushort')
-    @register_type('kusto_uint')
-    @register_type('kusto_ip4')
     class int(KustoType):
         """Map HQL integer values up to 32 bits to Kusto int values."""
 
         def __init__(self):
             KustoTypes.KustoType.__init__(self, KustoTypes.hqlt.int())
 
+    # uint and ip4 (stored as uint) exceed int's signed 32-bit range
     @register_type('kusto_long')
-    @register_type('kusto_ulong')
+    @register_type('kusto_uint')
+    @register_type('kusto_ip4')
     class long(KustoType):
         """Map HQL 64-bit integer values to Kusto long values."""
 
@@ -70,13 +70,16 @@ class KustoTypes:
         def __init__(self):
             KustoTypes.KustoType.__init__(self, KustoTypes.hqlt.double())
 
+    # Kusto has no unsigned long, decimal is the only type that holds all of ulong
     @register_type('kusto_decimal')
+    @register_type('kusto_ulong')
     class decimal(KustoType):
         """Map HQL decimal values to Kusto decimal values."""
 
         def __init__(self):
             KustoTypes.KustoType.__init__(self, KustoTypes.hqlt.decimal())
 
+    @register_type('kusto_date')
     @register_type('kusto_datetime')
     class datetime(KustoType):
         """Map HQL date and datetime values to Kusto datetime values."""
@@ -99,8 +102,9 @@ class KustoTypes:
     class dynamic(KustoType):
         """Map structured HQL values to Kusto dynamic values."""
 
+        # dynamic columns have no fixed shape, an empty object would drop every value
         def __init__(self):
-            KustoTypes.KustoType.__init__(self, KustoTypes.hqlt.object({}))
+            KustoTypes.KustoType.__init__(self, KustoTypes.hqlt.dynamic())
 
     @register_type('kusto_guid')
     class guid(KustoType):
@@ -113,6 +117,8 @@ class KustoTypes:
     @register_type('kusto_ip')
     @register_type('kusto_binary')
     @register_type('kusto_xlong')
+    @register_type('kusto_uxlong')
+    @register_type('kusto_ip6')
     @register_type('kusto_null')
     class string(KustoType):
         """Map string-compatible HQL values to Kusto string values."""

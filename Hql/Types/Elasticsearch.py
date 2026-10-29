@@ -40,11 +40,12 @@ class ESTypes():
 
     @register_type('elasticsearch_scaled_float')
     class scaled_float(ESType):
-        """Map Elasticsearch scaled floats to HQL decimals."""
+        """Map Elasticsearch scaled floats to HQL doubles."""
 
+        # returned as doubles in _source, scaling only affects storage
         def __init__(self):
             ESTypes.ESType.__init__(self)
-            self.HqlType = ESTypes.hqlt.decimal()
+            self.HqlType = ESTypes.hqlt.double()
 
     @register_type('elasticsearch_half_float')
     class half_float(ESType):
@@ -142,6 +143,48 @@ class ESTypes():
             ESTypes.ESType.__init__(self, inner=inner)
             assert self.inner
             self.HqlType = ESTypes.hqlt.range(self.inner.hql_schema())
+
+    @register_type('elasticsearch_integer_range')
+    class integer_range(range):
+        """Map Elasticsearch integer ranges to HQL integer ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.integer())
+
+    @register_type('elasticsearch_float_range')
+    class float_range(range):
+        """Map Elasticsearch float ranges to HQL float ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.float())
+
+    @register_type('elasticsearch_long_range')
+    class long_range(range):
+        """Map Elasticsearch long ranges to HQL long ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.long())
+
+    @register_type('elasticsearch_double_range')
+    class double_range(range):
+        """Map Elasticsearch double ranges to HQL double ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.double())
+
+    @register_type('elasticsearch_date_range')
+    class date_range(range):
+        """Map Elasticsearch date ranges to HQL datetime ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.date())
+
+    @register_type('elasticsearch_ip_range')
+    class ip_range(range):
+        """Map Elasticsearch IP ranges to HQL string ranges."""
+
+        def __init__(self):
+            ESTypes.range.__init__(self, ESTypes.ip())
     
     @register_type('elasticsearch_keyword') 
     @register_type('elasticsearch_constant_keyword') 
@@ -172,7 +215,8 @@ class ESTypes():
     class object(ESType):
         """Map an Elasticsearch object schema to an HQL object."""
 
-        def __init__(self, schema:dict):
+        def __init__(self, schema:Optional[dict]=None):
+            schema = {} if schema is None else schema
             ESTypes.ESType.__init__(self)
             self.schema = schema
             self.HqlType = ESTypes.hqlt.object(schema)
@@ -187,7 +231,8 @@ class ESTypes():
     class flattened(ESType):
         """Map a flattened Elasticsearch object to an HQL object."""
 
-        def __init__(self, schema:dict):
+        def __init__(self, schema:Optional[dict]=None):
+            schema = {} if schema is None else schema
             ESTypes.ESType.__init__(self)
             self.schema = schema
             self.HqlType = ESTypes.hqlt.object(schema)
@@ -199,7 +244,8 @@ class ESTypes():
     class nested(ESType):
         """Map a nested Elasticsearch object to an HQL object."""
 
-        def __init__(self, schema:dict):
+        def __init__(self, schema:Optional[dict]=None):
+            schema = {} if schema is None else schema
             ESTypes.ESType.__init__(self)
             self.schema = schema
             self.HqlType = ESTypes.hqlt.object(schema)
