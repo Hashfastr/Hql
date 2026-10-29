@@ -61,12 +61,17 @@ class Table():
             try:
                 self.df = pl.from_dicts(init_data, schema=pl_schema, strict=False)
             except pl.exceptions.ComputeError as e:
-                logging.error(e)
-                logging.error('Possible typing issue caught when loading dicts')
-                logging.error(f'Offending table: {self.name}')
-                logging.error(f'Offending schema: {json.dumps(self.schema.to_dict())}')
-                logging.error('Just giving an empty dataframe')
-                self.df = pl.DataFrame()
+                logging.warning(e)
+                logging.warning(f'Possible typing issue caught when loading dicts into table {self.name}')
+                logging.warning(f'Offending schema: {json.dumps(self.schema.to_dict())}')
+                logging.warning('Retrying with polars inference over all rows')
+
+                # Serialize values polars can't put in a string column (e.g. dict vs str),
+                # then let polars infer widths (e.g. ints overflowing the inferred type).
+                # Never drop the data, if this fails we want the error.
+                init_data = self.schema.adjust_str(init_data)
+                self.df = pl.from_dicts(init_data, infer_schema_length=None, strict=False)
+                self.schema = Schema(data=self.df)
         
         elif init_data and schema:
             self.schema = schema

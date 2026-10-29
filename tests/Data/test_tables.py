@@ -248,3 +248,30 @@ class TestTableJoin:
             {'a': {'b': 2}, 'x': 'l2', 'a_right': {'b': 2}, 'y': 'r2'},
         ]
         assert set(raw(joined)) == {'a', 'x', 'a_right', 'y'}
+
+
+class TestTableInitData:
+    def test_large_ints_are_not_dropped(self):
+        table = Table(init_data=[{'ts': 1730000000000, 'host': 'a'}])
+
+        assert table.df.to_dicts() == [{'ts': 1730000000000, 'host': 'a'}]
+        assert set(raw(table)) == {'ts', 'host'}
+
+    def test_mixed_dict_and_str_values_are_not_dropped(self):
+        table = Table(init_data=[{'a': {'b': 1}}, {'a': 's'}])
+
+        assert table.df.shape == (2, 1)
+        assert table.df['a'].to_list()[1] == 's'
+        assert isinstance(raw(table)['a'], hqlt.string)
+
+    def test_scalars_wrapped_in_mixed_multivalue(self):
+        table = Table(init_data=[{'a': 1}, {'a': [2, 3]}, {'a': None}])
+
+        assert table.df.to_dicts() == [{'a': [1]}, {'a': [2, 3]}, {'a': None}]
+        assert isinstance(raw(table)['a'], hqlt.multivalue)
+
+    def test_nested_scalars_wrapped_in_mixed_multivalue(self):
+        table = Table(init_data=[{'n': {'m': 1}}, {'n': {'m': [2, 3]}}])
+
+        assert table.df.to_dicts() == [{'n': {'m': [1]}}, {'n': {'m': [2, 3]}}]
+        assert isinstance(raw(table)['n']['m'], hqlt.multivalue)

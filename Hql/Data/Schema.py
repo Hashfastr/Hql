@@ -480,24 +480,69 @@ class Schema():
     def adjust_mv(self, data:list[dict], schema:Union[dict, None]=None) -> list[dict]:
         from Hql.Types.Hql import HqlTypes as hqlt
 
-        schema = schema if schema != None else self.schema
+        # Raw dict, iterating hqlt.object yields references instead of names
+        schema = schema if schema != None else self.schema.schema
         
         # Loop through each defined multivalue field
         for key in schema:
-            if isinstance(schema[key], dict):
+            cur = schema[key]
+            if isinstance(cur, hqlt.object):
+                cur = cur.schema
+
+            if isinstance(cur, dict):
                 rows = []
                 for row in data:
-                    if key in row:
+                    if isinstance(row, dict) and isinstance(row.get(key), dict):
                         rows.append(row[key])
                         
-                self.adjust_mv(data, schema=schema[key])
+                self.adjust_mv(rows, schema=cur)
+                continue
             
-            if not isinstance(schema[key], hqlt.multivalue):
+            if not isinstance(cur, hqlt.multivalue):
                 continue
             
             for row in data:
-                if key in row and not isinstance(row[key], list):
+                if isinstance(row, dict) and key in row and row[key] is not None and not isinstance(row[key], list):
                     row[key] = [row[key]]
+
+        return data
+    
+    # Serializes non-string json values found in string typed fields
+    def adjust_str(self, data:list[dict], schema:Union[dict, None]=None) -> list[dict]:
+        import json
+        from Hql.Types.Hql import HqlTypes as hqlt
+
+        schema = schema if schema != None else self.schema.schema
+
+        def to_str(value):
+            if value is None or isinstance(value, str):
+                return value
+            if isinstance(value, (dict, list)):
+                return json.dumps(value, default=str)
+            return str(value)
+
+        for key in schema:
+            cur = schema[key]
+            if isinstance(cur, hqlt.object):
+                cur = cur.schema
+
+            if isinstance(cur, dict):
+                rows = []
+                for row in data:
+                    if isinstance(row, dict) and isinstance(row.get(key), dict):
+                        rows.append(row[key])
+
+                self.adjust_str(rows, schema=cur)
+                continue
+
+            for row in data:
+                if not isinstance(row, dict) or key not in row:
+                    continue
+
+                if isinstance(cur, hqlt.string):
+                    row[key] = to_str(row[key])
+                elif isinstance(cur, hqlt.multivalue) and isinstance(cur.inner, hqlt.string) and isinstance(row[key], list):
+                    row[key] = [to_str(x) for x in row[key]]
 
         return data
     
