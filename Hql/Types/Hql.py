@@ -255,6 +255,7 @@ class HqlTypes():
         promotes_to = ('double',)
 
     @register_type('hql_double')
+    @register_type('hql_real')
     class double(HqlType):
         """Represent double-precision floating-point values."""
 
@@ -263,6 +264,7 @@ class HqlTypes():
             self.proto = pl.Float64()
     
     @register_type('hql_byte') 
+    @register_type('hql_int8')
     class byte(HqlType):
         """Represent signed 8-bit integer values."""
 
@@ -273,6 +275,7 @@ class HqlTypes():
             self.proto = pl.Int8()
 
     @register_type('hql_short')
+    @register_type('hql_int16')
     class short(HqlType):
         """Represent signed 16-bit integer values."""
 
@@ -283,6 +286,7 @@ class HqlTypes():
             self.proto = pl.Int16()
 
     @register_type('hql_int')
+    @register_type('hql_int32')
     class int(HqlType):
         """Represent signed 32-bit integer values."""
 
@@ -295,6 +299,7 @@ class HqlTypes():
         promotes_to = ('long', 'xlong', 'decimal', 'double')
     
     @register_type('hql_long') 
+    @register_type('hql_int64')
     class long(HqlType):
         """Represent signed long integer values."""
 
@@ -349,6 +354,7 @@ class HqlTypes():
             return pl.Series(series.name, guids, dtype=self.proto)
     
     @register_type('hql_ubyte') 
+    @register_type('hql_uint8')
     class ubyte(HqlType):
         """Represent unsigned 8-bit integer values."""
 
@@ -359,6 +365,7 @@ class HqlTypes():
             self.proto = pl.UInt8()
         
     @register_type('hql_ushort')
+    @register_type('hql_uint16')
     class ushort(HqlType):
         """Represent unsigned 16-bit integer values."""
 
@@ -369,6 +376,7 @@ class HqlTypes():
             self.proto = pl.UInt16()
     
     @register_type('hql_uint') 
+    @register_type('hql_uint32')
     class uint(HqlType):
         """Represent unsigned 32-bit integer values."""
 
@@ -379,6 +387,7 @@ class HqlTypes():
             self.proto = pl.UInt32()
     
     @register_type('hql_ulong') 
+    @register_type('hql_uint64')
     class ulong(HqlType):
         """Represent unsigned 64-bit integer values."""
 
@@ -504,6 +513,7 @@ class HqlTypes():
             self.proto = pl.Date()
 
     @register_type('hql_datetime')     
+    @register_type('hql_date')
     class datetime(HqlType):
         """Represent date and time values."""
 
@@ -534,6 +544,7 @@ class HqlTypes():
             return pl.Series(dates, dtype=pl.String)
         
     @register_type('hql_duration')
+    @register_type('hql_timespan')
     class duration(HqlType):
         """Represent elapsed time values."""
 
@@ -634,6 +645,7 @@ class HqlTypes():
             self.proto = pl.Binary()
     
     @register_type('hql_bool') 
+    @register_type('hql_boolean')
     class bool(HqlType):
         """Represent Boolean values."""
 
