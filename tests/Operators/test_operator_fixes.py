@@ -678,3 +678,58 @@ class TestCopyIsolation:
         Unnest(NamedReference("n"), [Wildcard("*")]).eval(c1.copy())
 
         assert c1.data["t"].to_dicts() == [{"n": {"x": 1, "y": "p"}}]
+
+
+# ---------------------------------------------------------------------------
+# project literal broadcast / count over nothing
+# ---------------------------------------------------------------------------
+
+from Hql.Operators.Count import Count
+from Hql.Operators.Project import Project
+
+
+class TestProjectLiteral:
+    def test_literal_only_broadcasts(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}, {"a": 2}, {"a": 3}], name="t"))
+
+        result = Project([NamedExpression([NamedReference("d")], Integer(1))]).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [{"d": 1}] * 3
+
+    def test_literal_on_empty_table_is_empty(self):
+        table = Table(init_data=[{"a": 1}], name="t")
+        table.df = table.df.clear()
+
+        result = Project([NamedExpression([NamedReference("d")], Integer(1))]).eval(make_ctx(table))
+
+        assert len(result.data["t"]) == 0
+
+    def test_mixed_still_matches_rows(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}, {"a": 2}], name="t"))
+
+        result = Project(
+            [NamedReference("a"), NamedExpression([NamedReference("d")], Integer(1))]
+        ).eval(ctx)
+
+        assert result.data["t"].to_dicts() == [{"a": 1, "d": 1}, {"a": 2, "d": 1}]
+
+
+class TestCountEmpty:
+    def test_no_tables_counts_zero(self):
+        result = Count().eval(make_ctx())
+
+        assert [t.to_dicts() for t in result.data] == [[{"Count": 0}]]
+
+    def test_named_with_no_tables(self):
+        result = Count(NamedReference("c")).eval(make_ctx())
+
+        assert result.data["c"].to_dicts() == []
+        assert result.data["c"].df.columns == ["Table", "Count"]
+
+    def test_named_does_not_mutate_input(self):
+        ctx = make_ctx(Table(init_data=[{"a": 1}], name="t"))
+
+        result = Count(NamedReference("c")).eval(ctx)
+
+        assert result.data["c"].to_dicts() == [{"Table": "t", "Count": 1}]
+        assert "c" not in ctx.data

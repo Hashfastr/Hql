@@ -53,8 +53,11 @@ class Project(Operator):
         return out
 
     def eval(self, ctx:Context) -> Context:
+        import polars as pl
         from Hql.Data import Data
         from Hql.Expressions.References import NamedExpression
+
+        lengths = {x.name: len(x) for x in ctx.data}
 
         datasets = []
         for i in self.exprs:
@@ -63,7 +66,17 @@ class Project(Operator):
             else:
                 datasets.append(i.eval(ctx).data)
 
+        ctx = ctx.copy()
         ctx.data = Data.merge(datasets)
+
+        # Literal only results are a single row, broadcast them to the input length
+        for table in ctx.data:
+            if table.name not in lengths:
+                continue
+            length = lengths[table.name]
+            if len(table) == 1 and length != 1:
+                table.df = table.df.select(pl.all().gather([0] * length))
+
         return ctx
 
 # Identical to Project, keeping now for compat
