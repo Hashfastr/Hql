@@ -14,5 +14,8 @@ class Static(Database):
         Database.__init__(self, dict())
         self.data = data
      
-    def eval(self, ctx: Context, **kwargs) -> Data:
-        return self.data
+    # Executed as an instruction, so has to give back a Context like other databases
+    def eval(self, ctx: Context, **kwargs) -> Context:
+        ctx = ctx.copy()
+        ctx.data = self.data
+        return ctx

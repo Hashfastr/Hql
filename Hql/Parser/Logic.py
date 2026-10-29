@@ -42,7 +42,46 @@ class Logic(HqlVisitor):
         )
 
         return expr
-    
+
+    '''
+    Arithmetic, operations are left associative
+    a - b + c -> (a - b) + c
+    '''
+    def visitAdditiveExpression(self, ctx: HqlParser.AdditiveExpressionContext):
+        from Hql.Expressions.Arithmetic import BinaryArithmetic
+
+        expr = self.visit(ctx.Left)
+        for i in ctx.Operations:
+            expr = BinaryArithmetic(expr, i.OperatorToken.text, self.visit(i.Right))
+
+        return expr
+
+    def visitMultiplicativeExpression(self, ctx: HqlParser.MultiplicativeExpressionContext):
+        from Hql.Expressions.Arithmetic import BinaryArithmetic
+
+        expr = self.visit(ctx.Left)
+        for i in ctx.Operations:
+            expr = BinaryArithmetic(expr, i.OperatorToken.text, self.visit(i.Right))
+
+        return expr
+
+    def visitInvocationExpression(self, ctx: HqlParser.InvocationExpressionContext):
+        from Hql.Expressions.Arithmetic import Negate
+        from Hql.Expressions.Literals import Integer, Float
+
+        expr = self.visit(ctx.Expression)
+
+        if ctx.OperatorToken == None or ctx.OperatorToken.text == '+':
+            return expr
+
+        # Negative numeric literals stay literals
+        if isinstance(expr, Integer):
+            return Integer(-expr.value)
+        if isinstance(expr, Float):
+            return Float(-expr.value)
+
+        return Negate(expr)
+
     def visitBetweenEqualityExpression(self, ctx: HqlParser.BetweenEqualityExpressionContext):
         from Hql.Expressions.Logic import BetweenEquality
 
@@ -94,7 +133,15 @@ class Logic(HqlVisitor):
         return self.visit(ctx.Right)
 
     def visitParenthesizedExpression(self, ctx: HqlParser.ParenthesizedExpressionContext):
-        return self.visit(ctx.Expression)
+        from Hql.Expressions import PipeExpression
+
+        expr = self.visit(ctx.Expression)
+
+        # (a + 1) is just grouping, not a subquery
+        if isinstance(expr, PipeExpression) and not expr.pipes and expr.prepipe is not None:
+            return expr.prepipe
+
+        return expr
 
     def visitListEqualityExpression(self, ctx: HqlParser.ListEqualityExpressionContext):
         from Hql.Expressions.Logic import Equality, Substring

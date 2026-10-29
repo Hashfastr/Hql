@@ -31,6 +31,24 @@ class TestToClause:
         tc = ToClause(NamedReference("x"), hqlt.int())
         assert tc.deparse() == "x to int"
 
+    def test_to_defaults_to_none(self):
+        tc = ToClause(NamedReference("x"))
+        assert tc.to is None
+
+    def test_deparse_without_to(self):
+        assert ToClause(NamedReference("x")).deparse() == "x"
+
+    def test_to_dict_without_to(self):
+        assert ToClause(NamedReference("x")).to_dict()["to"] is None
+
+    def test_eval_without_to_leaves_data(self, empty_ctx):
+        import polars as pl
+        from Hql.Data import Data, Table
+
+        empty_ctx.data = Data([Table(df=pl.DataFrame({"x": [1, 2]}), name="t")])
+        out = ToClause(NamedReference("x")).eval(empty_ctx)
+        assert out.data["t"].to_dicts() == [{"x": 1}, {"x": 2}]
+
 
 # ---------------------------------------------------------------------------
 # Deepcopy regression
