@@ -205,6 +205,12 @@ class Compiler():
     def LogicFunction(self, expr:Hql.Functions.Logic.LogicFunction, prep:bool=True) -> tuple[object, object]:
         return self.Function(expr, prep=prep)
 
+    def BinaryArithmetic(self, expr:Hql.Expressions.Arithmetic.BinaryArithmetic, prep:bool=True) -> tuple[object, object]:
+        return None, expr
+
+    def Negate(self, expr:Hql.Expressions.Arithmetic.Negate, prep:bool=True) -> tuple[object, object]:
+        return None, expr
+
     def FuncExpr(self, expr:Hql.Expressions.FuncExpr, prep:bool=True) -> tuple[object, object]:
         return None, expr
 

@@ -13,6 +13,7 @@ from Hql.Expressions import Logic
 from Hql.Expressions import Expression, ToClause, OpParameter, PipeExpression
 from Hql.Expressions import PipeExpression
 from Hql.Expressions import Aggregation
+from Hql.Expressions import Arithmetic
 import Hql.Functions as Functions
 from Hql.Functions.Logic import LogicFunction
 import Hql.Expressions.Functions as FuncExprs
@@ -859,6 +860,31 @@ class HqlCompiler(Compiler):
 
         return desc, None
 
+    def BinaryArithmetic(self, expr:Arithmetic.BinaryArithmetic, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+        desc.set_attr('arithmetic')
+
+        acc, _ = self.compile(expr.lh)
+        desc.merge(acc)
+        lh = acc.get_expr()
+
+        acc, _ = self.compile(expr.rh)
+        desc.merge(acc)
+        rh = acc.get_expr()
+
+        desc.expr = Arithmetic.BinaryArithmetic(lh, expr.op, rh)
+        return desc, None
+
+    def Negate(self, expr:Arithmetic.Negate, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+        desc.set_attr('arithmetic')
+
+        acc, _ = self.compile(expr.expr)
+        desc.merge(acc)
+
+        desc.expr = Arithmetic.Negate(acc.get_expr())
+        return desc, None
+
     def FuncExpr(self, expr:FuncExprs.FuncExpr, prep:bool=True) -> tuple[BranchDescriptor, None]:
         func_expr = expr.preprocess(self.ctx)
         return self.Function(func_expr)
@@ -1002,7 +1028,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(expr.lh)
         desc.merge(acc)
         lh = acc.get_expr()
-        assert isinstance(lh, References.Reference)
+        assert isinstance(lh, (References.Reference, Arithmetic.Arithmetic))
 
         acc, _ = self.compile(expr.rh[0])
         desc.merge(acc)
