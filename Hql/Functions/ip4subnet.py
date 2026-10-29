@@ -19,6 +19,10 @@ class ip4subnet(Function):
         Function.__init__(self, args, 1, 1)
         self.subnet:StringLiteral = args[0]
 
+    # The range is static, so resolve it at compile time for comparisons
+    def preprocess(self, ctx: Context, receiver=None) -> BasicRange:
+        return self.eval(ctx, receiver=receiver)
+
     def eval(self, ctx: Context, receiver=None) -> BasicRange:
         from Hql.Expressions.Literals import Integer, StringLiteral
         import re

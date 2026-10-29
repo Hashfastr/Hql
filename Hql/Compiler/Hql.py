@@ -837,6 +837,16 @@ class HqlCompiler(Compiler):
             desc.set_attr('type_casting')
 
         expr.args = args
+
+        # Functions over constants, such as toint('3'), resolve to a literal
+        if args and all(isinstance(i, Literals.Literal) for i in args):
+            res = expr.preprocess(self.ctx)
+            if isinstance(res, Expression) and not isinstance(res, Functions.Function):
+                acc, _ = self.compile(res)
+                desc.merge(acc)
+                desc.expr = acc.get_expr()
+                return desc, None
+
         desc.expr = expr
 
         return desc, None
@@ -935,7 +945,7 @@ class HqlCompiler(Compiler):
 
         desc.set_attr('functions', name.str())
         func = FuncExpr(name, args).preprocess(self.ctx)
-        assert isinstance(func, Function)
+        assert isinstance(func, Functions.Function)
         func.preprocess(self.ctx, receiver=receiver)
         res = func.eval(self.ctx, receiver=receiver)
 

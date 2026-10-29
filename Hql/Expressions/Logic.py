@@ -181,15 +181,20 @@ class Equality(Comparator):
         rhs = []
         for i in new.rh:
             if isinstance(i, BasicRange):
-                or_exprs.append(BetweenEquality(new.lh, i.start, i.end))
+                or_exprs.append(BetweenEquality(new.lh, i.start, i.end, neq=new.neq))
                 continue
             rhs.append(i)
 
         # avoids recurse
         if or_exprs:
-            new.rh = rhs
-            or_exprs = [new] + or_exprs
-            return BinaryLogic(or_exprs, logic_and=False)
+            # an equality left with no values would compare against nothing
+            if rhs:
+                new.rh = rhs
+                or_exprs = [new] + or_exprs
+            if len(or_exprs) == 1:
+                return or_exprs[0]
+            # != against several values must miss all of them
+            return BinaryLogic(or_exprs, logic_and=new.neq)
 
         return self
     
