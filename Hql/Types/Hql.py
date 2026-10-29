@@ -492,6 +492,18 @@ class HqlTypes():
                 return False
             return self.eq(self.schema, value.schema)
 
+        def __hash__(self):
+            # nested dicts and nested objects hash the same, eq treats them alike
+            def h(schema:SchemaDT):
+                items = []
+                for key in sorted(schema):
+                    cur = schema[key]
+                    if isinstance(cur, HqlTypes.object):
+                        cur = cur.schema
+                    items.append((key, h(cur) if isinstance(cur, Mapping) else hash(cur)))
+                return hash(tuple(items))
+            return h(self.schema)
+
         def __len__(self):
             return len(self.schema)
 
@@ -568,10 +580,17 @@ class HqlTypes():
                 lv = l[i]
                 rv = r[i]
 
+                # nested dicts and nested objects are interchangeable
+                if isinstance(lv, HqlTypes.object):
+                    lv = lv.schema
+                if isinstance(rv, HqlTypes.object):
+                    rv = rv.schema
+
                 # dict check
                 if isinstance(lv, Mapping) and isinstance(rv, Mapping):
                     if not HqlTypes.object.eq(lv, rv):
                         return False
+                    continue
 
                 # everything else
                 if lv != rv:
