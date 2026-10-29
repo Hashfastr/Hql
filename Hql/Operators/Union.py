@@ -36,14 +36,15 @@ class Union(Operator):
             'name': self.name.to_dict() if self.name else None
         }
 
-    def eval(self, ctx:Context, **kwargs):
+    def eval(self, ctx:Context, **kwargs) -> Context:
+        from copy import copy
         from Hql.Data import Data, Table
 
         patterns = []
         for i in self.exprs:
-            pattern = i.eval(ctx, as_str=True)
+            pattern = i.str()
             if not isinstance(pattern, str):
-                raise hqle.QueryException(f'Passed non-str expression to Union operator: {i.decompile(ctx)}')
+                raise hqle.QueryException(f'Passed non-str expression to Union operator: {i.deparse()}')
             patterns.append(pattern)
 
         ignore = dict()
@@ -56,14 +57,22 @@ class Union(Operator):
                 if j.name in ignore:
                     merge.append(ignore.pop(j.name))
 
+        ctx = ctx.copy()
+
+        # Nothing matched, pass through untouched
+        if not merge:
+            return ctx
+
         new = Table.merge(merge, merge_rows=False)
         if self.name:
-            name = self.name.eval(ctx, as_str=True)
-            assert isinstance(name, str)
-            new.name = name
+            # merge passes a lone table through, don't rename the input's table
+            if new in merge:
+                new = copy(new)
+            new.name = self.name.str()
 
         tables = [new]
         for i in ignore:
             tables.append(ignore[i])
 
-        return Data(tables)
+        ctx.data = Data(tables)
+        return ctx

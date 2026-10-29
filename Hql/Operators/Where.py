@@ -77,9 +77,12 @@ class Where(Operator):
     so drop it
     '''
     def eval(self, ctx:Context) -> Context:
+        from polars.exceptions import StructFieldNotFoundError
         from Hql.Data import Data
 
         pl_filter = self.expr.polars()
+
+        ctx = self.copy_tables(ctx)
 
         new = []
         for table in ctx.data:
@@ -87,6 +90,9 @@ class Where(Operator):
                 table.filter(pl_filter)
                 new.append(table)
             except hqle.UnreferencedFieldException as e:
+                logging.warning(e)
+            # Missing sub-field of an existing struct, e.g. n.zz
+            except StructFieldNotFoundError as e:
                 logging.warning(e)
 
         ctx.data = Data(new)

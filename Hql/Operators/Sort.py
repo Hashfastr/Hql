@@ -44,6 +44,7 @@ class Sort(Operator):
             orders.append(ordering.order == 'desc')
             nulls.append(ordering.nulls == 'last')
 
+        ctx = self.copy_tables(ctx)
         for table in ctx.data:
             table.sort(exprs, orders, nulls)
 

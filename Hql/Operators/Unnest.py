@@ -46,6 +46,8 @@ class Unnest(Operator):
     def eval(self, ctx: Context) -> Context:
         from Hql.Data.Tables import Table
 
+        ctx = self.copy_tables(ctx)
+
         # loop through tables defined by 'on'
         for i in self.tables:
             # match tables matching the pattern
@@ -53,6 +55,10 @@ class Unnest(Operator):
 
             # loop through matching tables
             for j in tables:
+                # Might reference a field that exists in another table but not this one
+                if not j.assert_field(self.field):
+                    continue
+
                 new_table = j.unnest(self.field)
                 if not isinstance(new_table, Table):
                     raise hqle.CompilerException(f'Unnesting table returned Non-table type {type(new_table)}')

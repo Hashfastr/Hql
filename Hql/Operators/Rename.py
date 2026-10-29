@@ -13,21 +13,33 @@ class Rename(Operator):
         Operator.__init__(self)
         self.exprs = exprs
 
-    def decompile(self, ctx: Context, split: bool = False) -> str:
-        return 'rename ' + ', '.join([x.decompile(ctx) for x in self.exprs])
-
-    def eval(self, ctx:Context, **kwargs):
-        from Hql.Expressions import Expression
-
+    def deparse(self) -> str:
+        exprs = []
         for i in self.exprs:
-            assert isinstance(i.to, Expression)
-            src = i.expr.eval(ctx, as_str=True)
-            assert isinstance(src, str)
-            dst = i.to.eval(ctx, as_str=True)
-            assert isinstance(dst, str)
+            assert i.to is not None
+            exprs.append(f'{i.expr.deparse()} to {i.to.deparse()}')
+        return 'rename ' + ', '.join(exprs)
 
-            if src in ctx.data:
-                ctx.data[dst] = ctx.data.tables.pop(src)
-                ctx.data[dst].name = dst
+    def eval(self, ctx:Context, **kwargs) -> Context:
+        from copy import copy
+        from Hql.Data import Data
+        from Hql.Expressions.References import Reference
+        from Hql.Exceptions import HqlExceptions as hqle
 
-        return ctx.data
+        tables = dict(ctx.data.tables)
+        for i in self.exprs:
+            if not isinstance(i.to, Reference):
+                raise hqle.CompilerException(f'Rename given non-reference destination {type(i.to)}')
+            src = i.expr.str()
+            dst = i.to.str()
+
+            if src in tables:
+                # Copy so the source context's table keeps its name
+                table = copy(tables.pop(src))
+                table.name = dst
+                tables[dst] = table
+
+        ctx = ctx.copy()
+        ctx.data = Data()
+        ctx.data.tables = tables
+        return ctx

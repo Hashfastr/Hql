@@ -53,8 +53,11 @@ class Project(Operator):
         return out
 
     def eval(self, ctx:Context) -> Context:
+        import polars as pl
         from Hql.Data import Data
         from Hql.Expressions.References import NamedExpression
+
+        lengths = {x.name: len(x) for x in ctx.data}
 
         datasets = []
         for i in self.exprs:
@@ -63,7 +66,17 @@ class Project(Operator):
             else:
                 datasets.append(i.eval(ctx).data)
 
+        ctx = ctx.copy()
         ctx.data = Data.merge(datasets)
+
+        # Literal only results are a single row, broadcast them to the input length
+        for table in ctx.data:
+            if table.name not in lengths:
+                continue
+            length = lengths[table.name]
+            if len(table) == 1 and length != 1:
+                table.df = table.df.select(pl.all().gather([0] * length))
+
         return ctx
 
 # Identical to Project, keeping now for compat
@@ -124,31 +137,54 @@ class ProjectRename(Project):
     """Rename selected fields while preserving their values and types."""
 
     def __init__(self, exprs: Sequence[Union[Reference, NamedExpression]]):
+        from Hql.Expressions.References import Reference, NamedExpression
+        from Hql.Exceptions import HqlExceptions as hqle
+
         super().__init__(exprs)
         self.optok = 'project-rename'
 
+        # Bare references are accepted, they rename to themselves
         for i in exprs:
-            assert isinstance(i.value, Reference)
+            if isinstance(i, Reference):
+                continue
+            if isinstance(i, NamedExpression) and isinstance(i.value, Reference):
+                continue
+            raise hqle.CompilerException(f'project-rename expects new_name = existing_name, got {i.deparse()}')
 
     def rename(self, table:Table):
+        from copy import deepcopy
         from Hql.Data import Schema
+        from Hql.Expressions.References import NamedExpression
 
+        # Read every source before dropping anything so swaps (a = b, b = a)
+        # don't see each other's output
+        renames = []
         for i in self.exprs:
-            assert isinstance(i, NamedExpression)
-            assert isinstance(i.value, Reference)
+            if not isinstance(i, NamedExpression):
+                continue
+
+            # Might reference a field that exists in another table but not this one
+            if not table.assert_field(i.value):
+                continue
 
             value = table.get_value(i.value)
-            vtype = table.schema.get_type(i.value)
+            vtype = table.schema.get_type(i.value).strip()
             if isinstance(vtype, Schema):
-                vtype = vtype.schema
+                vtype = vtype.schema.schema
+            renames.append((i, value, vtype))
+
+        for i, _, _ in renames:
             table.drop(i.value)
 
+        for i, value, vtype in renames:
             for j in i.paths:
-                table.insert(j, value, vtype)
+                # insert mutates the path on a name conflict, keep ours intact
+                table.insert(deepcopy(j), value, vtype)
 
         return table
 
     def eval(self, ctx:Context) -> Context:
+        ctx = self.copy_tables(ctx)
         for table in ctx.data:
             self.rename(table)
 
