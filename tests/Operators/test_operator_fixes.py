@@ -76,3 +76,50 @@ class TestProjectRenameEval:
         ProjectRename([rename_expr("z", "a")]).eval(ctx)
 
         assert ctx.data["t"].to_dicts() == [{"a": 1}]
+
+
+# ---------------------------------------------------------------------------
+# range
+# ---------------------------------------------------------------------------
+
+from Hql.Expressions.Literals import Float
+from Hql.Operators.Range import Range
+
+
+def run_range(start, end, step):
+    ctx = Range(NamedReference("x"), start, end, step).eval(make_ctx())
+    assert isinstance(ctx, Context)
+    return ctx.data["range"].df["x"].to_list()
+
+
+class TestRangeEval:
+    def test_inclusive_int(self):
+        assert run_range(Integer(1), Integer(5), Integer(1)) == [1, 2, 3, 4, 5]
+
+    def test_step_not_landing_on_end(self):
+        assert run_range(Integer(1), Integer(10), Integer(3)) == [1, 4, 7, 10]
+        assert run_range(Integer(1), Integer(9), Integer(3)) == [1, 4, 7]
+
+    def test_start_after_end_is_empty(self):
+        assert run_range(Integer(5), Integer(1), Integer(1)) == []
+
+    def test_negative_step(self):
+        assert run_range(Integer(5), Integer(1), Integer(-2)) == [5, 3, 1]
+
+    def test_float_step_includes_end(self):
+        values = run_range(Integer(0), Integer(1), Float(0.1))
+        assert len(values) == 11
+        assert values[-1] == pytest.approx(1.0)
+
+    def test_zero_step_rejected(self):
+        with pytest.raises(hqle.QueryException):
+            run_range(Integer(1), Integer(5), Integer(0))
+
+    def test_non_numeric_rejected(self):
+        with pytest.raises(hqle.CompilerException):
+            run_range(NamedReference("a"), Integer(5), Integer(1))
+
+    def test_to_dict_and_deparse(self):
+        r = Range(NamedReference("x"), Integer(1), Integer(5), Integer(2))
+        assert r.to_dict()["id"] == r.id
+        assert r.deparse() == "range x from 1 to 5 step 2"

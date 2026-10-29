@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 from Hql.Operators.Operator import Operator
 
 if TYPE_CHECKING:
@@ -27,6 +27,7 @@ class Range(Operator):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'type': self.type,
             'name': self.name.to_dict(),
             'start': self.start.to_dict(),
@@ -34,41 +35,56 @@ class Range(Operator):
             'step': self.step.to_dict(),
         }
 
-    def decompile(self, ctx: Context) -> str:
-        name = self.name.decompile(ctx)
-        start = self.start.decompile(ctx)
-        end = self.end.decompile(ctx)
-        step = self.step.decompile(ctx)
+    def deparse(self) -> str:
+        name = self.name.deparse()
+        start = self.start.deparse()
+        end = self.end.deparse()
+        step = self.step.deparse()
 
         return f'range {name} from {start} to {end} step {step}'
 
-    def eval(self, ctx:Context, **kwargs):
+    @staticmethod
+    def get_number(expr:Expression, label:str) -> Union[int, float]:
+        from Hql.Expressions.Literals import Literal
+        from Hql.Exceptions import HqlExceptions as hqle
+
+        value = expr.value if isinstance(expr, Literal) else None
+
+        # bool is a subclass of int, don't let it through
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise hqle.CompilerException(f'Range given invalid {label} value {expr.deparse()}')
+
+        return value
+
+    def eval(self, ctx:Context, **kwargs) -> Context:
+        from math import floor
         from numpy import arange
-        from polars import Series, concat
+        from polars import Series, Int64, Float64
         from Hql.Data import Data, Table
         from Hql.PolarsTools import pltools
         from Hql.Exceptions import HqlExceptions as hqle
 
-        name = self.name.eval(ctx, as_list=True)
-        start = self.start.eval(ctx)
-        end = self.end.eval(ctx)
-        step = self.step.eval(ctx)
+        ctx = ctx.copy()
 
-        if type(start) not in (int, float):
-            raise hqle.CompilerException(f'Range given invalid start value type {type(start)}')
+        name = self.name.list()
+        start = self.get_number(self.start, 'start')
+        end = self.get_number(self.end, 'end')
+        step = self.get_number(self.step, 'step')
 
-        if type(end) not in (int, float):
-            raise hqle.CompilerException(f'Range given invalid end value type {type(end)}')
+        if step == 0:
+            raise hqle.QueryException('Range step cannot be 0')
 
-        if type(step) not in (int, float):
-            raise hqle.CompilerException(f'Range given invalid step value type {type(step)}')
+        # Inclusive of end, empty if the step moves away from end.
+        # Small epsilon absorbs float error, e.g. 0 to 1 step 0.1
+        count = max(floor((end - start) / step + 1e-9) + 1, 0)
+        values = start + arange(count) * step
 
-        series = Series(arange(start, end, step))
-        # This handles the inclusive case as arange does not
-        if (end - start) % step == 0:
-            series = concat([series, Series([end])])
+        if all(isinstance(x, int) for x in (start, end, step)):
+            series = Series(values, dtype=Int64)
+        else:
+            series = Series(values, dtype=Float64)
 
         df = pltools.build_element(name, series)
-        table = Table(df=df, name='range')
+        ctx.data = Data(tables=[Table(df=df, name='range')])
 
-        return Data(tables=[table])
+        return ctx
