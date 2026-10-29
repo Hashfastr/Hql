@@ -519,9 +519,11 @@ class HqlTypes():
                 out = data[base]
 
                 if isinstance(key, Path):
-                    if isinstance(out, HqlTypes.HqlType):
+                    if isinstance(out, HqlTypes.object):
+                        out = out.schema
+                    elif isinstance(out, HqlTypes.HqlType):
                         raise IndexError
-                    return get(out, Path(key.list()[1:]))
+                    return get(out, Path(key.path[1:]))
 
                 return out
 
@@ -557,7 +559,7 @@ class HqlTypes():
                     elif isinstance(cur, dict):
                         out[key] = td(cur)
                     
-                    elif isinstance(cur, HqlTypes.type):
+                    elif isinstance(cur, HqlTypes.HqlType):
                         out[key] = cur.name
 
                 return out
@@ -637,14 +639,20 @@ class HqlTypes():
         """Represent a variable-length collection of one element type."""
 
         def __init__(self, inner:HqlTypes.HqlType):
-            assert inner.proto
-            self.proto = pl.List(inner.proto)
-            self._inner = inner
-
             HqlTypes.HqlType.__init__(self, inner=inner)
+            # fail early on inner types without a polars representation
+            assert inner.pl_schema() is not None
             
             self.priority = 5
-            self.super = []
+
+        # derived from inner, which can be swapped out after init
+        @property
+        def proto(self) -> Optional[pl.DataType]:
+            return self.pl_schema()
+
+        @proto.setter
+        def proto(self, val):
+            ...
 
         @property
         def inner(self) -> HqlTypes.HqlType:
@@ -664,7 +672,8 @@ class HqlTypes():
         
         # Casts a polars series to List
         def cast(self, series:pl.Series):
-            if not self.inner:
+            # empty objects are falsy, so check for None explicitly
+            if self._inner is None:
                 logging.critical('Cannot cast to empty multivalue!')
                 raise TypeError('Attempted to cast to empty multivalue')
             

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Mapping
 from Hql.Context import register_type, get_type
 from Hql.Types.Compiler import CompilerType
 
@@ -32,7 +32,7 @@ class PythonTypes():
                 new[i] = PythonTypes.from_value(value[i])
             return PythonTypes.dict(new)
         else:
-            return PythonTypes.from_name(type(value).__name__)
+            return PythonTypes.from_name(type(value).__name__)()
 
     @staticmethod
     def resolve_conflict(types:list[PythonType]):
@@ -73,10 +73,8 @@ class PythonTypes():
 
     @staticmethod
     def resolve_mv(mv:list[type]):
-        mvset = set()
-        for i in mv:
-            mvset.add(PythonTypes.from_name(i.__name__))
-        return PythonTypes.resolve_conflict(list(mvset))
+        types = [PythonTypes.from_name(i.__name__)() for i in mv]
+        return PythonTypes.resolve_conflict(types)
             
     @register_type('python_int')
     class int(PythonType):
@@ -189,11 +187,17 @@ class PythonTypes():
                 return False
             return PythonTypes.hqlt.object.eq(self.schema, value.schema)
 
-        # I hate this, has to be a better way
         def __hash__(self):
-            import json
-            from hashlib import sha1
-            return hash(sha1(json.dumps(self.schema, sort_keys=True, default=repr).encode()))
+            # structural, consistent with __eq__
+            def h(schema):
+                items = []
+                for key in sorted(schema):
+                    cur = schema[key]
+                    if isinstance(cur, PythonTypes.dict):
+                        cur = cur.schema
+                    items.append((key, h(cur) if isinstance(cur, Mapping) else hash(cur)))
+                return hash(tuple(items))
+            return h(self.schema)
 
         def hql_schema(self) -> PythonTypes.hqlt.HqlType:
             new = dict()

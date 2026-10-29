@@ -62,3 +62,77 @@ class TestObjectHash:
     def test_resolve_conflict_on_objects(self):
         result = hqlt.resolve_conflict([hqlt.object({'a': hqlt.int()}), hqlt.object({'b': hqlt.string()})])
         assert result == hqlt.object({'a': hqlt.int(), 'b': hqlt.string()})
+
+
+# ---------------------------------------------------------------------------
+# workspace-qgw.26: to_dict keeps leaf types and is JSON serializable
+# ---------------------------------------------------------------------------
+
+class TestToDict:
+    def test_object_to_dict_keeps_leaves(self):
+        obj = hqlt.object({'a': hqlt.string(), 'b': {'c': hqlt.int()}})
+        assert obj.to_dict() == {'a': 'string', 'b': {'c': 'int'}}
+
+    def test_schema_to_dict(self):
+        schema = Schema(schema={'a': hqlt.long(), 'b': {'c': hqlt.string()}})
+        assert schema.to_dict() == {'a': 'long', 'b': {'c': 'string'}}
+
+    def test_compiler_type_to_dict_is_json(self):
+        for t in (hqlt.int(), pyt.int(), plt.Int64(), KustoTypes.long()):
+            json.dumps(t.to_dict())
+
+    def test_compiler_type_to_dict_type_name(self):
+        assert hqlt.int().to_dict() == {'type': 'HqlType', 'name': 'int'}
+
+
+# ---------------------------------------------------------------------------
+# workspace-qgw.27: nested multivalue
+# ---------------------------------------------------------------------------
+
+class TestNestedMultivalue:
+    def test_proto_set(self):
+        assert hqlt.multivalue(hqlt.int()).proto == pl.List(pl.Int32)
+
+    def test_nested(self):
+        mv = hqlt.multivalue(hqlt.multivalue(hqlt.int()))
+        assert mv.pl_schema() == pl.List(pl.List(pl.Int32))
+
+    def test_proto_tracks_inner(self):
+        mv = hqlt.multivalue(hqlt.int())
+        mv.inner = hqlt.string()
+        assert mv.proto == pl.List(pl.String)
+
+    def test_table_of_nested_lists(self):
+        assert load([[[1], [2]]]).df.to_dicts() == [{'a': [[1], [2]]}]
+
+
+# ---------------------------------------------------------------------------
+# workspace-qgw.39: misc helpers
+# ---------------------------------------------------------------------------
+
+class TestMiscHelpers:
+    def test_dict_hash_consistent_with_eq(self):
+        left = pyt.dict({'a': pyt.int(), 'b': pyt.dict({'c': pyt.str()})})
+        right = pyt.dict({'b': pyt.dict({'c': pyt.str()}), 'a': pyt.int()})
+        assert left == right
+        assert hash(left) == hash(right)
+
+    def test_from_value_returns_instance(self):
+        assert isinstance(pyt.from_value(1), pyt.int)
+
+    def test_resolve_mv(self):
+        assert isinstance(pyt.resolve_mv([int, float]), pyt.float)
+
+    def test_object_getitem_nested_object(self):
+        obj = hqlt.object({'a': hqlt.object({'b': {'c': hqlt.string()}})})
+        assert obj[Path([NamedReference('a'), NamedReference('b'), NamedReference('c')])] == hqlt.string()
+
+    def test_object_getitem_scalar_path_raises(self):
+        obj = hqlt.object({'a': hqlt.int()})
+        with pytest.raises(IndexError):
+            obj[Path([NamedReference('a'), NamedReference('b')])]
+
+    def test_multivalue_of_empty_object_casts(self):
+        mv = hqlt.multivalue(hqlt.object({}))
+        out = mv.cast(pl.Series([[{}]], dtype=pl.List(pl.Struct([]))))
+        assert out.dtype == pl.List(pl.Struct([]))

@@ -79,7 +79,7 @@ class CompilerType():
 
     def to_dict(self):
         return {
-            'type': self.type,
+            'type': self.type.__name__,
             'name': self.name
         }
 
