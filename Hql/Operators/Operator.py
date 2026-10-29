@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from Hql.Expressions import Expression
     from Hql.Expressions.References import Reference
     from Hql.Operators.Operator import Operator
+    from Hql.Context import Context
 
 # The proto for an operator.
 # An operator is simply a operation denoted by a pipe (|).
@@ -65,7 +66,26 @@ class Operator(ParseObject):
 
     def deparse(self) -> str:
         return NotImplemented
-    
+
+    '''
+    Context.copy() shares data, so operators that mutate tables in place
+    use this to avoid leaking changes into other contexts holding the same data.
+    DataFrames are replaced rather than mutated, so a shallow table copy
+    with its own schema is enough.
+    '''
+    def copy_tables(self, ctx:Context) -> Context:
+        from copy import copy
+        from Hql.Data import Data
+
+        ctx = ctx.copy()
+        data = Data()
+        for table in ctx.data:
+            new = copy(table)
+            new.schema = table.schema.copy()
+            data.replace_table(new)
+        ctx.data = data
+        return ctx
+
     def non_consequential(self, t:str):
         return t in self.non_conseq
     
