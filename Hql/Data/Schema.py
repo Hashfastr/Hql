@@ -261,33 +261,16 @@ class Schema():
             raise hqle.QueryException('Attempting to rename field into an existing field')
         
         src_type = self.pop(src)
-        
-        cur = self.schema
-        for idx, i in enumerate(dest):
-            # the previous assertion functions guarantee a destination path will work
-            # adding to please the linter
-            assert isinstance(cur, dict)
-
-            if idx == len(dest) - 1:
-                cur[i] = src_type
-            else:
-                cur = cur[i]
+        self.set(dest, src_type)
+        return self
                 
     def pop(self, name:Reference):
         if not self.assert_field(name):
             raise hqle.QueryException(f'Attempting to pop a non-existing field {name}')
         
-        src_type = hqlt.null()
-        cur = self.schema
-        for idx, i in enumerate(name):
-            # the previous assertion function guarantees our path exists
-            # adding to please the linter
-            assert isinstance(cur, dict)
-
-            if idx == len(name) - 1:
-                src_type = cur.pop(i)
-            else:
-                cur = cur[i]
+        # drop also prunes parents left empty, as Table.remove does
+        src_type = self.schema[name]
+        self.drop(name)
                 
         return src_type
 

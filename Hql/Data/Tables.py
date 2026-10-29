@@ -435,14 +435,11 @@ class Table():
         #if self.assert_field(dest):
         #    raise hqle.QueryException('Attempting to rename field into an existing field')
         
-        value = self.pop(src).unnest(src)
-        if isinstance(value, Series):
-            schema = value.type
-            value = value.series
-
-        else:
-            schema = value.schema.schema
-            value = value.df
+        popped = self.pop(src)
+        value = popped.get_value(src)
+        schema = popped.schema.schema[src]
+        if isinstance(schema, hqlt.object):
+            schema = schema.schema
 
         if not isinstance(schema, (dict, hqlt.HqlType)):
             raise hqle.CompilerException(f'Attempting to rename with schema of type {type(schema)}')
@@ -460,6 +457,11 @@ class Table():
         ) -> pl.DataFrame:
         if isinstance(cur_df, type(None)):
             cur_df = self.df
+
+        # Conflicts rename path segments, work on a copy rather than the caller's reference
+        if idx == 0:
+            parts = name.list() if isinstance(name, (NamedReference, Path)) else list(name)
+            name = Path([NamedReference(x) for x in parts])
             
         split = name[idx]
                 
@@ -485,7 +487,7 @@ class Table():
         elif cur_df[split].dtype == pl.Struct:        
             recurse = self.insert(name, value, vtype, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
             cur_df = cur_df.drop(split)
-            new = pl.DataFrame({split: recurse})
+            new = pl.DataFrame({split: recurse.to_struct(split)})
         
         # Conflict, a base type is where we're trying to put a struct
         else:
@@ -498,12 +500,13 @@ class Table():
             split = f'{split}_{i}'
             name[idx] = split
          
-            if cur_df[split].dtype == pl.Struct:
+            if split in cur_df and cur_df[split].dtype == pl.Struct:
                 recurse = self.insert(name, value, vtype, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
+                cur_df = cur_df.drop(split)
             else:
                 recurse = self.insert(name, value, vtype, cur_df=pl.DataFrame(), idx=idx + 1)
             
-            new = pl.DataFrame({split: recurse})
+            new = pl.DataFrame({split: recurse.to_struct(split)})
         
         new = pl.concat([new, cur_df], how='horizontal')
         
@@ -526,10 +529,10 @@ class Table():
             return mask
         
         if cur_df[split].dtype == pl.Struct:
-            recurse = self.remove(name, cur_df=cur_df.unnest(split), idx=idx + 1)
+            recurse = self.remove(name, cur_df=cur_df.select(split).unnest(split), idx=idx + 1)
             
-            if not recurse.is_empty():
-                recurse = pl.DataFrame({split: recurse})
+            if recurse.width:
+                recurse = pl.DataFrame({split: recurse.to_struct(split)})
                 merged = pl.concat([mask, recurse], how='horizontal')
             else:
                 merged = mask
@@ -544,8 +547,9 @@ class Table():
         
         # Schema is tracked through the select
         value = self.select(name)
+        # remove checks the schema, so pop it afterwards
+        self.df = self.remove(name)
         self.schema.pop(name)
-        self.remove(name)
         
         return value
     
@@ -556,7 +560,7 @@ class Table():
     
     def cast_in_place(self, path:Reference, cast_type:hqlt.HqlType):
         if not self.assert_field(path):
-            return None
+            return self
         
         self.schema.set(path, cast_type)
         self.df = self.schema.apply(self.df)

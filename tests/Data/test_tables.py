@@ -350,3 +350,125 @@ class TestZeroRowTables:
 
         assert table.df.schema == pl.Schema({'a': pl.Struct({'c': pl.Int64})})
         assert list(raw(table)['a']) == ['c']
+
+
+class TestTableInsert:
+    def test_does_not_mutate_reference(self):
+        ref = N('x')
+        first = Table(df=pl.DataFrame({'x': [1]}), name='a')
+        second = Table(df=pl.DataFrame({'y': [1]}), name='b')
+
+        first.insert(ref, pl.Series([5]), hqlt.long())
+        second.insert(ref, pl.Series([6]), hqlt.long())
+
+        assert ref.name == 'x'
+        assert first.df.to_dicts() == [{'x_0': 5, 'x': 1}]
+        assert second.df.to_dicts() == [{'x': 6, 'y': 1}]
+
+    def test_does_not_mutate_path(self):
+        ref = P('a', 'b')
+        table = Table(df=pl.DataFrame({'a': [1]}))
+
+        table.insert(ref, pl.Series([5]), hqlt.long())
+
+        assert ref.list() == ['a', 'b']
+
+    def test_nested_under_scalar(self):
+        table = Table(df=pl.DataFrame({'a': [1], 'z': [0]}))
+
+        table.insert(P('a', 'b'), pl.Series([5]), hqlt.long())
+        assert table.df.to_dicts() == [{'a_0': {'b': 5}, 'a': 1, 'z': 0}]
+        assert set(raw(table)['a_0']) == {'b'}
+
+        # second insert merges into the renamed struct
+        table.insert(P('a', 'c'), pl.Series([6]), hqlt.long())
+        assert table.df.to_dicts() == [{'a_0': {'c': 6, 'b': 5}, 'a': 1, 'z': 0}]
+        assert set(raw(table)['a_0']) == {'b', 'c'}
+
+    def test_into_existing_single_field_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1}], 'z': [0]}))
+
+        table.insert(P('a', 'c'), pl.Series([6]), hqlt.long())
+
+        assert table.df.to_dicts() == [{'a': {'c': 6, 'b': 1}, 'z': 0}]
+        assert set(raw(table)['a']) == {'b', 'c'}
+
+
+class TestTableRemovePopRename:
+    def test_remove_keeps_siblings_out_of_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}], 'z': [0]}))
+
+        assert table.remove(P('a', 'b')).to_dicts() == [{'z': 0, 'a': {'c': 2}}]
+
+    def test_remove_last_field_drops_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1}], 'z': [0]}))
+
+        assert table.remove(P('a', 'b')).to_dicts() == [{'z': 0}]
+
+    def test_pop_removes_from_df_and_schema(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}], 'z': [0]}))
+
+        value = table.pop(P('a', 'b'))
+
+        assert value.df.to_dicts() == [{'a': {'b': 1}}]
+        assert table.df.to_dicts() == [{'z': 0, 'a': {'c': 2}}]
+        assert list(raw(table)['a']) == ['c']
+
+    def test_rename_moves_value(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}], 'z': [0]}))
+
+        table.rename(P('a', 'b'), N('q'))
+
+        assert table.df.to_dicts() == [{'q': 1, 'z': 0, 'a': {'c': 2}}]
+        assert set(raw(table)) == {'q', 'z', 'a'}
+        assert isinstance(raw(table)['q'], hqlt.long)
+
+    def test_rename_struct(self):
+        table = Table(df=pl.DataFrame({'a': [{'b': 1, 'c': 2}], 'z': [0]}))
+
+        table.rename(N('a'), P('n', 'm'))
+
+        assert table.df.to_dicts() == [{'n': {'m': {'b': 1, 'c': 2}}, 'z': 0}]
+        assert set(raw(table)['n']['m']) == {'b', 'c'}
+
+
+class TestTableCastInPlace:
+    def test_missing_field_returns_table(self):
+        table = Table(df=pl.DataFrame({'a': [1]}))
+
+        assert table.cast_in_place(N('q'), hqlt.string()) is table
+
+    def test_to_clause_on_partial_tables(self):
+        from Hql.Expressions import ToClause
+
+        ctx = Context(Data([
+            Table(df=pl.DataFrame({'a': [1]}), name='t1'),
+            Table(df=pl.DataFrame({'b': [2]}), name='t2'),
+        ]))
+
+        out = ToClause(N('a'), hqlt.string()).eval(ctx)
+
+        assert out.data['t1'].df.to_dicts() == [{'a': '1'}]
+        assert out.data['t2'].df.to_dicts() == [{'b': 2}]
+
+
+class TestSchemaPopRename:
+    def test_pop(self):
+        schema = Schema(schema={'x': hqlt.long(), 'y': hqlt.string()})
+
+        assert isinstance(schema.pop(N('x')), hqlt.long)
+        assert list(schema.schema.schema) == ['y']
+
+    def test_pop_nested(self):
+        schema = Schema(schema={'a': {'b': hqlt.long(), 'c': hqlt.string()}})
+
+        assert isinstance(schema.pop(P('a', 'b')), hqlt.long)
+        assert list(schema.schema.schema['a']) == ['c']
+
+    def test_rename(self):
+        schema = Schema(schema={'x': hqlt.long(), 'a': {'b': hqlt.string()}})
+
+        schema.rename(P('a', 'b'), P('c', 'd'))
+
+        assert set(schema.schema.schema) == {'x', 'c'}
+        assert isinstance(schema.schema.schema['c']['d'], hqlt.string)
