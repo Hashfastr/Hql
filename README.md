@@ -165,6 +165,8 @@ There is also a **vibe coded** interface at http://localhost:8081 which allows y
 Manage detections, run, and view.
 The API also exists on this port.
 
+See [docs/HaC/ENGINE.md](docs/HaC/ENGINE.md) for the engine's execution chain and threading design.
+
 ## Implemented features **out of date**
 See the implemented features [here](docs/features/README.md).
 I'll put these into issues at some point.
