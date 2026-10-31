@@ -32,7 +32,7 @@ class Config():
         if path.is_file():
             files.append(path)
 
-        for file in path.rglob("*"):
+        for file in path.rglob("*.yml"):
             if file.is_file():
                 files.append(file)
 
