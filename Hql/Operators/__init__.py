@@ -17,7 +17,8 @@ __all__ = [
     "Datatable",
     "Join",
     "MvExpand",
-    "Sort"
+    "Sort",
+    "Map"
 ]
 
 from Hql.Operators.Operator import Operator
@@ -38,3 +39,4 @@ from Hql.Operators.Join import Join
 from Hql.Operators.MvExpand import MvExpand
 from Hql.Operators.Sort import Sort
 from Hql.Operators.Rename import Rename
+from Hql.Operators.Map import Map

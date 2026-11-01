@@ -14,12 +14,13 @@ if TYPE_CHECKING:
     from Hql.Operators.Operator import Operator
     from Hql.Database import Database
     from Hql.Compiler import BranchDescriptor
+    from Hql.Query import Mapping
     from Hql.Config import Config
 
 class InstructionSet():
     """Execute upstream data sources followed by local pipeline operators."""
 
-    def __init__(self, upstream:Union[Database, InstructionSet, Sequence[Union[Database, InstructionSet]]], operators:Optional[list[Operator]]=None) -> None:
+    def __init__(self, upstream:Union[Database, InstructionSet, Sequence[Union[Database, InstructionSet]]], operators:list[Operator] | None=None) -> None:
         import random
         from Hql.Compiler import InstructionSet
 
@@ -31,6 +32,8 @@ class InstructionSet():
 
         self.upstream = upstream
         self.ops = operators
+
+        self.maps:list[Mapping] = []
 
         if len(self.upstream) == 1 and isinstance(self.upstream[0], InstructionSet):
             self.ops = self.upstream[0].ops + self.ops
@@ -115,10 +118,18 @@ class InstructionSet():
 
     def add_op(self, op:Union[BranchDescriptor, Operator]) -> tuple[Union[Operator, None], Union[Operator, None]]:
         from Hql.Compiler import BranchDescriptor
+        from Hql.Operators import Map
 
         if isinstance(op, BranchDescriptor):
             op = op.get_op()
-        self.ops.append(op)
+
+        if isinstance(op, Map):
+            self.maps += op.maps
+            return None, None
+
+        # apply maps here
+        if self.maps:
+            self.ops.append(op)
 
         return None, None
 

@@ -284,3 +284,42 @@ class LetLogicStatement(LetStatement):
         name = self.name.str()
         ctx.symbol_table[name] = self.root
         return ctx
+
+class Mapping(LetStatement):
+    def __init__(self, name:Reference) -> None:
+        # Manages this list as if it were a set
+        self.name = name
+        self.root:dict[Reference, list[Reference]] = {}
+
+    def __iter__(self):
+        return iter(self.root.keys())
+
+    def __getitem__(self, key:Reference) -> list[Reference]:
+        return self.root[key]
+
+    def to_dict(self) -> dict:
+        return {
+            'name': self.name.str(),
+            'maps': {x.str(): [y.str() for y in self.root[x]] for x in self.root}
+        }
+
+    def add(self, src:Reference, dest:Reference|list[Reference]):
+        if not isinstance(dest, list):
+            dest = [dest]
+
+        if src not in self.root:
+            self.root[src] = dest
+            return
+
+        for i in dest:
+            if i not in self.root[src]:
+                self.root[src].append(i)
+
+    def get(self, src:Reference) -> list[Reference]:
+        return list(self.root[src])
+
+    def merge(self, mapping:Mapping) -> Mapping:
+        for i in mapping:
+            [self.add(i, x) for x in mapping[i]]
+        return self
+

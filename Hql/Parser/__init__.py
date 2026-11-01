@@ -168,3 +168,12 @@ class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, 
     def visitMacroStatement(self, ctx: HqlParser.MacroStatementContext):
         from Hql.Query import PipeExpression
 
+    def visitMapStatement(self, ctx: HqlParser.MapStatementContext):
+        from Hql.Query import Mapping
+        name = self.visit(ctx.Name)
+
+        mapping = Mapping(name)
+        for i in ctx.Maps:
+            mapping.merge(self.visit(i)) 
+
+        return mapping

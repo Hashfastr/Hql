@@ -33,7 +33,7 @@ class Operator(ParseObject):
         ParseObject.__init__(self)
 
         self._expr = None
-        self.exprs:Sequence[Expression] = []
+        self._exprs:Sequence[Expression] = []
         self.compatible:Sequence[Operator] = []
         self.non_conseq:Sequence[Operator] = []
         self.methods:list[str] = []
@@ -49,6 +49,15 @@ class Operator(ParseObject):
     @expr.setter
     def expr(self, value:Optional[Expression]) -> None:
         self._expr = value
+
+    @property
+    def exprs(self) -> Sequence[Expression]:
+        """The exprs property."""
+        return self._exprs
+
+    @exprs.setter
+    def exprs(self, value:Sequence[Expression]):
+        self._exprs = value
 
     def to_dict(self) -> dict:
         out:dict = {

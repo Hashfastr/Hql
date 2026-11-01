@@ -198,3 +198,24 @@ class BaseExpressions(HqlVisitor):
         name = self.visit(ctx.Name)
         value = self.visit(ctx.Value)
         return NamedExpression([name], value)
+
+    def visitMapEntry(self, ctx: HqlParser.MapEntryContext):
+        from Hql.Query import Mapping
+
+        src = self.visit(ctx.Source)
+        
+        if ctx.Dest is None:
+            dest = self.visit(ctx.MultiDest)
+        else:
+            dest = [self.visit(ctx.Dest)]
+
+        mapping = Mapping(src)
+        mapping.add(src, dest)
+
+        return mapping
+
+    def visitSingleMapValue(self, ctx: HqlParser.SingleMapValueContext):
+        return self.visit(ctx.Value)
+
+    def visitMultiMapValue(self, ctx: HqlParser.MultiMapValueContext):
+        return [self.visit(x) for x in ctx.MapValues]

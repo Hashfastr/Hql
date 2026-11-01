@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from Hql.Config import Config
     from Hql.Context import Context
     from Hql.Hac import Hac
-    from Hql.Operators import Operator
+    from Hql.Expressions import PrepipeType
 
 _PREPIPE_TYPES = (Functions.Function, Functions.DotCompositeFunction, Database, Operators.Union, References.Reference, InstructionSet)
 
