@@ -38,7 +38,8 @@ dependencies = [
     "fastapi",
     "uvicorn",
     # "dfir_iris_client",
-    "azure-kusto-data"
+    "azure-kusto-data",
+    "sqlalchemy"
 ]
 
 [project.urls]

@@ -4,6 +4,7 @@ from .InstructionSet import InstructionSet
 from .Compiler import Compiler
 from .Lucene import LuceneCompiler
 from .KQL import KQLCompiler
+from .Postgres import PostgresCompiler
 from .QueryDSL import QueryDSLCompiler
 from .Splunk import SPLCompiler
 from .Hql import HqlCompiler

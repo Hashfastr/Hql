@@ -103,8 +103,8 @@ def _():
 def _(Hql, conf_dir, sigma):
     from Hql.Parser.Sigma import SigmaParser
 
-    # sets the target in the config for a given database then compiles it with that target
-    def compile_with_target(target:str) -> dict:
+    # sets the target in the config for a given database then precompiles it with that target
+    def precompile(target:str):
         from Hql.Compiler.Hql import HqlCompiler
 
         conf = Hql.Config.Config(conf_dir)
@@ -115,7 +115,7 @@ def _(Hql, conf_dir, sigma):
         if parser.assembly:
             print('Valid sigma parsed!')
         else:
-            return {'index': '', 'query': ''}
+            return None
         #print(json.dumps(parser.assembly.to_dict(), indent=2))
 
         if target in ('lucene', 'dsl'):
@@ -131,11 +131,29 @@ def _(Hql, conf_dir, sigma):
 
         # precompilation
         compiler = HqlCompiler(conf, query=parser.assembly, hac=parser.gen_hac(), time=False)
+        return compiler.root.upstream[0]
+
+    # compiles it with the configured target
+    def compile_with_target(target:str) -> dict:
+        database = precompile(target)
+        if database is None:
+            return {'index': '', 'query': ''}
 
         # compilation
-        return compiler.root.upstream[0].simple_compile()
+        return database.simple_compile()
 
-    return (compile_with_target,)
+    # for compilers without a database config, reuses the mapped predicate Lucene accepted
+    def compile_mapped(target_compiler) -> tuple[str, object]:
+        from Hql.Operators.Where import Where
+
+        database = precompile('lucene')
+        if database is None or database.compiler.expr is None:
+            return '', None
+
+        _, rejected = target_compiler.add_op(Where(database.compiler.expr))
+        return database.pattern, rejected
+
+    return compile_mapped, compile_with_target
 
 
 @app.cell(hide_code=True)
@@ -195,6 +213,57 @@ def _(compile_with_target):
     lucene_compiled = compile_with_target('lucene')
     print('index: ' + lucene_compiled['index'])
     print('query: ' + lucene_compiled['query'])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Kibana query language compilation
+    Elasticsearch can't run KQL itself, only Kibana can, so there isn't a database config for it.
+    Instead we precompile for Lucene like above and hand the mapped predicate Lucene accepted to the KQL compiler.
+
+    KQL has no regex support, so any regex in the sigma is left for Hql to run on the results.
+    """)
+    return
+
+
+@app.cell
+def _(compile_mapped):
+    from Hql.Compiler import KQLCompiler
+
+    kql_compiler = KQLCompiler()
+    kql_index, kql_rejected = compile_mapped(kql_compiler)
+    print('index: ' + kql_index)
+    print('query: ' + kql_compiler.simple_compile())
+    if kql_rejected:
+        print('left for Hql: ' + kql_rejected.deparse())
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## PostgreSQL compilation
+    The PostgreSQL compiler builds the query with SQLAlchemy and lets its PostgreSQL dialect render the SQL.
+    Same as KQL, there isn't a database config yet, so the mapped predicate from Lucene is reused.
+
+    Postgres has no index patterns, so we assume the beats data is flattened into a `so_beats` table.
+    Nested fields such as `process.executable` become dotted column names.
+    `pg_compiler.statement()` gives the SQLAlchemy statement itself, which can be run with an engine.
+    """)
+    return
+
+
+@app.cell
+def _(compile_mapped):
+    from Hql.Compiler import PostgresCompiler
+
+    pg_compiler = PostgresCompiler('so_beats')
+    _, pg_rejected = compile_mapped(pg_compiler)
+    print('query:\n' + pg_compiler.simple_compile())
+    if pg_rejected:
+        print('left for Hql: ' + pg_rejected.deparse())
     return
 
 
