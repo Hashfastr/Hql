@@ -46,7 +46,7 @@ class LuceneCompiler(Compiler):
 
         # still missing a root
         if src == None:
-            return self.compile(Bool(True), prep=prep), None
+            return self.compile(Bool(True), prep=prep)
 
         if isinstance(src, Function):
             return self.Function(src, prep=prep)
@@ -131,7 +131,9 @@ class LuceneCompiler(Compiler):
 
     def Not(self, expr: Logic.Not, prep:bool=True) -> tuple[object, object]:
         from Hql.Expressions.Logic import Not
-        from Hql.Expressions import Function
+        from Hql.Functions import Function
+        import Hql.Expressions.Logic as Logic
+        import Hql.Expressions.References as References
 
         if prep:
             if isinstance(expr.expr, Function):
@@ -144,6 +146,11 @@ class LuceneCompiler(Compiler):
             return Not(acc), None
 
         inner, _ = self.compile(expr.expr, prep=prep)
+
+        # NOT only binds to the next clause
+        if isinstance(expr.expr, Logic.BinaryLogic):
+            inner = f'({inner})'
+
         return f'(NOT {inner})', None
 
     def Equality(self, expr: Logic.Equality, prep:bool=True) -> tuple[object, object]:

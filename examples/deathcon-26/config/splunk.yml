@@ -1,0 +1,13 @@
+# Placeholder: fill in your Splunk here. Don't commit a real token.
+database:
+  name: splunk
+  type: Splunk
+  timeseries: true
+  conf:
+    host: 'splunk.example.invalid'
+    port: 8089
+    token: '<INJECT_SPLUNK_TOKEN>'
+    # username: admin
+    # password: '<INJECT_SPLUNK_PASSWORD>'
+    use_ssl: true
+    verify_certs: true

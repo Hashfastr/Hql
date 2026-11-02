@@ -120,6 +120,12 @@ class Splunk(Database):
         assert isinstance(query, str)
         return query
 
+    def simple_compile(self) -> dict:
+        return {
+            'index': ','.join(self.indexes),
+            'query': self.compile()
+        }
+
     def connect(self):
         import splunklib.client as client
 

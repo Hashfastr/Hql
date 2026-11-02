@@ -16,6 +16,14 @@ if TYPE_CHECKING:
     from Hql.Expressions.References import Reference
     import polars as pl
 
+def lh_polars(expr:Expression) -> pl.Expr:
+    '''
+    Bare value of a left hand operand, Path.polars() rebuilds the struct
+    for projection so compare against Path.polars_value() instead.
+    '''
+    from Hql.Expressions.References import Reference
+    return expr.polars_value() if isinstance(expr, Reference) else expr.polars()
+
 # descriptive class
 class Logic(Expression):
     """Base class for expressions that evaluate as predicates."""
@@ -239,7 +247,7 @@ class Equality(Comparator):
         if len(reduced.rh) > 1:
             return reduced.expand_rh().polars()
 
-        lh = reduced.lh.polars()
+        lh = lh_polars(reduced.lh)
         rh = reduced.rh[0].polars()
 
         if reduced.cs:
@@ -437,6 +445,10 @@ class Substring(Comparator):
         return lh.str.contains(regex)
 
     def deparse(self) -> str:
+        # No startswith_any, endswith_any or negated list tokens in the grammar
+        if len(self.rh) > 1 and (self.startswith or self.endswith or self.neq):
+            return '(' + self.expand_rh().deparse() + ')'
+
         lh = self.lh.deparse()
         op = self.build_op()
 
@@ -460,7 +472,7 @@ class Substring(Comparator):
         if len(self.rh) > 1:
             return self.expand_rh().polars()
         
-        lh = self.lh.polars()
+        lh = lh_polars(self.lh)
         if self.startswith or self.endswith:
             expr = self.prefix(lh, self.rh[0])
         else:
@@ -561,7 +573,7 @@ class Relational(Comparator):
         return op
 
     def polars(self) -> pl.Expr:
-        lh = self.lh.polars()
+        lh = lh_polars(self.lh)
         rh = self.rh[0].polars()
 
         if self.gt:
@@ -646,7 +658,7 @@ class BetweenEquality(Comparator):
         return f'{lh} {op} ({start} .. {end})'
 
     def polars(self) -> pl.Expr:
-        lh = self.lh.polars()
+        lh = lh_polars(self.lh)
         start = self.start.polars()
         end = self.end.polars()
         
@@ -882,7 +894,7 @@ class Regex(Logic):
     def polars(self) -> pl.Expr:
         import polars as pl
 
-        lh = self.lh.polars()
+        lh = lh_polars(self.lh)
         rh = self.rh.str()
 
         if self.i:

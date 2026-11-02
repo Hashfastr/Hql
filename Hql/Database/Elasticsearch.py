@@ -6,7 +6,7 @@ from Hql.Data import Schema, Data, Table
 from Hql.Types.Elasticsearch import ESTypes
 from Hql.Compiler import LuceneCompiler, QueryDSLCompiler
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Any
 import json
 import logging
 
@@ -77,6 +77,20 @@ class Elasticsearch(Database):
             retry_on_timeout=True,
             max_retries=3
         )
+
+    def __deepcopy__(self, memo:dict[int, Any]) -> Elasticsearch:
+        """Copy query state while sharing the ES client and its internal locks."""
+        from copy import deepcopy
+
+        copied = self.__class__.__new__(self.__class__)
+        memo[id(self)] = copied
+        for key, value in vars(self).items():
+            setattr(
+                copied,
+                key,
+                value if key == 'client' else deepcopy(value, memo),
+            )
+        return copied
 
     def __str__(self) -> str:
         return f'{self.type} - {self.name}'
@@ -170,7 +184,7 @@ class Elasticsearch(Database):
             self.query, ops = self.compile()
             data = self.make_query()
             # Run extra ops from prepend
-            for op in ops:
+            for op in ops or []:
                 ctx.data = data
                 data = op.eval(ctx)
             return data

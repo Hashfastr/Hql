@@ -109,6 +109,27 @@ class TestSubstring:
         )
         assert s.deparse() == "f contains_all ('a', 'b')"
 
+    @pytest.mark.parametrize("flag", ["endswith", "startswith"])
+    def test_deparse_prefix_list_roundtrips(self, flag):
+        from Hql.Parser import Parser
+
+        s = Substring(
+            NamedReference("f"),
+            [StringLiteral("a"), StringLiteral("b")],
+            **{flag: True},
+        )
+        text = s.deparse()
+        assert f"{flag}_any" not in text
+
+        parser = Parser(f"t | where {text}")
+        parser.assemble()
+        parsed = parser.assembly.statements[0].root.pipes[0].expr
+
+        # BinaryLogic doesn't preserve order
+        assert isinstance(parsed, BinaryLogic)
+        assert not parsed.logic_and
+        assert set(parsed.exprs) == set(s.expand_rh().exprs)
+
     def test_equality_same(self):
         left = Substring(NamedReference("f"), [StringLiteral("x")])
         right = Substring(NamedReference("f"), [StringLiteral("x")])

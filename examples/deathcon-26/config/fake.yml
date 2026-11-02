@@ -1,0 +1,15 @@
+# Offline stand-ins for elastic/splunk. local-base is relative to the CWD
+# (repo root for the CLI); the notebook overrides it with an absolute path.
+config:
+  - database:
+      name: fake-elastic
+      type: JSON
+      timeseries: false
+      conf:
+        local-base: examples/deathcon-26/data
+  - database:
+      name: fake-splunk
+      type: JSON
+      timeseries: false
+      conf:
+        local-base: examples/deathcon-26/data

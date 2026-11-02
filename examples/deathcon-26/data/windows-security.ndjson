@@ -1,0 +1,7 @@
+{"_time": "2026-10-30T09:15:30Z", "host": "DC01", "EventCode": 4769, "Account_Name": "alice@CORP.LOCAL", "Service_Name": "svc_sql", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x0", "Client_Address": "10.13.37.21"}
+{"_time": "2026-10-30T09:15:31Z", "host": "DC01", "EventCode": 4769, "Account_Name": "alice@CORP.LOCAL", "Service_Name": "svc_backup", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x0", "Client_Address": "10.13.37.21"}
+{"_time": "2026-10-30T09:15:31Z", "host": "DC01", "EventCode": 4769, "Account_Name": "alice@CORP.LOCAL", "Service_Name": "svc_web", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x0", "Client_Address": "10.13.37.21"}
+{"_time": "2026-10-30T09:15:32Z", "host": "DC01", "EventCode": 4769, "Account_Name": "WS-ALICE$@CORP.LOCAL", "Service_Name": "krbtgt", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x0", "Client_Address": "10.13.37.21"}
+{"_time": "2026-10-30T10:06:00Z", "host": "DC01", "EventCode": 4769, "Account_Name": "bob@CORP.LOCAL", "Service_Name": "svc_sql", "Ticket_Encryption_Type": "0x12", "Failure_Code": "0x0", "Client_Address": "10.13.37.42"}
+{"_time": "2026-10-30T10:06:05Z", "host": "DC01", "EventCode": 4769, "Account_Name": "bob@CORP.LOCAL", "Service_Name": "svc_web", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x0", "Client_Address": "10.13.37.42"}
+{"_time": "2026-10-30T10:07:00Z", "host": "DC01", "EventCode": 4769, "Account_Name": "bob@CORP.LOCAL", "Service_Name": "svc_sql", "Ticket_Encryption_Type": "0x17", "Failure_Code": "0x1b", "Client_Address": "10.13.37.42"}

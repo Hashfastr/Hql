@@ -373,6 +373,45 @@ class TestClass:
         assert rows(conf, text, 'o.json') == [{'Count': 1}]
 
 
+NESTED = [
+    {'host': {'name': 'A', 'n': 1}, 'b': 'Hello World'},
+    {'host': {'name': 'Bob', 'n': 5}, 'b': 'goodbye'},
+]
+
+
+class TestNestedPath:
+    @pytest.fixture(autouse=True)
+    def nested(self, conf, tmp_path):
+        (tmp_path / 'n.json').write_text(json.dumps(NESTED))
+
+    def names(self, conf, pred):
+        out = rows(conf, f"database('json').file('n.json') | where {pred}", 'n.json')
+        return [x['host']['name'] for x in out]
+
+    @pytest.mark.parametrize('pred, expected', [
+        ('host.name == "A"', ['A']),
+        ('host.name =~ "a"', ['A']),
+        ('host.name contains "o"', ['Bob']),
+        ('host.name endswith "ob"', ['Bob']),
+        ('host.name startswith "b"', ['Bob']),
+        ('host.n > 2', ['Bob']),
+        ('host.n between (0 .. 2)', ['A']),
+        ('host.name matches regex "^B"', ['Bob']),
+        ('host.name in ("A")', ['A']),
+    ])
+    def test_predicate(self, conf, pred, expected):
+        assert self.names(conf, pred) == expected
+
+    @pytest.mark.parametrize('pred, expected', [
+        ('b contains_any ("World")', ['A']),
+        ('b contains_any ("World", "bye")', ['A', 'Bob']),
+        ('b contains_all ("World", "Hello")', ['A']),
+        ('b contains_all ("World", "bye")', []),
+    ])
+    def test_contains_list(self, conf, pred, expected):
+        assert self.names(conf, pred) == expected
+
+
 class TestSource:
     WINDOWS = (
         f"class windows = {{ let process_creation = {T} | where a > 1; let network = {T} | where a == 1; "

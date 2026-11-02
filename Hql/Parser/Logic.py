@@ -156,7 +156,7 @@ class Logic(HqlVisitor):
         for i in ctx.Expressions:
             rh.append(self.visit(i))
 
-        if 'in' in op:
+        if op in ('in', '!in', 'in~', '!in~'):
             return Equality(lh, rh, cs='~' not in op, neq='!' in op)
         
         return Substring(lh, rh, term='has' in op, logic_and='all' in op, cs='cs' in op)

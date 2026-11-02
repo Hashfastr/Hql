@@ -118,6 +118,41 @@ class TestUnary:
 
 
 # ---------------------------------------------------------------------------
+# List operators
+# ---------------------------------------------------------------------------
+
+class TestListOperators:
+    @pytest.mark.parametrize("op, logic_and, cs", [
+        ("contains_any", False, False),
+        ("contains_all", True, False),
+        ("contains_any_cs", False, True),
+        ("contains_all_cs", True, True),
+    ])
+    def test_contains_list_is_substring(self, op, logic_and, cs):
+        from Hql.Expressions.Logic import Substring
+
+        expr = first_pipe(f"t | where b {op} ('a', 'b')").expr
+        assert isinstance(expr, Substring)
+        assert expr.logic_and == logic_and
+        assert expr.cs == cs
+        assert not expr.term
+
+    @pytest.mark.parametrize("op, cs, neq", [
+        ("in", True, False),
+        ("!in", True, True),
+        ("in~", False, False),
+        ("!in~", False, True),
+    ])
+    def test_in_is_equality(self, op, cs, neq):
+        from Hql.Expressions.Logic import Equality
+
+        expr = first_pipe(f"t | where b {op} ('a', 'b')").expr
+        assert isinstance(expr, Equality)
+        assert expr.cs == cs
+        assert expr.neq == neq
+
+
+# ---------------------------------------------------------------------------
 # mv-expand
 # ---------------------------------------------------------------------------
 

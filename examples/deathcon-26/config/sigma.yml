@@ -1,0 +1,4 @@
+# Prepended to every Sigma rule. logsource product/service/category resolve
+# against the classes this brings into scope (see maps/).
+sigma:
+  header: import maps.sources

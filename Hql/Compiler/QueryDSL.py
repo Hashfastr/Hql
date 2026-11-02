@@ -46,7 +46,7 @@ class QueryDSLCompiler(Compiler):
             return self.compile(Bool(True), prep=prep)
 
         if isinstance(src, Function):
-            return self.Function(src, prep=prep), None
+            return self.Function(src, prep=prep)
 
         return super().compile(src, prep=prep)
 
@@ -129,7 +129,9 @@ class QueryDSLCompiler(Compiler):
 
     def Not(self, expr: Logic.Not, prep: bool = True) -> tuple[object, object]:
         from Hql.Expressions.Logic import Not
-        from Hql.Expressions import Function
+        from Hql.Functions import Function
+        import Hql.Expressions.Logic as Logic
+        import Hql.Expressions.References as References
 
         if prep:
             if isinstance(expr.expr, Function):

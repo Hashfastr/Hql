@@ -1,0 +1,12 @@
+# Placeholder: compile-only until real values are filled in. Don't commit secrets.
+database:
+  name: elastic
+  type: Elasticsearch
+  timeseries: true
+  conf:
+    hosts:
+      - 'https://elastic.example.invalid:9200'
+    username: elastic
+    password: '<INJECT_ELASTIC_PASSWORD>'
+    compiler: lucene      # or dsl
+    verify_certs: true
