@@ -17,6 +17,7 @@ deathcon-26/
 │   ├── fake.yml             # fake-elastic, fake-splunk (JSON databases over data/)
 │   ├── elastic.yml          # live Elasticsearch placeholder
 │   ├── splunk.yml           # live Splunk placeholder
+│   ├── discord.yml          # discord() bot token placeholder
 │   └── maps/
 │       ├── fields.hql       # Sigma field names -> ECS / Splunk TA fields
 │       ├── fake.hql         # class windows -> fake databases
@@ -29,7 +30,8 @@ deathcon-26/
 └── hac/
     ├── kerberoasting.hql               # straight Sigma conversion
     ├── kerberoasting_threshold.hql     # adds the threshold the Sigma rule asks for
-    └── powershell_then_kerberoast.hql  # Elastic + Splunk join on client IP
+    ├── powershell_then_kerberoast.hql  # Elastic + Splunk join on client IP
+    └── kerberoasting_discord.hql       # threshold rule, posted to Discord as a table alert
 ```
 
 ## Running
@@ -61,6 +63,7 @@ The engine writes `<run_id>.log` files into `hac/` while detections run; they're
 ## Going live
 
 - Fill in `config/splunk.yml` (and `config/elastic.yml` if you have one). Config doesn't read env vars, so don't commit secrets; `git update-index --skip-worktree <file>` keeps local edits out of git.
+- For Discord alerts, put a bot token in `config/discord.yml` and set `default_server`/`default_channel` (or the `server`/`channel` arguments in `hac/kerberoasting_discord.hql`). The bot needs View Channel and Send Messages in that channel. Without a token, `discord()` skips posting.
 - Change `config/maps/sources.hql` to `import maps.live;`. To go live with only Splunk, change just the `security` line in `config/maps/fake.hql`.
 - Caveats:
   - In live mode the HaC time bound only applies to the first source compiled (bug workspace-vuc).

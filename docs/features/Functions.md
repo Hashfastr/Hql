@@ -46,6 +46,7 @@ Source functions can also be chained, as in `database('x').index('y')`.
 | `service(pattern, ...)` | | select configured services (HaC) |
 | **[Output](./Functions/Output.md)** | | |
 | `scot4(...)` | | publish detection results to a SCOT 4 server |
+| `discord(...)` | | post results to a Discord channel as a table alert |
 
 Function names are case sensitive.
 An unknown function name fails at compile time.
