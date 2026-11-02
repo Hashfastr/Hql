@@ -18,6 +18,7 @@ class Config():
             'categories': {},
             'functions': {},
             'sigma': {
+                'header': '',
                 'posthql': {}
             }
         }
@@ -183,6 +184,12 @@ class Config():
         self.conf['functions'][name] = config
 
     def load_sigma(self, src:str, config:dict):
+        header = config.get('header', '')
+        if header:
+            if self.conf['sigma']['header']:
+                raise hqle.ConfigException(f'Duplicate definition of sigma header in {src}')
+            self.conf['sigma']['header'] = header
+
         posthql = config.get('posthql', dict())
         default = ''
         for i in posthql:
@@ -212,6 +219,9 @@ class Config():
         if name in self.conf['products']:
             return self.conf['products'][name]
         raise hqle.ConfigException(f'Attempting to get undefined product {name}')
+
+    def get_sigma_header(self) -> str:
+        return self.conf['sigma']['header']
 
     def get_posthql(self, name:str) -> dict:
         if name in self.conf['sigma']['posthql']:

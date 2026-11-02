@@ -12,6 +12,7 @@ import logging
 if TYPE_CHECKING:
     from Hql.Functions import DotCompositeFunction, Function
     from Hql.Hac import Hac
+    from Hql.Query import Statement
 
 class SigmaParser():
     def __init__(self, txt:str, config:Config):
@@ -73,12 +74,41 @@ class SigmaParser():
                 raise hqle.ConfigException(f'Posthql definition does not compile to an empty piped operator')
             expr.pipes += asm.pipes
 
-        stmts = []
+        stmts = self.gen_header()
         # for i in condition.selections:
         #     stmts.append(i.gen_let())
 
         stmts += [QueryStatement(expr)]
         self.assembly = Query(stmts)
+
+    '''
+    Statements from the configured sigma header, prepended to every rule
+    Used to bring the classes the logsource resolves against into scope
+
+    sigma:
+      header: |
+        import newmaps.windows
+    '''
+    def gen_header(self) -> list[Statement]:
+        from Hql.Parser import Parser as HqlParser
+        from Hql.Query import Query, QueryStatement
+
+        header = self.config.get_sigma_header()
+        if not header:
+            return []
+
+        parser = HqlParser(header, 'SigmaHeader', paths=self.config.get_import_paths())
+        parser.assemble(target='top')
+        asm = parser.assembly
+
+        if not isinstance(asm, Query):
+            raise hqle.ConfigException(f'Sigma header does not compile to a query, got {type(asm)}')
+
+        for i in asm.statements:
+            if isinstance(i, QueryStatement):
+                raise hqle.ConfigException('Sigma header has a query statement, it can only hold declarations')
+
+        return asm.statements
 
     def gen_src(self, src:dict) -> Union[DotCompositeFunction, Function]:
         from Hql.Expressions.Functions import FuncExpr

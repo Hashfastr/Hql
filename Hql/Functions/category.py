@@ -25,10 +25,7 @@ class category(Function):
         from Hql.Hac.Sources import Source
         from Hql.Expressions.Literals import StringLiteral
 
-        src = receiver
-        if not src:
-            src = Source(ctx)
-            src.product('*')
+        src = receiver if receiver else Source(ctx)
 
         if not isinstance(src, Source):
             raise hqle.CompilerException(f'Expected Source got {type(src)} for category preprocess')
@@ -39,8 +36,6 @@ class category(Function):
             if not isinstance(arg, StringLiteral):
                 raise hqle.QueryException(f"Invalid argument type passed to function category {type(i)} eval'd to {type(arg)}")
 
-            matched = src.category(arg.str())
-            if not matched:
-                src.category_standalone(arg.str())
+            src.category(arg.str())
 
         return src

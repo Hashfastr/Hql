@@ -1,256 +1,146 @@
 from __future__ import annotations
-from Hql.Parser import Parser
+from fnmatch import fnmatch
 from Hql.Exceptions import HqlExceptions as hqle
-from Hql.Query import Query, QueryStatement
-from Hql.Expressions import PipeExpression
-import logging
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from Hql.Compiler.InstructionSet import InstructionSet
-    from Hql.Expressions.References import Reference
-    from Hql.Expressions.Functions import Function, DotCompositeFunction
     from Hql.Context import Context
 
+'''
+Resolves product/service/category selections against the classes in scope
+
+class windows = {
+    let process_creation = Sysmon
+    | where EventID == 1
+    ;
+};
+product('windows').category('process_creation')
+
+Resolves to windows.process_creation. The selections are walked as nested
+class members in the order product.service.category, unselected parts are
+skipped. Without a product every class in scope is searched.
+'''
 class Source():
     def __init__(self, ctx:Context) -> None:
         self.ctx = ctx
-        self.products:list[Product] = []
-        self.conf:dict = self.ctx.config.conf['products']
+        self.products:list[str] = []
+        self.services:list[str] = []
+        self.categories:list[str] = []
 
-    def preprocess(self, ctx:Context) -> Union[InstructionSet, Reference, Function, DotCompositeFunction]:
+    def preprocess(self, ctx:Context) -> InstructionSet:
         from Hql.Compiler import InstructionSet
 
         isets = []
-        for i in self.products:
-            iset = i.preprocess(ctx)
-            if iset.is_empty():
-                continue
-            isets.append(iset)
+        for i in self.gen_products(ctx):
+            if self.services:
+                i.service(self.services)
+            if self.categories:
+                i.category(self.categories)
+            isets += i.preprocess()
+
+        # A category on its own falls back to a top level let of the same name
+        if not isets and self.categories and not self.products and not self.services:
+            for name, value in ctx.symbol_table.items():
+                iset = Product.tabular(value)
+                if iset and any(fnmatch(self.symbol_name(name), x) for x in self.categories):
+                    isets.append(iset)
 
         if not isets:
-            raise hqle.QueryException('No sources resolved from product/category/service config')
+            raise hqle.QueryException(f'No source resolved for {self.deparse_path()}')
 
         if len(isets) == 1:
             return isets[0]
 
         return InstructionSet(isets)
 
-    def product(self, pattern:str):
-        from fnmatch import fnmatch
-        for i in self.conf:
-            if not fnmatch(i, pattern):
+    def gen_products(self, ctx:Context) -> list[Product]:
+        patterns = self.products if self.products else ['*']
+
+        products = []
+        for name, value in ctx.symbol_table.items():
+            # classes are stored as a dict namespace of their members
+            if not isinstance(value, dict):
                 continue
 
-            for j in self.conf[i]['upstream']:
-                self.products.append(Product(i, j, self.ctx))
+            name = self.symbol_name(name)
+            if any(fnmatch(name, x) for x in patterns):
+                products.append(Product(name, value, ctx))
+        return products
+
+    @staticmethod
+    def symbol_name(key:object) -> str:
+        from Hql.Expressions.References import NamedReference
+        return key.name if isinstance(key, NamedReference) else str(key)
+
+    def deparse_path(self) -> str:
+        parts = []
+        for i in (self.products if self.products else ['*'], self.services, self.categories):
+            if not i:
+                continue
+            parts.append(i[0] if len(i) == 1 else '(' + ', '.join(i) + ')')
+        return '.'.join(parts)
+
+    def product(self, pattern:str) -> Source:
+        self.products.append(pattern)
         return self
 
-    def service(self, pattern:str):
-        for i in self.products:
-            i.service(pattern)
+    def service(self, pattern:str) -> Source:
+        self.services.append(pattern)
         return self
 
-    def category(self, pattern:str) -> int:
-        matched = 0
-        for i in self.products:
-            matched += i.category(pattern)
-        return matched
-
-    def category_standalone(self, name:str):
-        cat_conf = self.ctx.config.get_category(name)
-        if not cat_conf:
-            raise hqle.QueryException(f'Category {name} not found in any product or standalone config')
-        self.products.append(Product(name, cat_conf, self.ctx))
-
-class Splits():
-    def __init__(self):
-        self.parent:list[HaCStatement] = []
-        self.cur:list[HaCStatement] = []
-
-    def add_level(self):
-        # create new list for this
-        self.parent = [x for x in self.cur]
-        self.cur = []
-
-    def add_query(self, query:Query):
-        from copy import deepcopy
-
-        if not self.parent:
-            new = HaCStatement()
-            new.add_query(query)
-            self.cur.append(new)
-            return
-
-        for i in self.parent:
-            new = deepcopy(i)
-            new.add_query(query)
-            self.cur.append(new)
-
-    def add_pipes(self, pipes:PipeExpression):
-        from copy import deepcopy
-
-        if not self.parent:
-            raise hqle.ConfigException('Attempting to add pipes without parent')
-
-        for i in self.parent:
-            new = deepcopy(i)
-            new.add_pipes(pipes)
-            self.cur.append(new)
-
-class HaCStatement():
-    def __init__(self):
-        # all statements pre the root query
-        self.pre = []
-        self.query:Optional[PipeExpression] = None
-        # all statements after
-        # self.post = []
-
-    def add_query(self, query:Query):
-        for idx, i in enumerate(query.statements):
-            if isinstance(i, QueryStatement):
-                # This might be super wrong, trying to be as generic as possible
-                # Right now trashing statements after the main statement as they're irrelevant
-                self.pre += query.statements[0:idx]
-                self.add_pipes(i.root)
-                # self.post = query.statements[idx+1:]
-                break
- 
-        if not self.query:
-            self.pre = query.statements
-        
-    def add_pipes(self, pipes:PipeExpression):
-        if self.query:
-            if pipes.prepipe:
-                raise hqle.ConfigException('Attempting to override prepipe tabular expression with HaC')
-            else:
-                self.query.pipes += pipes.pipes
-        elif pipes.prepipe:
-            self.query = pipes
-        else:
-            raise hqle.ConfigException('Attempting to add empty pipes to empty query with HaC')
+    def category(self, pattern:str) -> Source:
+        self.categories.append(pattern)
+        return self
 
 class Product():
-    def __init__(self, name:str, conf:dict, ctx:Context) -> None:
+    def __init__(self, name:str, namespace:dict, ctx:Context) -> None:
         self.name = name
         self.ctx = ctx
-        self.conf = conf
-        self.services = self.conf.get('services', dict())
-        self.set_services = False
-        self.categories = self.conf.get('categories', dict())
-        self.set_categories = False
-        self.splits = Splits()
-        
-        parser = Parser(self.conf['hql'])
-        try:
-            parser.assemble(target='top')
-        except:
-            logging.critical(f'Failed to parse Hql for product {name}')
+        # Current selection of class members, keyed by their dotted path
+        self.nodes:dict[str, object] = {name: namespace}
 
-        if not parser.assembly:
-            raise hqle.ConfigException(f'Invalid Hql definition in category {name}')
-
-        if not isinstance(parser.assembly, Query):
-            raise hqle.ConfigException(f'Invalid product Hql type {type(self.product)}')
-        self.product:Query = parser.assembly
-
-        self.selection = {
-            'services': [],
-            'categories': []
-        }
-
-    def parse_service(self, name:str, text:str):
-        parser = Parser(text)
-        try:
-            parser.assemble(targets=['top', 'emptyPipedExpression'])
-        except:
-            logging.critical(f'Failed to parse Hql in service {name}')
-
-        if not parser.assembly:
-            raise hqle.ConfigException(f'Invalid Hql definition in service {name}')
-
-        return parser.assembly
-
-    def parse_category(self, name:str, text:str):
-        parser = Parser(text)
-        try:
-            parser.assemble(targets=['top', 'emptyPipedExpression'])
-        except:
-            logging.critical(f'Failed to parse Hql in category {name}')
-
-        if not parser.assembly:
-            raise hqle.ConfigException(f'Invalid Hql definition in category {name}')
-
-        return parser.assembly
-
-    def integrate(self, expr:Union[Query, PipeExpression]):
-        if isinstance(expr, Query):
-            self.splits.add_query(expr)
-        else:
-            self.splits.add_pipes(expr)
-
-    def preprocess(self, ctx:Context) -> InstructionSet:
-        from Hql.Query import Query, QueryStatement
-        from Hql.Compiler import InstructionSet, HqlCompiler
-
-        self.splits.add_query(self.product)
-        self.splits.add_level()
-
-        if not self.selection['services'] and not self.selection['categories']:
-            if self.set_services:
-                return InstructionSet([])
-            if self.services:
-                self.service('*')
-
-        for i in self.selection['services']:
-            self.integrate(i)
-
-        if self.selection['services']:
-            self.splits.add_level()
-
-        for i in self.selection['categories']:
-            self.integrate(i)
-
+    def preprocess(self) -> list[InstructionSet]:
         isets = []
-        for i in self.splits.cur:
-            if not i.query:
+        for i in self.nodes.values():
+            # A class left unnarrowed selects all its tabular members
+            if isinstance(i, dict):
+                members = [i[x] for x in i if not x.startswith('_')]
+            else:
+                members = [i]
+
+            for j in members:
+                iset = self.tabular(j)
+                if iset:
+                    isets.append(iset)
+        return isets
+
+    @staticmethod
+    def tabular(node:object) -> Optional[InstructionSet]:
+        from Hql.Compiler import InstructionSet
+        from Hql.Database import Database
+
+        if isinstance(node, InstructionSet):
+            return node
+        if isinstance(node, Database):
+            return InstructionSet(node, node.preamble.pipes)
+        return None
+
+    def narrow(self, patterns:list[str]) -> Product:
+        nodes = {}
+        for path, node in self.nodes.items():
+            if not isinstance(node, dict):
                 continue
 
-            query = Query(i.pre + [QueryStatement(i.query)])
-            iset = HqlCompiler(self.ctx.config, query).root
-            isets.append(iset)
+            for i in node:
+                if any(fnmatch(i, x) for x in patterns):
+                    nodes[f'{path}.{i}'] = node[i]
 
-        return InstructionSet(isets)
-
-    def service(self, pat:str) -> Product:
-        from fnmatch import fnmatch
-        self.set_services = True
-
-        services = []
-        for i in self.services:
-            if not fnmatch(i, pat):
-                continue
-
-            hql = self.services[i]['hql']
-            services.append(self.parse_service(i, hql))
-
-        if not services:
-            raise hqle.QueryException(f'Invalid service: {pat}')
-        self.selection['services'] += services
-
+        self.nodes = nodes
         return self
 
-    def category(self, pat:str) -> int:
-        from fnmatch import fnmatch
-        self.set_categories = True
+    def service(self, patterns:list[str]) -> Product:
+        return self.narrow(patterns)
 
-        categories = []
-        for i in self.categories:
-            if not fnmatch(i, pat):
-                continue
-
-            hql = self.categories[i]['hql']
-            categories.append(self.parse_category(i, hql))
-
-        self.selection['categories'] += categories
-        return len(categories)
+    def category(self, patterns:list[str]) -> Product:
+        return self.narrow(patterns)

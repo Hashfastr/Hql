@@ -15,7 +15,7 @@ class TestConfigInit:
             "functions",
             "sigma",
         }
-        assert c.conf["sigma"] == {"posthql": {}}
+        assert c.conf["sigma"] == {"header": "", "posthql": {}}
 
 
 class TestAddDatabase:
@@ -106,6 +106,22 @@ class TestGetPosthql:
         c = Config()
         with pytest.raises(hqle.ConfigException):
             c.get_posthql("nope")
+
+
+class TestSigmaHeader:
+    def test_default_empty(self):
+        assert Config().get_sigma_header() == ""
+
+    def test_loads_header(self):
+        c = Config()
+        c.load_sigma("src.yaml", {"header": "import maps.windows"})
+        assert c.get_sigma_header() == "import maps.windows"
+
+    def test_duplicate_raises(self):
+        c = Config()
+        c.load_sigma("a.yaml", {"header": "import maps.windows"})
+        with pytest.raises(hqle.ConfigException):
+            c.load_sigma("b.yaml", {"header": "import maps.linux"})
 
 
 class TestGetProduct:

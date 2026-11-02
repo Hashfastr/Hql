@@ -82,19 +82,43 @@ database('json').macro('network')
 
 ## product(), category(), service()
 These select data sources by **what they are** rather than by where they live.
-They are used for Hql-as-Code (HaC) detections.
-They resolve against the `products` and `categories` sections of the config: each product lists upstream Hql source queries, and those can be narrowed down further by category and service.
-
-- `product(pattern, ...)` selects the products whose names match the glob patterns.
-- `category(pattern, ...)` narrows the selection to matching categories.
-  Used on its own, it starts from every product (`*`).
-  When no product category matches, it falls back to a standalone category defined in the config.
-- `service(pattern, ...)` narrows the selection to matching services.
-  Used on its own, it starts from every product.
+They are used for Hql-as-Code (HaC) detections and Sigma logsources.
+They resolve against the classes in scope when the query compiles: a product is a class, and services and categories are its members.
 
 ```
+class windows = {
+    let process_creation = database('elastic').index('so-beats-*')
+    | where EventID == 1
+    ;
+};
 product('windows').category('process_creation')
 | where CommandLine has "powershell"
 ```
 
-If nothing resolves, the query fails with `No sources resolved from product/category/service config`.
+The selection is walked as a nested class path in the order `product.service.category`, skipping any part that isn't given:
+
+| Selection | Resolves to |
+| --- | --- |
+| `product('windows').category('process_creation')` | `windows.process_creation` |
+| `product('windows').service('security')` | `windows.security` |
+| `product('windows').service('sysmon').category('process_creation')` | `windows.sysmon.process_creation` |
+| `product('windows')` | every tabular member of `windows` |
+| `category('process_creation')` | `process_creation` in every class, or a top-level `let process_creation` if no class has it |
+
+- Every argument is a glob pattern, and several arguments or calls at the same level are combined.
+- When a selection ends on a class rather than a let, all of that class's tabular members are used. Members starting with `_` (helpers like `_base`) are skipped.
+- When several members match, the results are combined as separate upstream sources.
+
+If nothing resolves, the query fails with `No source resolved for <path>`, e.g. `No source resolved for windows.process_creation`.
+
+### Sigma header
+Sigma rules carry no Hql of their own, so the classes their logsource resolves against are brought in by a header in the config.
+The header is Hql with only declarations (imports, classes, lets, maps), and it is prepended to every Sigma rule:
+
+```yaml
+sigma:
+  header: |
+    import newmaps.windows
+```
+
+Imports are resolved against the config directory.

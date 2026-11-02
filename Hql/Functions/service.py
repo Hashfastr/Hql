@@ -23,10 +23,10 @@ class service(Function):
         from Hql.Hac.Sources import Source
         from Hql.Expressions.Literals import StringLiteral
         
-        src = receiver
-        if not src:
-            src = Source(ctx)
-            src.product('*')
+        src = receiver if receiver else Source(ctx)
+
+        if not isinstance(src, Source):
+            raise hqle.CompilerException(f'Expected Source got {type(src)} for service preprocess')
 
         for i in self.names:
             name = i.preprocess(ctx)

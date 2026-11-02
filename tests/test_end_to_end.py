@@ -373,6 +373,108 @@ class TestClass:
         assert rows(conf, text, 'o.json') == [{'Count': 1}]
 
 
+class TestSource:
+    WINDOWS = (
+        f"class windows = {{ let process_creation = {T} | where a > 1; let network = {T} | where a == 1; "
+        f"let _base = {T}; let min = 2; class sysmon = {{ let process_creation = {T} | where a == 3 }} }}; "
+    )
+    LINUX = f"class linux = {{ let process_creation = {T} | where a == 1 }}; "
+
+    def test_product_category(self, conf):
+        text = self.WINDOWS + "product('windows').category('process_creation') | count"
+        assert rows(conf, text) == [{'Count': 2}]
+
+    def test_category_before_product(self, conf):
+        text = self.WINDOWS + "category('process_creation').product('windows') | count"
+        assert rows(conf, text) == [{'Count': 2}]
+
+    def test_product_service(self, conf):
+        text = self.WINDOWS + "product('windows').service('network') | count"
+        assert rows(conf, text) == [{'Count': 1}]
+
+    def test_product_service_category_nested(self, conf):
+        text = self.WINDOWS + "product('windows').service('sysmon').category('process_creation') | count"
+        assert rows(conf, text) == [{'Count': 1}]
+
+    def test_category_unions_classes(self, conf):
+        text = self.WINDOWS + self.LINUX + "category('process_creation') | count"
+        assert sorted(x['Count'] for x in query(conf, text)['t.json'].to_dicts()) == [1, 2]
+
+    def test_category_falls_back_to_let(self, conf):
+        text = f"let proxy = {T} | where a == 3; category('proxy') | count"
+        assert rows(conf, text) == [{'Count': 1}]
+
+    def test_product_selects_public_tabular_members(self, conf):
+        text = self.WINDOWS + "product('windows') | count"
+        # process_creation and network, not _base, the scalar or the nested class
+        assert sorted(x['Count'] for x in query(conf, text)['t.json'].to_dicts()) == [1, 2]
+
+    def test_glob_patterns(self, conf):
+        text = self.WINDOWS + "product('win*').category('process_*') | count"
+        assert rows(conf, text) == [{'Count': 2}]
+
+    def test_missing_member_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.QueryException, match='windows.file_event'):
+            query(conf, self.WINDOWS + "product('windows').category('file_event') | count")
+
+    def test_missing_class_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.QueryException):
+            query(conf, "product('windows').category('process_creation') | count")
+
+
+class TestSigmaHeader:
+    RULE = '\n'.join([
+        'title: test',
+        'status: test',
+        'logsource:',
+        '    category: process_creation',
+        '    product: windows',
+        'detection:',
+        '    sel:',
+        '        b: y',
+        '    condition: sel',
+    ])
+
+    def compile(self, conf):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Parser.Sigma import SigmaParser
+
+        parser = SigmaParser(self.RULE, conf)
+        parser.assemble()
+        return HqlCompiler(conf, parser.assembly)
+
+    def test_header_class_resolves_logsource(self, conf):
+        conf.load_sigma('test', {'header': f'class windows = {{ let process_creation = {T} | where a > 1 }}'})
+        out = self.compile(conf).run().data
+        assert [x['a'] for x in out['t.json'].to_dicts()] == [3]
+
+    def test_header_import(self, tmp_path):
+        conf_dir = tmp_path / 'conf'
+        (conf_dir / 'maps').mkdir(parents=True)
+        (conf_dir / 'maps' / 'windows.hql').write_text(f'class windows = {{ let process_creation = {T} }}')
+        (tmp_path / 't.json').write_text(json.dumps(ROWS))
+
+        config = Config(conf_dir)
+        config.add_database('test', {'name': 'json', 'type': 'JSON', 'conf': {'local-base': str(tmp_path)}})
+        config.load_sigma('test', {'header': 'import maps.windows'})
+
+        out = self.compile(config).run().data
+        assert [x['a'] for x in out['t.json'].to_dicts()] == [3]
+
+    def test_missing_header_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.QueryException, match='windows.process_creation'):
+            self.compile(conf)
+
+    def test_header_query_statement_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        conf.load_sigma('test', {'header': T})
+        with pytest.raises(hqle.ConfigException):
+            self.compile(conf)
+
+
 class TestYamlLikeHql:
     # A single ': ' makes this a valid yaml mapping, it still has to run as Hql
     TEXT = f'map m = {{ x: a }}; {T} | count'
