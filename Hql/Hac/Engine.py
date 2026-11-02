@@ -438,7 +438,7 @@ class HacEngine():
                 continue
             last = cur.minute
 
-            logging.info(self.pool.ctx.cache.get_size())
+            # logging.info(self.pool.ctx.cache.get_size())
 
             for i in self.detections:
                 det = self.detections[i]
