@@ -1,1 +1,4 @@
 __marimo__
+
+# run logs the HaC engine writes next to its detections
+hac/*.log

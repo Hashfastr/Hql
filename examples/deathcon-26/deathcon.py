@@ -9,18 +9,25 @@ def _():
     import marimo as mo
     import json
     import logging
+    import socket
+    import sys
+    import threading
+    import time
+    import uvicorn
+    import webbrowser
     from pathlib import Path
 
     from Hql.Config import Config
     from Hql.Compiler import HqlCompiler, LuceneCompiler, QueryDSLCompiler, KQLCompiler, SPLCompiler
     from Hql.Parser.Sigma import SigmaParser
     from Hql.Helpers import run_query
-    from Hql.Hac.Engine import Detection
+    from Hql.Hac.Engine import Detection, HacEngine
 
     logging.getLogger().setLevel(logging.WARNING)
     return (
         Config,
         Detection,
+        HacEngine,
         HqlCompiler,
         KQLCompiler,
         LuceneCompiler,
@@ -31,6 +38,12 @@ def _():
         json,
         mo,
         run_query,
+        socket,
+        sys,
+        threading,
+        time,
+        uvicorn,
+        webbrowser,
     )
 
 
@@ -291,6 +304,76 @@ def _(Detection, HAC, code, conf, mo, show):
             show(_detection.run().data),
         ])
     mo.ui.tabs(_tabs)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### The HaC engine
+
+    The engine loads every detection in `hac/`, fires each on its `@schedule`,
+    and serves a web UI for managing, running and viewing them.
+    Each detection runs once on start so the UI has results right away.
+
+    The web UI needs free-threaded Python (`3.14t`) and a built `Hql-Interface/dist`.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    start_engine = mo.ui.run_button(label="Start the HaC engine")
+    start_engine
+    return (start_engine,)
+
+
+@app.cell
+def _(
+    CONFIG,
+    HAC,
+    HacEngine,
+    load_config,
+    mo,
+    socket,
+    start_engine,
+    sys,
+    threading,
+    time,
+    uvicorn,
+    webbrowser,
+):
+    mo.stop(not start_engine.value)
+
+    class DemoEngine(HacEngine):
+        def load_conf(self):
+            return load_config()  # fake databases pinned to data/
+
+    engine = DemoEngine(HAC, True, CONFIG)
+    mo.stop(
+        engine.apiserver is None,
+        mo.md("The web UI needs free-threaded Python (`3.14t`).").callout(kind="warn"),
+    )
+
+    # the web server logs from its own thread, which marimo can't capture: send it to the terminal
+    for _handler in uvicorn.config.LOGGING_CONFIG["handlers"].values():
+        _handler["stream"] = sys.__stderr__
+
+    for _detection in engine.detections.values():
+        engine.run_detection(_detection)
+    threading.Thread(target=engine.run, daemon=True).start()
+
+    # wait up to 5s for the server to accept connections, then open the UI in a new tab
+    _url = f"http://localhost:{engine.apiserver.port}"
+    for _ in range(50):
+        try:
+            socket.create_connection(("localhost", engine.apiserver.port), timeout=0.1).close()
+            break
+        except OSError:
+            time.sleep(0.1)
+    webbrowser.open_new_tab(_url)
+
+    mo.md(f"HaC engine running {len(engine.detections)} detections from `hac/`: [{_url}]({_url})")
     return
 
 

@@ -5,7 +5,7 @@ A marimo notebook in four sections, all running offline against fake JSON databa
 1. **Raw compile**: a Sigma rule compiled to Lucene, Elastic DSL, KQL and SPL with no config or database.
 2. **Sigma source config**: one Sigma header maps `logsource` to Elastic (process creation) and Splunk (security log), with field mapping.
 3. **Direct querying**: run Sigma rules and Hql against those sources.
-4. **HaC**: Hql as Code, Sigma converted and then extended past what Sigma can express (thresholds, cross-database joins).
+4. **HaC**: Hql as Code, Sigma converted and then extended past what Sigma can express (thresholds, cross-database joins). Ends by starting the HaC engine and its web UI on http://localhost:8080.
 
 ## Layout
 
@@ -49,6 +49,14 @@ uv run python -m Hql -c examples/deathcon-26/config -f examples/deathcon-26/rule
 ```
 
 Add `-nx` to compile only, or `-dpar` to print the deparsed Hql.
+
+HaC engine and web UI, same as the notebook's last cell (needs free-threaded Python `3.14t` and a built `Hql-Interface/dist`):
+
+```bash
+uv run python -m Hql -eng -d examples/deathcon-26/hac -c examples/deathcon-26/config
+```
+
+The engine writes `<run_id>.log` files into `hac/` while detections run; they're gitignored.
 
 ## Going live
 
