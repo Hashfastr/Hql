@@ -173,3 +173,38 @@ class TestStatic:
 
         result = compiler.run().data
         assert result["t"].to_dicts() == [{"a": 1, "b": 4}]
+
+
+# ---------------------------------------------------------------------------
+# Mappings
+# ---------------------------------------------------------------------------
+
+class TestMapping:
+    def test_map_statement(self):
+        from Hql.Query import Mapping
+
+        statements = parse("map ecs = { EventID: event.id, Host: (host.name, hostname) }; t | take 1").statements
+        mapping = statements[0]
+
+        assert isinstance(mapping, Mapping)
+        assert mapping.to_dict() == {
+            "type": "Mapping",
+            "name": "ecs",
+            "maps": {"EventID": ["event.id"], "Host": ["host.name", "hostname"]},
+        }
+
+    def test_map_statement_roundtrip(self):
+        text = "map ecs = { EventID: event.id, Host: (host.name, hostname) }"
+        assert parse(f"{text}; t").statements[0].deparse() == text
+
+    def test_map_operator(self):
+        from Hql.Operators.Map import Map
+        from Hql.Parser.grammar.HqlParser import HqlParser
+
+        if not hasattr(HqlParser, "MapOperatorContext"):
+            pytest.skip("Generated parser predates the map operator, regenerate from Hql.g4")
+
+        op = first_pipe("t | map ecs, other")
+        assert isinstance(op, Map)
+        assert op.names == [NamedReference("ecs"), NamedReference("other")]
+        assert op.deparse() == "map ecs, other"

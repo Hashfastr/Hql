@@ -222,6 +222,7 @@ class Path(Reference):
         return rec
 
     def eval(self, ctx: Context, unnest:bool=False) -> Context:
+        ctx = ctx.copy()
         if unnest:
             ctx.data = ctx.data.unnest(self)
         else:

@@ -464,3 +464,35 @@ class TestDeepcopy:
         c = deepcopy(u)
         assert c is not u
         assert c.deparse() == u.deparse()
+
+
+class TestMap:
+    def _ecs(self):
+        from Hql.Query import Mapping
+        mapping = Mapping(NamedReference("ecs"))
+        mapping.add(NamedReference("EventID"), NamedReference("event_id"))
+        return mapping
+
+    def test_accepts_single_or_list(self):
+        from Hql.Operators.Map import Map
+        assert len(Map(NamedReference("ecs")).maps) == 1
+        assert len(Map([NamedReference("ecs"), NamedReference("other")]).maps) == 2
+
+    def test_names_from_references_and_mappings(self):
+        from Hql.Operators.Map import Map
+        op = Map([NamedReference("other"), self._ecs()])
+        assert op.names == [NamedReference("other"), NamedReference("ecs")]
+
+    def test_deparse(self):
+        from Hql.Operators.Map import Map
+        assert Map([self._ecs(), NamedReference("other")]).deparse() == "map ecs, other"
+
+    def test_to_dict(self):
+        from Hql.Operators.Map import Map
+        d = Map(self._ecs()).to_dict()
+        assert d["type"] == "Map"
+        assert d["maps"] == ["ecs"]
+
+    def test_eval_passes_context_through(self, empty_ctx):
+        from Hql.Operators.Map import Map
+        assert Map(self._ecs()).eval(empty_ctx) is empty_ctx

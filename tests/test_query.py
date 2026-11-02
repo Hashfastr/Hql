@@ -1,6 +1,6 @@
 from Hql.Expressions import PipeExpression
-from Hql.Expressions.References import NamedReference
-from Hql.Query import LetStatement, Query, QueryStatement, Statement
+from Hql.Expressions.References import NamedReference, Path
+from Hql.Query import LetStatement, Mapping, Query, QueryStatement, Statement
 
 
 class TestStatement:
@@ -56,3 +56,57 @@ class TestQuery:
         q = Query([QueryStatement(PipeExpression([]))])
         # No let statements, no context, so just the one deparse
         assert q.deparse() == ""
+
+
+def ecs():
+    mapping = Mapping(NamedReference("ecs"))
+    mapping.add(NamedReference("EventID"), Path([NamedReference("event"), NamedReference("id")]))
+    mapping.add(NamedReference("Host"), [NamedReference("hostname"), Path([NamedReference("host"), NamedReference("name")])])
+    return mapping
+
+
+class TestMapping:
+    def test_type_marker(self):
+        assert ecs().type == "Mapping"
+
+    def test_iterates_sources(self):
+        assert list(ecs()) == [NamedReference("EventID"), NamedReference("Host")]
+
+    def test_add_ignores_duplicates(self):
+        mapping = ecs()
+        mapping.add(NamedReference("Host"), NamedReference("hostname"))
+        assert mapping[NamedReference("Host")] == [
+            NamedReference("hostname"),
+            Path([NamedReference("host"), NamedReference("name")]),
+        ]
+
+    def test_get_returns_copy(self):
+        mapping = ecs()
+        mapping.get(NamedReference("EventID")).append(NamedReference("x"))
+        assert len(mapping[NamedReference("EventID")]) == 1
+
+    def test_merge(self):
+        other = Mapping(NamedReference("other"))
+        other.add(NamedReference("EventID"), NamedReference("event_id"))
+        other.add(NamedReference("User"), NamedReference("user"))
+
+        mapping = ecs().merge(other)
+        assert mapping[NamedReference("EventID")] == [
+            Path([NamedReference("event"), NamedReference("id")]),
+            NamedReference("event_id"),
+        ]
+        assert NamedReference("User") in mapping
+
+    def test_to_dict_shape(self):
+        assert ecs().to_dict() == {
+            "type": "Mapping",
+            "name": "ecs",
+            "maps": {"EventID": ["event.id"], "Host": ["hostname", "host.name"]},
+        }
+
+    def test_deparse(self):
+        assert ecs().deparse() == "map ecs = { EventID: event.id, Host: (hostname, host.name) }"
+
+    def test_query_deparse_includes_mapping(self):
+        q = Query([ecs(), QueryStatement(PipeExpression([]))])
+        assert q.deparse().startswith("map ecs = {")

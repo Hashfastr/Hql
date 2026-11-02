@@ -119,19 +119,77 @@ class InstructionSet():
     def add_op(self, op:Union[BranchDescriptor, Operator]) -> tuple[Union[Operator, None], Union[Operator, None]]:
         from Hql.Compiler import BranchDescriptor
         from Hql.Operators import Map
+        from Hql.Query import Mapping
 
         if isinstance(op, BranchDescriptor):
             op = op.get_op()
 
+        # Map is a directive for the operators added after it, not an operation
         if isinstance(op, Map):
-            self.maps += op.maps
+            for i in op.maps:
+                if not isinstance(i, Mapping):
+                    raise hqle.CompilerException(f'InstructionSet given unresolved mapping {i.deparse()}')
+                if i not in self.maps:
+                    self.maps.append(i)
             return None, None
 
-        # apply maps here
         if self.maps:
-            self.ops.append(op)
+            op = self.map_op(op)
 
+        self.ops.append(op)
         return None, None
+
+    '''
+    Recompiles an operator with the mappings in the symbol table, renaming
+    the query's names to the data's names.
+
+    EventID == 4624 -> event.id == 4624
+    '''
+    def map_op(self, op:Operator) -> Operator:
+        from copy import deepcopy
+        from Hql.Compiler import HqlCompiler
+        from Hql.Config import Config
+
+        compiler = HqlCompiler(Config())
+
+        multi = []
+        for mapping in self.maps:
+            for src in mapping:
+                dests = mapping[src]
+                if len(dests) == 1:
+                    compiler.ctx.symbol_table[src] = dests[0]
+                else:
+                    multi.append(src)
+
+        # Copy as compilation can modify expressions in place
+        acc, _ = compiler.compile(deepcopy(op))
+
+        for i in multi:
+            if i in acc.references or i in acc.provides:
+                raise hqle.CompilerException(f'{i.deparse()} maps to multiple fields, not supported in {op.type} yet')
+
+        return acc.get_op()
+
+    '''
+    Appends a rename of the data's names back to the query's names, then
+    clears the mappings as the following operators see the query's names.
+
+    event.id -> EventID
+    '''
+    def unmap(self) -> None:
+        from Hql.Operators import ProjectRename
+        from Hql.Expressions.References import NamedExpression
+
+        exprs = []
+        for mapping in self.maps:
+            for src in mapping:
+                for dest in mapping[src]:
+                    exprs.append(NamedExpression([src], dest))
+
+        if exprs:
+            self.ops.append(ProjectRename(exprs))
+
+        self.maps = []
 
     def add_timebound(self, start:datetime.datetime, end:datetime.datetime) -> tuple[InstructionSet, None]:
         bounded = []

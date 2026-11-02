@@ -111,6 +111,16 @@ class TestPath:
         expected = pl.col("a").struct.field("b").struct.field("c")
         assert p.polars_value().meta.eq(expected)
 
+    def test_eval_leaves_given_context_intact(self):
+        from Hql.Data import Data, Table
+
+        table = Table(init_data=[{"a": {"b": 1}, "c": 2}], name="t")
+        ctx = Context(Data(tables=[table]))
+        Path([NamedReference("a"), NamedReference("b")]).eval(ctx)
+
+        # project a.b, c evaluates each against the same context
+        assert ctx.data["t"].to_dicts() == [{"a": {"b": 1}, "c": 2}]
+
     def test_preprocess_returns_self_when_symbol_missing(self, empty_ctx: Context):
         p = Path([NamedReference("missing"), NamedReference("x")])
         assert p.preprocess(empty_ctx) is p

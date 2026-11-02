@@ -162,3 +162,149 @@ class TestTake:
         from Hql.Exceptions import HqlExceptions as hqle
         with pytest.raises(hqle.CompilerException):
             query(conf, f'{T} | take -1')
+
+
+# ---------------------------------------------------------------------------
+# Mappings, the query uses EventID while the data has event.id
+# ---------------------------------------------------------------------------
+
+EVENTS = [
+    {'event': {'id': 4624, 'action': 'logon'}, 'host': 'h1'},
+    {'event': {'id': 4625, 'action': 'failed'}, 'host': 'h2'},
+    {'event': {'id': 4624, 'action': 'logon'}, 'host': 'h3'},
+]
+
+ECS = 'map ecs = { EventID: event.id, Action: event.action };'
+E = "database('json').file('e.json')"
+
+
+def map_op_parses():
+    from Hql.Parser.grammar.HqlParser import HqlParser
+    return hasattr(HqlParser, 'MapOperatorContext')
+
+
+def mapped(conf, pipes, maps=ECS, source=E, name='e.json'):
+    '''
+    Runs {maps} {source} | map ecs | {pipes}
+
+    Until the parser is regenerated with the map operator, the operator is
+    spliced into the parsed query instead.
+    '''
+    from Hql.Compiler import HqlCompiler
+    from Hql.Expressions.References import NamedReference
+    from Hql.Operators import Map
+    from Hql.Parser import Parser
+
+    if map_op_parses():
+        text = f'{maps} {source} | map ecs' + (f' | {pipes}' if pipes else '')
+        return query(conf, text)[name].to_dicts()
+
+    parser = Parser(f'{maps} {source}' + (f' | {pipes}' if pipes else ''))
+    parser.assemble()
+    parser.assembly.statements[-1].root.pipes.insert(0, Map([NamedReference('ecs')]))
+    return HqlCompiler(conf, parser.assembly).run().data[name].to_dicts()
+
+
+class TestMapping:
+    @pytest.fixture
+    def events(self, conf, tmp_path):
+        (tmp_path / 'e.json').write_text(json.dumps(EVENTS))
+        return conf
+
+    def test_results_use_mapped_names(self, events):
+        assert mapped(events, '') == [
+            {'EventID': 4624, 'Action': 'logon', 'host': 'h1'},
+            {'EventID': 4625, 'Action': 'failed', 'host': 'h2'},
+            {'EventID': 4624, 'Action': 'logon', 'host': 'h3'},
+        ]
+
+    def test_where_on_mapped_name(self, events):
+        out = mapped(events, 'where EventID == 4625')
+        assert [x['host'] for x in out] == ['h2']
+
+    def test_project_mapped_and_unmapped(self, events):
+        assert mapped(events, 'where EventID == 4625 | project EventID, host') == [{'EventID': 4625, 'host': 'h2'}]
+
+    def test_summarize_by_mapped_name(self, events):
+        out = mapped(events, 'summarize count() by Action')
+        assert sorted(x['Action'] for x in out) == ['failed', 'logon']
+
+    def test_sort_by_mapped_name(self, events):
+        out = mapped(events, 'sort by EventID desc | take 1')
+        assert out[0]['EventID'] == 4625
+
+    def test_extend_mapped_name(self, events):
+        out = mapped(events, 'extend EventID = EventID + 1')
+        assert [x['EventID'] for x in out] == [4625, 4626, 4625]
+
+    def test_undefined_mapping_raises(self, events):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            mapped(events, 'take 1', maps='')
+
+    def test_multi_destination_in_where_raises(self, events):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            mapped(events, 'where Host == "h1"', maps='map ecs = { Host: (host, hostname) };')
+
+    def test_operators_before_map_use_data_names(self, events):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Expressions.References import NamedReference
+        from Hql.Operators import Map
+        from Hql.Parser import Parser
+
+        parser = Parser(f'{ECS} {E} | where event.id == 4625 | project event.id, host')
+        parser.assemble()
+        parser.assembly.statements[-1].root.pipes.insert(1, Map([NamedReference('ecs')]))
+        out = HqlCompiler(events, parser.assembly).run().data['e.json'].to_dicts()
+
+        assert out == [{'EventID': 4625, 'host': 'h2'}]
+
+    def test_filter_after_mapped_let_is_remapped(self, events):
+        from Hql.Compiler import HqlCompiler
+        from Hql.Expressions.References import NamedReference
+        from Hql.Operators import Map
+        from Hql.Parser import Parser
+
+        parser = Parser(f'{ECS} let x = {E} | project EventID, host; x | where EventID == 4625')
+        parser.assemble()
+        parser.assembly.statements[1].root.pipes.insert(0, Map([NamedReference('ecs')]))
+        compiler = HqlCompiler(events, parser.assembly)
+
+        # The outer filter is moved up past the rename back, so it uses event.id
+        ops = [x.deparse() for x in compiler.root.ops]
+        assert ops[0] == 'where event.id == 4625'
+        assert ops[-1] == 'project-rename EventID=event.id, Action=event.action'
+        assert compiler.run().data['e.json'].to_dicts() == [{'EventID': 4625, 'host': 'h2'}]
+
+    def test_mapped_where_is_pushed_to_database(self):
+        from Hql.Compiler import BranchDescriptor, Compiler, HqlCompiler
+        from Hql.Config import Config
+        from Hql.Database.Database import Database
+        from Hql.Expressions.References import NamedReference
+        from Hql.Operators import Map, Where
+        from Hql.Parser import Parser
+
+        # Accepts filters like a backend would, rejects everything else
+        class WhereCompiler(Compiler):
+            def add_op(self, op):
+                if isinstance(op, BranchDescriptor):
+                    op = op.get_op()
+                if isinstance(op, Where):
+                    self.ops.append(op)
+                    return op, None
+                return None, op
+
+        db = Database({}, name='db')
+        db.compiler = WhereCompiler()
+
+        parser = Parser(f'{ECS} db | where EventID == 4624')
+        parser.assemble()
+        parser.assembly.statements[-1].root.pipes.insert(0, Map([NamedReference('ecs')]))
+
+        compiler = HqlCompiler(Config())
+        compiler.ctx.symbol_table[NamedReference('db')] = db
+        compiler.Query(parser.assembly)
+
+        assert [x.deparse() for x in db.compiler.ops] == ['where event.id == 4624']
+        assert [x.deparse() for x in compiler.root.ops] == ['project-rename EventID=event.id, Action=event.action']

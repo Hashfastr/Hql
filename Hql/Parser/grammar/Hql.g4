@@ -221,6 +221,7 @@ afterPipeOperator:
     | lookupOperator
     | makeGraphOperator
     | makeSeriesOperator
+    | mapOperator
     | mvexpandOperator
     | mvapplyOperator
     | evaluateOperator
@@ -656,6 +657,9 @@ reduceByOperator:
 
 reduceByWithClause:
     WITH Expressions+=namedExpression (',' Expressions+=namedExpression)*;
+
+mapOperator:
+    MAP Names+=simpleNameReference (',' Names+=simpleNameReference)*;
 
 renameOperator:
     RENAME Expressions+=renameToExpression (',' Expressions+=renameToExpression)*;

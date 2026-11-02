@@ -41,7 +41,10 @@ class Query():
         from Hql.Expressions import PipeExpression
 
         for i in self.statements[:]:
-            if isinstance(i, LetStatement):
+            if isinstance(i, Mapping):
+                self.ctx.symbol_table[i.name.name] = i
+
+            elif isinstance(i, LetStatement):
                 self.ctx.symbol_table[i.name.name] = i.root.preprocess(self.ctx)
 
             elif isinstance(i, QueryStatement):
@@ -140,6 +143,9 @@ class Query():
         for i in self.ctx.symbol_table:
             if isinstance(self.ctx.symbol_table[i], InstructionSet):
                 raise Exception('Attempting to deparse compiled Query')
+            if isinstance(self.ctx.symbol_table[i], Mapping):
+                statements.append(self.ctx.symbol_table[i])
+                continue
             statements.append(LetStatement(NamedReference(i), self.ctx.symbol_table[i]))
         statements += self.statements
 
@@ -285,8 +291,17 @@ class LetLogicStatement(LetStatement):
         ctx.symbol_table[name] = self.root
         return ctx
 
+'''
+Maps the names used in a query to the names used by the data
+
+map ecs = { EventID: event.id, Host: (host.name, hostname) }
+
+Applied with the map operator, query side EventID becomes event.id and
+results have event.id renamed back to EventID.
+'''
 class Mapping(LetStatement):
     def __init__(self, name:Reference) -> None:
+        Statement.__init__(self)
         # Manages this list as if it were a set
         self.name = name
         self.root:dict[Reference, list[Reference]] = {}
@@ -297,11 +312,24 @@ class Mapping(LetStatement):
     def __getitem__(self, key:Reference) -> list[Reference]:
         return self.root[key]
 
+    def __len__(self):
+        return len(self.root)
+
     def to_dict(self) -> dict:
         return {
+            'type': self.type,
             'name': self.name.str(),
             'maps': {x.str(): [y.str() for y in self.root[x]] for x in self.root}
         }
+
+    def deparse(self) -> str:
+        entries = []
+        for src in self.root:
+            dests = [x.deparse() for x in self.root[src]]
+            dest = dests[0] if len(dests) == 1 else '(' + ', '.join(dests) + ')'
+            entries.append(f'{src.deparse()}: {dest}')
+
+        return f'map {self.name.deparse()} = {{ ' + ', '.join(entries) + ' }'
 
     def add(self, src:Reference, dest:Reference|list[Reference]):
         if not isinstance(dest, list):

@@ -21,7 +21,7 @@ import Hql.Expressions.Functions as FuncExprs
 from Hql.Database import Database
 import Hql.Operators as Operators
 
-from Hql.Query import LetLogicStatement, LetStatement, Statement, QueryStatement
+from Hql.Query import LetLogicStatement, LetStatement, Statement, QueryStatement, Mapping
 
 from Hql.Types.Hql import HqlTypes as hqlt
 
@@ -117,6 +117,10 @@ class HqlCompiler(Compiler):
             acc = acc.get_expr()
 
         self.ctx.symbol_table[statement.name] = acc
+        return None
+
+    def Mapping(self, statement:Mapping, prep:bool=True) -> None:
+        self.ctx.symbol_table[statement.name] = statement
         return None
 
     def LetLogicStatement(self, statement:LetLogicStatement, prep:bool=True) -> None:
@@ -244,6 +248,18 @@ class HqlCompiler(Compiler):
         for i in instr.ops:
             acc, _ = self.compile(i)
             pipes.append(acc)
+
+        # Stage through an InstructionSet so maps apply to the operators added after them
+        if any(isinstance(x.get_op(), Operators.Map) for x in pipes):
+            instr = InstructionSet(instr.upstream)
+            for i in pipes:
+                instr.add_op(i)
+            instr.unmap()
+
+            pipes = []
+            for i in instr.ops:
+                acc, _ = self.compile(i)
+                pipes.append(acc)
 
         # for i in pipes:
         #     print(json.dumps(i.get_op().to_dict()))
@@ -468,6 +484,23 @@ class HqlCompiler(Compiler):
         acc.op = new
 
         return acc, _
+
+    def Map(self, op: Operators.Map, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+
+        maps = []
+        for i in op.maps:
+            if isinstance(i, Mapping):
+                maps.append(i)
+                continue
+
+            mapping = self.ctx.symbol_table.get(i)
+            if not isinstance(mapping, Mapping):
+                raise hqle.CompilerException(f'map given {i.deparse()} which is not a defined mapping')
+            maps.append(mapping)
+
+        desc.op = Operators.Map(maps)
+        return desc, None
 
     def Take(self, op: Operators.Take, prep:bool=True) -> tuple[BranchDescriptor, None]:
         from Hql.Operators.Take import Take
@@ -1215,7 +1248,7 @@ class HqlCompiler(Compiler):
         if expr in self.ctx.symbol_table and expr != self.ctx.symbol_table[expr]:
             res = self.ctx.symbol_table[expr]
             # not needed?
-            if not isinstance(res, (PipeExpression, Database, InstructionSet)):
+            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping)):
                 acc, _ = self.compile(res)
                 desc.expr = acc.get_expr()
                 desc.merge(desc)
@@ -1243,7 +1276,7 @@ class HqlCompiler(Compiler):
         if expr in self.ctx.symbol_table:
             res = self.ctx.symbol_table[expr]
 
-            if not isinstance(res, (PipeExpression, Database, InstructionSet)):
+            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping)):
                 acc, _ = self.compile(res)
                 desc.expr = acc.get_expr()
                 desc.merge(desc)

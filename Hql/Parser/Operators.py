@@ -39,6 +39,11 @@ class Operators(HqlVisitor):
         exprs = [self.visit(x) for x in ctx.Expressions]
         return Rename(exprs)
 
+    def visitMapOperator(self, ctx: HqlParser.MapOperatorContext):
+        from Hql.Operators.Map import Map
+        names = [self.visit(x) for x in ctx.Names]
+        return Map(names)
+
     def visitRenameToExpression(self, ctx: HqlParser.RenameToExpressionContext):
         from Hql.Expressions import ToClause
         src = self.visit(ctx.Source)
