@@ -6,10 +6,10 @@ grammar Hql;
 import HqlTokens;
 
 top:
-    query;
+    query EOF;
 
 query:
-    Statements+=statement (';' Statements+=statement)* (';')? EOF;
+    Statements+=statement (';' Statements+=statement)* (';')?;
 
 statement:
     //   AliasDatabase=aliasDatabaseStatement

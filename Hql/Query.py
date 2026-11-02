@@ -235,6 +235,16 @@ class LetStatement(Statement):
         ctx.symbol_table[name] = self.root
         return ctx
 
+'''
+Groups declarations under a name
+
+class network = {
+    let flows = database('json').macro('network')
+};
+network.flows | take 10
+
+The compiler stores the members as a namespace, referenced as class.member.
+'''
 class ClassStatement(LetStatement):
     def __init__(self, name:Reference, value:Query):
         LetStatement.__init__(self, name, value)
@@ -244,7 +254,7 @@ class ClassStatement(LetStatement):
         return {
             'type': self.type,
             'name': self.name.to_dict(),
-            'value': self.to_dict()
+            'value': self.root.to_dict()
         }
 
     def deparse(self) -> str:

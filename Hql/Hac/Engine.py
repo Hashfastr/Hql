@@ -194,8 +194,10 @@ class Detection():
         hac = None
 
         try:
-            parser = SigmaParser(self.txt, self.config)
-            hac = parser.gen_hac()
+            # Only keep the sigma parser if it's a valid rule, plenty of Hql is valid yaml
+            sigma = SigmaParser(self.txt, self.config)
+            hac = sigma.gen_hac()
+            parser = sigma
             self.sigma = True
         except Exception:
             # We're just skipping over to HaC Parsing then

@@ -33,8 +33,10 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
 
     try:
         logging.info('Attempting Sigma')
-        parser = SigmaParser(text, conf)
-        hac = parser.gen_hac()
+        # Only keep the sigma parser if it's a valid rule, plenty of Hql is valid yaml
+        sigma = SigmaParser(text, conf)
+        hac = sigma.gen_hac()
+        parser = sigma
     except Exception as e:
         logging.warning(e)
         logging.info('Failed Sigma, using Hql')

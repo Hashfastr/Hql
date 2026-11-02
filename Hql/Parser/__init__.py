@@ -59,7 +59,7 @@ class Parser():
          
         return parser
 
-    def assemble(self, target:str='query', targets:Union[None, list]=None):
+    def assemble(self, target:str='top', targets:Union[None, list]=None):
         if not targets:
             targets = [target]
         
@@ -112,6 +112,10 @@ class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, 
         self.imports = imports
         self.paths = list(paths)
     
+    # query followed by EOF, so the whole text has to parse
+    def visitTop(self, ctx: HqlParser.TopContext):
+        return self.visit(ctx.query())
+
     def visitQuery(self, ctx: HqlParser.QueryContext):
         from Hql.Query import Query, ImportStatement
 
@@ -180,6 +184,12 @@ class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, 
 
     def visitMacroStatement(self, ctx: HqlParser.MacroStatementContext):
         from Hql.Query import PipeExpression
+
+    def visitClassStatement(self, ctx: HqlParser.ClassStatementContext):
+        from Hql.Query import ClassStatement
+        name = self.visit(ctx.Name)
+        query = self.visit(ctx.Query)
+        return ClassStatement(name, query)
 
     def visitMapStatement(self, ctx: HqlParser.MapStatementContext):
         from Hql.Query import Mapping

@@ -21,7 +21,7 @@ import Hql.Expressions.Functions as FuncExprs
 from Hql.Database import Database
 import Hql.Operators as Operators
 
-from Hql.Query import LetLogicStatement, LetStatement, Statement, QueryStatement, Mapping
+from Hql.Query import LetLogicStatement, LetStatement, Statement, QueryStatement, Mapping, ClassStatement
 
 from Hql.Types.Hql import HqlTypes as hqlt
 
@@ -123,6 +123,41 @@ class HqlCompiler(Compiler):
         self.ctx.symbol_table[statement.name] = statement
         return None
 
+    '''
+    Compiles the class body in its own scope, members can use the names
+    declared before the class and each other but don't leak out.
+    The class is stored as a namespace of its members, see get_member.
+    '''
+    def ClassStatement(self, statement:ClassStatement, prep:bool=True) -> None:
+        outer = self.ctx.symbol_table
+        self.ctx.symbol_table = dict(outer)
+
+        members = {}
+        try:
+            for i in statement.root.statements:
+                if isinstance(i, QueryStatement):
+                    raise hqle.CompilerException(f'class {statement.name.deparse()} has a query statement, classes can only hold declarations')
+
+                self.compile(i)
+                members[i.name.str()] = self.ctx.symbol_table[i.name]
+        finally:
+            self.ctx.symbol_table = outer
+
+        self.ctx.symbol_table[statement.name] = members
+        return None
+
+    '''
+    Looks up class.member in the class namespaces of the symbol table
+    Returns None if the path isn't a member, such as the field event.id
+    '''
+    def get_member(self, path:References.Path) -> object:
+        rec = self.ctx.symbol_table.get(path.path[0])
+        for i in path.path[1:]:
+            if not isinstance(rec, dict) or i.name not in rec:
+                return None
+            rec = rec[i.name]
+        return rec
+
     def LetLogicStatement(self, statement:LetLogicStatement, prep:bool=True) -> None:
         acc, _ = self.compile(statement.root)
 
@@ -155,6 +190,11 @@ class HqlCompiler(Compiler):
         
         elif isinstance(expr, Functions.DotCompositeFunction):
             acc, _ = self.DotCompositeFunction(expr)
+
+        elif isinstance(expr, References.Path):
+            acc = self.get_member(expr)
+            if not isinstance(acc, (Database, InstructionSet)):
+                raise hqle.CompilerException(f'{expr.deparse()} is not a tabular class member')
 
         elif isinstance(expr, NamedReference):
             acc = self.ctx.symbol_table[expr]
@@ -1248,7 +1288,8 @@ class HqlCompiler(Compiler):
         if expr in self.ctx.symbol_table and expr != self.ctx.symbol_table[expr]:
             res = self.ctx.symbol_table[expr]
             # not needed?
-            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping)):
+            # dict is a class namespace
+            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping, dict)):
                 acc, _ = self.compile(res)
                 desc.expr = acc.get_expr()
                 desc.merge(desc)
@@ -1273,10 +1314,18 @@ class HqlCompiler(Compiler):
 
         desc = BranchDescriptor()
 
+        # Scalar class members, class.member
+        member = self.get_member(expr)
+        if member is not None and not isinstance(member, (PipeExpression, Database, InstructionSet, Mapping, dict)):
+            acc, _ = self.compile(member)
+            desc.merge(acc)
+            desc.expr = acc.get_expr()
+            return desc, None
+
         if expr in self.ctx.symbol_table:
             res = self.ctx.symbol_table[expr]
 
-            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping)):
+            if not isinstance(res, (PipeExpression, Database, InstructionSet, Mapping, dict)):
                 acc, _ = self.compile(res)
                 desc.expr = acc.get_expr()
                 desc.merge(desc)

@@ -303,3 +303,33 @@ class TestImport:
         with pytest.raises(hqle.CompilerException):
             self.parse_in(tmp_path, "import q; t")
         assert "has a query statement" in caplog.text
+
+
+
+# ---------------------------------------------------------------------------
+# Classes
+# ---------------------------------------------------------------------------
+
+class TestClass:
+    def test_class_statement(self):
+        from Hql.Query import ClassStatement, LetStatement
+
+        statements = parse("class c = { let a = 1; let b = t | take 1; }; c.b").statements
+        cls = statements[0]
+
+        assert isinstance(cls, ClassStatement)
+        assert cls.name == NamedReference("c")
+        assert [type(x) for x in cls.root.statements] == [LetStatement, LetStatement]
+        assert [x.name for x in cls.root.statements] == [NamedReference("a"), NamedReference("b")]
+
+    def test_nested_class(self):
+        from Hql.Query import ClassStatement
+
+        inner = parse("class a = { class b = { let x = 1 } }; t").statements[0].root.statements[0]
+        assert isinstance(inner, ClassStatement)
+        assert inner.name == NamedReference("b")
+
+    def test_trailing_input_is_rejected(self):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            parse("t | take 1 ) garbage")

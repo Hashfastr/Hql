@@ -67,272 +67,276 @@ export class HqlParser extends antlr.Parser {
     public static readonly BIN_LEGACY = 56;
     public static readonly BY = 57;
     public static readonly CARD = 58;
-    public static readonly CLUSTER = 59;
-    public static readonly COLUMNCHART = 60;
-    public static readonly CONSUME = 61;
-    public static readonly CONTAINS = 62;
-    public static readonly CONTAINS_CS = 63;
-    public static readonly CONTAINS_ALL = 64;
-    public static readonly CONTAINS_ANY = 65;
-    public static readonly CONTAINS_ALL_CS = 66;
-    public static readonly CONTAINS_ANY_CS = 67;
-    public static readonly CONTEXTUAL_DATATABLE = 68;
-    public static readonly COUNT = 69;
-    public static readonly CROSSCLUSTER__ = 70;
-    public static readonly CROSSDB__ = 71;
-    public static readonly DATABASE = 72;
-    public static readonly DATASCOPE = 73;
-    public static readonly DATATABLE = 74;
-    public static readonly DECLARE = 75;
-    public static readonly DECODEBLOCKS = 76;
-    public static readonly DEFAULT = 77;
-    public static readonly DELTA = 78;
-    public static readonly DESC = 79;
-    public static readonly DISTINCT = 80;
-    public static readonly EDGES = 81;
-    public static readonly ENDSWITH = 82;
-    public static readonly ENDSWITH_CS = 83;
-    public static readonly ENTITYGROUP = 84;
-    public static readonly EVALUATE = 85;
-    public static readonly EXECUTE = 86;
-    public static readonly EXECUTE_AND_CACHE = 87;
-    public static readonly EXPANDOUTPUT = 88;
-    public static readonly EXTEND = 89;
-    public static readonly EXTERNALDATA = 90;
-    public static readonly EXTERNAL_DATA = 91;
-    public static readonly FACET = 92;
-    public static readonly FILTER = 93;
-    public static readonly FIND = 94;
-    public static readonly FIRST = 95;
-    public static readonly FLAGS = 96;
-    public static readonly FORK = 97;
-    public static readonly FROM = 98;
-    public static readonly GETSCHEMA = 99;
-    public static readonly GLOBAL = 100;
-    public static readonly GRANNYASC = 101;
-    public static readonly GRANNYDESC = 102;
-    public static readonly GRAPHMARKCOMPONENTS = 103;
-    public static readonly GRAPHMATCH = 104;
-    public static readonly GRAPHMERGE = 105;
-    public static readonly GRAPHSHORTESTPATHS = 106;
-    public static readonly GRAPHTOTABLE = 107;
-    public static readonly HAS = 108;
-    public static readonly HAS_ALL = 109;
-    public static readonly HAS_ANY = 110;
-    public static readonly HAS_ALL_CS = 111;
-    public static readonly HAS_ANY_CS = 112;
-    public static readonly HAS_CS = 113;
-    public static readonly HASPREFIX = 114;
-    public static readonly HASPREFIX_CS = 115;
-    public static readonly HASSUFFIX = 116;
-    public static readonly HASSUFFIX_CS = 117;
-    public static readonly HIDDEN_ = 118;
-    public static readonly HINT_CONCURRENCY = 119;
-    public static readonly HINT_DISTRIBUTION = 120;
-    public static readonly HINT_MATERIALIZED = 121;
-    public static readonly HINT_NUM_PARTITIONS = 122;
-    public static readonly HINT_PASS_FILTERS = 123;
-    public static readonly HINT_PASS_FILTERS_COLUMN = 124;
-    public static readonly HINT_PROGRESSIVE_TOP = 125;
-    public static readonly HINT_REMOTE = 126;
-    public static readonly HINT_SUFFLEKEY = 127;
-    public static readonly HINT_SPREAD = 128;
-    public static readonly HINT_STRATEGY = 129;
-    public static readonly HOT = 130;
-    public static readonly HOTCACHE = 131;
-    public static readonly HOTDATA = 132;
-    public static readonly HOTINDEX = 133;
-    public static readonly ID = 134;
-    public static readonly ID__ = 135;
-    public static readonly IN = 136;
-    public static readonly IN_CI = 137;
-    public static readonly INTO = 138;
-    public static readonly INVOKE = 139;
-    public static readonly ISFUZZY = 140;
-    public static readonly ISFUZZY__ = 141;
-    public static readonly JOIN = 142;
-    public static readonly KIND = 143;
-    public static readonly LADDERCHART = 144;
-    public static readonly LAST = 145;
-    public static readonly LEGEND = 146;
-    public static readonly LET = 147;
-    public static readonly LIMIT = 148;
-    public static readonly LINEAR = 149;
-    public static readonly LINECHART = 150;
-    public static readonly LIST = 151;
-    public static readonly LOOKUP = 152;
-    public static readonly LOG = 153;
-    public static readonly MACROEXPAND = 154;
-    public static readonly MAKEGRAPH = 155;
-    public static readonly MAKESERIES = 156;
-    public static readonly MAP = 157;
-    public static readonly MATCHES_REGEX = 158;
-    public static readonly MATERIALIZE = 159;
-    public static readonly MATERIALIZED_VIEW_COMBINE = 160;
-    public static readonly MV_APPLY = 161;
-    public static readonly MV_EXPAND = 162;
-    public static readonly MVAPPLY = 163;
-    public static readonly MVEXPAND = 164;
-    public static readonly NODES = 165;
-    public static readonly NONE = 166;
-    public static readonly NOOPTIMIZATION = 167;
-    public static readonly NOT_BETWEEN = 168;
-    public static readonly NOT_CONTAINS = 169;
-    public static readonly NOT_CONTAINS_CS = 170;
-    public static readonly NOT_ENDSWITH_CS = 171;
-    public static readonly NOT_ENDSWITH = 172;
-    public static readonly NOT_HAS = 173;
-    public static readonly NOT_HAS_CS = 174;
-    public static readonly NOT_HASPREFIX = 175;
-    public static readonly NOT_HASPREFIX_CS = 176;
-    public static readonly NOT_HASSUFFIX = 177;
-    public static readonly NOT_HASSUFFIX_CS = 178;
-    public static readonly NOT_IN = 179;
-    public static readonly NOT_IN_CI = 180;
-    public static readonly NOT_STARTSWITH = 181;
-    public static readonly NOT_STARTSWITH_CS = 182;
-    public static readonly NULL = 183;
-    public static readonly NULLS = 184;
-    public static readonly OF = 185;
-    public static readonly ON = 186;
-    public static readonly OPTIONAL = 187;
-    public static readonly OR = 188;
-    public static readonly ORDER = 189;
-    public static readonly OTHERS = 190;
-    public static readonly OUTPUT = 191;
-    public static readonly PACK = 192;
-    public static readonly PANELS = 193;
-    public static readonly PARSE = 194;
-    public static readonly PARSEKV = 195;
-    public static readonly PARSEWHERE = 196;
-    public static readonly PARTITION = 197;
-    public static readonly PARTITIONBY = 198;
-    public static readonly PARTITIONEDBY = 199;
-    public static readonly PATTERN = 200;
-    public static readonly PACKEDCOLUMN__ = 201;
-    public static readonly PIECHART = 202;
-    public static readonly PIVOTCHART = 203;
-    public static readonly PLUGIN = 204;
-    public static readonly PRINT = 205;
-    public static readonly PROJECT = 206;
-    public static readonly PROJECTAWAY = 207;
-    public static readonly PROJECTAWAY_ = 208;
-    public static readonly PROJECTKEEP = 209;
-    public static readonly PROJECTRENAME = 210;
-    public static readonly PROJECTREORDER = 211;
-    public static readonly PROJECTSMART = 212;
-    public static readonly QUERYPARAMETERS = 213;
-    public static readonly RANGE = 214;
-    public static readonly REDUCE = 215;
-    public static readonly REGEX = 216;
-    public static readonly RELAXED = 217;
-    public static readonly RENDER = 218;
-    public static readonly REPLACE = 219;
-    public static readonly RESTRICT = 220;
-    public static readonly SAMPLE = 221;
-    public static readonly SAMPLE_DISTINCT = 222;
-    public static readonly SCAN = 223;
-    public static readonly SCATTERCHART = 224;
-    public static readonly SEARCH = 225;
-    public static readonly SERIALIZE = 226;
-    public static readonly SERIES = 227;
-    public static readonly SET = 228;
-    public static readonly SIMPLE = 229;
-    public static readonly SORT = 230;
-    public static readonly SOURCECOLUMNINDEX__ = 231;
-    public static readonly STACKED = 232;
-    public static readonly STACKED100 = 233;
-    public static readonly STACKEDAREACHART = 234;
-    public static readonly STARTSWITH = 235;
-    public static readonly STARTSWITH_CS = 236;
-    public static readonly STEP = 237;
-    public static readonly SUMMARIZE = 238;
-    public static readonly TABLE = 239;
-    public static readonly TAKE = 240;
-    public static readonly THRESHOLD = 241;
-    public static readonly TIMECHART = 242;
-    public static readonly TIMELINE = 243;
-    public static readonly TIMEPIVOT = 244;
-    public static readonly TITLE = 245;
-    public static readonly TO = 246;
-    public static readonly TOP = 247;
-    public static readonly TOP_HITTERS = 248;
-    public static readonly TOP_NESTED = 249;
-    public static readonly TOSCALAR = 250;
-    public static readonly TOTABLE = 251;
-    public static readonly TREEMAP = 252;
-    public static readonly TYPEOF = 253;
-    public static readonly UNION = 254;
-    public static readonly UNNEST = 255;
-    public static readonly UNSTACKED = 256;
-    public static readonly UUID = 257;
-    public static readonly VIEW = 258;
-    public static readonly VISIBLE = 259;
-    public static readonly WHERE = 260;
-    public static readonly WITH = 261;
-    public static readonly WITHNOSOURCE__ = 262;
-    public static readonly WITHSOURCE = 263;
-    public static readonly WITH_ITEM_INDEX = 264;
-    public static readonly WITH_MATCH_ID = 265;
-    public static readonly WITH_NODE_ID = 266;
-    public static readonly WITH_SOURCE = 267;
-    public static readonly WITH_STEP_NAME = 268;
-    public static readonly XAXIS = 269;
-    public static readonly XCOLUMN = 270;
-    public static readonly XMAX = 271;
-    public static readonly XMIN = 272;
-    public static readonly XTITLE = 273;
-    public static readonly YAXIS = 274;
-    public static readonly YCOLUMNS = 275;
-    public static readonly YMAX = 276;
-    public static readonly YMIN = 277;
-    public static readonly YSPLIT = 278;
-    public static readonly YTITLE = 279;
-    public static readonly RENAME = 280;
-    public static readonly BOOL = 281;
-    public static readonly BOOLEAN = 282;
-    public static readonly DATE = 283;
-    public static readonly DATETIME = 284;
-    public static readonly DECIMAL = 285;
-    public static readonly DOUBLE = 286;
-    public static readonly DYNAMIC = 287;
-    public static readonly FLOAT = 288;
-    public static readonly GUID = 289;
-    public static readonly INT = 290;
-    public static readonly INT8 = 291;
-    public static readonly INT16 = 292;
-    public static readonly INT32 = 293;
-    public static readonly INT64 = 294;
-    public static readonly LONG = 295;
-    public static readonly STRING = 296;
-    public static readonly REAL = 297;
-    public static readonly TIME = 298;
-    public static readonly TIMESPAN = 299;
-    public static readonly UINT = 300;
-    public static readonly UINT8 = 301;
-    public static readonly UINT16 = 302;
-    public static readonly UINT32 = 303;
-    public static readonly UINT64 = 304;
-    public static readonly ULONG = 305;
-    public static readonly UNIQUEID = 306;
-    public static readonly IP4 = 307;
-    public static readonly IP6 = 308;
-    public static readonly LONGLITERAL = 309;
-    public static readonly INTLITERAL = 310;
-    public static readonly REALLITERAL = 311;
-    public static readonly DECIMALLITERAL = 312;
-    public static readonly STRINGLITERAL = 313;
-    public static readonly BOOLEANLITERAL = 314;
-    public static readonly DATETIMELITERAL = 315;
-    public static readonly TIMESPANLITERAL = 316;
-    public static readonly TYPELITERAL = 317;
-    public static readonly RAWGUIDLITERAL = 318;
-    public static readonly GUIDLITERAL = 319;
-    public static readonly IDENTIFIER = 320;
-    public static readonly WILDCARD = 321;
-    public static readonly WHITESPACE = 322;
-    public static readonly COMMENT = 323;
-    public static readonly MULTILINECOMMENT = 324;
+    public static readonly CLASS = 59;
+    public static readonly CLUSTER = 60;
+    public static readonly COLUMNCHART = 61;
+    public static readonly CONSUME = 62;
+    public static readonly CONTAINS = 63;
+    public static readonly CONTAINS_CS = 64;
+    public static readonly CONTAINS_ALL = 65;
+    public static readonly CONTAINS_ANY = 66;
+    public static readonly CONTAINS_ALL_CS = 67;
+    public static readonly CONTAINS_ANY_CS = 68;
+    public static readonly CONTEXTUAL_DATATABLE = 69;
+    public static readonly COUNT = 70;
+    public static readonly CROSSCLUSTER__ = 71;
+    public static readonly CROSSDB__ = 72;
+    public static readonly DATABASE = 73;
+    public static readonly DATASCOPE = 74;
+    public static readonly DATATABLE = 75;
+    public static readonly DECLARE = 76;
+    public static readonly DECODEBLOCKS = 77;
+    public static readonly DEFAULT = 78;
+    public static readonly DELTA = 79;
+    public static readonly DESC = 80;
+    public static readonly DISTINCT = 81;
+    public static readonly EDGES = 82;
+    public static readonly ENDSWITH = 83;
+    public static readonly ENDSWITH_CS = 84;
+    public static readonly ENTITYGROUP = 85;
+    public static readonly EVALUATE = 86;
+    public static readonly EXECUTE = 87;
+    public static readonly EXECUTE_AND_CACHE = 88;
+    public static readonly EXPANDOUTPUT = 89;
+    public static readonly EXTEND = 90;
+    public static readonly EXTERNALDATA = 91;
+    public static readonly EXTERNAL_DATA = 92;
+    public static readonly FACET = 93;
+    public static readonly FILTER = 94;
+    public static readonly FIND = 95;
+    public static readonly FIRST = 96;
+    public static readonly FLAGS = 97;
+    public static readonly FORK = 98;
+    public static readonly FROM = 99;
+    public static readonly GETSCHEMA = 100;
+    public static readonly GLOBAL = 101;
+    public static readonly GRANNYASC = 102;
+    public static readonly GRANNYDESC = 103;
+    public static readonly GRAPHMARKCOMPONENTS = 104;
+    public static readonly GRAPHMATCH = 105;
+    public static readonly GRAPHMERGE = 106;
+    public static readonly GRAPHSHORTESTPATHS = 107;
+    public static readonly GRAPHTOTABLE = 108;
+    public static readonly HAS = 109;
+    public static readonly HAS_ALL = 110;
+    public static readonly HAS_ANY = 111;
+    public static readonly HAS_ALL_CS = 112;
+    public static readonly HAS_ANY_CS = 113;
+    public static readonly HAS_CS = 114;
+    public static readonly HASPREFIX = 115;
+    public static readonly HASPREFIX_CS = 116;
+    public static readonly HASSUFFIX = 117;
+    public static readonly HASSUFFIX_CS = 118;
+    public static readonly HIDDEN_ = 119;
+    public static readonly HINT_CONCURRENCY = 120;
+    public static readonly HINT_DISTRIBUTION = 121;
+    public static readonly HINT_MATERIALIZED = 122;
+    public static readonly HINT_NUM_PARTITIONS = 123;
+    public static readonly HINT_PASS_FILTERS = 124;
+    public static readonly HINT_PASS_FILTERS_COLUMN = 125;
+    public static readonly HINT_PROGRESSIVE_TOP = 126;
+    public static readonly HINT_REMOTE = 127;
+    public static readonly HINT_SUFFLEKEY = 128;
+    public static readonly HINT_SPREAD = 129;
+    public static readonly HINT_STRATEGY = 130;
+    public static readonly HOT = 131;
+    public static readonly HOTCACHE = 132;
+    public static readonly HOTDATA = 133;
+    public static readonly HOTINDEX = 134;
+    public static readonly ID = 135;
+    public static readonly ID__ = 136;
+    public static readonly IMPORT = 137;
+    public static readonly IN = 138;
+    public static readonly IN_CI = 139;
+    public static readonly INTO = 140;
+    public static readonly INVOKE = 141;
+    public static readonly ISFUZZY = 142;
+    public static readonly ISFUZZY__ = 143;
+    public static readonly JOIN = 144;
+    public static readonly KIND = 145;
+    public static readonly LADDERCHART = 146;
+    public static readonly LAST = 147;
+    public static readonly LEGEND = 148;
+    public static readonly LET = 149;
+    public static readonly LIMIT = 150;
+    public static readonly LINEAR = 151;
+    public static readonly LINECHART = 152;
+    public static readonly LIST = 153;
+    public static readonly LOOKUP = 154;
+    public static readonly LOG = 155;
+    public static readonly MACRO = 156;
+    public static readonly MACROEXPAND = 157;
+    public static readonly MAKEGRAPH = 158;
+    public static readonly MAKESERIES = 159;
+    public static readonly MAP = 160;
+    public static readonly MATCHES_REGEX = 161;
+    public static readonly MATERIALIZE = 162;
+    public static readonly MATERIALIZED_VIEW_COMBINE = 163;
+    public static readonly MV_APPLY = 164;
+    public static readonly MV_EXPAND = 165;
+    public static readonly MVAPPLY = 166;
+    public static readonly MVEXPAND = 167;
+    public static readonly NODES = 168;
+    public static readonly NONE = 169;
+    public static readonly NOOPTIMIZATION = 170;
+    public static readonly NOT_BETWEEN = 171;
+    public static readonly NOT_CONTAINS = 172;
+    public static readonly NOT_CONTAINS_CS = 173;
+    public static readonly NOT_ENDSWITH_CS = 174;
+    public static readonly NOT_ENDSWITH = 175;
+    public static readonly NOT_HAS = 176;
+    public static readonly NOT_HAS_CS = 177;
+    public static readonly NOT_HASPREFIX = 178;
+    public static readonly NOT_HASPREFIX_CS = 179;
+    public static readonly NOT_HASSUFFIX = 180;
+    public static readonly NOT_HASSUFFIX_CS = 181;
+    public static readonly NOT_IN = 182;
+    public static readonly NOT_IN_CI = 183;
+    public static readonly NOT_STARTSWITH = 184;
+    public static readonly NOT_STARTSWITH_CS = 185;
+    public static readonly NULL = 186;
+    public static readonly NULLS = 187;
+    public static readonly OF = 188;
+    public static readonly ON = 189;
+    public static readonly OPTIONAL = 190;
+    public static readonly OR = 191;
+    public static readonly ORDER = 192;
+    public static readonly OTHERS = 193;
+    public static readonly OUTPUT = 194;
+    public static readonly PACK = 195;
+    public static readonly PANELS = 196;
+    public static readonly PARSE = 197;
+    public static readonly PARSEKV = 198;
+    public static readonly PARSEWHERE = 199;
+    public static readonly PARTITION = 200;
+    public static readonly PARTITIONBY = 201;
+    public static readonly PARTITIONEDBY = 202;
+    public static readonly PATTERN = 203;
+    public static readonly PACKEDCOLUMN__ = 204;
+    public static readonly PIECHART = 205;
+    public static readonly PIVOTCHART = 206;
+    public static readonly PLUGIN = 207;
+    public static readonly PRINT = 208;
+    public static readonly PROJECT = 209;
+    public static readonly PROJECTAWAY = 210;
+    public static readonly PROJECTAWAY_ = 211;
+    public static readonly PROJECTKEEP = 212;
+    public static readonly PROJECTRENAME = 213;
+    public static readonly PROJECTREORDER = 214;
+    public static readonly PROJECTSMART = 215;
+    public static readonly PUSH = 216;
+    public static readonly QUERYPARAMETERS = 217;
+    public static readonly RANGE = 218;
+    public static readonly REDUCE = 219;
+    public static readonly REGEX = 220;
+    public static readonly RELAXED = 221;
+    public static readonly RENDER = 222;
+    public static readonly REPLACE = 223;
+    public static readonly RESTRICT = 224;
+    public static readonly SAMPLE = 225;
+    public static readonly SAMPLE_DISTINCT = 226;
+    public static readonly SCAN = 227;
+    public static readonly SCATTERCHART = 228;
+    public static readonly SEARCH = 229;
+    public static readonly SERIALIZE = 230;
+    public static readonly SERIES = 231;
+    public static readonly SET = 232;
+    public static readonly SIMPLE = 233;
+    public static readonly SORT = 234;
+    public static readonly SOURCECOLUMNINDEX__ = 235;
+    public static readonly STACKED = 236;
+    public static readonly STACKED100 = 237;
+    public static readonly STACKEDAREACHART = 238;
+    public static readonly STARTSWITH = 239;
+    public static readonly STARTSWITH_CS = 240;
+    public static readonly STEP = 241;
+    public static readonly SUMMARIZE = 242;
+    public static readonly TABLE = 243;
+    public static readonly TAKE = 244;
+    public static readonly THRESHOLD = 245;
+    public static readonly TIMECHART = 246;
+    public static readonly TIMELINE = 247;
+    public static readonly TIMEPIVOT = 248;
+    public static readonly TITLE = 249;
+    public static readonly TO = 250;
+    public static readonly TOP = 251;
+    public static readonly TOP_HITTERS = 252;
+    public static readonly TOP_NESTED = 253;
+    public static readonly TOSCALAR = 254;
+    public static readonly TOTABLE = 255;
+    public static readonly TREEMAP = 256;
+    public static readonly TYPEOF = 257;
+    public static readonly UNION = 258;
+    public static readonly UNNEST = 259;
+    public static readonly UNSTACKED = 260;
+    public static readonly UUID = 261;
+    public static readonly VIEW = 262;
+    public static readonly VISIBLE = 263;
+    public static readonly WHERE = 264;
+    public static readonly WITH = 265;
+    public static readonly WITHNOSOURCE__ = 266;
+    public static readonly WITHSOURCE = 267;
+    public static readonly WITH_ITEM_INDEX = 268;
+    public static readonly WITH_MATCH_ID = 269;
+    public static readonly WITH_NODE_ID = 270;
+    public static readonly WITH_SOURCE = 271;
+    public static readonly WITH_STEP_NAME = 272;
+    public static readonly XAXIS = 273;
+    public static readonly XCOLUMN = 274;
+    public static readonly XMAX = 275;
+    public static readonly XMIN = 276;
+    public static readonly XTITLE = 277;
+    public static readonly YAXIS = 278;
+    public static readonly YCOLUMNS = 279;
+    public static readonly YMAX = 280;
+    public static readonly YMIN = 281;
+    public static readonly YSPLIT = 282;
+    public static readonly YTITLE = 283;
+    public static readonly RENAME = 284;
+    public static readonly BOOL = 285;
+    public static readonly BOOLEAN = 286;
+    public static readonly DATE = 287;
+    public static readonly DATETIME = 288;
+    public static readonly DECIMAL = 289;
+    public static readonly DOUBLE = 290;
+    public static readonly DYNAMIC = 291;
+    public static readonly FLOAT = 292;
+    public static readonly GUID = 293;
+    public static readonly INT = 294;
+    public static readonly INT8 = 295;
+    public static readonly INT16 = 296;
+    public static readonly INT32 = 297;
+    public static readonly INT64 = 298;
+    public static readonly LONG = 299;
+    public static readonly STRING = 300;
+    public static readonly REAL = 301;
+    public static readonly TIME = 302;
+    public static readonly TIMESPAN = 303;
+    public static readonly UINT = 304;
+    public static readonly UINT8 = 305;
+    public static readonly UINT16 = 306;
+    public static readonly UINT32 = 307;
+    public static readonly UINT64 = 308;
+    public static readonly ULONG = 309;
+    public static readonly UNIQUEID = 310;
+    public static readonly IP4 = 311;
+    public static readonly IP6 = 312;
+    public static readonly LONGLITERAL = 313;
+    public static readonly INTLITERAL = 314;
+    public static readonly REALLITERAL = 315;
+    public static readonly DECIMALLITERAL = 316;
+    public static readonly STRINGLITERAL = 317;
+    public static readonly BOOLEANLITERAL = 318;
+    public static readonly DATETIMELITERAL = 319;
+    public static readonly TIMESPANLITERAL = 320;
+    public static readonly TYPELITERAL = 321;
+    public static readonly RAWGUIDLITERAL = 322;
+    public static readonly GUIDLITERAL = 323;
+    public static readonly IDENTIFIER = 324;
+    public static readonly WILDCARD = 325;
+    public static readonly WHITESPACE = 326;
+    public static readonly COMMENT = 327;
+    public static readonly MULTILINECOMMENT = 328;
     public static readonly RULE_top = 0;
     public static readonly RULE_query = 1;
     public static readonly RULE_statement = 2;
@@ -343,304 +347,314 @@ export class HqlParser extends antlr.Parser {
     public static readonly RULE_letViewParameterList = 7;
     public static readonly RULE_letMaterializeDeclaration = 8;
     public static readonly RULE_letEntityGroupDeclaration = 9;
-    public static readonly RULE_letMacroDeclaration = 10;
-    public static readonly RULE_letLogicDeclaration = 11;
-    public static readonly RULE_letFunctionParameterList = 12;
-    public static readonly RULE_scalarParameter = 13;
-    public static readonly RULE_scalarParameterDefault = 14;
-    public static readonly RULE_tabularParameter = 15;
-    public static readonly RULE_tabularParameterOpenSchema = 16;
-    public static readonly RULE_tabularParameterRowSchema = 17;
-    public static readonly RULE_tabularParameterRowSchemaColumnDeclaration = 18;
-    public static readonly RULE_letFunctionBody = 19;
-    public static readonly RULE_letFunctionBodyStatement = 20;
-    public static readonly RULE_declarePatternStatement = 21;
-    public static readonly RULE_declarePatternDefinition = 22;
-    public static readonly RULE_declarePatternParameterList = 23;
-    public static readonly RULE_declarePatternParameter = 24;
-    public static readonly RULE_declarePatternPathParameter = 25;
-    public static readonly RULE_declarePatternRule = 26;
-    public static readonly RULE_declarePatternRuleArgumentList = 27;
-    public static readonly RULE_declarePatternRulePathArgument = 28;
-    public static readonly RULE_declarePatternRuleArgument = 29;
-    public static readonly RULE_declarePatternBody = 30;
-    public static readonly RULE_restrictAccessStatement = 31;
-    public static readonly RULE_restrictAccessStatementEntity = 32;
-    public static readonly RULE_setStatement = 33;
-    public static readonly RULE_setStatementOptionValue = 34;
-    public static readonly RULE_declareQueryParametersStatement = 35;
-    public static readonly RULE_declareQueryParametersStatementParameter = 36;
-    public static readonly RULE_queryStatement = 37;
-    public static readonly RULE_expression = 38;
-    public static readonly RULE_pipeExpression = 39;
-    public static readonly RULE_emptyPipedExpression = 40;
-    public static readonly RULE_pipedOperator = 41;
-    public static readonly RULE_pipeSubExpression = 42;
-    public static readonly RULE_beforePipeExpression = 43;
-    public static readonly RULE_afterPipeOperator = 44;
-    public static readonly RULE_beforeOrAfterPipeOperator = 45;
-    public static readonly RULE_forkPipeOperator = 46;
-    public static readonly RULE_asOperator = 47;
-    public static readonly RULE_assertSchemaOperator = 48;
-    public static readonly RULE_consumeOperator = 49;
-    public static readonly RULE_countOperator = 50;
-    public static readonly RULE_distinctOperator = 51;
-    public static readonly RULE_distinctOperatorStarTarget = 52;
-    public static readonly RULE_distinctOperatorColumnListTarget = 53;
-    public static readonly RULE_evaluateOperator = 54;
-    public static readonly RULE_evaluateOperatorSchemaClause = 55;
-    public static readonly RULE_extendOperator = 56;
-    public static readonly RULE_executeAndCacheOperator = 57;
-    public static readonly RULE_facetByOperator = 58;
-    public static readonly RULE_facetByOperatorWithOperatorClause = 59;
-    public static readonly RULE_facetByOperatorWithExpressionClause = 60;
-    public static readonly RULE_findOperator = 61;
-    public static readonly RULE_findOperatorParametersWhereClause = 62;
-    public static readonly RULE_findOperatorInClause = 63;
-    public static readonly RULE_findOperatorProjectClause = 64;
-    public static readonly RULE_findOperatorProjectExpression = 65;
-    public static readonly RULE_findOperatorColumnExpression = 66;
-    public static readonly RULE_findOperatorOptionalColumnType = 67;
-    public static readonly RULE_findOperatorPackExpression = 68;
-    public static readonly RULE_findOperatorProjectSmartClause = 69;
-    public static readonly RULE_findOperatorProjectAwayClause = 70;
-    public static readonly RULE_findOperatorProjectAwayStar = 71;
-    public static readonly RULE_findOperatorProjectAwayColumnList = 72;
-    public static readonly RULE_findOperatorSource = 73;
-    public static readonly RULE_findOperatorSourceEntityExpression = 74;
-    public static readonly RULE_forkOperator = 75;
-    public static readonly RULE_forkOperatorFork = 76;
-    public static readonly RULE_forkOperatorExpressionName = 77;
-    public static readonly RULE_forkOperatorExpression = 78;
-    public static readonly RULE_forkOperatorPipedOperator = 79;
-    public static readonly RULE_getSchemaOperator = 80;
-    public static readonly RULE_graphMarkComponentsOperator = 81;
-    public static readonly RULE_graphMatchOperator = 82;
-    public static readonly RULE_graphMatchPattern = 83;
-    public static readonly RULE_graphMatchPatternNode = 84;
-    public static readonly RULE_graphMatchPatternUnnamedEdge = 85;
-    public static readonly RULE_graphMatchPatternNamedEdge = 86;
-    public static readonly RULE_graphMatchPatternRange = 87;
-    public static readonly RULE_graphMatchWhereClause = 88;
-    public static readonly RULE_graphMatchProjectClause = 89;
-    public static readonly RULE_graphMergeOperator = 90;
-    public static readonly RULE_graphToTableOperator = 91;
-    public static readonly RULE_graphToTableOutput = 92;
-    public static readonly RULE_graphToTableAsClause = 93;
-    public static readonly RULE_graphShortestPathsOperator = 94;
-    public static readonly RULE_invokeOperator = 95;
-    public static readonly RULE_joinOperator = 96;
-    public static readonly RULE_joinOperatorTable = 97;
-    public static readonly RULE_joinOperatorOnClause = 98;
-    public static readonly RULE_joinOperatorWhereClause = 99;
-    public static readonly RULE_lookupOperator = 100;
-    public static readonly RULE_macroExpandOperator = 101;
-    public static readonly RULE_macroExpandEntityGroup = 102;
-    public static readonly RULE_entityGroupExpression = 103;
-    public static readonly RULE_makeGraphOperator = 104;
-    public static readonly RULE_makeGraphIdClause = 105;
-    public static readonly RULE_makeGraphTablesAndKeysClause = 106;
-    public static readonly RULE_makeGraphPartitionedByClause = 107;
-    public static readonly RULE_makeSeriesOperator = 108;
-    public static readonly RULE_makeSeriesOperatorOnClause = 109;
-    public static readonly RULE_makeSeriesOperatorAggregation = 110;
-    public static readonly RULE_makeSeriesOperatorExpressionDefaultClause = 111;
-    public static readonly RULE_makeSeriesOperatorInRangeClause = 112;
-    public static readonly RULE_makeSeriesOperatorFromToStepClause = 113;
-    public static readonly RULE_makeSeriesOperatorByClause = 114;
-    public static readonly RULE_mvapplyOperator = 115;
-    public static readonly RULE_mvapplyOperatorLimitClause = 116;
-    public static readonly RULE_mvapplyOperatorIdClause = 117;
-    public static readonly RULE_mvapplyOperatorExpression = 118;
-    public static readonly RULE_mvapplyOperatorExpressionToClause = 119;
-    public static readonly RULE_mvexpandOperator = 120;
-    public static readonly RULE_mvexpandOperatorExpression = 121;
-    public static readonly RULE_parseOperator = 122;
-    public static readonly RULE_parseOperatorKindClause = 123;
-    public static readonly RULE_parseOperatorFlagsClause = 124;
-    public static readonly RULE_parseOperatorNameAndOptionalType = 125;
-    public static readonly RULE_parseOperatorPattern = 126;
-    public static readonly RULE_parseOperatorPatternSegment = 127;
-    public static readonly RULE_parseWhereOperator = 128;
-    public static readonly RULE_parseKvOperator = 129;
-    public static readonly RULE_parseKvWithClause = 130;
-    public static readonly RULE_partitionOperator = 131;
-    public static readonly RULE_partitionOperatorInClause = 132;
-    public static readonly RULE_partitionOperatorSubExpressionBody = 133;
-    public static readonly RULE_partitionOperatorFullExpressionBody = 134;
-    public static readonly RULE_partitionByOperator = 135;
-    public static readonly RULE_partitionByOperatorIdClause = 136;
-    public static readonly RULE_printOperator = 137;
-    public static readonly RULE_projectAwayOperator = 138;
-    public static readonly RULE_projectKeepOperator = 139;
-    public static readonly RULE_projectOperator = 140;
-    public static readonly RULE_projectRenameOperator = 141;
-    public static readonly RULE_projectReorderOperator = 142;
-    public static readonly RULE_projectReorderExpression = 143;
-    public static readonly RULE_reduceByOperator = 144;
-    public static readonly RULE_reduceByWithClause = 145;
-    public static readonly RULE_renameOperator = 146;
-    public static readonly RULE_renameToExpression = 147;
-    public static readonly RULE_renderOperator = 148;
-    public static readonly RULE_renderOperatorWithClause = 149;
-    public static readonly RULE_renderOperatorLegacyPropertyList = 150;
-    public static readonly RULE_renderOperatorProperty = 151;
-    public static readonly RULE_renderPropertyNameList = 152;
-    public static readonly RULE_renderOperatorLegacyProperty = 153;
-    public static readonly RULE_sampleDistinctOperator = 154;
-    public static readonly RULE_sampleOperator = 155;
-    public static readonly RULE_scanOperator = 156;
-    public static readonly RULE_scanOperatorOrderByClause = 157;
-    public static readonly RULE_scanOperatorPartitionByClause = 158;
-    public static readonly RULE_scanOperatorDeclareClause = 159;
-    public static readonly RULE_scanOperatorStep = 160;
-    public static readonly RULE_scanOperatorStepOutputClause = 161;
-    public static readonly RULE_scanOperatorBody = 162;
-    public static readonly RULE_scanOperatorAssignment = 163;
-    public static readonly RULE_searchOperator = 164;
-    public static readonly RULE_searchOperatorStarAndExpression = 165;
-    public static readonly RULE_searchOperatorInClause = 166;
-    public static readonly RULE_serializeOperator = 167;
-    public static readonly RULE_sortOperator = 168;
-    public static readonly RULE_orderedExpression = 169;
-    public static readonly RULE_summarizeOperator = 170;
-    public static readonly RULE_summarizeOperatorByClause = 171;
-    public static readonly RULE_summarizeOperatorLegacyBinClause = 172;
-    public static readonly RULE_takeOperator = 173;
-    public static readonly RULE_topOperator = 174;
-    public static readonly RULE_topHittersOperator = 175;
-    public static readonly RULE_topHittersOperatorByClause = 176;
-    public static readonly RULE_topNestedOperator = 177;
-    public static readonly RULE_topNestedOperatorPart = 178;
-    public static readonly RULE_topNestedOperatorWithOthersClause = 179;
-    public static readonly RULE_unionOperator = 180;
-    public static readonly RULE_unionAsOperator = 181;
-    public static readonly RULE_whereOperator = 182;
-    public static readonly RULE_unnestOperator = 183;
-    public static readonly RULE_unnestOperatorOnClause = 184;
-    public static readonly RULE_contextualSubExpression = 185;
-    public static readonly RULE_contextualPipeExpression = 186;
-    public static readonly RULE_contextualPipeExpressionPipedOperator = 187;
-    public static readonly RULE_strictQueryOperatorParameter = 188;
-    public static readonly RULE_relaxedQueryOperatorParameter = 189;
-    public static readonly RULE_queryOperatorProperty = 190;
-    public static readonly RULE_namedExpression = 191;
-    public static readonly RULE_staticNamedExpression = 192;
-    public static readonly RULE_namedExpressionNameClause = 193;
-    public static readonly RULE_namedExpressionNameList = 194;
-    public static readonly RULE_scopedFunctionCallExpression = 195;
-    public static readonly RULE_unnamedExpression = 196;
-    public static readonly RULE_logicalOrExpression = 197;
-    public static readonly RULE_logicalOrOperation = 198;
-    public static readonly RULE_logicalAndExpression = 199;
-    public static readonly RULE_logicalAndOperation = 200;
-    public static readonly RULE_equalityExpression = 201;
-    public static readonly RULE_equalsEqualityExpression = 202;
-    public static readonly RULE_listEqualityExpression = 203;
-    public static readonly RULE_betweenEqualityExpression = 204;
-    public static readonly RULE_starEqualityExpression = 205;
-    public static readonly RULE_relationalExpression = 206;
-    public static readonly RULE_additiveExpression = 207;
-    public static readonly RULE_additiveOperation = 208;
-    public static readonly RULE_multiplicativeExpression = 209;
-    public static readonly RULE_multiplicativeOperation = 210;
-    public static readonly RULE_stringOperatorExpression = 211;
-    public static readonly RULE_stringBinaryOperatorExpression = 212;
-    public static readonly RULE_stringBinaryOperator = 213;
-    public static readonly RULE_stringStarOperatorExpression = 214;
-    public static readonly RULE_invocationExpression = 215;
-    public static readonly RULE_functionCallOrPathExpression = 216;
-    public static readonly RULE_functionCallOrPathRoot = 217;
-    public static readonly RULE_functionCallOrPathPathExpression = 218;
-    public static readonly RULE_functionCallOrPathOperation = 219;
-    public static readonly RULE_functionCallOrPathCallOperation = 220;
-    public static readonly RULE_functionalCallOrPathPathOperation = 221;
-    public static readonly RULE_functionCallOrPathElementOperation = 222;
-    public static readonly RULE_legacyFunctionCallOrPathElementOperation = 223;
-    public static readonly RULE_toScalarExpression = 224;
-    public static readonly RULE_toTableExpression = 225;
-    public static readonly RULE_noOptimizationParameter = 226;
-    public static readonly RULE_dotCompositeFunctionCallExpression = 227;
-    public static readonly RULE_dotCompositeFunctionCallOperation = 228;
-    public static readonly RULE_functionCallExpression = 229;
-    public static readonly RULE_functionCallName = 230;
-    public static readonly RULE_argumentExpression = 231;
-    public static readonly RULE_starExpression = 232;
-    public static readonly RULE_primaryExpression = 233;
-    public static readonly RULE_parenthesizedExpression = 234;
-    public static readonly RULE_rangeExpression = 235;
-    public static readonly RULE_entityExpression = 236;
-    public static readonly RULE_entityPathOrElementExpression = 237;
-    public static readonly RULE_entityPathOrElementOperator = 238;
-    public static readonly RULE_entityPathOperator = 239;
-    public static readonly RULE_entityElementOperator = 240;
-    public static readonly RULE_legacyEntityPathElementOperator = 241;
-    public static readonly RULE_entityName = 242;
-    public static readonly RULE_entityNameReference = 243;
-    public static readonly RULE_atSignName = 244;
-    public static readonly RULE_extendedPathName = 245;
-    public static readonly RULE_wildcardedEntityExpression = 246;
-    public static readonly RULE_wildcardedPathExpression = 247;
-    public static readonly RULE_wildcardedPathName = 248;
-    public static readonly RULE_contextualDataTableExpression = 249;
-    public static readonly RULE_dataTableExpression = 250;
-    public static readonly RULE_rowSchema = 251;
-    public static readonly RULE_rowSchemaColumnDeclaration = 252;
-    public static readonly RULE_externalDataExpression = 253;
-    public static readonly RULE_externalDataWithClause = 254;
-    public static readonly RULE_externalDataWithClauseProperty = 255;
-    public static readonly RULE_materializedViewCombineExpression = 256;
-    public static readonly RULE_materializeViewCombineBaseClause = 257;
-    public static readonly RULE_materializedViewCombineDeltaClause = 258;
-    public static readonly RULE_materializedViewCombineAggregationsClause = 259;
-    public static readonly RULE_scalarType = 260;
-    public static readonly RULE_extendedScalarType = 261;
-    public static readonly RULE_parameterName = 262;
-    public static readonly RULE_simpleNameReference = 263;
-    public static readonly RULE_extendedNameReference = 264;
-    public static readonly RULE_wildcardedNameReference = 265;
-    public static readonly RULE_simpleOrWildcardedNameReference = 266;
-    public static readonly RULE_pathReference = 267;
-    public static readonly RULE_simpleOrPathNameReference = 268;
-    public static readonly RULE_tableNameReference = 269;
-    public static readonly RULE_dynamicTableNameReference = 270;
-    public static readonly RULE_identifierName = 271;
-    public static readonly RULE_keywordName = 272;
-    public static readonly RULE_extendedKeywordName = 273;
-    public static readonly RULE_escapedName = 274;
-    public static readonly RULE_pathOrKeyword = 275;
-    public static readonly RULE_pathOrExtendedKeyword = 276;
-    public static readonly RULE_wildcardedName = 277;
-    public static readonly RULE_literalExpression = 278;
-    public static readonly RULE_unsignedLiteralExpression = 279;
-    public static readonly RULE_numberLikeLiteralExpression = 280;
-    public static readonly RULE_numericLiteralExpression = 281;
-    public static readonly RULE_signedLiteralExpression = 282;
-    public static readonly RULE_longLiteralExpression = 283;
-    public static readonly RULE_intLiteralExpression = 284;
-    public static readonly RULE_realLiteralExpression = 285;
-    public static readonly RULE_decimalLiteralExpression = 286;
-    public static readonly RULE_dateTimeLiteralExpression = 287;
-    public static readonly RULE_timeSpanLiteralExpression = 288;
-    public static readonly RULE_booleanLiteralExpression = 289;
-    public static readonly RULE_guidLiteralExpression = 290;
-    public static readonly RULE_typeLiteralExpression = 291;
-    public static readonly RULE_signedLongLiteralExpression = 292;
-    public static readonly RULE_signedRealLiteralExpression = 293;
-    public static readonly RULE_stringLiteralExpression = 294;
-    public static readonly RULE_dynamicLiteralExpression = 295;
-    public static readonly RULE_jsonValue = 296;
-    public static readonly RULE_jsonObject = 297;
-    public static readonly RULE_jsonPair = 298;
-    public static readonly RULE_jsonArray = 299;
-    public static readonly RULE_jsonBoolean = 300;
-    public static readonly RULE_jsonDateTime = 301;
-    public static readonly RULE_jsonGuid = 302;
-    public static readonly RULE_jsonNull = 303;
-    public static readonly RULE_jsonString = 304;
-    public static readonly RULE_jsonTimeSpan = 305;
-    public static readonly RULE_jsonLong = 306;
-    public static readonly RULE_jsonReal = 307;
+    public static readonly RULE_letLogicDeclaration = 10;
+    public static readonly RULE_letFunctionParameterList = 11;
+    public static readonly RULE_macroStatement = 12;
+    public static readonly RULE_classStatement = 13;
+    public static readonly RULE_mapStatement = 14;
+    public static readonly RULE_mapEntry = 15;
+    public static readonly RULE_singleMapValue = 16;
+    public static readonly RULE_multiMapValue = 17;
+    public static readonly RULE_importStatement = 18;
+    public static readonly RULE_simpleImportStatement = 19;
+    public static readonly RULE_fromImportStatement = 20;
+    public static readonly RULE_scalarParameter = 21;
+    public static readonly RULE_scalarParameterDefault = 22;
+    public static readonly RULE_tabularParameter = 23;
+    public static readonly RULE_tabularParameterOpenSchema = 24;
+    public static readonly RULE_tabularParameterRowSchema = 25;
+    public static readonly RULE_tabularParameterRowSchemaColumnDeclaration = 26;
+    public static readonly RULE_letFunctionBody = 27;
+    public static readonly RULE_letFunctionBodyStatement = 28;
+    public static readonly RULE_declarePatternStatement = 29;
+    public static readonly RULE_declarePatternDefinition = 30;
+    public static readonly RULE_declarePatternParameterList = 31;
+    public static readonly RULE_declarePatternParameter = 32;
+    public static readonly RULE_declarePatternPathParameter = 33;
+    public static readonly RULE_declarePatternRule = 34;
+    public static readonly RULE_declarePatternRuleArgumentList = 35;
+    public static readonly RULE_declarePatternRulePathArgument = 36;
+    public static readonly RULE_declarePatternRuleArgument = 37;
+    public static readonly RULE_declarePatternBody = 38;
+    public static readonly RULE_restrictAccessStatement = 39;
+    public static readonly RULE_restrictAccessStatementEntity = 40;
+    public static readonly RULE_setStatement = 41;
+    public static readonly RULE_setStatementOptionValue = 42;
+    public static readonly RULE_declareQueryParametersStatement = 43;
+    public static readonly RULE_declareQueryParametersStatementParameter = 44;
+    public static readonly RULE_queryStatement = 45;
+    public static readonly RULE_expression = 46;
+    public static readonly RULE_pipeExpression = 47;
+    public static readonly RULE_emptyPipedExpression = 48;
+    public static readonly RULE_pipedOperator = 49;
+    public static readonly RULE_pipeSubExpression = 50;
+    public static readonly RULE_beforePipeExpression = 51;
+    public static readonly RULE_afterPipeOperator = 52;
+    public static readonly RULE_beforeOrAfterPipeOperator = 53;
+    public static readonly RULE_forkPipeOperator = 54;
+    public static readonly RULE_asOperator = 55;
+    public static readonly RULE_assertSchemaOperator = 56;
+    public static readonly RULE_consumeOperator = 57;
+    public static readonly RULE_countOperator = 58;
+    public static readonly RULE_distinctOperator = 59;
+    public static readonly RULE_distinctOperatorStarTarget = 60;
+    public static readonly RULE_distinctOperatorColumnListTarget = 61;
+    public static readonly RULE_evaluateOperator = 62;
+    public static readonly RULE_evaluateOperatorSchemaClause = 63;
+    public static readonly RULE_extendOperator = 64;
+    public static readonly RULE_executeAndCacheOperator = 65;
+    public static readonly RULE_facetByOperator = 66;
+    public static readonly RULE_facetByOperatorWithOperatorClause = 67;
+    public static readonly RULE_facetByOperatorWithExpressionClause = 68;
+    public static readonly RULE_findOperator = 69;
+    public static readonly RULE_findOperatorParametersWhereClause = 70;
+    public static readonly RULE_findOperatorInClause = 71;
+    public static readonly RULE_findOperatorProjectClause = 72;
+    public static readonly RULE_findOperatorProjectExpression = 73;
+    public static readonly RULE_findOperatorColumnExpression = 74;
+    public static readonly RULE_findOperatorOptionalColumnType = 75;
+    public static readonly RULE_findOperatorPackExpression = 76;
+    public static readonly RULE_findOperatorProjectSmartClause = 77;
+    public static readonly RULE_findOperatorProjectAwayClause = 78;
+    public static readonly RULE_findOperatorProjectAwayStar = 79;
+    public static readonly RULE_findOperatorProjectAwayColumnList = 80;
+    public static readonly RULE_findOperatorSource = 81;
+    public static readonly RULE_findOperatorSourceEntityExpression = 82;
+    public static readonly RULE_forkOperator = 83;
+    public static readonly RULE_forkOperatorFork = 84;
+    public static readonly RULE_forkOperatorExpressionName = 85;
+    public static readonly RULE_forkOperatorExpression = 86;
+    public static readonly RULE_forkOperatorPipedOperator = 87;
+    public static readonly RULE_getSchemaOperator = 88;
+    public static readonly RULE_graphMarkComponentsOperator = 89;
+    public static readonly RULE_graphMatchOperator = 90;
+    public static readonly RULE_graphMatchPattern = 91;
+    public static readonly RULE_graphMatchPatternNode = 92;
+    public static readonly RULE_graphMatchPatternUnnamedEdge = 93;
+    public static readonly RULE_graphMatchPatternNamedEdge = 94;
+    public static readonly RULE_graphMatchPatternRange = 95;
+    public static readonly RULE_graphMatchWhereClause = 96;
+    public static readonly RULE_graphMatchProjectClause = 97;
+    public static readonly RULE_graphMergeOperator = 98;
+    public static readonly RULE_graphToTableOperator = 99;
+    public static readonly RULE_graphToTableOutput = 100;
+    public static readonly RULE_graphToTableAsClause = 101;
+    public static readonly RULE_graphShortestPathsOperator = 102;
+    public static readonly RULE_invokeOperator = 103;
+    public static readonly RULE_joinOperator = 104;
+    public static readonly RULE_joinOperatorTable = 105;
+    public static readonly RULE_joinOperatorOnClause = 106;
+    public static readonly RULE_joinOperatorWhereClause = 107;
+    public static readonly RULE_lookupOperator = 108;
+    public static readonly RULE_macroExpandOperator = 109;
+    public static readonly RULE_macroExpandEntityGroup = 110;
+    public static readonly RULE_entityGroupExpression = 111;
+    public static readonly RULE_makeGraphOperator = 112;
+    public static readonly RULE_makeGraphIdClause = 113;
+    public static readonly RULE_makeGraphTablesAndKeysClause = 114;
+    public static readonly RULE_makeGraphPartitionedByClause = 115;
+    public static readonly RULE_makeSeriesOperator = 116;
+    public static readonly RULE_makeSeriesOperatorOnClause = 117;
+    public static readonly RULE_makeSeriesOperatorAggregation = 118;
+    public static readonly RULE_makeSeriesOperatorExpressionDefaultClause = 119;
+    public static readonly RULE_makeSeriesOperatorInRangeClause = 120;
+    public static readonly RULE_makeSeriesOperatorFromToStepClause = 121;
+    public static readonly RULE_makeSeriesOperatorByClause = 122;
+    public static readonly RULE_mvapplyOperator = 123;
+    public static readonly RULE_mvapplyOperatorLimitClause = 124;
+    public static readonly RULE_mvapplyOperatorIdClause = 125;
+    public static readonly RULE_mvapplyOperatorExpression = 126;
+    public static readonly RULE_mvapplyOperatorExpressionToClause = 127;
+    public static readonly RULE_mvexpandOperator = 128;
+    public static readonly RULE_mvexpandOperatorExpression = 129;
+    public static readonly RULE_parseOperator = 130;
+    public static readonly RULE_parseOperatorKindClause = 131;
+    public static readonly RULE_parseOperatorFlagsClause = 132;
+    public static readonly RULE_parseOperatorNameAndOptionalType = 133;
+    public static readonly RULE_parseOperatorPattern = 134;
+    public static readonly RULE_parseOperatorPatternSegment = 135;
+    public static readonly RULE_parseWhereOperator = 136;
+    public static readonly RULE_parseKvOperator = 137;
+    public static readonly RULE_parseKvWithClause = 138;
+    public static readonly RULE_partitionOperator = 139;
+    public static readonly RULE_partitionOperatorInClause = 140;
+    public static readonly RULE_partitionOperatorSubExpressionBody = 141;
+    public static readonly RULE_partitionOperatorFullExpressionBody = 142;
+    public static readonly RULE_partitionByOperator = 143;
+    public static readonly RULE_partitionByOperatorIdClause = 144;
+    public static readonly RULE_printOperator = 145;
+    public static readonly RULE_projectAwayOperator = 146;
+    public static readonly RULE_projectKeepOperator = 147;
+    public static readonly RULE_projectOperator = 148;
+    public static readonly RULE_projectRenameOperator = 149;
+    public static readonly RULE_projectReorderOperator = 150;
+    public static readonly RULE_projectReorderExpression = 151;
+    public static readonly RULE_pushOperator = 152;
+    public static readonly RULE_reduceByOperator = 153;
+    public static readonly RULE_reduceByWithClause = 154;
+    public static readonly RULE_mapOperator = 155;
+    public static readonly RULE_renameOperator = 156;
+    public static readonly RULE_renameToExpression = 157;
+    public static readonly RULE_renderOperator = 158;
+    public static readonly RULE_renderOperatorWithClause = 159;
+    public static readonly RULE_renderOperatorLegacyPropertyList = 160;
+    public static readonly RULE_renderOperatorProperty = 161;
+    public static readonly RULE_renderPropertyNameList = 162;
+    public static readonly RULE_renderOperatorLegacyProperty = 163;
+    public static readonly RULE_sampleDistinctOperator = 164;
+    public static readonly RULE_sampleOperator = 165;
+    public static readonly RULE_scanOperator = 166;
+    public static readonly RULE_scanOperatorOrderByClause = 167;
+    public static readonly RULE_scanOperatorPartitionByClause = 168;
+    public static readonly RULE_scanOperatorDeclareClause = 169;
+    public static readonly RULE_scanOperatorStep = 170;
+    public static readonly RULE_scanOperatorStepOutputClause = 171;
+    public static readonly RULE_scanOperatorBody = 172;
+    public static readonly RULE_scanOperatorAssignment = 173;
+    public static readonly RULE_searchOperator = 174;
+    public static readonly RULE_searchOperatorStarAndExpression = 175;
+    public static readonly RULE_searchOperatorInClause = 176;
+    public static readonly RULE_serializeOperator = 177;
+    public static readonly RULE_sortOperator = 178;
+    public static readonly RULE_orderedExpression = 179;
+    public static readonly RULE_summarizeOperator = 180;
+    public static readonly RULE_summarizeOperatorByClause = 181;
+    public static readonly RULE_summarizeOperatorLegacyBinClause = 182;
+    public static readonly RULE_takeOperator = 183;
+    public static readonly RULE_topOperator = 184;
+    public static readonly RULE_topHittersOperator = 185;
+    public static readonly RULE_topHittersOperatorByClause = 186;
+    public static readonly RULE_topNestedOperator = 187;
+    public static readonly RULE_topNestedOperatorPart = 188;
+    public static readonly RULE_topNestedOperatorWithOthersClause = 189;
+    public static readonly RULE_unionOperator = 190;
+    public static readonly RULE_unionAsOperator = 191;
+    public static readonly RULE_whereOperator = 192;
+    public static readonly RULE_unnestOperator = 193;
+    public static readonly RULE_unnestOperatorOnClause = 194;
+    public static readonly RULE_contextualSubExpression = 195;
+    public static readonly RULE_contextualPipeExpression = 196;
+    public static readonly RULE_contextualPipeExpressionPipedOperator = 197;
+    public static readonly RULE_strictQueryOperatorParameter = 198;
+    public static readonly RULE_relaxedQueryOperatorParameter = 199;
+    public static readonly RULE_queryOperatorProperty = 200;
+    public static readonly RULE_namedExpression = 201;
+    public static readonly RULE_staticNamedExpression = 202;
+    public static readonly RULE_namedExpressionNameClause = 203;
+    public static readonly RULE_namedExpressionNameList = 204;
+    public static readonly RULE_scopedFunctionCallExpression = 205;
+    public static readonly RULE_unnamedExpression = 206;
+    public static readonly RULE_logicalOrExpression = 207;
+    public static readonly RULE_logicalOrOperation = 208;
+    public static readonly RULE_logicalAndExpression = 209;
+    public static readonly RULE_logicalAndOperation = 210;
+    public static readonly RULE_equalityExpression = 211;
+    public static readonly RULE_equalsEqualityExpression = 212;
+    public static readonly RULE_listEqualityExpression = 213;
+    public static readonly RULE_betweenEqualityExpression = 214;
+    public static readonly RULE_starEqualityExpression = 215;
+    public static readonly RULE_relationalExpression = 216;
+    public static readonly RULE_additiveExpression = 217;
+    public static readonly RULE_additiveOperation = 218;
+    public static readonly RULE_multiplicativeExpression = 219;
+    public static readonly RULE_multiplicativeOperation = 220;
+    public static readonly RULE_stringOperatorExpression = 221;
+    public static readonly RULE_stringBinaryOperatorExpression = 222;
+    public static readonly RULE_stringBinaryOperator = 223;
+    public static readonly RULE_stringStarOperatorExpression = 224;
+    public static readonly RULE_invocationExpression = 225;
+    public static readonly RULE_functionCallOrPathExpression = 226;
+    public static readonly RULE_functionCallOrPathRoot = 227;
+    public static readonly RULE_functionCallOrPathPathExpression = 228;
+    public static readonly RULE_functionCallOrPathOperation = 229;
+    public static readonly RULE_functionCallOrPathCallOperation = 230;
+    public static readonly RULE_functionalCallOrPathPathOperation = 231;
+    public static readonly RULE_functionCallOrPathElementOperation = 232;
+    public static readonly RULE_legacyFunctionCallOrPathElementOperation = 233;
+    public static readonly RULE_toScalarExpression = 234;
+    public static readonly RULE_toTableExpression = 235;
+    public static readonly RULE_noOptimizationParameter = 236;
+    public static readonly RULE_dotCompositeFunctionCallExpression = 237;
+    public static readonly RULE_dotCompositeFunctionCallOperation = 238;
+    public static readonly RULE_functionCallExpression = 239;
+    public static readonly RULE_functionCallName = 240;
+    public static readonly RULE_argumentExpression = 241;
+    public static readonly RULE_starExpression = 242;
+    public static readonly RULE_primaryExpression = 243;
+    public static readonly RULE_parenthesizedExpression = 244;
+    public static readonly RULE_rangeExpression = 245;
+    public static readonly RULE_entityExpression = 246;
+    public static readonly RULE_entityPathOrElementExpression = 247;
+    public static readonly RULE_entityPathOrElementOperator = 248;
+    public static readonly RULE_entityPathOperator = 249;
+    public static readonly RULE_entityElementOperator = 250;
+    public static readonly RULE_legacyEntityPathElementOperator = 251;
+    public static readonly RULE_entityName = 252;
+    public static readonly RULE_entityNameReference = 253;
+    public static readonly RULE_atSignName = 254;
+    public static readonly RULE_extendedPathName = 255;
+    public static readonly RULE_wildcardedEntityExpression = 256;
+    public static readonly RULE_wildcardedPathExpression = 257;
+    public static readonly RULE_wildcardedPathName = 258;
+    public static readonly RULE_contextualDataTableExpression = 259;
+    public static readonly RULE_dataTableExpression = 260;
+    public static readonly RULE_rowSchema = 261;
+    public static readonly RULE_rowSchemaColumnDeclaration = 262;
+    public static readonly RULE_externalDataExpression = 263;
+    public static readonly RULE_externalDataWithClause = 264;
+    public static readonly RULE_externalDataWithClauseProperty = 265;
+    public static readonly RULE_materializedViewCombineExpression = 266;
+    public static readonly RULE_materializeViewCombineBaseClause = 267;
+    public static readonly RULE_materializedViewCombineDeltaClause = 268;
+    public static readonly RULE_materializedViewCombineAggregationsClause = 269;
+    public static readonly RULE_scalarType = 270;
+    public static readonly RULE_extendedScalarType = 271;
+    public static readonly RULE_parameterName = 272;
+    public static readonly RULE_simpleNameReference = 273;
+    public static readonly RULE_extendedNameReference = 274;
+    public static readonly RULE_wildcardedNameReference = 275;
+    public static readonly RULE_simpleOrWildcardedNameReference = 276;
+    public static readonly RULE_pathReference = 277;
+    public static readonly RULE_simpleOrPathNameReference = 278;
+    public static readonly RULE_tableNameReference = 279;
+    public static readonly RULE_dynamicTableNameReference = 280;
+    public static readonly RULE_identifierName = 281;
+    public static readonly RULE_keywordName = 282;
+    public static readonly RULE_extendedKeywordName = 283;
+    public static readonly RULE_escapedName = 284;
+    public static readonly RULE_pathOrKeyword = 285;
+    public static readonly RULE_pathOrExtendedKeyword = 286;
+    public static readonly RULE_wildcardedName = 287;
+    public static readonly RULE_literalExpression = 288;
+    public static readonly RULE_unsignedLiteralExpression = 289;
+    public static readonly RULE_numberLikeLiteralExpression = 290;
+    public static readonly RULE_numericLiteralExpression = 291;
+    public static readonly RULE_signedLiteralExpression = 292;
+    public static readonly RULE_longLiteralExpression = 293;
+    public static readonly RULE_intLiteralExpression = 294;
+    public static readonly RULE_realLiteralExpression = 295;
+    public static readonly RULE_decimalLiteralExpression = 296;
+    public static readonly RULE_dateTimeLiteralExpression = 297;
+    public static readonly RULE_timeSpanLiteralExpression = 298;
+    public static readonly RULE_booleanLiteralExpression = 299;
+    public static readonly RULE_guidLiteralExpression = 300;
+    public static readonly RULE_typeLiteralExpression = 301;
+    public static readonly RULE_signedLongLiteralExpression = 302;
+    public static readonly RULE_signedRealLiteralExpression = 303;
+    public static readonly RULE_stringLiteralExpression = 304;
+    public static readonly RULE_dynamicLiteralExpression = 305;
+    public static readonly RULE_jsonValue = 306;
+    public static readonly RULE_jsonObject = 307;
+    public static readonly RULE_jsonPair = 308;
+    public static readonly RULE_jsonArray = 309;
+    public static readonly RULE_jsonBoolean = 310;
+    public static readonly RULE_jsonDateTime = 311;
+    public static readonly RULE_jsonGuid = 312;
+    public static readonly RULE_jsonNull = 313;
+    public static readonly RULE_jsonString = 314;
+    public static readonly RULE_jsonTimeSpan = 315;
+    public static readonly RULE_jsonLong = 316;
+    public static readonly RULE_jsonReal = 317;
 
     public static readonly literalNames = [
         null, "'*'", "'@'", "'|'", "'}'", "']'", "']-'", "']->'", "')'", 
@@ -651,28 +665,29 @@ export class HqlParser extends antlr.Parser {
         "'alias'", "'all'", "'and'", "'anomalychart'", "'anomalycolumns'", 
         "'areachart'", "'as'", "'asc'", "'assert-schema'", "'axes'", "'bagexpansion'", 
         "'barchart'", "'base'", "'between'", "'bin'", "'bin_legacy'", "'by'", 
-        "'card'", "'cluster'", "'columnchart'", "'consume'", "'contains'", 
-        "'contains_cs'", "'contains_all'", "'contains_any'", "'contains_all_cs'", 
-        "'contains_any_cs'", "'__contextual_datatable'", "'count'", "'__crossCluster'", 
-        "'__crossDB'", "'database'", "'datascope'", "'datatable'", "'declare'", 
-        "'decodeblocks'", "'default'", "'delta'", "'desc'", "'distinct'", 
-        "'edges'", "'endswith'", "'endswith_cs'", "'entity_group'", "'evaluate'", 
-        "'execute'", "'__executeAndCache'", "'expandoutput'", "'extend'", 
-        "'externaldata'", "'external_data'", "'facet'", "'filter'", "'find'", 
-        "'first'", "'flags'", "'fork'", "'from'", "'getschema'", "'global'", 
-        "'granny-asc'", "'granny-desc'", "'graph-mark-components'", "'graph-match'", 
-        "'graph-merge'", "'graph-shortest-paths'", "'graph-to-table'", "'has'", 
-        "'has_all'", "'has_any'", "'has_all_cs'", "'has_any_cs'", "'has_cs'", 
-        "'hasprefix'", "'hasprefix_cs'", "'hassuffix'", "'hassuffix_cs'", 
-        "'hidden'", "'hint.concurrency'", "'hint.distribution'", "'hint.materialized'", 
-        "'hint.num_partitions'", "'hint.pass_filters'", "'hint.pass_filters_column'", 
-        "'hint.progressive_top'", "'hint.remote'", "'hint.shufflekey'", 
-        "'hint.spread'", "'hint.strategy'", "'hot'", "'hotcache'", "'hotdata'", 
-        "'hotindex'", "'id'", "'__id'", "'in'", "'in~'", "'into'", "'invoke'", 
-        "'isfuzzy'", "'__isFuzzy'", "'join'", "'kind'", "'ladderchart'", 
-        "'last'", "'legend'", "'let'", "'limit'", "'linear'", "'linechart'", 
-        "'list'", "'lookup'", "'log'", "'macro-expand'", "'make-graph'", 
-        "'make-series'", "'map'", "'matches regex'", "'materialize'", "'materialized-view-combine'", 
+        "'card'", "'class'", "'cluster'", "'columnchart'", "'consume'", 
+        "'contains'", "'contains_cs'", "'contains_all'", "'contains_any'", 
+        "'contains_all_cs'", "'contains_any_cs'", "'__contextual_datatable'", 
+        "'count'", "'__crossCluster'", "'__crossDB'", "'database'", "'datascope'", 
+        "'datatable'", "'declare'", "'decodeblocks'", "'default'", "'delta'", 
+        "'desc'", "'distinct'", "'edges'", "'endswith'", "'endswith_cs'", 
+        "'entity_group'", "'evaluate'", "'execute'", "'__executeAndCache'", 
+        "'expandoutput'", "'extend'", "'externaldata'", "'external_data'", 
+        "'facet'", "'filter'", "'find'", "'first'", "'flags'", "'fork'", 
+        "'from'", "'getschema'", "'global'", "'granny-asc'", "'granny-desc'", 
+        "'graph-mark-components'", "'graph-match'", "'graph-merge'", "'graph-shortest-paths'", 
+        "'graph-to-table'", "'has'", "'has_all'", "'has_any'", "'has_all_cs'", 
+        "'has_any_cs'", "'has_cs'", "'hasprefix'", "'hasprefix_cs'", "'hassuffix'", 
+        "'hassuffix_cs'", "'hidden'", "'hint.concurrency'", "'hint.distribution'", 
+        "'hint.materialized'", "'hint.num_partitions'", "'hint.pass_filters'", 
+        "'hint.pass_filters_column'", "'hint.progressive_top'", "'hint.remote'", 
+        "'hint.shufflekey'", "'hint.spread'", "'hint.strategy'", "'hot'", 
+        "'hotcache'", "'hotdata'", "'hotindex'", "'id'", "'__id'", "'import'", 
+        "'in'", "'in~'", "'into'", "'invoke'", "'isfuzzy'", "'__isFuzzy'", 
+        "'join'", "'kind'", "'ladderchart'", "'last'", "'legend'", "'let'", 
+        "'limit'", "'linear'", "'linechart'", "'list'", "'lookup'", "'log'", 
+        "'macro'", "'macro-expand'", "'make-graph'", "'make-series'", "'map'", 
+        "'matches regex'", "'materialize'", "'materialized-view-combine'", 
         "'mv-apply'", "'mv-expand'", "'mvapply'", "'mvexpand'", "'nodes'", 
         "'none'", "'nooptimization'", "'!between'", "'!contains'", "'!contains_cs'", 
         "'!endswith_cs'", "'!endswith'", "'!has'", "'!has_cs'", "'!hasprefix'", 
@@ -683,24 +698,25 @@ export class HqlParser extends antlr.Parser {
         "'partition'", "'__partitionby'", "'partitioned-by'", "'pattern'", 
         "'__packedColumn'", "'piechart'", "'pivotchart'", "'plugin'", "'print'", 
         "'project'", "'project-away'", "'__projectAway'", "'project-keep'", 
-        "'project-rename'", "'project-reorder'", "'project-smart'", "'query_parameters'", 
-        "'range'", "'reduce'", "'regex'", "'relaxed'", "'render'", "'replace'", 
-        "'restrict'", "'sample'", "'sample-distinct'", "'scan'", "'scatterchart'", 
-        "'search'", "'serialize'", "'series'", "'set'", "'simple'", "'sort'", 
-        "'__sourceColumnIndex'", "'stacked'", "'stacked100'", "'stackedareachart'", 
-        "'startswith'", "'startswith_cs'", "'step'", "'summarize'", "'table'", 
-        "'take'", "'threshold'", "'timechart'", "'timeline'", "'timepivot'", 
-        "'title'", "'to'", "'top'", "'top-hitters'", "'top-nested'", "'toscalar'", 
-        "'totable'", "'treemap'", "'typeof'", "'union'", "'unnest'", "'unstacked'", 
-        "'uuid'", "'view'", "'visible'", "'where'", "'with'", "'__noWithSource'", 
-        "'withsource'", "'with_itemindex'", "'with_match_id'", "'with_node_id'", 
-        "'with_source'", "'with_step_name'", "'xaxis'", "'xcolumn'", "'xmax'", 
-        "'xmin'", "'xtitle'", "'yaxis'", "'ycolumns'", "'ymax'", "'ymin'", 
-        "'ysplit'", "'ytitle'", "'rename'", "'bool'", "'boolean'", "'date'", 
-        "'datetime'", "'decimal'", "'double'", "'dynamic'", "'float'", "'guid'", 
-        "'int'", "'int8'", "'int16'", "'int32'", "'int64'", "'long'", "'string'", 
-        "'real'", "'time'", "'timespan'", "'uint'", "'uint8'", "'uint16'", 
-        "'uint32'", "'uint64'", "'ulong'", "'uniqueid'", "'ip4'", "'ip6'"
+        "'project-rename'", "'project-reorder'", "'project-smart'", "'push'", 
+        "'query_parameters'", "'range'", "'reduce'", "'regex'", "'relaxed'", 
+        "'render'", "'replace'", "'restrict'", "'sample'", "'sample-distinct'", 
+        "'scan'", "'scatterchart'", "'search'", "'serialize'", "'series'", 
+        "'set'", "'simple'", "'sort'", "'__sourceColumnIndex'", "'stacked'", 
+        "'stacked100'", "'stackedareachart'", "'startswith'", "'startswith_cs'", 
+        "'step'", "'summarize'", "'table'", "'take'", "'threshold'", "'timechart'", 
+        "'timeline'", "'timepivot'", "'title'", "'to'", "'top'", "'top-hitters'", 
+        "'top-nested'", "'toscalar'", "'totable'", "'treemap'", "'typeof'", 
+        "'union'", "'unnest'", "'unstacked'", "'uuid'", "'view'", "'visible'", 
+        "'where'", "'with'", "'__noWithSource'", "'withsource'", "'with_itemindex'", 
+        "'with_match_id'", "'with_node_id'", "'with_source'", "'with_step_name'", 
+        "'xaxis'", "'xcolumn'", "'xmax'", "'xmin'", "'xtitle'", "'yaxis'", 
+        "'ycolumns'", "'ymax'", "'ymin'", "'ysplit'", "'ytitle'", "'rename'", 
+        "'bool'", "'boolean'", "'date'", "'datetime'", "'decimal'", "'double'", 
+        "'dynamic'", "'float'", "'guid'", "'int'", "'int8'", "'int16'", 
+        "'int32'", "'int64'", "'long'", "'string'", "'real'", "'time'", 
+        "'timespan'", "'uint'", "'uint8'", "'uint16'", "'uint32'", "'uint64'", 
+        "'ulong'", "'uniqueid'", "'ip4'", "'ip6'"
     ];
 
     public static readonly symbolicNames = [
@@ -715,39 +731,40 @@ export class HqlParser extends antlr.Parser {
         "CHART3D_", "ACCESS", "ACCUMULATE", "AGGREGATIONS", "ALIAS", "ALL", 
         "AND", "ANOMALYCHART", "ANOMALYCOLUMNS", "AREACHART", "AS", "ASC", 
         "ASSERTSCHEMA", "AXES", "BAGEXPANSION", "BARCHART", "BASE", "BETWEEN", 
-        "BIN", "BIN_LEGACY", "BY", "CARD", "CLUSTER", "COLUMNCHART", "CONSUME", 
-        "CONTAINS", "CONTAINS_CS", "CONTAINS_ALL", "CONTAINS_ANY", "CONTAINS_ALL_CS", 
-        "CONTAINS_ANY_CS", "CONTEXTUAL_DATATABLE", "COUNT", "CROSSCLUSTER__", 
-        "CROSSDB__", "DATABASE", "DATASCOPE", "DATATABLE", "DECLARE", "DECODEBLOCKS", 
-        "DEFAULT", "DELTA", "DESC", "DISTINCT", "EDGES", "ENDSWITH", "ENDSWITH_CS", 
-        "ENTITYGROUP", "EVALUATE", "EXECUTE", "EXECUTE_AND_CACHE", "EXPANDOUTPUT", 
-        "EXTEND", "EXTERNALDATA", "EXTERNAL_DATA", "FACET", "FILTER", "FIND", 
-        "FIRST", "FLAGS", "FORK", "FROM", "GETSCHEMA", "GLOBAL", "GRANNYASC", 
-        "GRANNYDESC", "GRAPHMARKCOMPONENTS", "GRAPHMATCH", "GRAPHMERGE", 
-        "GRAPHSHORTESTPATHS", "GRAPHTOTABLE", "HAS", "HAS_ALL", "HAS_ANY", 
-        "HAS_ALL_CS", "HAS_ANY_CS", "HAS_CS", "HASPREFIX", "HASPREFIX_CS", 
+        "BIN", "BIN_LEGACY", "BY", "CARD", "CLASS", "CLUSTER", "COLUMNCHART", 
+        "CONSUME", "CONTAINS", "CONTAINS_CS", "CONTAINS_ALL", "CONTAINS_ANY", 
+        "CONTAINS_ALL_CS", "CONTAINS_ANY_CS", "CONTEXTUAL_DATATABLE", "COUNT", 
+        "CROSSCLUSTER__", "CROSSDB__", "DATABASE", "DATASCOPE", "DATATABLE", 
+        "DECLARE", "DECODEBLOCKS", "DEFAULT", "DELTA", "DESC", "DISTINCT", 
+        "EDGES", "ENDSWITH", "ENDSWITH_CS", "ENTITYGROUP", "EVALUATE", "EXECUTE", 
+        "EXECUTE_AND_CACHE", "EXPANDOUTPUT", "EXTEND", "EXTERNALDATA", "EXTERNAL_DATA", 
+        "FACET", "FILTER", "FIND", "FIRST", "FLAGS", "FORK", "FROM", "GETSCHEMA", 
+        "GLOBAL", "GRANNYASC", "GRANNYDESC", "GRAPHMARKCOMPONENTS", "GRAPHMATCH", 
+        "GRAPHMERGE", "GRAPHSHORTESTPATHS", "GRAPHTOTABLE", "HAS", "HAS_ALL", 
+        "HAS_ANY", "HAS_ALL_CS", "HAS_ANY_CS", "HAS_CS", "HASPREFIX", "HASPREFIX_CS", 
         "HASSUFFIX", "HASSUFFIX_CS", "HIDDEN_", "HINT_CONCURRENCY", "HINT_DISTRIBUTION", 
         "HINT_MATERIALIZED", "HINT_NUM_PARTITIONS", "HINT_PASS_FILTERS", 
         "HINT_PASS_FILTERS_COLUMN", "HINT_PROGRESSIVE_TOP", "HINT_REMOTE", 
         "HINT_SUFFLEKEY", "HINT_SPREAD", "HINT_STRATEGY", "HOT", "HOTCACHE", 
-        "HOTDATA", "HOTINDEX", "ID", "ID__", "IN", "IN_CI", "INTO", "INVOKE", 
-        "ISFUZZY", "ISFUZZY__", "JOIN", "KIND", "LADDERCHART", "LAST", "LEGEND", 
-        "LET", "LIMIT", "LINEAR", "LINECHART", "LIST", "LOOKUP", "LOG", 
-        "MACROEXPAND", "MAKEGRAPH", "MAKESERIES", "MAP", "MATCHES_REGEX", 
-        "MATERIALIZE", "MATERIALIZED_VIEW_COMBINE", "MV_APPLY", "MV_EXPAND", 
-        "MVAPPLY", "MVEXPAND", "NODES", "NONE", "NOOPTIMIZATION", "NOT_BETWEEN", 
-        "NOT_CONTAINS", "NOT_CONTAINS_CS", "NOT_ENDSWITH_CS", "NOT_ENDSWITH", 
-        "NOT_HAS", "NOT_HAS_CS", "NOT_HASPREFIX", "NOT_HASPREFIX_CS", "NOT_HASSUFFIX", 
-        "NOT_HASSUFFIX_CS", "NOT_IN", "NOT_IN_CI", "NOT_STARTSWITH", "NOT_STARTSWITH_CS", 
-        "NULL", "NULLS", "OF", "ON", "OPTIONAL", "OR", "ORDER", "OTHERS", 
-        "OUTPUT", "PACK", "PANELS", "PARSE", "PARSEKV", "PARSEWHERE", "PARTITION", 
-        "PARTITIONBY", "PARTITIONEDBY", "PATTERN", "PACKEDCOLUMN__", "PIECHART", 
-        "PIVOTCHART", "PLUGIN", "PRINT", "PROJECT", "PROJECTAWAY", "PROJECTAWAY_", 
-        "PROJECTKEEP", "PROJECTRENAME", "PROJECTREORDER", "PROJECTSMART", 
-        "QUERYPARAMETERS", "RANGE", "REDUCE", "REGEX", "RELAXED", "RENDER", 
-        "REPLACE", "RESTRICT", "SAMPLE", "SAMPLE_DISTINCT", "SCAN", "SCATTERCHART", 
-        "SEARCH", "SERIALIZE", "SERIES", "SET", "SIMPLE", "SORT", "SOURCECOLUMNINDEX__", 
-        "STACKED", "STACKED100", "STACKEDAREACHART", "STARTSWITH", "STARTSWITH_CS", 
+        "HOTDATA", "HOTINDEX", "ID", "ID__", "IMPORT", "IN", "IN_CI", "INTO", 
+        "INVOKE", "ISFUZZY", "ISFUZZY__", "JOIN", "KIND", "LADDERCHART", 
+        "LAST", "LEGEND", "LET", "LIMIT", "LINEAR", "LINECHART", "LIST", 
+        "LOOKUP", "LOG", "MACRO", "MACROEXPAND", "MAKEGRAPH", "MAKESERIES", 
+        "MAP", "MATCHES_REGEX", "MATERIALIZE", "MATERIALIZED_VIEW_COMBINE", 
+        "MV_APPLY", "MV_EXPAND", "MVAPPLY", "MVEXPAND", "NODES", "NONE", 
+        "NOOPTIMIZATION", "NOT_BETWEEN", "NOT_CONTAINS", "NOT_CONTAINS_CS", 
+        "NOT_ENDSWITH_CS", "NOT_ENDSWITH", "NOT_HAS", "NOT_HAS_CS", "NOT_HASPREFIX", 
+        "NOT_HASPREFIX_CS", "NOT_HASSUFFIX", "NOT_HASSUFFIX_CS", "NOT_IN", 
+        "NOT_IN_CI", "NOT_STARTSWITH", "NOT_STARTSWITH_CS", "NULL", "NULLS", 
+        "OF", "ON", "OPTIONAL", "OR", "ORDER", "OTHERS", "OUTPUT", "PACK", 
+        "PANELS", "PARSE", "PARSEKV", "PARSEWHERE", "PARTITION", "PARTITIONBY", 
+        "PARTITIONEDBY", "PATTERN", "PACKEDCOLUMN__", "PIECHART", "PIVOTCHART", 
+        "PLUGIN", "PRINT", "PROJECT", "PROJECTAWAY", "PROJECTAWAY_", "PROJECTKEEP", 
+        "PROJECTRENAME", "PROJECTREORDER", "PROJECTSMART", "PUSH", "QUERYPARAMETERS", 
+        "RANGE", "REDUCE", "REGEX", "RELAXED", "RENDER", "REPLACE", "RESTRICT", 
+        "SAMPLE", "SAMPLE_DISTINCT", "SCAN", "SCATTERCHART", "SEARCH", "SERIALIZE", 
+        "SERIES", "SET", "SIMPLE", "SORT", "SOURCECOLUMNINDEX__", "STACKED", 
+        "STACKED100", "STACKEDAREACHART", "STARTSWITH", "STARTSWITH_CS", 
         "STEP", "SUMMARIZE", "TABLE", "TAKE", "THRESHOLD", "TIMECHART", 
         "TIMELINE", "TIMEPIVOT", "TITLE", "TO", "TOP", "TOP_HITTERS", "TOP_NESTED", 
         "TOSCALAR", "TOTABLE", "TREEMAP", "TYPEOF", "UNION", "UNNEST", "UNSTACKED", 
@@ -767,8 +784,10 @@ export class HqlParser extends antlr.Parser {
     public static readonly ruleNames = [
         "top", "query", "statement", "letStatement", "letVariableDeclaration", 
         "letFunctionDeclaration", "letViewDeclaration", "letViewParameterList", 
-        "letMaterializeDeclaration", "letEntityGroupDeclaration", "letMacroDeclaration", 
-        "letLogicDeclaration", "letFunctionParameterList", "scalarParameter", 
+        "letMaterializeDeclaration", "letEntityGroupDeclaration", "letLogicDeclaration", 
+        "letFunctionParameterList", "macroStatement", "classStatement", 
+        "mapStatement", "mapEntry", "singleMapValue", "multiMapValue", "importStatement", 
+        "simpleImportStatement", "fromImportStatement", "scalarParameter", 
         "scalarParameterDefault", "tabularParameter", "tabularParameterOpenSchema", 
         "tabularParameterRowSchema", "tabularParameterRowSchemaColumnDeclaration", 
         "letFunctionBody", "letFunctionBodyStatement", "declarePatternStatement", 
@@ -815,36 +834,37 @@ export class HqlParser extends antlr.Parser {
         "partitionByOperator", "partitionByOperatorIdClause", "printOperator", 
         "projectAwayOperator", "projectKeepOperator", "projectOperator", 
         "projectRenameOperator", "projectReorderOperator", "projectReorderExpression", 
-        "reduceByOperator", "reduceByWithClause", "renameOperator", "renameToExpression", 
-        "renderOperator", "renderOperatorWithClause", "renderOperatorLegacyPropertyList", 
-        "renderOperatorProperty", "renderPropertyNameList", "renderOperatorLegacyProperty", 
-        "sampleDistinctOperator", "sampleOperator", "scanOperator", "scanOperatorOrderByClause", 
-        "scanOperatorPartitionByClause", "scanOperatorDeclareClause", "scanOperatorStep", 
-        "scanOperatorStepOutputClause", "scanOperatorBody", "scanOperatorAssignment", 
-        "searchOperator", "searchOperatorStarAndExpression", "searchOperatorInClause", 
-        "serializeOperator", "sortOperator", "orderedExpression", "summarizeOperator", 
-        "summarizeOperatorByClause", "summarizeOperatorLegacyBinClause", 
-        "takeOperator", "topOperator", "topHittersOperator", "topHittersOperatorByClause", 
-        "topNestedOperator", "topNestedOperatorPart", "topNestedOperatorWithOthersClause", 
-        "unionOperator", "unionAsOperator", "whereOperator", "unnestOperator", 
-        "unnestOperatorOnClause", "contextualSubExpression", "contextualPipeExpression", 
-        "contextualPipeExpressionPipedOperator", "strictQueryOperatorParameter", 
-        "relaxedQueryOperatorParameter", "queryOperatorProperty", "namedExpression", 
-        "staticNamedExpression", "namedExpressionNameClause", "namedExpressionNameList", 
-        "scopedFunctionCallExpression", "unnamedExpression", "logicalOrExpression", 
-        "logicalOrOperation", "logicalAndExpression", "logicalAndOperation", 
-        "equalityExpression", "equalsEqualityExpression", "listEqualityExpression", 
-        "betweenEqualityExpression", "starEqualityExpression", "relationalExpression", 
-        "additiveExpression", "additiveOperation", "multiplicativeExpression", 
-        "multiplicativeOperation", "stringOperatorExpression", "stringBinaryOperatorExpression", 
-        "stringBinaryOperator", "stringStarOperatorExpression", "invocationExpression", 
-        "functionCallOrPathExpression", "functionCallOrPathRoot", "functionCallOrPathPathExpression", 
-        "functionCallOrPathOperation", "functionCallOrPathCallOperation", 
-        "functionalCallOrPathPathOperation", "functionCallOrPathElementOperation", 
-        "legacyFunctionCallOrPathElementOperation", "toScalarExpression", 
-        "toTableExpression", "noOptimizationParameter", "dotCompositeFunctionCallExpression", 
-        "dotCompositeFunctionCallOperation", "functionCallExpression", "functionCallName", 
-        "argumentExpression", "starExpression", "primaryExpression", "parenthesizedExpression", 
+        "pushOperator", "reduceByOperator", "reduceByWithClause", "mapOperator", 
+        "renameOperator", "renameToExpression", "renderOperator", "renderOperatorWithClause", 
+        "renderOperatorLegacyPropertyList", "renderOperatorProperty", "renderPropertyNameList", 
+        "renderOperatorLegacyProperty", "sampleDistinctOperator", "sampleOperator", 
+        "scanOperator", "scanOperatorOrderByClause", "scanOperatorPartitionByClause", 
+        "scanOperatorDeclareClause", "scanOperatorStep", "scanOperatorStepOutputClause", 
+        "scanOperatorBody", "scanOperatorAssignment", "searchOperator", 
+        "searchOperatorStarAndExpression", "searchOperatorInClause", "serializeOperator", 
+        "sortOperator", "orderedExpression", "summarizeOperator", "summarizeOperatorByClause", 
+        "summarizeOperatorLegacyBinClause", "takeOperator", "topOperator", 
+        "topHittersOperator", "topHittersOperatorByClause", "topNestedOperator", 
+        "topNestedOperatorPart", "topNestedOperatorWithOthersClause", "unionOperator", 
+        "unionAsOperator", "whereOperator", "unnestOperator", "unnestOperatorOnClause", 
+        "contextualSubExpression", "contextualPipeExpression", "contextualPipeExpressionPipedOperator", 
+        "strictQueryOperatorParameter", "relaxedQueryOperatorParameter", 
+        "queryOperatorProperty", "namedExpression", "staticNamedExpression", 
+        "namedExpressionNameClause", "namedExpressionNameList", "scopedFunctionCallExpression", 
+        "unnamedExpression", "logicalOrExpression", "logicalOrOperation", 
+        "logicalAndExpression", "logicalAndOperation", "equalityExpression", 
+        "equalsEqualityExpression", "listEqualityExpression", "betweenEqualityExpression", 
+        "starEqualityExpression", "relationalExpression", "additiveExpression", 
+        "additiveOperation", "multiplicativeExpression", "multiplicativeOperation", 
+        "stringOperatorExpression", "stringBinaryOperatorExpression", "stringBinaryOperator", 
+        "stringStarOperatorExpression", "invocationExpression", "functionCallOrPathExpression", 
+        "functionCallOrPathRoot", "functionCallOrPathPathExpression", "functionCallOrPathOperation", 
+        "functionCallOrPathCallOperation", "functionalCallOrPathPathOperation", 
+        "functionCallOrPathElementOperation", "legacyFunctionCallOrPathElementOperation", 
+        "toScalarExpression", "toTableExpression", "noOptimizationParameter", 
+        "dotCompositeFunctionCallExpression", "dotCompositeFunctionCallOperation", 
+        "functionCallExpression", "functionCallName", "argumentExpression", 
+        "starExpression", "primaryExpression", "parenthesizedExpression", 
         "rangeExpression", "entityExpression", "entityPathOrElementExpression", 
         "entityPathOrElementOperator", "entityPathOperator", "entityElementOperator", 
         "legacyEntityPathElementOperator", "entityName", "entityNameReference", 
@@ -890,8 +910,10 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 616;
+            this.state = 636;
             this.query();
+            this.state = 637;
+            this.match(HqlParser.EOF);
             }
         }
         catch (re) {
@@ -915,40 +937,38 @@ export class HqlParser extends antlr.Parser {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 618;
+            this.state = 639;
             localContext._statement = this.statement();
             localContext._Statements.push(localContext._statement!);
-            this.state = 623;
+            this.state = 644;
             this.errorHandler.sync(this);
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 0, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 619;
+                    this.state = 640;
                     this.match(HqlParser.SEMICOLON);
-                    this.state = 620;
+                    this.state = 641;
                     localContext._statement = this.statement();
                     localContext._Statements.push(localContext._statement!);
                     }
                     }
                 }
-                this.state = 625;
+                this.state = 646;
                 this.errorHandler.sync(this);
                 alternative = this.interpreter.adaptivePredict(this.tokenStream, 0, this.context);
             }
-            this.state = 627;
+            this.state = 648;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 34) {
                 {
-                this.state = 626;
+                this.state = 647;
                 this.match(HqlParser.SEMICOLON);
                 }
             }
 
-            this.state = 629;
-            this.match(HqlParser.EOF);
             }
         }
         catch (re) {
@@ -968,48 +988,76 @@ export class HqlParser extends antlr.Parser {
         let localContext = new StatementContext(this.context, this.state);
         this.enterRule(localContext, 4, HqlParser.RULE_statement);
         try {
-            this.state = 637;
+            this.state = 660;
             this.errorHandler.sync(this);
             switch (this.interpreter.adaptivePredict(this.tokenStream, 2, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 631;
+                this.state = 650;
                 localContext._DeclarePattern = this.declarePatternStatement();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 632;
+                this.state = 651;
                 localContext._DeclareQueryParameters = this.declareQueryParametersStatement();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 633;
+                this.state = 652;
                 localContext._Let = this.letStatement();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 634;
-                localContext._Query = this.queryStatement();
+                this.state = 653;
+                localContext._Macro = this.macroStatement();
                 }
                 break;
             case 5:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 635;
-                localContext._RestrictAccess = this.restrictAccessStatement();
+                this.state = 654;
+                localContext._Class = this.classStatement();
                 }
                 break;
             case 6:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 636;
+                this.state = 655;
+                localContext._Map = this.mapStatement();
+                }
+                break;
+            case 7:
+                this.enterOuterAlt(localContext, 7);
+                {
+                this.state = 656;
+                localContext._Import = this.importStatement();
+                }
+                break;
+            case 8:
+                this.enterOuterAlt(localContext, 8);
+                {
+                this.state = 657;
+                localContext._Query = this.queryStatement();
+                }
+                break;
+            case 9:
+                this.enterOuterAlt(localContext, 9);
+                {
+                this.state = 658;
+                localContext._RestrictAccess = this.restrictAccessStatement();
+                }
+                break;
+            case 10:
+                this.enterOuterAlt(localContext, 10);
+                {
+                this.state = 659;
                 localContext._Set = this.setStatement();
                 }
                 break;
@@ -1032,55 +1080,48 @@ export class HqlParser extends antlr.Parser {
         let localContext = new LetStatementContext(this.context, this.state);
         this.enterRule(localContext, 6, HqlParser.RULE_letStatement);
         try {
-            this.state = 646;
+            this.state = 668;
             this.errorHandler.sync(this);
             switch (this.interpreter.adaptivePredict(this.tokenStream, 3, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 639;
+                this.state = 662;
                 localContext._Function = this.letFunctionDeclaration();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 640;
+                this.state = 663;
                 localContext._View = this.letViewDeclaration();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 641;
+                this.state = 664;
                 localContext._Variable = this.letVariableDeclaration();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 642;
+                this.state = 665;
                 localContext._Materialized = this.letMaterializeDeclaration();
                 }
                 break;
             case 5:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 643;
+                this.state = 666;
                 localContext._EntityGroup = this.letEntityGroupDeclaration();
                 }
                 break;
             case 6:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 644;
-                localContext._Macro = this.letMacroDeclaration();
-                }
-                break;
-            case 7:
-                this.enterOuterAlt(localContext, 7);
-                {
-                this.state = 645;
+                this.state = 667;
                 localContext._Logic = this.letLogicDeclaration();
                 }
                 break;
@@ -1105,13 +1146,13 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 648;
+            this.state = 670;
             this.match(HqlParser.LET);
-            this.state = 649;
+            this.state = 671;
             localContext._Name = this.simpleNameReference();
-            this.state = 650;
+            this.state = 672;
             this.match(HqlParser.EQUAL);
-            this.state = 651;
+            this.state = 673;
             localContext._Expression = this.expression();
             }
         }
@@ -1135,27 +1176,27 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 653;
+            this.state = 675;
             this.match(HqlParser.LET);
-            this.state = 654;
+            this.state = 676;
             localContext._Name = this.simpleNameReference();
-            this.state = 655;
+            this.state = 677;
             this.match(HqlParser.EQUAL);
-            this.state = 656;
+            this.state = 678;
             this.match(HqlParser.OPENPAREN);
-            this.state = 658;
+            this.state = 680;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 2861702913) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3649942657) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 16793625) !== 0) || ((((_la - 130)) & ~0x1F) === 0 && ((1 << (_la - 130)) & 686752605) !== 0) || ((((_la - 165)) & ~0x1F) === 0 && ((1 << (_la - 165)) & 746323971) !== 0) || ((((_la - 197)) & ~0x1F) === 0 && ((1 << (_la - 197)) & 4159111563) !== 0) || ((((_la - 230)) & ~0x1F) === 0 && ((1 << (_la - 230)) & 4240412045) !== 0) || ((((_la - 269)) & ~0x1F) === 0 && ((1 << (_la - 269)) & 1054719) !== 0) || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1251090177) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3004918019) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 33587251) !== 0) || ((((_la - 131)) & ~0x1F) === 0 && ((1 << (_la - 131)) & 2749236893) !== 0) || ((((_la - 168)) & ~0x1F) === 0 && ((1 << (_la - 168)) & 746323971) !== 0) || ((((_la - 200)) & ~0x1F) === 0 && ((1 << (_la - 200)) & 4023255435) !== 0) || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 4076746293) !== 0) || ((((_la - 264)) & ~0x1F) === 0 && ((1 << (_la - 264)) & 540016131) !== 0) || _la === 324) {
                 {
-                this.state = 657;
+                this.state = 679;
                 localContext._ParameterList = this.letFunctionParameterList();
                 }
             }
 
-            this.state = 660;
+            this.state = 682;
             this.match(HqlParser.CLOSEPAREN);
-            this.state = 661;
+            this.state = 683;
             localContext._Body = this.letFunctionBody();
             }
         }
@@ -1179,29 +1220,29 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 663;
+            this.state = 685;
             this.match(HqlParser.LET);
-            this.state = 664;
+            this.state = 686;
             localContext._Name = this.simpleNameReference();
-            this.state = 665;
+            this.state = 687;
             this.match(HqlParser.EQUAL);
-            this.state = 666;
+            this.state = 688;
             this.match(HqlParser.VIEW);
-            this.state = 667;
+            this.state = 689;
             this.match(HqlParser.OPENPAREN);
-            this.state = 669;
+            this.state = 691;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 2861702913) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3649942657) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 16793625) !== 0) || ((((_la - 130)) & ~0x1F) === 0 && ((1 << (_la - 130)) & 686752605) !== 0) || ((((_la - 165)) & ~0x1F) === 0 && ((1 << (_la - 165)) & 746323971) !== 0) || ((((_la - 197)) & ~0x1F) === 0 && ((1 << (_la - 197)) & 4159111563) !== 0) || ((((_la - 230)) & ~0x1F) === 0 && ((1 << (_la - 230)) & 4240412045) !== 0) || ((((_la - 269)) & ~0x1F) === 0 && ((1 << (_la - 269)) & 1054719) !== 0) || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1251090177) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3004918019) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 33587251) !== 0) || ((((_la - 131)) & ~0x1F) === 0 && ((1 << (_la - 131)) & 2749236893) !== 0) || ((((_la - 168)) & ~0x1F) === 0 && ((1 << (_la - 168)) & 746323971) !== 0) || ((((_la - 200)) & ~0x1F) === 0 && ((1 << (_la - 200)) & 4023255435) !== 0) || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 4076746293) !== 0) || ((((_la - 264)) & ~0x1F) === 0 && ((1 << (_la - 264)) & 540016131) !== 0) || _la === 324) {
                 {
-                this.state = 668;
+                this.state = 690;
                 localContext._ParameterList = this.letViewParameterList();
                 }
             }
 
-            this.state = 671;
+            this.state = 693;
             this.match(HqlParser.CLOSEPAREN);
-            this.state = 672;
+            this.state = 694;
             localContext._Body = this.letFunctionBody();
             }
         }
@@ -1225,23 +1266,23 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 674;
+            this.state = 696;
             localContext._scalarParameter = this.scalarParameter();
             localContext._Parameters.push(localContext._scalarParameter!);
-            this.state = 679;
+            this.state = 701;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 675;
+                this.state = 697;
                 this.match(HqlParser.COMMA);
-                this.state = 676;
+                this.state = 698;
                 localContext._scalarParameter = this.scalarParameter();
                 localContext._Parameters.push(localContext._scalarParameter!);
                 }
                 }
-                this.state = 681;
+                this.state = 703;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -1266,19 +1307,19 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 682;
+            this.state = 704;
             this.match(HqlParser.LET);
-            this.state = 683;
+            this.state = 705;
             localContext._Name = this.simpleNameReference();
-            this.state = 684;
+            this.state = 706;
             this.match(HqlParser.EQUAL);
-            this.state = 685;
+            this.state = 707;
             this.match(HqlParser.MATERIALIZE);
-            this.state = 686;
+            this.state = 708;
             this.match(HqlParser.OPENPAREN);
-            this.state = 687;
+            this.state = 709;
             localContext._Expression = this.pipeExpression();
-            this.state = 688;
+            this.state = 710;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -1301,43 +1342,14 @@ export class HqlParser extends antlr.Parser {
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 690;
+            this.state = 712;
             this.match(HqlParser.LET);
-            this.state = 691;
+            this.state = 713;
             localContext._Name = this.simpleNameReference();
-            this.state = 692;
+            this.state = 714;
             this.match(HqlParser.EQUAL);
-            this.state = 693;
+            this.state = 715;
             this.entityGroupExpression();
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public letMacroDeclaration(): LetMacroDeclarationContext {
-        let localContext = new LetMacroDeclarationContext(this.context, this.state);
-        this.enterRule(localContext, 20, HqlParser.RULE_letMacroDeclaration);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 695;
-            this.match(HqlParser.LET);
-            this.state = 696;
-            localContext._Name = this.simpleNameReference();
-            this.state = 697;
-            this.match(HqlParser.EQUAL);
-            this.state = 698;
-            localContext._Pipes = this.emptyPipedExpression();
             }
         }
         catch (re) {
@@ -1355,17 +1367,17 @@ export class HqlParser extends antlr.Parser {
     }
     public letLogicDeclaration(): LetLogicDeclarationContext {
         let localContext = new LetLogicDeclarationContext(this.context, this.state);
-        this.enterRule(localContext, 22, HqlParser.RULE_letLogicDeclaration);
+        this.enterRule(localContext, 20, HqlParser.RULE_letLogicDeclaration);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 700;
+            this.state = 717;
             this.match(HqlParser.LET);
-            this.state = 701;
+            this.state = 718;
             localContext._Name = this.simpleNameReference();
-            this.state = 702;
+            this.state = 719;
             this.match(HqlParser.EQUAL);
-            this.state = 703;
+            this.state = 720;
             localContext._Logic = this.unnamedExpression();
             }
         }
@@ -1384,28 +1396,28 @@ export class HqlParser extends antlr.Parser {
     }
     public letFunctionParameterList(): LetFunctionParameterListContext {
         let localContext = new LetFunctionParameterListContext(this.context, this.state);
-        this.enterRule(localContext, 24, HqlParser.RULE_letFunctionParameterList);
+        this.enterRule(localContext, 22, HqlParser.RULE_letFunctionParameterList);
         try {
-            this.state = 716;
+            this.state = 733;
             this.errorHandler.sync(this);
             switch (this.interpreter.adaptivePredict(this.tokenStream, 7, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 705;
+                this.state = 722;
                 localContext._tabularParameter = this.tabularParameter();
                 localContext._TabularParameters.push(localContext._tabularParameter!);
                 {
-                this.state = 706;
+                this.state = 723;
                 this.match(HqlParser.COMMA);
-                this.state = 707;
+                this.state = 724;
                 localContext._tabularParameter = this.tabularParameter();
                 localContext._TabularParameters.push(localContext._tabularParameter!);
                 }
                 {
-                this.state = 709;
+                this.state = 726;
                 this.match(HqlParser.COMMA);
-                this.state = 710;
+                this.state = 727;
                 localContext._scalarParameter = this.scalarParameter();
                 localContext._ScalarParameters.push(localContext._scalarParameter!);
                 }
@@ -1414,123 +1426,19 @@ export class HqlParser extends antlr.Parser {
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 712;
-                localContext._scalarParameter = this.scalarParameter();
-                localContext._ScalarParameters.push(localContext._scalarParameter!);
-                {
-                this.state = 713;
-                this.match(HqlParser.COMMA);
-                this.state = 714;
-                localContext._scalarParameter = this.scalarParameter();
-                localContext._ScalarParameters.push(localContext._scalarParameter!);
-                }
-                }
-                break;
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public scalarParameter(): ScalarParameterContext {
-        let localContext = new ScalarParameterContext(this.context, this.state);
-        this.enterRule(localContext, 26, HqlParser.RULE_scalarParameter);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 718;
-            localContext._Name = this.parameterName();
-            this.state = 719;
-            this.match(HqlParser.COLON);
-            this.state = 720;
-            localContext._Type = this.scalarType();
-            this.state = 722;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 17) {
-                {
-                this.state = 721;
-                localContext._Default = this.scalarParameterDefault();
-                }
-            }
-
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public scalarParameterDefault(): ScalarParameterDefaultContext {
-        let localContext = new ScalarParameterDefaultContext(this.context, this.state);
-        this.enterRule(localContext, 28, HqlParser.RULE_scalarParameterDefault);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 724;
-            this.match(HqlParser.EQUAL);
-            this.state = 725;
-            localContext._Value = this.literalExpression();
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public tabularParameter(): TabularParameterContext {
-        let localContext = new TabularParameterContext(this.context, this.state);
-        this.enterRule(localContext, 30, HqlParser.RULE_tabularParameter);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 727;
-            localContext._Name = this.parameterName();
-            this.state = 728;
-            this.match(HqlParser.COLON);
-            this.state = 731;
-            this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 9, this.context) ) {
-            case 1:
-                {
                 this.state = 729;
-                localContext._OpenSchema = this.tabularParameterOpenSchema();
-                }
-                break;
-            case 2:
+                localContext._scalarParameter = this.scalarParameter();
+                localContext._ScalarParameters.push(localContext._scalarParameter!);
                 {
                 this.state = 730;
-                localContext._RowSchema = this.tabularParameterRowSchema();
+                this.match(HqlParser.COMMA);
+                this.state = 731;
+                localContext._scalarParameter = this.scalarParameter();
+                localContext._ScalarParameters.push(localContext._scalarParameter!);
+                }
                 }
                 break;
             }
-            }
         }
         catch (re) {
             if (re instanceof antlr.RecognitionException) {
@@ -1545,18 +1453,24 @@ export class HqlParser extends antlr.Parser {
         }
         return localContext;
     }
-    public tabularParameterOpenSchema(): TabularParameterOpenSchemaContext {
-        let localContext = new TabularParameterOpenSchemaContext(this.context, this.state);
-        this.enterRule(localContext, 32, HqlParser.RULE_tabularParameterOpenSchema);
+    public macroStatement(): MacroStatementContext {
+        let localContext = new MacroStatementContext(this.context, this.state);
+        this.enterRule(localContext, 24, HqlParser.RULE_macroStatement);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 733;
-            this.match(HqlParser.OPENPAREN);
-            this.state = 734;
-            this.match(HqlParser.ASTERISK);
             this.state = 735;
-            this.match(HqlParser.CLOSEPAREN);
+            this.match(HqlParser.MACRO);
+            this.state = 736;
+            localContext._Name = this.simpleNameReference();
+            this.state = 737;
+            this.match(HqlParser.EQUAL);
+            this.state = 738;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 739;
+            localContext._Pipes = this.emptyPipedExpression();
+            this.state = 740;
+            this.match(HqlParser.CLOSEBRACE);
             }
         }
         catch (re) {
@@ -1572,129 +1486,75 @@ export class HqlParser extends antlr.Parser {
         }
         return localContext;
     }
-    public tabularParameterRowSchema(): TabularParameterRowSchemaContext {
-        let localContext = new TabularParameterRowSchemaContext(this.context, this.state);
-        this.enterRule(localContext, 34, HqlParser.RULE_tabularParameterRowSchema);
+    public classStatement(): ClassStatementContext {
+        let localContext = new ClassStatementContext(this.context, this.state);
+        this.enterRule(localContext, 26, HqlParser.RULE_classStatement);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 742;
+            this.match(HqlParser.CLASS);
+            this.state = 743;
+            localContext._Name = this.simpleNameReference();
+            this.state = 744;
+            this.match(HqlParser.EQUAL);
+            this.state = 745;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 746;
+            localContext._Query = this.query();
+            this.state = 747;
+            this.match(HqlParser.CLOSEBRACE);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public mapStatement(): MapStatementContext {
+        let localContext = new MapStatementContext(this.context, this.state);
+        this.enterRule(localContext, 28, HqlParser.RULE_mapStatement);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 737;
-            this.match(HqlParser.OPENPAREN);
-            this.state = 738;
-            localContext._tabularParameterRowSchemaColumnDeclaration = this.tabularParameterRowSchemaColumnDeclaration();
-            localContext._Columns.push(localContext._tabularParameterRowSchemaColumnDeclaration!);
-            this.state = 743;
+            this.state = 749;
+            this.match(HqlParser.MAP);
+            this.state = 750;
+            localContext._Name = this.simpleNameReference();
+            this.state = 751;
+            this.match(HqlParser.EQUAL);
+            this.state = 752;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 753;
+            localContext._mapEntry = this.mapEntry();
+            localContext._Maps.push(localContext._mapEntry!);
+            this.state = 758;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 739;
+                this.state = 754;
                 this.match(HqlParser.COMMA);
-                this.state = 740;
-                localContext._tabularParameterRowSchemaColumnDeclaration = this.tabularParameterRowSchemaColumnDeclaration();
-                localContext._Columns.push(localContext._tabularParameterRowSchemaColumnDeclaration!);
+                this.state = 755;
+                localContext._mapEntry = this.mapEntry();
+                localContext._Maps.push(localContext._mapEntry!);
                 }
-                }
-                this.state = 745;
-                this.errorHandler.sync(this);
-                _la = this.tokenStream.LA(1);
-            }
-            this.state = 746;
-            this.match(HqlParser.CLOSEPAREN);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public tabularParameterRowSchemaColumnDeclaration(): TabularParameterRowSchemaColumnDeclarationContext {
-        let localContext = new TabularParameterRowSchemaColumnDeclarationContext(this.context, this.state);
-        this.enterRule(localContext, 36, HqlParser.RULE_tabularParameterRowSchemaColumnDeclaration);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 748;
-            localContext._Name = this.parameterName();
-            this.state = 749;
-            this.match(HqlParser.COLON);
-            this.state = 750;
-            localContext._Type = this.scalarType();
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public letFunctionBody(): LetFunctionBodyContext {
-        let localContext = new LetFunctionBodyContext(this.context, this.state);
-        this.enterRule(localContext, 38, HqlParser.RULE_letFunctionBody);
-        let _la: number;
-        try {
-            let alternative: number;
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 752;
-            this.match(HqlParser.OPENBRACE);
-            this.state = 758;
-            this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 11, this.context);
-            while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
-                if (alternative === 1) {
-                    {
-                    {
-                    this.state = 753;
-                    localContext._letFunctionBodyStatement = this.letFunctionBodyStatement();
-                    localContext._Statements.push(localContext._letFunctionBodyStatement!);
-                    this.state = 754;
-                    this.match(HqlParser.SEMICOLON);
-                    }
-                    }
                 }
                 this.state = 760;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 11, this.context);
+                _la = this.tokenStream.LA(1);
             }
-            this.state = 762;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 894583777) !== 0) || ((((_la - 68)) & ~0x1F) === 0 && ((1 << (_la - 68)) & 1743140563) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 3611296769) !== 0) || ((((_la - 146)) & ~0x1F) === 0 && ((1 << (_la - 146)) & 1599983) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3227699999) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 3334913529) !== 0) || ((((_la - 247)) & ~0x1F) === 0 && ((1 << (_la - 247)) & 4290805471) !== 0) || ((((_la - 279)) & ~0x1F) === 0 && ((1 << (_la - 279)) & 3221226757) !== 0) || ((((_la - 311)) & ~0x1F) === 0 && ((1 << (_la - 311)) & 895) !== 0)) {
-                {
-                this.state = 761;
-                localContext._Expression = this.expression();
-                }
-            }
-
-            this.state = 765;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 34) {
-                {
-                this.state = 764;
-                this.match(HqlParser.SEMICOLON);
-                }
-            }
-
-            this.state = 767;
+            this.state = 761;
             this.match(HqlParser.CLOSEBRACE);
             }
         }
@@ -1711,561 +1571,17 @@ export class HqlParser extends antlr.Parser {
         }
         return localContext;
     }
-    public letFunctionBodyStatement(): LetFunctionBodyStatementContext {
-        let localContext = new LetFunctionBodyStatementContext(this.context, this.state);
-        this.enterRule(localContext, 40, HqlParser.RULE_letFunctionBodyStatement);
-        try {
-            this.state = 771;
-            this.errorHandler.sync(this);
-            switch (this.tokenStream.LA(1)) {
-            case HqlParser.LET:
-                this.enterOuterAlt(localContext, 1);
-                {
-                this.state = 769;
-                localContext._Let = this.letStatement();
-                }
-                break;
-            case HqlParser.DECLARE:
-                this.enterOuterAlt(localContext, 2);
-                {
-                this.state = 770;
-                localContext._DeclareQueryParameters = this.declareQueryParametersStatement();
-                }
-                break;
-            default:
-                throw new antlr.NoViableAltException(this);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternStatement(): DeclarePatternStatementContext {
-        let localContext = new DeclarePatternStatementContext(this.context, this.state);
-        this.enterRule(localContext, 42, HqlParser.RULE_declarePatternStatement);
-        let _la: number;
+    public mapEntry(): MapEntryContext {
+        let localContext = new MapEntryContext(this.context, this.state);
+        this.enterRule(localContext, 30, HqlParser.RULE_mapEntry);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 773;
-            this.match(HqlParser.DECLARE);
-            this.state = 774;
-            this.match(HqlParser.PATTERN);
-            this.state = 775;
-            localContext._Name = this.simpleNameReference();
-            this.state = 777;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 17) {
-                {
-                this.state = 776;
-                localContext._Definition = this.declarePatternDefinition();
-                }
-            }
-
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternDefinition(): DeclarePatternDefinitionContext {
-        let localContext = new DeclarePatternDefinitionContext(this.context, this.state);
-        this.enterRule(localContext, 44, HqlParser.RULE_declarePatternDefinition);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 779;
-            this.match(HqlParser.EQUAL);
-            this.state = 780;
-            localContext._ParameterList = this.declarePatternParameterList();
-            this.state = 782;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 30) {
-                {
-                this.state = 781;
-                localContext._Path = this.declarePatternPathParameter();
-                }
-            }
-
-            this.state = 784;
-            this.match(HqlParser.OPENBRACE);
-            this.state = 786;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            do {
-                {
-                {
-                this.state = 785;
-                localContext._declarePatternRule = this.declarePatternRule();
-                localContext._Rules.push(localContext._declarePatternRule!);
-                }
-                }
-                this.state = 788;
-                this.errorHandler.sync(this);
-                _la = this.tokenStream.LA(1);
-            } while (_la === 31);
-            this.state = 790;
-            this.match(HqlParser.CLOSEBRACE);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternParameterList(): DeclarePatternParameterListContext {
-        let localContext = new DeclarePatternParameterListContext(this.context, this.state);
-        this.enterRule(localContext, 46, HqlParser.RULE_declarePatternParameterList);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 792;
-            this.match(HqlParser.OPENPAREN);
-            this.state = 793;
-            localContext._declarePatternParameter = this.declarePatternParameter();
-            localContext._Parameters.push(localContext._declarePatternParameter!);
-            this.state = 798;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            while (_la === 9) {
-                {
-                {
-                this.state = 794;
-                this.match(HqlParser.COMMA);
-                this.state = 795;
-                localContext._declarePatternParameter = this.declarePatternParameter();
-                localContext._Parameters.push(localContext._declarePatternParameter!);
-                }
-                }
-                this.state = 800;
-                this.errorHandler.sync(this);
-                _la = this.tokenStream.LA(1);
-            }
-            this.state = 801;
-            this.match(HqlParser.CLOSEPAREN);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternParameter(): DeclarePatternParameterContext {
-        let localContext = new DeclarePatternParameterContext(this.context, this.state);
-        this.enterRule(localContext, 48, HqlParser.RULE_declarePatternParameter);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 803;
-            localContext._Name = this.parameterName();
-            this.state = 804;
+            this.state = 763;
+            localContext._Source = this.simpleOrPathNameReference();
+            this.state = 764;
             this.match(HqlParser.COLON);
-            this.state = 805;
-            localContext._Type = this.scalarType();
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternPathParameter(): DeclarePatternPathParameterContext {
-        let localContext = new DeclarePatternPathParameterContext(this.context, this.state);
-        this.enterRule(localContext, 50, HqlParser.RULE_declarePatternPathParameter);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 807;
-            this.match(HqlParser.OPENBRACKET);
-            this.state = 808;
-            localContext._Parameter = this.declarePatternParameter();
-            this.state = 809;
-            this.match(HqlParser.CLOSEBRACKET);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternRule(): DeclarePatternRuleContext {
-        let localContext = new DeclarePatternRuleContext(this.context, this.state);
-        this.enterRule(localContext, 52, HqlParser.RULE_declarePatternRule);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 811;
-            localContext._ArgumentList = this.declarePatternRuleArgumentList();
-            this.state = 813;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 15) {
-                {
-                this.state = 812;
-                localContext._PathArgument = this.declarePatternRulePathArgument();
-                }
-            }
-
-            this.state = 815;
-            this.match(HqlParser.EQUAL);
-            this.state = 816;
-            localContext._Body = this.declarePatternBody();
-            this.state = 818;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 34) {
-                {
-                this.state = 817;
-                localContext._TrailingSemicolon = this.match(HqlParser.SEMICOLON);
-                }
-            }
-
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternRuleArgumentList(): DeclarePatternRuleArgumentListContext {
-        let localContext = new DeclarePatternRuleArgumentListContext(this.context, this.state);
-        this.enterRule(localContext, 54, HqlParser.RULE_declarePatternRuleArgumentList);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 820;
-            this.match(HqlParser.OPENPAREN);
-            this.state = 821;
-            localContext._declarePatternRuleArgument = this.declarePatternRuleArgument();
-            localContext._Arguments.push(localContext._declarePatternRuleArgument!);
-            this.state = 826;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            while (_la === 9) {
-                {
-                {
-                this.state = 822;
-                this.match(HqlParser.COMMA);
-                this.state = 823;
-                localContext._declarePatternRuleArgument = this.declarePatternRuleArgument();
-                localContext._Arguments.push(localContext._declarePatternRuleArgument!);
-                }
-                }
-                this.state = 828;
-                this.errorHandler.sync(this);
-                _la = this.tokenStream.LA(1);
-            }
-            this.state = 829;
-            this.match(HqlParser.CLOSEPAREN);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternRulePathArgument(): DeclarePatternRulePathArgumentContext {
-        let localContext = new DeclarePatternRulePathArgumentContext(this.context, this.state);
-        this.enterRule(localContext, 56, HqlParser.RULE_declarePatternRulePathArgument);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 831;
-            this.match(HqlParser.DOT);
-            this.state = 832;
-            this.match(HqlParser.OPENBRACKET);
-            this.state = 833;
-            localContext._Expression = this.declarePatternRuleArgument();
-            this.state = 834;
-            this.match(HqlParser.CLOSEBRACKET);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternRuleArgument(): DeclarePatternRuleArgumentContext {
-        let localContext = new DeclarePatternRuleArgumentContext(this.context, this.state);
-        this.enterRule(localContext, 58, HqlParser.RULE_declarePatternRuleArgument);
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 836;
-            this.stringLiteralExpression();
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public declarePatternBody(): DeclarePatternBodyContext {
-        let localContext = new DeclarePatternBodyContext(this.context, this.state);
-        this.enterRule(localContext, 60, HqlParser.RULE_declarePatternBody);
-        try {
-            let alternative: number;
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 838;
-            this.match(HqlParser.OPENBRACE);
-            this.state = 844;
-            this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 22, this.context);
-            while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
-                if (alternative === 1) {
-                    {
-                    {
-                    this.state = 839;
-                    localContext._letFunctionBodyStatement = this.letFunctionBodyStatement();
-                    localContext._Statements.push(localContext._letFunctionBodyStatement!);
-                    this.state = 840;
-                    this.match(HqlParser.SEMICOLON);
-                    }
-                    }
-                }
-                this.state = 846;
-                this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 22, this.context);
-            }
-            this.state = 847;
-            localContext._Expression = this.expression();
-            this.state = 848;
-            this.match(HqlParser.CLOSEBRACE);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public restrictAccessStatement(): RestrictAccessStatementContext {
-        let localContext = new RestrictAccessStatementContext(this.context, this.state);
-        this.enterRule(localContext, 62, HqlParser.RULE_restrictAccessStatement);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 850;
-            this.match(HqlParser.RESTRICT);
-            this.state = 851;
-            this.match(HqlParser.ACCESS);
-            this.state = 852;
-            this.match(HqlParser.TO);
-            this.state = 853;
-            this.match(HqlParser.OPENPAREN);
-            this.state = 854;
-            localContext._restrictAccessStatementEntity = this.restrictAccessStatementEntity();
-            localContext._Entities.push(localContext._restrictAccessStatementEntity!);
-            this.state = 859;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            while (_la === 9) {
-                {
-                {
-                this.state = 855;
-                this.match(HqlParser.COMMA);
-                this.state = 856;
-                localContext._restrictAccessStatementEntity = this.restrictAccessStatementEntity();
-                localContext._Entities.push(localContext._restrictAccessStatementEntity!);
-                }
-                }
-                this.state = 861;
-                this.errorHandler.sync(this);
-                _la = this.tokenStream.LA(1);
-            }
-            this.state = 862;
-            this.match(HqlParser.CLOSEPAREN);
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public restrictAccessStatementEntity(): RestrictAccessStatementEntityContext {
-        let localContext = new RestrictAccessStatementEntityContext(this.context, this.state);
-        this.enterRule(localContext, 64, HqlParser.RULE_restrictAccessStatementEntity);
-        try {
-            this.state = 866;
-            this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 24, this.context) ) {
-            case 1:
-                this.enterOuterAlt(localContext, 1);
-                {
-                this.state = 864;
-                localContext._SimpleName = this.simpleNameReference();
-                }
-                break;
-            case 2:
-                this.enterOuterAlt(localContext, 2);
-                {
-                this.state = 865;
-                localContext._WildcardedEntity = this.wildcardedEntityExpression();
-                }
-                break;
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public setStatement(): SetStatementContext {
-        let localContext = new SetStatementContext(this.context, this.state);
-        this.enterRule(localContext, 66, HqlParser.RULE_setStatement);
-        let _la: number;
-        try {
-            this.enterOuterAlt(localContext, 1);
-            {
-            this.state = 868;
-            this.match(HqlParser.SET);
-            this.state = 869;
-            localContext._Name = this.simpleNameReference();
-            this.state = 872;
-            this.errorHandler.sync(this);
-            _la = this.tokenStream.LA(1);
-            if (_la === 17) {
-                {
-                this.state = 870;
-                this.match(HqlParser.EQUAL);
-                this.state = 871;
-                localContext._Value = this.setStatementOptionValue();
-                }
-            }
-
-            }
-        }
-        catch (re) {
-            if (re instanceof antlr.RecognitionException) {
-                this.errorHandler.reportError(this, re);
-                this.errorHandler.recover(this, re);
-            } else {
-                throw re;
-            }
-        }
-        finally {
-            this.exitRule();
-        }
-        return localContext;
-    }
-    public setStatementOptionValue(): SetStatementOptionValueContext {
-        let localContext = new SetStatementOptionValueContext(this.context, this.state);
-        this.enterRule(localContext, 68, HqlParser.RULE_setStatementOptionValue);
-        try {
-            this.state = 876;
+            this.state = 767;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -2299,6 +1615,1099 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
+            case HqlParser.MAP:
+            case HqlParser.NODES:
+            case HqlParser.NONE:
+            case HqlParser.NULL:
+            case HqlParser.NULLS:
+            case HqlParser.ON:
+            case HqlParser.OPTIONAL:
+            case HqlParser.OUTPUT:
+            case HqlParser.PACK:
+            case HqlParser.PARTITION:
+            case HqlParser.PARTITIONBY:
+            case HqlParser.PATTERN:
+            case HqlParser.PLUGIN:
+            case HqlParser.QUERYPARAMETERS:
+            case HqlParser.RANGE:
+            case HqlParser.REDUCE:
+            case HqlParser.RENDER:
+            case HqlParser.REPLACE:
+            case HqlParser.RESTRICT:
+            case HqlParser.SERIES:
+            case HqlParser.STACKED:
+            case HqlParser.STACKED100:
+            case HqlParser.STEP:
+            case HqlParser.THRESHOLD:
+            case HqlParser.TYPEOF:
+            case HqlParser.UNSTACKED:
+            case HqlParser.UUID:
+            case HqlParser.VIEW:
+            case HqlParser.VISIBLE:
+            case HqlParser.WITH:
+            case HqlParser.XAXIS:
+            case HqlParser.XCOLUMN:
+            case HqlParser.XMAX:
+            case HqlParser.XMIN:
+            case HqlParser.XTITLE:
+            case HqlParser.YAXIS:
+            case HqlParser.YCOLUMNS:
+            case HqlParser.YMAX:
+            case HqlParser.YMIN:
+            case HqlParser.YSPLIT:
+            case HqlParser.YTITLE:
+            case HqlParser.BOOL:
+            case HqlParser.GUID:
+            case HqlParser.IDENTIFIER:
+                {
+                this.state = 765;
+                localContext._Dest = this.singleMapValue();
+                }
+                break;
+            case HqlParser.OPENPAREN:
+                {
+                this.state = 766;
+                localContext._MultiDest = this.multiMapValue();
+                }
+                break;
+            default:
+                throw new antlr.NoViableAltException(this);
+            }
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public singleMapValue(): SingleMapValueContext {
+        let localContext = new SingleMapValueContext(this.context, this.state);
+        this.enterRule(localContext, 32, HqlParser.RULE_singleMapValue);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 769;
+            localContext._Value = this.simpleOrPathNameReference();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public multiMapValue(): MultiMapValueContext {
+        let localContext = new MultiMapValueContext(this.context, this.state);
+        this.enterRule(localContext, 34, HqlParser.RULE_multiMapValue);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 771;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 772;
+            localContext._singleMapValue = this.singleMapValue();
+            localContext._MapValues.push(localContext._singleMapValue!);
+            this.state = 777;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 773;
+                this.match(HqlParser.COMMA);
+                this.state = 774;
+                localContext._singleMapValue = this.singleMapValue();
+                localContext._MapValues.push(localContext._singleMapValue!);
+                }
+                }
+                this.state = 779;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            this.state = 780;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public importStatement(): ImportStatementContext {
+        let localContext = new ImportStatementContext(this.context, this.state);
+        this.enterRule(localContext, 36, HqlParser.RULE_importStatement);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 784;
+            this.errorHandler.sync(this);
+            switch (this.tokenStream.LA(1)) {
+            case HqlParser.IMPORT:
+                {
+                this.state = 782;
+                localContext._Simple = this.simpleImportStatement();
+                }
+                break;
+            case HqlParser.FROM:
+                {
+                this.state = 783;
+                localContext._From = this.fromImportStatement();
+                }
+                break;
+            default:
+                throw new antlr.NoViableAltException(this);
+            }
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public simpleImportStatement(): SimpleImportStatementContext {
+        let localContext = new SimpleImportStatementContext(this.context, this.state);
+        this.enterRule(localContext, 38, HqlParser.RULE_simpleImportStatement);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 786;
+            this.match(HqlParser.IMPORT);
+            this.state = 787;
+            localContext._Name = this.simpleOrPathNameReference();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public fromImportStatement(): FromImportStatementContext {
+        let localContext = new FromImportStatementContext(this.context, this.state);
+        this.enterRule(localContext, 40, HqlParser.RULE_fromImportStatement);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 789;
+            this.match(HqlParser.FROM);
+            this.state = 790;
+            localContext._Src = this.simpleOrPathNameReference();
+            this.state = 791;
+            localContext._Import = this.simpleImportStatement();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public scalarParameter(): ScalarParameterContext {
+        let localContext = new ScalarParameterContext(this.context, this.state);
+        this.enterRule(localContext, 42, HqlParser.RULE_scalarParameter);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 793;
+            localContext._Name = this.parameterName();
+            this.state = 794;
+            this.match(HqlParser.COLON);
+            this.state = 795;
+            localContext._Type = this.scalarType();
+            this.state = 797;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 17) {
+                {
+                this.state = 796;
+                localContext._Default = this.scalarParameterDefault();
+                }
+            }
+
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public scalarParameterDefault(): ScalarParameterDefaultContext {
+        let localContext = new ScalarParameterDefaultContext(this.context, this.state);
+        this.enterRule(localContext, 44, HqlParser.RULE_scalarParameterDefault);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 799;
+            this.match(HqlParser.EQUAL);
+            this.state = 800;
+            localContext._Value = this.literalExpression();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public tabularParameter(): TabularParameterContext {
+        let localContext = new TabularParameterContext(this.context, this.state);
+        this.enterRule(localContext, 46, HqlParser.RULE_tabularParameter);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 802;
+            localContext._Name = this.parameterName();
+            this.state = 803;
+            this.match(HqlParser.COLON);
+            this.state = 806;
+            this.errorHandler.sync(this);
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 13, this.context) ) {
+            case 1:
+                {
+                this.state = 804;
+                localContext._OpenSchema = this.tabularParameterOpenSchema();
+                }
+                break;
+            case 2:
+                {
+                this.state = 805;
+                localContext._RowSchema = this.tabularParameterRowSchema();
+                }
+                break;
+            }
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public tabularParameterOpenSchema(): TabularParameterOpenSchemaContext {
+        let localContext = new TabularParameterOpenSchemaContext(this.context, this.state);
+        this.enterRule(localContext, 48, HqlParser.RULE_tabularParameterOpenSchema);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 808;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 809;
+            this.match(HqlParser.ASTERISK);
+            this.state = 810;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public tabularParameterRowSchema(): TabularParameterRowSchemaContext {
+        let localContext = new TabularParameterRowSchemaContext(this.context, this.state);
+        this.enterRule(localContext, 50, HqlParser.RULE_tabularParameterRowSchema);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 812;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 813;
+            localContext._tabularParameterRowSchemaColumnDeclaration = this.tabularParameterRowSchemaColumnDeclaration();
+            localContext._Columns.push(localContext._tabularParameterRowSchemaColumnDeclaration!);
+            this.state = 818;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 814;
+                this.match(HqlParser.COMMA);
+                this.state = 815;
+                localContext._tabularParameterRowSchemaColumnDeclaration = this.tabularParameterRowSchemaColumnDeclaration();
+                localContext._Columns.push(localContext._tabularParameterRowSchemaColumnDeclaration!);
+                }
+                }
+                this.state = 820;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            this.state = 821;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public tabularParameterRowSchemaColumnDeclaration(): TabularParameterRowSchemaColumnDeclarationContext {
+        let localContext = new TabularParameterRowSchemaColumnDeclarationContext(this.context, this.state);
+        this.enterRule(localContext, 52, HqlParser.RULE_tabularParameterRowSchemaColumnDeclaration);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 823;
+            localContext._Name = this.parameterName();
+            this.state = 824;
+            this.match(HqlParser.COLON);
+            this.state = 825;
+            localContext._Type = this.scalarType();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public letFunctionBody(): LetFunctionBodyContext {
+        let localContext = new LetFunctionBodyContext(this.context, this.state);
+        this.enterRule(localContext, 54, HqlParser.RULE_letFunctionBody);
+        let _la: number;
+        try {
+            let alternative: number;
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 827;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 833;
+            this.errorHandler.sync(this);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 15, this.context);
+            while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
+                if (alternative === 1) {
+                    {
+                    {
+                    this.state = 828;
+                    localContext._letFunctionBodyStatement = this.letFunctionBodyStatement();
+                    localContext._Statements.push(localContext._letFunctionBodyStatement!);
+                    this.state = 829;
+                    this.match(HqlParser.SEMICOLON);
+                    }
+                    }
+                }
+                this.state = 835;
+                this.errorHandler.sync(this);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 15, this.context);
+            }
+            this.state = 837;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 1766999009) !== 0) || ((((_la - 69)) & ~0x1F) === 0 && ((1 << (_la - 69)) & 1743140563) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 2805990401) !== 0) || ((((_la - 141)) & ~0x1F) === 0 && ((1 << (_la - 141)) & 409597825) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2153958175) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 2374859763) !== 0) || ((((_la - 250)) & ~0x1F) === 0 && ((1 << (_la - 250)) & 4286643647) !== 0) || ((((_la - 282)) & ~0x1F) === 0 && ((1 << (_la - 282)) & 2147486219) !== 0) || ((((_la - 314)) & ~0x1F) === 0 && ((1 << (_la - 314)) & 1791) !== 0)) {
+                {
+                this.state = 836;
+                localContext._Expression = this.expression();
+                }
+            }
+
+            this.state = 840;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 34) {
+                {
+                this.state = 839;
+                this.match(HqlParser.SEMICOLON);
+                }
+            }
+
+            this.state = 842;
+            this.match(HqlParser.CLOSEBRACE);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public letFunctionBodyStatement(): LetFunctionBodyStatementContext {
+        let localContext = new LetFunctionBodyStatementContext(this.context, this.state);
+        this.enterRule(localContext, 56, HqlParser.RULE_letFunctionBodyStatement);
+        try {
+            this.state = 846;
+            this.errorHandler.sync(this);
+            switch (this.tokenStream.LA(1)) {
+            case HqlParser.LET:
+                this.enterOuterAlt(localContext, 1);
+                {
+                this.state = 844;
+                localContext._Let = this.letStatement();
+                }
+                break;
+            case HqlParser.DECLARE:
+                this.enterOuterAlt(localContext, 2);
+                {
+                this.state = 845;
+                localContext._DeclareQueryParameters = this.declareQueryParametersStatement();
+                }
+                break;
+            default:
+                throw new antlr.NoViableAltException(this);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternStatement(): DeclarePatternStatementContext {
+        let localContext = new DeclarePatternStatementContext(this.context, this.state);
+        this.enterRule(localContext, 58, HqlParser.RULE_declarePatternStatement);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 848;
+            this.match(HqlParser.DECLARE);
+            this.state = 849;
+            this.match(HqlParser.PATTERN);
+            this.state = 850;
+            localContext._Name = this.simpleNameReference();
+            this.state = 852;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 17) {
+                {
+                this.state = 851;
+                localContext._Definition = this.declarePatternDefinition();
+                }
+            }
+
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternDefinition(): DeclarePatternDefinitionContext {
+        let localContext = new DeclarePatternDefinitionContext(this.context, this.state);
+        this.enterRule(localContext, 60, HqlParser.RULE_declarePatternDefinition);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 854;
+            this.match(HqlParser.EQUAL);
+            this.state = 855;
+            localContext._ParameterList = this.declarePatternParameterList();
+            this.state = 857;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 30) {
+                {
+                this.state = 856;
+                localContext._Path = this.declarePatternPathParameter();
+                }
+            }
+
+            this.state = 859;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 861;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            do {
+                {
+                {
+                this.state = 860;
+                localContext._declarePatternRule = this.declarePatternRule();
+                localContext._Rules.push(localContext._declarePatternRule!);
+                }
+                }
+                this.state = 863;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            } while (_la === 31);
+            this.state = 865;
+            this.match(HqlParser.CLOSEBRACE);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternParameterList(): DeclarePatternParameterListContext {
+        let localContext = new DeclarePatternParameterListContext(this.context, this.state);
+        this.enterRule(localContext, 62, HqlParser.RULE_declarePatternParameterList);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 867;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 868;
+            localContext._declarePatternParameter = this.declarePatternParameter();
+            localContext._Parameters.push(localContext._declarePatternParameter!);
+            this.state = 873;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 869;
+                this.match(HqlParser.COMMA);
+                this.state = 870;
+                localContext._declarePatternParameter = this.declarePatternParameter();
+                localContext._Parameters.push(localContext._declarePatternParameter!);
+                }
+                }
+                this.state = 875;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            this.state = 876;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternParameter(): DeclarePatternParameterContext {
+        let localContext = new DeclarePatternParameterContext(this.context, this.state);
+        this.enterRule(localContext, 64, HqlParser.RULE_declarePatternParameter);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 878;
+            localContext._Name = this.parameterName();
+            this.state = 879;
+            this.match(HqlParser.COLON);
+            this.state = 880;
+            localContext._Type = this.scalarType();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternPathParameter(): DeclarePatternPathParameterContext {
+        let localContext = new DeclarePatternPathParameterContext(this.context, this.state);
+        this.enterRule(localContext, 66, HqlParser.RULE_declarePatternPathParameter);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 882;
+            this.match(HqlParser.OPENBRACKET);
+            this.state = 883;
+            localContext._Parameter = this.declarePatternParameter();
+            this.state = 884;
+            this.match(HqlParser.CLOSEBRACKET);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternRule(): DeclarePatternRuleContext {
+        let localContext = new DeclarePatternRuleContext(this.context, this.state);
+        this.enterRule(localContext, 68, HqlParser.RULE_declarePatternRule);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 886;
+            localContext._ArgumentList = this.declarePatternRuleArgumentList();
+            this.state = 888;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 15) {
+                {
+                this.state = 887;
+                localContext._PathArgument = this.declarePatternRulePathArgument();
+                }
+            }
+
+            this.state = 890;
+            this.match(HqlParser.EQUAL);
+            this.state = 891;
+            localContext._Body = this.declarePatternBody();
+            this.state = 893;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 34) {
+                {
+                this.state = 892;
+                localContext._TrailingSemicolon = this.match(HqlParser.SEMICOLON);
+                }
+            }
+
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternRuleArgumentList(): DeclarePatternRuleArgumentListContext {
+        let localContext = new DeclarePatternRuleArgumentListContext(this.context, this.state);
+        this.enterRule(localContext, 70, HqlParser.RULE_declarePatternRuleArgumentList);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 895;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 896;
+            localContext._declarePatternRuleArgument = this.declarePatternRuleArgument();
+            localContext._Arguments.push(localContext._declarePatternRuleArgument!);
+            this.state = 901;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 897;
+                this.match(HqlParser.COMMA);
+                this.state = 898;
+                localContext._declarePatternRuleArgument = this.declarePatternRuleArgument();
+                localContext._Arguments.push(localContext._declarePatternRuleArgument!);
+                }
+                }
+                this.state = 903;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            this.state = 904;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternRulePathArgument(): DeclarePatternRulePathArgumentContext {
+        let localContext = new DeclarePatternRulePathArgumentContext(this.context, this.state);
+        this.enterRule(localContext, 72, HqlParser.RULE_declarePatternRulePathArgument);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 906;
+            this.match(HqlParser.DOT);
+            this.state = 907;
+            this.match(HqlParser.OPENBRACKET);
+            this.state = 908;
+            localContext._Expression = this.declarePatternRuleArgument();
+            this.state = 909;
+            this.match(HqlParser.CLOSEBRACKET);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternRuleArgument(): DeclarePatternRuleArgumentContext {
+        let localContext = new DeclarePatternRuleArgumentContext(this.context, this.state);
+        this.enterRule(localContext, 74, HqlParser.RULE_declarePatternRuleArgument);
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 911;
+            this.stringLiteralExpression();
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public declarePatternBody(): DeclarePatternBodyContext {
+        let localContext = new DeclarePatternBodyContext(this.context, this.state);
+        this.enterRule(localContext, 76, HqlParser.RULE_declarePatternBody);
+        try {
+            let alternative: number;
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 913;
+            this.match(HqlParser.OPENBRACE);
+            this.state = 919;
+            this.errorHandler.sync(this);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 26, this.context);
+            while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
+                if (alternative === 1) {
+                    {
+                    {
+                    this.state = 914;
+                    localContext._letFunctionBodyStatement = this.letFunctionBodyStatement();
+                    localContext._Statements.push(localContext._letFunctionBodyStatement!);
+                    this.state = 915;
+                    this.match(HqlParser.SEMICOLON);
+                    }
+                    }
+                }
+                this.state = 921;
+                this.errorHandler.sync(this);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 26, this.context);
+            }
+            this.state = 922;
+            localContext._Expression = this.expression();
+            this.state = 923;
+            this.match(HqlParser.CLOSEBRACE);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public restrictAccessStatement(): RestrictAccessStatementContext {
+        let localContext = new RestrictAccessStatementContext(this.context, this.state);
+        this.enterRule(localContext, 78, HqlParser.RULE_restrictAccessStatement);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 925;
+            this.match(HqlParser.RESTRICT);
+            this.state = 926;
+            this.match(HqlParser.ACCESS);
+            this.state = 927;
+            this.match(HqlParser.TO);
+            this.state = 928;
+            this.match(HqlParser.OPENPAREN);
+            this.state = 929;
+            localContext._restrictAccessStatementEntity = this.restrictAccessStatementEntity();
+            localContext._Entities.push(localContext._restrictAccessStatementEntity!);
+            this.state = 934;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 930;
+                this.match(HqlParser.COMMA);
+                this.state = 931;
+                localContext._restrictAccessStatementEntity = this.restrictAccessStatementEntity();
+                localContext._Entities.push(localContext._restrictAccessStatementEntity!);
+                }
+                }
+                this.state = 936;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            this.state = 937;
+            this.match(HqlParser.CLOSEPAREN);
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public restrictAccessStatementEntity(): RestrictAccessStatementEntityContext {
+        let localContext = new RestrictAccessStatementEntityContext(this.context, this.state);
+        this.enterRule(localContext, 80, HqlParser.RULE_restrictAccessStatementEntity);
+        try {
+            this.state = 941;
+            this.errorHandler.sync(this);
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 28, this.context) ) {
+            case 1:
+                this.enterOuterAlt(localContext, 1);
+                {
+                this.state = 939;
+                localContext._SimpleName = this.simpleNameReference();
+                }
+                break;
+            case 2:
+                this.enterOuterAlt(localContext, 2);
+                {
+                this.state = 940;
+                localContext._WildcardedEntity = this.wildcardedEntityExpression();
+                }
+                break;
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public setStatement(): SetStatementContext {
+        let localContext = new SetStatementContext(this.context, this.state);
+        this.enterRule(localContext, 82, HqlParser.RULE_setStatement);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 943;
+            this.match(HqlParser.SET);
+            this.state = 944;
+            localContext._Name = this.simpleNameReference();
+            this.state = 947;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            if (_la === 17) {
+                {
+                this.state = 945;
+                this.match(HqlParser.EQUAL);
+                this.state = 946;
+                localContext._Value = this.setStatementOptionValue();
+                }
+            }
+
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public setStatementOptionValue(): SetStatementOptionValueContext {
+        let localContext = new SetStatementOptionValueContext(this.context, this.state);
+        this.enterRule(localContext, 84, HqlParser.RULE_setStatementOptionValue);
+        try {
+            this.state = 951;
+            this.errorHandler.sync(this);
+            switch (this.tokenStream.LA(1)) {
+            case HqlParser.OPENBRACKET:
+            case HqlParser.ACCESS:
+            case HqlParser.AGGREGATIONS:
+            case HqlParser.ALIAS:
+            case HqlParser.ALL:
+            case HqlParser.AXES:
+            case HqlParser.BASE:
+            case HqlParser.BIN:
+            case HqlParser.CLUSTER:
+            case HqlParser.DATABASE:
+            case HqlParser.DECLARE:
+            case HqlParser.DEFAULT:
+            case HqlParser.DELTA:
+            case HqlParser.EDGES:
+            case HqlParser.EVALUATE:
+            case HqlParser.EXECUTE:
+            case HqlParser.FACET:
+            case HqlParser.FORK:
+            case HqlParser.FROM:
+            case HqlParser.HIDDEN_:
+            case HqlParser.HOT:
+            case HqlParser.HOTDATA:
+            case HqlParser.HOTINDEX:
+            case HqlParser.ID:
+            case HqlParser.INTO:
+            case HqlParser.LEGEND:
+            case HqlParser.LET:
+            case HqlParser.LINEAR:
+            case HqlParser.LIST:
+            case HqlParser.LOOKUP:
+            case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -2345,7 +2754,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 874;
+                this.state = 949;
                 localContext._Name = this.simpleNameReference();
                 }
                 break;
@@ -2364,7 +2773,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUIDLITERAL:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 875;
+                this.state = 950;
                 localContext._Literal = this.literalExpression();
                 }
                 break;
@@ -2387,38 +2796,38 @@ export class HqlParser extends antlr.Parser {
     }
     public declareQueryParametersStatement(): DeclareQueryParametersStatementContext {
         let localContext = new DeclareQueryParametersStatementContext(this.context, this.state);
-        this.enterRule(localContext, 70, HqlParser.RULE_declareQueryParametersStatement);
+        this.enterRule(localContext, 86, HqlParser.RULE_declareQueryParametersStatement);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 878;
+            this.state = 953;
             this.match(HqlParser.DECLARE);
-            this.state = 879;
+            this.state = 954;
             this.match(HqlParser.QUERYPARAMETERS);
-            this.state = 880;
+            this.state = 955;
             this.match(HqlParser.OPENPAREN);
-            this.state = 881;
+            this.state = 956;
             localContext._declareQueryParametersStatementParameter = this.declareQueryParametersStatementParameter();
             localContext._Parameters.push(localContext._declareQueryParametersStatementParameter!);
-            this.state = 886;
+            this.state = 961;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 882;
+                this.state = 957;
                 this.match(HqlParser.COMMA);
-                this.state = 883;
+                this.state = 958;
                 localContext._declareQueryParametersStatementParameter = this.declareQueryParametersStatementParameter();
                 localContext._Parameters.push(localContext._declareQueryParametersStatementParameter!);
                 }
                 }
-                this.state = 888;
+                this.state = 963;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 889;
+            this.state = 964;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -2437,23 +2846,23 @@ export class HqlParser extends antlr.Parser {
     }
     public declareQueryParametersStatementParameter(): DeclareQueryParametersStatementParameterContext {
         let localContext = new DeclareQueryParametersStatementParameterContext(this.context, this.state);
-        this.enterRule(localContext, 72, HqlParser.RULE_declareQueryParametersStatementParameter);
+        this.enterRule(localContext, 88, HqlParser.RULE_declareQueryParametersStatementParameter);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 891;
+            this.state = 966;
             localContext._Name = this.parameterName();
-            this.state = 892;
+            this.state = 967;
             this.match(HqlParser.COLON);
-            this.state = 893;
+            this.state = 968;
             localContext._Type = this.scalarType();
-            this.state = 895;
+            this.state = 970;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 17) {
                 {
-                this.state = 894;
+                this.state = 969;
                 localContext._Default = this.scalarParameterDefault();
                 }
             }
@@ -2475,11 +2884,11 @@ export class HqlParser extends antlr.Parser {
     }
     public queryStatement(): QueryStatementContext {
         let localContext = new QueryStatementContext(this.context, this.state);
-        this.enterRule(localContext, 74, HqlParser.RULE_queryStatement);
+        this.enterRule(localContext, 90, HqlParser.RULE_queryStatement);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 897;
+            this.state = 972;
             localContext._Expression = this.expression();
             }
         }
@@ -2498,11 +2907,11 @@ export class HqlParser extends antlr.Parser {
     }
     public expression(): ExpressionContext {
         let localContext = new ExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 76, HqlParser.RULE_expression);
+        this.enterRule(localContext, 92, HqlParser.RULE_expression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 899;
+            this.state = 974;
             this.pipeExpression();
             }
         }
@@ -2521,18 +2930,18 @@ export class HqlParser extends antlr.Parser {
     }
     public pipeExpression(): PipeExpressionContext {
         let localContext = new PipeExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 78, HqlParser.RULE_pipeExpression);
+        this.enterRule(localContext, 94, HqlParser.RULE_pipeExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 901;
+            this.state = 976;
             localContext._Expression = this.beforePipeExpression();
-            this.state = 903;
+            this.state = 978;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 29, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 33, this.context) ) {
             case 1:
                 {
-                this.state = 902;
+                this.state = 977;
                 localContext._PipedOperators = this.emptyPipedExpression();
                 }
                 break;
@@ -2554,30 +2963,30 @@ export class HqlParser extends antlr.Parser {
     }
     public emptyPipedExpression(): EmptyPipedExpressionContext {
         let localContext = new EmptyPipedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 80, HqlParser.RULE_emptyPipedExpression);
+        this.enterRule(localContext, 96, HqlParser.RULE_emptyPipedExpression);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 905;
+            this.state = 980;
             localContext._pipedOperator = this.pipedOperator();
             localContext._Operators.push(localContext._pipedOperator!);
-            this.state = 909;
+            this.state = 984;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 30, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 34, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 906;
+                    this.state = 981;
                     localContext._pipedOperator = this.pipedOperator();
                     localContext._Operators.push(localContext._pipedOperator!);
                     }
                     }
                 }
-                this.state = 911;
+                this.state = 986;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 30, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 34, this.context);
             }
             }
         }
@@ -2596,13 +3005,13 @@ export class HqlParser extends antlr.Parser {
     }
     public pipedOperator(): PipedOperatorContext {
         let localContext = new PipedOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 82, HqlParser.RULE_pipedOperator);
+        this.enterRule(localContext, 98, HqlParser.RULE_pipedOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 912;
+            this.state = 987;
             this.match(HqlParser.BAR);
-            this.state = 913;
+            this.state = 988;
             localContext._Operator = this.afterPipeOperator();
             }
         }
@@ -2621,25 +3030,25 @@ export class HqlParser extends antlr.Parser {
     }
     public pipeSubExpression(): PipeSubExpressionContext {
         let localContext = new PipeSubExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 84, HqlParser.RULE_pipeSubExpression);
+        this.enterRule(localContext, 100, HqlParser.RULE_pipeSubExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 915;
+            this.state = 990;
             localContext._Expression = this.afterPipeOperator();
-            this.state = 919;
+            this.state = 994;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 3) {
                 {
                 {
-                this.state = 916;
+                this.state = 991;
                 localContext._pipedOperator = this.pipedOperator();
                 localContext._PipedOperators.push(localContext._pipedOperator!);
                 }
                 }
-                this.state = 921;
+                this.state = 996;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -2660,50 +3069,50 @@ export class HqlParser extends antlr.Parser {
     }
     public beforePipeExpression(): BeforePipeExpressionContext {
         let localContext = new BeforePipeExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 86, HqlParser.RULE_beforePipeExpression);
+        this.enterRule(localContext, 102, HqlParser.RULE_beforePipeExpression);
         try {
-            this.state = 928;
+            this.state = 1003;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 32, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 36, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 922;
+                this.state = 997;
                 this.beforeOrAfterPipeOperator();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 923;
+                this.state = 998;
                 this.printOperator();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 924;
+                this.state = 999;
                 this.macroExpandOperator();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 925;
+                this.state = 1000;
                 this.rangeExpression();
                 }
                 break;
             case 5:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 926;
+                this.state = 1001;
                 this.scopedFunctionCallExpression();
                 }
                 break;
             case 6:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 927;
+                this.state = 1002;
                 this.unnamedExpression();
                 }
                 break;
@@ -2724,370 +3133,377 @@ export class HqlParser extends antlr.Parser {
     }
     public afterPipeOperator(): AfterPipeOperatorContext {
         let localContext = new AfterPipeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 88, HqlParser.RULE_afterPipeOperator);
+        this.enterRule(localContext, 104, HqlParser.RULE_afterPipeOperator);
         try {
-            this.state = 981;
+            this.state = 1057;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.AS:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 930;
+                this.state = 1005;
                 this.asOperator();
                 }
                 break;
             case HqlParser.ASSERTSCHEMA:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 931;
+                this.state = 1006;
                 this.assertSchemaOperator();
                 }
                 break;
             case HqlParser.CONSUME:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 932;
+                this.state = 1007;
                 this.consumeOperator();
                 }
                 break;
             case HqlParser.COUNT:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 933;
+                this.state = 1008;
                 this.countOperator();
                 }
                 break;
             case HqlParser.DISTINCT:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 934;
+                this.state = 1009;
                 this.distinctOperator();
                 }
                 break;
             case HqlParser.EXECUTE_AND_CACHE:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 935;
+                this.state = 1010;
                 this.executeAndCacheOperator();
                 }
                 break;
             case HqlParser.EXTEND:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 936;
+                this.state = 1011;
                 this.extendOperator();
                 }
                 break;
             case HqlParser.FACET:
                 this.enterOuterAlt(localContext, 8);
                 {
-                this.state = 937;
+                this.state = 1012;
                 this.facetByOperator();
                 }
                 break;
             case HqlParser.FIND:
                 this.enterOuterAlt(localContext, 9);
                 {
-                this.state = 938;
+                this.state = 1013;
                 this.findOperator();
                 }
                 break;
             case HqlParser.FORK:
                 this.enterOuterAlt(localContext, 10);
                 {
-                this.state = 939;
+                this.state = 1014;
                 this.forkOperator();
                 }
                 break;
             case HqlParser.GETSCHEMA:
                 this.enterOuterAlt(localContext, 11);
                 {
-                this.state = 940;
+                this.state = 1015;
                 this.getSchemaOperator();
                 }
                 break;
             case HqlParser.GRAPHMARKCOMPONENTS:
                 this.enterOuterAlt(localContext, 12);
                 {
-                this.state = 941;
+                this.state = 1016;
                 this.graphMarkComponentsOperator();
                 }
                 break;
             case HqlParser.GRAPHMATCH:
                 this.enterOuterAlt(localContext, 13);
                 {
-                this.state = 942;
+                this.state = 1017;
                 this.graphMatchOperator();
                 }
                 break;
             case HqlParser.GRAPHMERGE:
                 this.enterOuterAlt(localContext, 14);
                 {
-                this.state = 943;
+                this.state = 1018;
                 this.graphMergeOperator();
                 }
                 break;
             case HqlParser.GRAPHSHORTESTPATHS:
                 this.enterOuterAlt(localContext, 15);
                 {
-                this.state = 944;
+                this.state = 1019;
                 this.graphShortestPathsOperator();
                 }
                 break;
             case HqlParser.GRAPHTOTABLE:
                 this.enterOuterAlt(localContext, 16);
                 {
-                this.state = 945;
+                this.state = 1020;
                 this.graphToTableOperator();
                 }
                 break;
             case HqlParser.INVOKE:
                 this.enterOuterAlt(localContext, 17);
                 {
-                this.state = 946;
+                this.state = 1021;
                 this.invokeOperator();
                 }
                 break;
             case HqlParser.JOIN:
                 this.enterOuterAlt(localContext, 18);
                 {
-                this.state = 947;
+                this.state = 1022;
                 this.joinOperator();
                 }
                 break;
             case HqlParser.LOOKUP:
                 this.enterOuterAlt(localContext, 19);
                 {
-                this.state = 948;
+                this.state = 1023;
                 this.lookupOperator();
                 }
                 break;
             case HqlParser.MAKEGRAPH:
                 this.enterOuterAlt(localContext, 20);
                 {
-                this.state = 949;
+                this.state = 1024;
                 this.makeGraphOperator();
                 }
                 break;
             case HqlParser.MAKESERIES:
                 this.enterOuterAlt(localContext, 21);
                 {
-                this.state = 950;
+                this.state = 1025;
                 this.makeSeriesOperator();
+                }
+                break;
+            case HqlParser.MAP:
+                this.enterOuterAlt(localContext, 22);
+                {
+                this.state = 1026;
+                this.mapOperator();
                 }
                 break;
             case HqlParser.MV_EXPAND:
             case HqlParser.MVEXPAND:
-                this.enterOuterAlt(localContext, 22);
+                this.enterOuterAlt(localContext, 23);
                 {
-                this.state = 951;
+                this.state = 1027;
                 this.mvexpandOperator();
                 }
                 break;
             case HqlParser.MV_APPLY:
             case HqlParser.MVAPPLY:
-                this.enterOuterAlt(localContext, 23);
+                this.enterOuterAlt(localContext, 24);
                 {
-                this.state = 952;
+                this.state = 1028;
                 this.mvapplyOperator();
                 }
                 break;
             case HqlParser.EVALUATE:
-                this.enterOuterAlt(localContext, 24);
+                this.enterOuterAlt(localContext, 25);
                 {
-                this.state = 953;
+                this.state = 1029;
                 this.evaluateOperator();
                 }
                 break;
             case HqlParser.PARSE:
-                this.enterOuterAlt(localContext, 25);
+                this.enterOuterAlt(localContext, 26);
                 {
-                this.state = 954;
+                this.state = 1030;
                 this.parseOperator();
                 }
                 break;
             case HqlParser.PARSEKV:
-                this.enterOuterAlt(localContext, 26);
+                this.enterOuterAlt(localContext, 27);
                 {
-                this.state = 955;
+                this.state = 1031;
                 this.parseKvOperator();
                 }
                 break;
             case HqlParser.PARSEWHERE:
-                this.enterOuterAlt(localContext, 27);
+                this.enterOuterAlt(localContext, 28);
                 {
-                this.state = 956;
+                this.state = 1032;
                 this.parseWhereOperator();
                 }
                 break;
             case HqlParser.PARTITION:
-                this.enterOuterAlt(localContext, 28);
+                this.enterOuterAlt(localContext, 29);
                 {
-                this.state = 957;
+                this.state = 1033;
                 this.partitionOperator();
                 }
                 break;
             case HqlParser.PARTITIONBY:
-                this.enterOuterAlt(localContext, 29);
+                this.enterOuterAlt(localContext, 30);
                 {
-                this.state = 958;
+                this.state = 1034;
                 this.partitionByOperator();
                 }
                 break;
             case HqlParser.PROJECT:
-                this.enterOuterAlt(localContext, 30);
+                this.enterOuterAlt(localContext, 31);
                 {
-                this.state = 959;
+                this.state = 1035;
                 this.projectOperator();
                 }
                 break;
             case HqlParser.PROJECTAWAY:
-                this.enterOuterAlt(localContext, 31);
+                this.enterOuterAlt(localContext, 32);
                 {
-                this.state = 960;
+                this.state = 1036;
                 this.projectAwayOperator();
                 }
                 break;
             case HqlParser.PROJECTRENAME:
-                this.enterOuterAlt(localContext, 32);
+                this.enterOuterAlt(localContext, 33);
                 {
-                this.state = 961;
+                this.state = 1037;
                 this.projectRenameOperator();
                 }
                 break;
             case HqlParser.PROJECTREORDER:
-                this.enterOuterAlt(localContext, 33);
+                this.enterOuterAlt(localContext, 34);
                 {
-                this.state = 962;
+                this.state = 1038;
                 this.projectReorderOperator();
                 }
                 break;
             case HqlParser.PROJECTKEEP:
-                this.enterOuterAlt(localContext, 34);
+                this.enterOuterAlt(localContext, 35);
                 {
-                this.state = 963;
+                this.state = 1039;
                 this.projectKeepOperator();
                 }
                 break;
             case HqlParser.REDUCE:
-                this.enterOuterAlt(localContext, 35);
+                this.enterOuterAlt(localContext, 36);
                 {
-                this.state = 964;
+                this.state = 1040;
                 this.reduceByOperator();
                 }
                 break;
             case HqlParser.RENAME:
-                this.enterOuterAlt(localContext, 36);
+                this.enterOuterAlt(localContext, 37);
                 {
-                this.state = 965;
+                this.state = 1041;
                 this.renameOperator();
                 }
                 break;
             case HqlParser.RENDER:
-                this.enterOuterAlt(localContext, 37);
+                this.enterOuterAlt(localContext, 38);
                 {
-                this.state = 966;
+                this.state = 1042;
                 this.renderOperator();
                 }
                 break;
             case HqlParser.SAMPLE:
-                this.enterOuterAlt(localContext, 38);
+                this.enterOuterAlt(localContext, 39);
                 {
-                this.state = 967;
+                this.state = 1043;
                 this.sampleOperator();
                 }
                 break;
             case HqlParser.SAMPLE_DISTINCT:
-                this.enterOuterAlt(localContext, 39);
+                this.enterOuterAlt(localContext, 40);
                 {
-                this.state = 968;
+                this.state = 1044;
                 this.sampleDistinctOperator();
                 }
                 break;
             case HqlParser.SCAN:
-                this.enterOuterAlt(localContext, 40);
+                this.enterOuterAlt(localContext, 41);
                 {
-                this.state = 969;
+                this.state = 1045;
                 this.scanOperator();
                 }
                 break;
             case HqlParser.SEARCH:
-                this.enterOuterAlt(localContext, 41);
+                this.enterOuterAlt(localContext, 42);
                 {
-                this.state = 970;
+                this.state = 1046;
                 this.searchOperator();
                 }
                 break;
             case HqlParser.SERIALIZE:
-                this.enterOuterAlt(localContext, 42);
+                this.enterOuterAlt(localContext, 43);
                 {
-                this.state = 971;
+                this.state = 1047;
                 this.serializeOperator();
                 }
                 break;
             case HqlParser.ORDER:
             case HqlParser.SORT:
-                this.enterOuterAlt(localContext, 43);
+                this.enterOuterAlt(localContext, 44);
                 {
-                this.state = 972;
+                this.state = 1048;
                 this.sortOperator();
                 }
                 break;
             case HqlParser.SUMMARIZE:
-                this.enterOuterAlt(localContext, 44);
+                this.enterOuterAlt(localContext, 45);
                 {
-                this.state = 973;
+                this.state = 1049;
                 this.summarizeOperator();
                 }
                 break;
             case HqlParser.LIMIT:
             case HqlParser.TAKE:
-                this.enterOuterAlt(localContext, 45);
+                this.enterOuterAlt(localContext, 46);
                 {
-                this.state = 974;
+                this.state = 1050;
                 this.takeOperator();
                 }
                 break;
             case HqlParser.TOP_HITTERS:
-                this.enterOuterAlt(localContext, 46);
+                this.enterOuterAlt(localContext, 47);
                 {
-                this.state = 975;
+                this.state = 1051;
                 this.topHittersOperator();
                 }
                 break;
             case HqlParser.TOP:
-                this.enterOuterAlt(localContext, 47);
+                this.enterOuterAlt(localContext, 48);
                 {
-                this.state = 976;
+                this.state = 1052;
                 this.topOperator();
                 }
                 break;
             case HqlParser.TOP_NESTED:
-                this.enterOuterAlt(localContext, 48);
+                this.enterOuterAlt(localContext, 49);
                 {
-                this.state = 977;
+                this.state = 1053;
                 this.topNestedOperator();
                 }
                 break;
             case HqlParser.UNION:
-                this.enterOuterAlt(localContext, 49);
+                this.enterOuterAlt(localContext, 50);
                 {
-                this.state = 978;
+                this.state = 1054;
                 this.unionOperator();
                 }
                 break;
             case HqlParser.FILTER:
             case HqlParser.WHERE:
-                this.enterOuterAlt(localContext, 50);
+                this.enterOuterAlt(localContext, 51);
                 {
-                this.state = 979;
+                this.state = 1055;
                 this.whereOperator();
                 }
                 break;
             case HqlParser.UNNEST:
-                this.enterOuterAlt(localContext, 51);
+                this.enterOuterAlt(localContext, 52);
                 {
-                this.state = 980;
+                this.state = 1056;
                 this.unnestOperator();
                 }
                 break;
@@ -3110,36 +3526,36 @@ export class HqlParser extends antlr.Parser {
     }
     public beforeOrAfterPipeOperator(): BeforeOrAfterPipeOperatorContext {
         let localContext = new BeforeOrAfterPipeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 90, HqlParser.RULE_beforeOrAfterPipeOperator);
+        this.enterRule(localContext, 106, HqlParser.RULE_beforeOrAfterPipeOperator);
         try {
-            this.state = 987;
+            this.state = 1063;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.FIND:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 983;
+                this.state = 1059;
                 this.findOperator();
                 }
                 break;
             case HqlParser.SEARCH:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 984;
+                this.state = 1060;
                 this.searchOperator();
                 }
                 break;
             case HqlParser.UNION:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 985;
+                this.state = 1061;
                 this.unionOperator();
                 }
                 break;
             case HqlParser.EVALUATE:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 986;
+                this.state = 1062;
                 this.evaluateOperator();
                 }
                 break;
@@ -3162,22 +3578,22 @@ export class HqlParser extends antlr.Parser {
     }
     public forkPipeOperator(): ForkPipeOperatorContext {
         let localContext = new ForkPipeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 92, HqlParser.RULE_forkPipeOperator);
+        this.enterRule(localContext, 108, HqlParser.RULE_forkPipeOperator);
         try {
-            this.state = 1014;
+            this.state = 1090;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.COUNT:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 989;
+                this.state = 1065;
                 this.countOperator();
                 }
                 break;
             case HqlParser.EXTEND:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 990;
+                this.state = 1066;
                 this.extendOperator();
                 }
                 break;
@@ -3185,21 +3601,21 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.WHERE:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 991;
+                this.state = 1067;
                 this.whereOperator();
                 }
                 break;
             case HqlParser.PARSE:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 992;
+                this.state = 1068;
                 this.parseOperator();
                 }
                 break;
             case HqlParser.PARSEWHERE:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 993;
+                this.state = 1069;
                 this.parseWhereOperator();
                 }
                 break;
@@ -3207,77 +3623,77 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.TAKE:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 994;
+                this.state = 1070;
                 this.takeOperator();
                 }
                 break;
             case HqlParser.TOP_NESTED:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 995;
+                this.state = 1071;
                 this.topNestedOperator();
                 }
                 break;
             case HqlParser.PROJECT:
                 this.enterOuterAlt(localContext, 8);
                 {
-                this.state = 996;
+                this.state = 1072;
                 this.projectOperator();
                 }
                 break;
             case HqlParser.PROJECTAWAY:
                 this.enterOuterAlt(localContext, 9);
                 {
-                this.state = 997;
+                this.state = 1073;
                 this.projectAwayOperator();
                 }
                 break;
             case HqlParser.PROJECTRENAME:
                 this.enterOuterAlt(localContext, 10);
                 {
-                this.state = 998;
+                this.state = 1074;
                 this.projectRenameOperator();
                 }
                 break;
             case HqlParser.PROJECTREORDER:
                 this.enterOuterAlt(localContext, 11);
                 {
-                this.state = 999;
+                this.state = 1075;
                 this.projectReorderOperator();
                 }
                 break;
             case HqlParser.PROJECTKEEP:
                 this.enterOuterAlt(localContext, 12);
                 {
-                this.state = 1000;
+                this.state = 1076;
                 this.projectKeepOperator();
                 }
                 break;
             case HqlParser.SUMMARIZE:
                 this.enterOuterAlt(localContext, 13);
                 {
-                this.state = 1001;
+                this.state = 1077;
                 this.summarizeOperator();
                 }
                 break;
             case HqlParser.DISTINCT:
                 this.enterOuterAlt(localContext, 14);
                 {
-                this.state = 1002;
+                this.state = 1078;
                 this.distinctOperator();
                 }
                 break;
             case HqlParser.TOP_HITTERS:
                 this.enterOuterAlt(localContext, 15);
                 {
-                this.state = 1003;
+                this.state = 1079;
                 this.topHittersOperator();
                 }
                 break;
             case HqlParser.TOP:
                 this.enterOuterAlt(localContext, 16);
                 {
-                this.state = 1004;
+                this.state = 1080;
                 this.topOperator();
                 }
                 break;
@@ -3285,7 +3701,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.SORT:
                 this.enterOuterAlt(localContext, 17);
                 {
-                this.state = 1005;
+                this.state = 1081;
                 this.sortOperator();
                 }
                 break;
@@ -3293,56 +3709,56 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.MVEXPAND:
                 this.enterOuterAlt(localContext, 18);
                 {
-                this.state = 1006;
+                this.state = 1082;
                 this.mvexpandOperator();
                 }
                 break;
             case HqlParser.REDUCE:
                 this.enterOuterAlt(localContext, 19);
                 {
-                this.state = 1007;
+                this.state = 1083;
                 this.reduceByOperator();
                 }
                 break;
             case HqlParser.SAMPLE:
                 this.enterOuterAlt(localContext, 20);
                 {
-                this.state = 1008;
+                this.state = 1084;
                 this.sampleOperator();
                 }
                 break;
             case HqlParser.SAMPLE_DISTINCT:
                 this.enterOuterAlt(localContext, 21);
                 {
-                this.state = 1009;
+                this.state = 1085;
                 this.sampleDistinctOperator();
                 }
                 break;
             case HqlParser.AS:
                 this.enterOuterAlt(localContext, 22);
                 {
-                this.state = 1010;
+                this.state = 1086;
                 this.asOperator();
                 }
                 break;
             case HqlParser.INVOKE:
                 this.enterOuterAlt(localContext, 23);
                 {
-                this.state = 1011;
+                this.state = 1087;
                 this.invokeOperator();
                 }
                 break;
             case HqlParser.EXECUTE_AND_CACHE:
                 this.enterOuterAlt(localContext, 24);
                 {
-                this.state = 1012;
+                this.state = 1088;
                 this.executeAndCacheOperator();
                 }
                 break;
             case HqlParser.SCAN:
                 this.enterOuterAlt(localContext, 25);
                 {
-                this.state = 1013;
+                this.state = 1089;
                 this.scanOperator();
                 }
                 break;
@@ -3365,31 +3781,31 @@ export class HqlParser extends antlr.Parser {
     }
     public asOperator(): AsOperatorContext {
         let localContext = new AsOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 94, HqlParser.RULE_asOperator);
+        this.enterRule(localContext, 110, HqlParser.RULE_asOperator);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1016;
+            this.state = 1092;
             this.match(HqlParser.AS);
-            this.state = 1020;
+            this.state = 1096;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 36, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 40, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1017;
+                    this.state = 1093;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1022;
+                this.state = 1098;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 36, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 40, this.context);
             }
-            this.state = 1023;
+            this.state = 1099;
             localContext._Name = this.simpleNameReference();
             }
         }
@@ -3408,13 +3824,13 @@ export class HqlParser extends antlr.Parser {
     }
     public assertSchemaOperator(): AssertSchemaOperatorContext {
         let localContext = new AssertSchemaOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 96, HqlParser.RULE_assertSchemaOperator);
+        this.enterRule(localContext, 112, HqlParser.RULE_assertSchemaOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1025;
+            this.state = 1101;
             this.match(HqlParser.ASSERTSCHEMA);
-            this.state = 1026;
+            this.state = 1102;
             localContext._Schema = this.rowSchema();
             }
         }
@@ -3433,25 +3849,25 @@ export class HqlParser extends antlr.Parser {
     }
     public consumeOperator(): ConsumeOperatorContext {
         let localContext = new ConsumeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 98, HqlParser.RULE_consumeOperator);
+        this.enterRule(localContext, 114, HqlParser.RULE_consumeOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1028;
+            this.state = 1104;
             this.match(HqlParser.CONSUME);
-            this.state = 1032;
+            this.state = 1108;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1029;
+                this.state = 1105;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1034;
+                this.state = 1110;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -3472,36 +3888,36 @@ export class HqlParser extends antlr.Parser {
     }
     public countOperator(): CountOperatorContext {
         let localContext = new CountOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 100, HqlParser.RULE_countOperator);
+        this.enterRule(localContext, 116, HqlParser.RULE_countOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1035;
+            this.state = 1111;
             this.match(HqlParser.COUNT);
-            this.state = 1039;
+            this.state = 1115;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1036;
+                this.state = 1112;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1041;
+                this.state = 1117;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1044;
+            this.state = 1120;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 47) {
                 {
-                this.state = 1042;
+                this.state = 1118;
                 this.match(HqlParser.AS);
-                this.state = 1043;
+                this.state = 1119;
                 localContext._Name = this.tableNameReference();
                 }
             }
@@ -3523,42 +3939,42 @@ export class HqlParser extends antlr.Parser {
     }
     public distinctOperator(): DistinctOperatorContext {
         let localContext = new DistinctOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 102, HqlParser.RULE_distinctOperator);
+        this.enterRule(localContext, 118, HqlParser.RULE_distinctOperator);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1046;
+            this.state = 1122;
             this.match(HqlParser.DISTINCT);
-            this.state = 1050;
+            this.state = 1126;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 40, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 44, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1047;
+                    this.state = 1123;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1052;
+                this.state = 1128;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 40, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 44, this.context);
             }
-            this.state = 1055;
+            this.state = 1131;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 41, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 45, this.context) ) {
             case 1:
                 {
-                this.state = 1053;
+                this.state = 1129;
                 localContext._Star = this.distinctOperatorStarTarget();
                 }
                 break;
             case 2:
                 {
-                this.state = 1054;
+                this.state = 1130;
                 localContext._ColumnList = this.distinctOperatorColumnListTarget();
                 }
                 break;
@@ -3580,11 +3996,11 @@ export class HqlParser extends antlr.Parser {
     }
     public distinctOperatorStarTarget(): DistinctOperatorStarTargetContext {
         let localContext = new DistinctOperatorStarTargetContext(this.context, this.state);
-        this.enterRule(localContext, 104, HqlParser.RULE_distinctOperatorStarTarget);
+        this.enterRule(localContext, 120, HqlParser.RULE_distinctOperatorStarTarget);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1057;
+            this.state = 1133;
             this.match(HqlParser.ASTERISK);
             }
         }
@@ -3603,28 +4019,28 @@ export class HqlParser extends antlr.Parser {
     }
     public distinctOperatorColumnListTarget(): DistinctOperatorColumnListTargetContext {
         let localContext = new DistinctOperatorColumnListTargetContext(this.context, this.state);
-        this.enterRule(localContext, 106, HqlParser.RULE_distinctOperatorColumnListTarget);
+        this.enterRule(localContext, 122, HqlParser.RULE_distinctOperatorColumnListTarget);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1059;
+            this.state = 1135;
             localContext._unnamedExpression = this.unnamedExpression();
             localContext._Expressions.push(localContext._unnamedExpression!);
-            this.state = 1064;
+            this.state = 1140;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1060;
+                this.state = 1136;
                 this.match(HqlParser.COMMA);
-                this.state = 1061;
+                this.state = 1137;
                 localContext._unnamedExpression = this.unnamedExpression();
                 localContext._Expressions.push(localContext._unnamedExpression!);
                 }
                 }
-                this.state = 1066;
+                this.state = 1142;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -3645,39 +4061,39 @@ export class HqlParser extends antlr.Parser {
     }
     public evaluateOperator(): EvaluateOperatorContext {
         let localContext = new EvaluateOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 108, HqlParser.RULE_evaluateOperator);
+        this.enterRule(localContext, 124, HqlParser.RULE_evaluateOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1067;
+            this.state = 1143;
             this.match(HqlParser.EVALUATE);
-            this.state = 1071;
+            this.state = 1147;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 43, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 47, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1068;
+                    this.state = 1144;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1073;
+                this.state = 1149;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 43, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 47, this.context);
             }
-            this.state = 1074;
+            this.state = 1150;
             localContext._PlugInCall = this.functionCallExpression();
-            this.state = 1076;
+            this.state = 1152;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 10) {
                 {
-                this.state = 1075;
+                this.state = 1151;
                 localContext._SchemaClause = this.evaluateOperatorSchemaClause();
                 }
             }
@@ -3699,13 +4115,13 @@ export class HqlParser extends antlr.Parser {
     }
     public evaluateOperatorSchemaClause(): EvaluateOperatorSchemaClauseContext {
         let localContext = new EvaluateOperatorSchemaClauseContext(this.context, this.state);
-        this.enterRule(localContext, 110, HqlParser.RULE_evaluateOperatorSchemaClause);
+        this.enterRule(localContext, 126, HqlParser.RULE_evaluateOperatorSchemaClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1078;
+            this.state = 1154;
             this.match(HqlParser.COLON);
-            this.state = 1079;
+            this.state = 1155;
             localContext._Schema = this.rowSchema();
             }
         }
@@ -3724,30 +4140,30 @@ export class HqlParser extends antlr.Parser {
     }
     public extendOperator(): ExtendOperatorContext {
         let localContext = new ExtendOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 112, HqlParser.RULE_extendOperator);
+        this.enterRule(localContext, 128, HqlParser.RULE_extendOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1081;
+            this.state = 1157;
             this.match(HqlParser.EXTEND);
-            this.state = 1082;
+            this.state = 1158;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 1087;
+            this.state = 1163;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1083;
+                this.state = 1159;
                 this.match(HqlParser.COMMA);
-                this.state = 1084;
+                this.state = 1160;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 1089;
+                this.state = 1165;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -3768,11 +4184,11 @@ export class HqlParser extends antlr.Parser {
     }
     public executeAndCacheOperator(): ExecuteAndCacheOperatorContext {
         let localContext = new ExecuteAndCacheOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 114, HqlParser.RULE_executeAndCacheOperator);
+        this.enterRule(localContext, 130, HqlParser.RULE_executeAndCacheOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1090;
+            this.state = 1166;
             this.match(HqlParser.EXECUTE_AND_CACHE);
             }
         }
@@ -3791,47 +4207,47 @@ export class HqlParser extends antlr.Parser {
     }
     public facetByOperator(): FacetByOperatorContext {
         let localContext = new FacetByOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 116, HqlParser.RULE_facetByOperator);
+        this.enterRule(localContext, 132, HqlParser.RULE_facetByOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1092;
+            this.state = 1168;
             this.match(HqlParser.FACET);
-            this.state = 1093;
+            this.state = 1169;
             this.match(HqlParser.BY);
-            this.state = 1094;
+            this.state = 1170;
             localContext._entityExpression = this.entityExpression();
             localContext._Entities.push(localContext._entityExpression!);
-            this.state = 1099;
+            this.state = 1175;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1095;
+                this.state = 1171;
                 this.match(HqlParser.COMMA);
-                this.state = 1096;
+                this.state = 1172;
                 localContext._entityExpression = this.entityExpression();
                 localContext._Entities.push(localContext._entityExpression!);
                 }
                 }
-                this.state = 1101;
+                this.state = 1177;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1104;
+            this.state = 1180;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 47, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 51, this.context) ) {
             case 1:
                 {
-                this.state = 1102;
+                this.state = 1178;
                 localContext._WithOperatorClause = this.facetByOperatorWithOperatorClause();
                 }
                 break;
             case 2:
                 {
-                this.state = 1103;
+                this.state = 1179;
                 localContext._WithExpressionClause = this.facetByOperatorWithExpressionClause();
                 }
                 break;
@@ -3853,13 +4269,13 @@ export class HqlParser extends antlr.Parser {
     }
     public facetByOperatorWithOperatorClause(): FacetByOperatorWithOperatorClauseContext {
         let localContext = new FacetByOperatorWithOperatorClauseContext(this.context, this.state);
-        this.enterRule(localContext, 118, HqlParser.RULE_facetByOperatorWithOperatorClause);
+        this.enterRule(localContext, 134, HqlParser.RULE_facetByOperatorWithOperatorClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1106;
+            this.state = 1182;
             this.match(HqlParser.WITH);
-            this.state = 1107;
+            this.state = 1183;
             localContext._Operator = this.forkPipeOperator();
             }
         }
@@ -3878,17 +4294,17 @@ export class HqlParser extends antlr.Parser {
     }
     public facetByOperatorWithExpressionClause(): FacetByOperatorWithExpressionClauseContext {
         let localContext = new FacetByOperatorWithExpressionClauseContext(this.context, this.state);
-        this.enterRule(localContext, 120, HqlParser.RULE_facetByOperatorWithExpressionClause);
+        this.enterRule(localContext, 136, HqlParser.RULE_facetByOperatorWithExpressionClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1109;
+            this.state = 1185;
             this.match(HqlParser.WITH);
-            this.state = 1110;
+            this.state = 1186;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1111;
+            this.state = 1187;
             localContext._Expression = this.forkOperatorExpression();
-            this.state = 1112;
+            this.state = 1188;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -3907,47 +4323,47 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperator(): FindOperatorContext {
         let localContext = new FindOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 122, HqlParser.RULE_findOperator);
+        this.enterRule(localContext, 138, HqlParser.RULE_findOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1114;
+            this.state = 1190;
             this.match(HqlParser.FIND);
-            this.state = 1116;
+            this.state = 1192;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 48, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 52, this.context) ) {
             case 1:
                 {
-                this.state = 1115;
+                this.state = 1191;
                 localContext._ParameterWhereClause = this.findOperatorParametersWhereClause();
                 }
                 break;
             }
-            this.state = 1118;
+            this.state = 1194;
             localContext._Expression = this.unnamedExpression();
-            this.state = 1121;
+            this.state = 1197;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 49, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 53, this.context) ) {
             case 1:
                 {
-                this.state = 1119;
+                this.state = 1195;
                 localContext._ProjectClause = this.findOperatorProjectClause();
                 }
                 break;
             case 2:
                 {
-                this.state = 1120;
+                this.state = 1196;
                 localContext._ProjectSmartClause = this.findOperatorProjectSmartClause();
                 }
                 break;
             }
-            this.state = 1124;
+            this.state = 1200;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 208) {
+            if (_la === 211) {
                 {
-                this.state = 1123;
+                this.state = 1199;
                 localContext._ProjectAwayClause = this.findOperatorProjectAwayClause();
                 }
             }
@@ -3969,37 +4385,37 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorParametersWhereClause(): FindOperatorParametersWhereClauseContext {
         let localContext = new FindOperatorParametersWhereClauseContext(this.context, this.state);
-        this.enterRule(localContext, 124, HqlParser.RULE_findOperatorParametersWhereClause);
+        this.enterRule(localContext, 140, HqlParser.RULE_findOperatorParametersWhereClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1129;
+            this.state = 1205;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1126;
+                this.state = 1202;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1131;
+                this.state = 1207;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1133;
+            this.state = 1209;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 136) {
+            if (_la === 138) {
                 {
-                this.state = 1132;
+                this.state = 1208;
                 localContext._InClause = this.findOperatorInClause();
                 }
             }
 
-            this.state = 1135;
+            this.state = 1211;
             this.match(HqlParser.WHERE);
             }
         }
@@ -4018,36 +4434,36 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorInClause(): FindOperatorInClauseContext {
         let localContext = new FindOperatorInClauseContext(this.context, this.state);
-        this.enterRule(localContext, 126, HqlParser.RULE_findOperatorInClause);
+        this.enterRule(localContext, 142, HqlParser.RULE_findOperatorInClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1137;
+            this.state = 1213;
             this.match(HqlParser.IN);
-            this.state = 1138;
+            this.state = 1214;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1139;
+            this.state = 1215;
             localContext._findOperatorSource = this.findOperatorSource();
             localContext._Expressions.push(localContext._findOperatorSource!);
-            this.state = 1144;
+            this.state = 1220;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1140;
+                this.state = 1216;
                 this.match(HqlParser.COMMA);
-                this.state = 1141;
+                this.state = 1217;
                 localContext._findOperatorSource = this.findOperatorSource();
                 localContext._Expressions.push(localContext._findOperatorSource!);
                 }
                 }
-                this.state = 1146;
+                this.state = 1222;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1147;
+            this.state = 1223;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -4066,30 +4482,30 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectClause(): FindOperatorProjectClauseContext {
         let localContext = new FindOperatorProjectClauseContext(this.context, this.state);
-        this.enterRule(localContext, 128, HqlParser.RULE_findOperatorProjectClause);
+        this.enterRule(localContext, 144, HqlParser.RULE_findOperatorProjectClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1149;
+            this.state = 1225;
             this.match(HqlParser.PROJECT);
-            this.state = 1150;
+            this.state = 1226;
             localContext._findOperatorProjectExpression = this.findOperatorProjectExpression();
             localContext._Expressions.push(localContext._findOperatorProjectExpression!);
-            this.state = 1155;
+            this.state = 1231;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1151;
+                this.state = 1227;
                 this.match(HqlParser.COMMA);
-                this.state = 1152;
+                this.state = 1228;
                 localContext._findOperatorProjectExpression = this.findOperatorProjectExpression();
                 localContext._Expressions.push(localContext._findOperatorProjectExpression!);
                 }
                 }
-                this.state = 1157;
+                this.state = 1233;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -4110,22 +4526,22 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectExpression(): FindOperatorProjectExpressionContext {
         let localContext = new FindOperatorProjectExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 130, HqlParser.RULE_findOperatorProjectExpression);
+        this.enterRule(localContext, 146, HqlParser.RULE_findOperatorProjectExpression);
         try {
-            this.state = 1160;
+            this.state = 1236;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 55, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 59, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 1158;
+                this.state = 1234;
                 localContext._Column = this.findOperatorColumnExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 1159;
+                this.state = 1235;
                 localContext._Pack = this.findOperatorPackExpression();
                 }
                 break;
@@ -4146,19 +4562,19 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorColumnExpression(): FindOperatorColumnExpressionContext {
         let localContext = new FindOperatorColumnExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 132, HqlParser.RULE_findOperatorColumnExpression);
+        this.enterRule(localContext, 148, HqlParser.RULE_findOperatorColumnExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1162;
+            this.state = 1238;
             localContext._Name = this.parameterName();
-            this.state = 1164;
+            this.state = 1240;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 10) {
                 {
-                this.state = 1163;
+                this.state = 1239;
                 localContext._OptionalType = this.findOperatorOptionalColumnType();
                 }
             }
@@ -4180,13 +4596,13 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorOptionalColumnType(): FindOperatorOptionalColumnTypeContext {
         let localContext = new FindOperatorOptionalColumnTypeContext(this.context, this.state);
-        this.enterRule(localContext, 134, HqlParser.RULE_findOperatorOptionalColumnType);
+        this.enterRule(localContext, 150, HqlParser.RULE_findOperatorOptionalColumnType);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1166;
+            this.state = 1242;
             this.match(HqlParser.COLON);
-            this.state = 1167;
+            this.state = 1243;
             localContext._Type = this.extendedScalarType();
             }
         }
@@ -4205,17 +4621,17 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorPackExpression(): FindOperatorPackExpressionContext {
         let localContext = new FindOperatorPackExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 136, HqlParser.RULE_findOperatorPackExpression);
+        this.enterRule(localContext, 152, HqlParser.RULE_findOperatorPackExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1169;
+            this.state = 1245;
             this.match(HqlParser.PACK);
-            this.state = 1170;
+            this.state = 1246;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1171;
+            this.state = 1247;
             this.match(HqlParser.ASTERISK);
-            this.state = 1172;
+            this.state = 1248;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -4234,11 +4650,11 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectSmartClause(): FindOperatorProjectSmartClauseContext {
         let localContext = new FindOperatorProjectSmartClauseContext(this.context, this.state);
-        this.enterRule(localContext, 138, HqlParser.RULE_findOperatorProjectSmartClause);
+        this.enterRule(localContext, 154, HqlParser.RULE_findOperatorProjectSmartClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1174;
+            this.state = 1250;
             this.match(HqlParser.PROJECTSMART);
             }
         }
@@ -4257,18 +4673,18 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectAwayClause(): FindOperatorProjectAwayClauseContext {
         let localContext = new FindOperatorProjectAwayClauseContext(this.context, this.state);
-        this.enterRule(localContext, 140, HqlParser.RULE_findOperatorProjectAwayClause);
+        this.enterRule(localContext, 156, HqlParser.RULE_findOperatorProjectAwayClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1176;
+            this.state = 1252;
             this.match(HqlParser.PROJECTAWAY_);
-            this.state = 1179;
+            this.state = 1255;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ASTERISK:
                 {
-                this.state = 1177;
+                this.state = 1253;
                 localContext._Star = this.findOperatorProjectAwayStar();
                 }
                 break;
@@ -4319,6 +4735,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.MATERIALIZE:
             case HqlParser.NODES:
@@ -4385,7 +4802,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 1178;
+                this.state = 1254;
                 localContext._ColumnList = this.findOperatorProjectAwayColumnList();
                 }
                 break;
@@ -4409,11 +4826,11 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectAwayStar(): FindOperatorProjectAwayStarContext {
         let localContext = new FindOperatorProjectAwayStarContext(this.context, this.state);
-        this.enterRule(localContext, 142, HqlParser.RULE_findOperatorProjectAwayStar);
+        this.enterRule(localContext, 158, HqlParser.RULE_findOperatorProjectAwayStar);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1181;
+            this.state = 1257;
             this.match(HqlParser.ASTERISK);
             }
         }
@@ -4432,28 +4849,28 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorProjectAwayColumnList(): FindOperatorProjectAwayColumnListContext {
         let localContext = new FindOperatorProjectAwayColumnListContext(this.context, this.state);
-        this.enterRule(localContext, 144, HqlParser.RULE_findOperatorProjectAwayColumnList);
+        this.enterRule(localContext, 160, HqlParser.RULE_findOperatorProjectAwayColumnList);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1183;
+            this.state = 1259;
             localContext._findOperatorColumnExpression = this.findOperatorColumnExpression();
             localContext._Columns.push(localContext._findOperatorColumnExpression!);
-            this.state = 1188;
+            this.state = 1264;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1184;
+                this.state = 1260;
                 this.match(HqlParser.COMMA);
-                this.state = 1185;
+                this.state = 1261;
                 localContext._findOperatorColumnExpression = this.findOperatorColumnExpression();
                 localContext._Columns.push(localContext._findOperatorColumnExpression!);
                 }
                 }
-                this.state = 1190;
+                this.state = 1266;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -4474,22 +4891,22 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorSource(): FindOperatorSourceContext {
         let localContext = new FindOperatorSourceContext(this.context, this.state);
-        this.enterRule(localContext, 146, HqlParser.RULE_findOperatorSource);
+        this.enterRule(localContext, 162, HqlParser.RULE_findOperatorSource);
         try {
-            this.state = 1193;
+            this.state = 1269;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 59, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 63, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 1191;
+                this.state = 1267;
                 localContext._Entity = this.findOperatorSourceEntityExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 1192;
+                this.state = 1268;
                 localContext._WildcardedEntity = this.wildcardedEntityExpression();
                 }
                 break;
@@ -4510,27 +4927,27 @@ export class HqlParser extends antlr.Parser {
     }
     public findOperatorSourceEntityExpression(): FindOperatorSourceEntityExpressionContext {
         let localContext = new FindOperatorSourceEntityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 148, HqlParser.RULE_findOperatorSourceEntityExpression);
+        this.enterRule(localContext, 164, HqlParser.RULE_findOperatorSourceEntityExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1195;
+            this.state = 1271;
             localContext._Entity = this.entityNameReference();
-            this.state = 1200;
+            this.state = 1276;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 3) {
                 {
                 {
-                this.state = 1196;
+                this.state = 1272;
                 this.match(HqlParser.BAR);
-                this.state = 1197;
+                this.state = 1273;
                 localContext._asOperator = this.asOperator();
                 localContext._AsOperators.push(localContext._asOperator!);
                 }
                 }
-                this.state = 1202;
+                this.state = 1278;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -4551,27 +4968,27 @@ export class HqlParser extends antlr.Parser {
     }
     public forkOperator(): ForkOperatorContext {
         let localContext = new ForkOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 150, HqlParser.RULE_forkOperator);
+        this.enterRule(localContext, 166, HqlParser.RULE_forkOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1203;
+            this.state = 1279;
             this.match(HqlParser.FORK);
-            this.state = 1205;
+            this.state = 1281;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             do {
                 {
                 {
-                this.state = 1204;
+                this.state = 1280;
                 this.forkOperatorFork();
                 }
                 }
-                this.state = 1207;
+                this.state = 1283;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
-            } while (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869955) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320);
+            } while (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740867) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324);
             }
         }
         catch (re) {
@@ -4589,26 +5006,26 @@ export class HqlParser extends antlr.Parser {
     }
     public forkOperatorFork(): ForkOperatorForkContext {
         let localContext = new ForkOperatorForkContext(this.context, this.state);
-        this.enterRule(localContext, 152, HqlParser.RULE_forkOperatorFork);
+        this.enterRule(localContext, 168, HqlParser.RULE_forkOperatorFork);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1210;
+            this.state = 1286;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1209;
+                this.state = 1285;
                 localContext._Name = this.forkOperatorExpressionName();
                 }
             }
 
-            this.state = 1212;
+            this.state = 1288;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1213;
+            this.state = 1289;
             localContext._Expression = this.forkOperatorExpression();
-            this.state = 1214;
+            this.state = 1290;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -4627,13 +5044,13 @@ export class HqlParser extends antlr.Parser {
     }
     public forkOperatorExpressionName(): ForkOperatorExpressionNameContext {
         let localContext = new ForkOperatorExpressionNameContext(this.context, this.state);
-        this.enterRule(localContext, 154, HqlParser.RULE_forkOperatorExpressionName);
+        this.enterRule(localContext, 170, HqlParser.RULE_forkOperatorExpressionName);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1216;
+            this.state = 1292;
             localContext._Name = this.simpleNameReference();
-            this.state = 1217;
+            this.state = 1293;
             this.match(HqlParser.EQUAL);
             }
         }
@@ -4652,25 +5069,25 @@ export class HqlParser extends antlr.Parser {
     }
     public forkOperatorExpression(): ForkOperatorExpressionContext {
         let localContext = new ForkOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 156, HqlParser.RULE_forkOperatorExpression);
+        this.enterRule(localContext, 172, HqlParser.RULE_forkOperatorExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1219;
+            this.state = 1295;
             localContext._Operator = this.forkPipeOperator();
-            this.state = 1223;
+            this.state = 1299;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 3) {
                 {
                 {
-                this.state = 1220;
+                this.state = 1296;
                 localContext._forkOperatorPipedOperator = this.forkOperatorPipedOperator();
                 localContext._PipedOperators.push(localContext._forkOperatorPipedOperator!);
                 }
                 }
-                this.state = 1225;
+                this.state = 1301;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -4691,13 +5108,13 @@ export class HqlParser extends antlr.Parser {
     }
     public forkOperatorPipedOperator(): ForkOperatorPipedOperatorContext {
         let localContext = new ForkOperatorPipedOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 158, HqlParser.RULE_forkOperatorPipedOperator);
+        this.enterRule(localContext, 174, HqlParser.RULE_forkOperatorPipedOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1226;
+            this.state = 1302;
             this.match(HqlParser.BAR);
-            this.state = 1227;
+            this.state = 1303;
             localContext._Operator = this.forkPipeOperator();
             }
         }
@@ -4716,11 +5133,11 @@ export class HqlParser extends antlr.Parser {
     }
     public getSchemaOperator(): GetSchemaOperatorContext {
         let localContext = new GetSchemaOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 160, HqlParser.RULE_getSchemaOperator);
+        this.enterRule(localContext, 176, HqlParser.RULE_getSchemaOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1229;
+            this.state = 1305;
             this.match(HqlParser.GETSCHEMA);
             }
         }
@@ -4739,25 +5156,25 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMarkComponentsOperator(): GraphMarkComponentsOperatorContext {
         let localContext = new GraphMarkComponentsOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 162, HqlParser.RULE_graphMarkComponentsOperator);
+        this.enterRule(localContext, 178, HqlParser.RULE_graphMarkComponentsOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1231;
+            this.state = 1307;
             this.match(HqlParser.GRAPHMARKCOMPONENTS);
-            this.state = 1235;
+            this.state = 1311;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1232;
+                this.state = 1308;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parametems.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1237;
+                this.state = 1313;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -4778,64 +5195,64 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchOperator(): GraphMatchOperatorContext {
         let localContext = new GraphMatchOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 164, HqlParser.RULE_graphMatchOperator);
+        this.enterRule(localContext, 180, HqlParser.RULE_graphMatchOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1238;
+            this.state = 1314;
             this.match(HqlParser.GRAPHMATCH);
-            this.state = 1242;
+            this.state = 1318;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1239;
+                this.state = 1315;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1244;
+                this.state = 1320;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1245;
+            this.state = 1321;
             localContext._graphMatchPattern = this.graphMatchPattern();
             localContext._Patterns.push(localContext._graphMatchPattern!);
-            this.state = 1250;
+            this.state = 1326;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1246;
+                this.state = 1322;
                 this.match(HqlParser.COMMA);
-                this.state = 1247;
+                this.state = 1323;
                 localContext._graphMatchPattern = this.graphMatchPattern();
                 localContext._Patterns.push(localContext._graphMatchPattern!);
                 }
                 }
-                this.state = 1252;
+                this.state = 1328;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1254;
+            this.state = 1330;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 260) {
+            if (_la === 264) {
                 {
-                this.state = 1253;
+                this.state = 1329;
                 localContext._WhereClause = this.graphMatchWhereClause();
                 }
             }
 
-            this.state = 1257;
+            this.state = 1333;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 68, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 72, this.context) ) {
             case 1:
                 {
-                this.state = 1256;
+                this.state = 1332;
                 localContext._ProjectClause = this.graphMatchProjectClause();
                 }
                 break;
@@ -4857,15 +5274,15 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchPattern(): GraphMatchPatternContext {
         let localContext = new GraphMatchPatternContext(this.context, this.state);
-        this.enterRule(localContext, 166, HqlParser.RULE_graphMatchPattern);
+        this.enterRule(localContext, 182, HqlParser.RULE_graphMatchPattern);
         try {
-            this.state = 1262;
+            this.state = 1338;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENPAREN:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 1259;
+                this.state = 1335;
                 localContext._Node = this.graphMatchPatternNode();
                 }
                 break;
@@ -4874,7 +5291,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LESSTHAN_DASHDASH:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 1260;
+                this.state = 1336;
                 localContext._UnnamedEdge = this.graphMatchPatternUnnamedEdge();
                 }
                 break;
@@ -4882,7 +5299,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LESSTHAN_DASH_OPENBRACKET:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 1261;
+                this.state = 1337;
                 localContext._NamedEdge = this.graphMatchPatternNamedEdge();
                 }
                 break;
@@ -4905,15 +5322,15 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchPatternNode(): GraphMatchPatternNodeContext {
         let localContext = new GraphMatchPatternNodeContext(this.context, this.state);
-        this.enterRule(localContext, 168, HqlParser.RULE_graphMatchPatternNode);
+        this.enterRule(localContext, 184, HqlParser.RULE_graphMatchPatternNode);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1264;
+            this.state = 1340;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1265;
+            this.state = 1341;
             localContext._Name = this.simpleNameReference();
-            this.state = 1266;
+            this.state = 1342;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -4932,12 +5349,12 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchPatternUnnamedEdge(): GraphMatchPatternUnnamedEdgeContext {
         let localContext = new GraphMatchPatternUnnamedEdgeContext(this.context, this.state);
-        this.enterRule(localContext, 170, HqlParser.RULE_graphMatchPatternUnnamedEdge);
+        this.enterRule(localContext, 186, HqlParser.RULE_graphMatchPatternUnnamedEdge);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1268;
+            this.state = 1344;
             localContext._Direction = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!((((_la) & ~0x1F) === 0 && ((1 << _la) & 33566720) !== 0))) {
@@ -4964,12 +5381,12 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchPatternNamedEdge(): GraphMatchPatternNamedEdgeContext {
         let localContext = new GraphMatchPatternNamedEdgeContext(this.context, this.state);
-        this.enterRule(localContext, 172, HqlParser.RULE_graphMatchPatternNamedEdge);
+        this.enterRule(localContext, 188, HqlParser.RULE_graphMatchPatternNamedEdge);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1270;
+            this.state = 1346;
             localContext._OpenBracket = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 14 || _la === 26)) {
@@ -4979,19 +5396,19 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1271;
+            this.state = 1347;
             localContext._Name = this.simpleNameReference();
-            this.state = 1273;
+            this.state = 1349;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 1) {
                 {
-                this.state = 1272;
+                this.state = 1348;
                 localContext._Range = this.graphMatchPatternRange();
                 }
             }
 
-            this.state = 1275;
+            this.state = 1351;
             localContext._CloseBracket = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 6 || _la === 7)) {
@@ -5018,17 +5435,17 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchPatternRange(): GraphMatchPatternRangeContext {
         let localContext = new GraphMatchPatternRangeContext(this.context, this.state);
-        this.enterRule(localContext, 174, HqlParser.RULE_graphMatchPatternRange);
+        this.enterRule(localContext, 190, HqlParser.RULE_graphMatchPatternRange);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1277;
+            this.state = 1353;
             this.match(HqlParser.ASTERISK);
-            this.state = 1278;
+            this.state = 1354;
             localContext._LowerBound = this.invocationExpression();
-            this.state = 1279;
+            this.state = 1355;
             this.match(HqlParser.DOTDOT);
-            this.state = 1280;
+            this.state = 1356;
             localContext._UpperBound = this.invocationExpression();
             }
         }
@@ -5047,13 +5464,13 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchWhereClause(): GraphMatchWhereClauseContext {
         let localContext = new GraphMatchWhereClauseContext(this.context, this.state);
-        this.enterRule(localContext, 176, HqlParser.RULE_graphMatchWhereClause);
+        this.enterRule(localContext, 192, HqlParser.RULE_graphMatchWhereClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1282;
+            this.state = 1358;
             this.match(HqlParser.WHERE);
-            this.state = 1283;
+            this.state = 1359;
             localContext._Expression = this.expression();
             }
         }
@@ -5072,30 +5489,30 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMatchProjectClause(): GraphMatchProjectClauseContext {
         let localContext = new GraphMatchProjectClauseContext(this.context, this.state);
-        this.enterRule(localContext, 178, HqlParser.RULE_graphMatchProjectClause);
+        this.enterRule(localContext, 194, HqlParser.RULE_graphMatchProjectClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1285;
+            this.state = 1361;
             this.match(HqlParser.PROJECT);
-            this.state = 1286;
+            this.state = 1362;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 1291;
+            this.state = 1367;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1287;
+                this.state = 1363;
                 this.match(HqlParser.COMMA);
-                this.state = 1288;
+                this.state = 1364;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 1293;
+                this.state = 1369;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -5116,21 +5533,21 @@ export class HqlParser extends antlr.Parser {
     }
     public graphMergeOperator(): GraphMergeOperatorContext {
         let localContext = new GraphMergeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 180, HqlParser.RULE_graphMergeOperator);
+        this.enterRule(localContext, 196, HqlParser.RULE_graphMergeOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1294;
+            this.state = 1370;
             this.match(HqlParser.GRAPHMERGE);
-            this.state = 1295;
+            this.state = 1371;
             localContext._Graph = this.invocationExpression();
-            this.state = 1297;
+            this.state = 1373;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 186) {
+            if (_la === 189) {
                 {
-                this.state = 1296;
+                this.state = 1372;
                 localContext._OnClause = this.joinOperatorOnClause();
                 }
             }
@@ -5152,30 +5569,30 @@ export class HqlParser extends antlr.Parser {
     }
     public graphToTableOperator(): GraphToTableOperatorContext {
         let localContext = new GraphToTableOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 182, HqlParser.RULE_graphToTableOperator);
+        this.enterRule(localContext, 198, HqlParser.RULE_graphToTableOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1299;
+            this.state = 1375;
             this.match(HqlParser.GRAPHTOTABLE);
-            this.state = 1300;
+            this.state = 1376;
             localContext._graphToTableOutput = this.graphToTableOutput();
             localContext._Outputs.push(localContext._graphToTableOutput!);
-            this.state = 1305;
+            this.state = 1381;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1301;
+                this.state = 1377;
                 this.match(HqlParser.COMMA);
-                this.state = 1302;
+                this.state = 1378;
                 localContext._graphToTableOutput = this.graphToTableOutput();
                 localContext._Outputs.push(localContext._graphToTableOutput!);
                 }
                 }
-                this.state = 1307;
+                this.state = 1383;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -5196,43 +5613,43 @@ export class HqlParser extends antlr.Parser {
     }
     public graphToTableOutput(): GraphToTableOutputContext {
         let localContext = new GraphToTableOutputContext(this.context, this.state);
-        this.enterRule(localContext, 184, HqlParser.RULE_graphToTableOutput);
+        this.enterRule(localContext, 200, HqlParser.RULE_graphToTableOutput);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1308;
+            this.state = 1384;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 81 || _la === 165)) {
+            if(!(_la === 82 || _la === 168)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1310;
+            this.state = 1386;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 47) {
                 {
-                this.state = 1309;
+                this.state = 1385;
                 localContext._AsClause = this.graphToTableAsClause();
                 }
             }
 
-            this.state = 1315;
+            this.state = 1391;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1312;
+                this.state = 1388;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1317;
+                this.state = 1393;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -5253,13 +5670,13 @@ export class HqlParser extends antlr.Parser {
     }
     public graphToTableAsClause(): GraphToTableAsClauseContext {
         let localContext = new GraphToTableAsClauseContext(this.context, this.state);
-        this.enterRule(localContext, 186, HqlParser.RULE_graphToTableAsClause);
+        this.enterRule(localContext, 202, HqlParser.RULE_graphToTableAsClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1318;
+            this.state = 1394;
             this.match(HqlParser.AS);
-            this.state = 1319;
+            this.state = 1395;
             localContext._Name = this.simpleNameReference();
             }
         }
@@ -5278,64 +5695,64 @@ export class HqlParser extends antlr.Parser {
     }
     public graphShortestPathsOperator(): GraphShortestPathsOperatorContext {
         let localContext = new GraphShortestPathsOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 188, HqlParser.RULE_graphShortestPathsOperator);
+        this.enterRule(localContext, 204, HqlParser.RULE_graphShortestPathsOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1321;
+            this.state = 1397;
             this.match(HqlParser.GRAPHSHORTESTPATHS);
-            this.state = 1325;
+            this.state = 1401;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1322;
+                this.state = 1398;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1327;
+                this.state = 1403;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1328;
+            this.state = 1404;
             localContext._graphMatchPattern = this.graphMatchPattern();
             localContext._Patterns.push(localContext._graphMatchPattern!);
-            this.state = 1333;
+            this.state = 1409;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1329;
+                this.state = 1405;
                 this.match(HqlParser.COMMA);
-                this.state = 1330;
+                this.state = 1406;
                 localContext._graphMatchPattern = this.graphMatchPattern();
                 localContext._Patterns.push(localContext._graphMatchPattern!);
                 }
                 }
-                this.state = 1335;
+                this.state = 1411;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1337;
+            this.state = 1413;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 260) {
+            if (_la === 264) {
                 {
-                this.state = 1336;
+                this.state = 1412;
                 localContext._WhereClause = this.graphMatchWhereClause();
                 }
             }
 
-            this.state = 1340;
+            this.state = 1416;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 79, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 83, this.context) ) {
             case 1:
                 {
-                this.state = 1339;
+                this.state = 1415;
                 localContext._ProjectClause = this.graphMatchProjectClause();
                 }
                 break;
@@ -5357,13 +5774,13 @@ export class HqlParser extends antlr.Parser {
     }
     public invokeOperator(): InvokeOperatorContext {
         let localContext = new InvokeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 190, HqlParser.RULE_invokeOperator);
+        this.enterRule(localContext, 206, HqlParser.RULE_invokeOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1342;
+            this.state = 1418;
             this.match(HqlParser.INVOKE);
-            this.state = 1343;
+            this.state = 1419;
             localContext._FunctionCall = this.dotCompositeFunctionCallExpression();
             }
         }
@@ -5382,44 +5799,44 @@ export class HqlParser extends antlr.Parser {
     }
     public joinOperator(): JoinOperatorContext {
         let localContext = new JoinOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 192, HqlParser.RULE_joinOperator);
+        this.enterRule(localContext, 208, HqlParser.RULE_joinOperator);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1345;
+            this.state = 1421;
             this.match(HqlParser.JOIN);
-            this.state = 1349;
+            this.state = 1425;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 80, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 84, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1346;
+                    this.state = 1422;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1351;
+                this.state = 1427;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 80, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 84, this.context);
             }
-            this.state = 1352;
+            this.state = 1428;
             localContext._Table = this.joinOperatorTable();
-            this.state = 1355;
+            this.state = 1431;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ON:
                 {
-                this.state = 1353;
+                this.state = 1429;
                 localContext._OnClause = this.joinOperatorOnClause();
                 }
                 break;
             case HqlParser.WHERE:
                 {
-                this.state = 1354;
+                this.state = 1430;
                 localContext._WhereClause = this.joinOperatorWhereClause();
                 }
                 break;
@@ -5450,22 +5867,22 @@ export class HqlParser extends antlr.Parser {
     }
     public joinOperatorTable(): JoinOperatorTableContext {
         let localContext = new JoinOperatorTableContext(this.context, this.state);
-        this.enterRule(localContext, 194, HqlParser.RULE_joinOperatorTable);
+        this.enterRule(localContext, 210, HqlParser.RULE_joinOperatorTable);
         try {
-            this.state = 1359;
+            this.state = 1435;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 82, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 86, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 1357;
+                this.state = 1433;
                 this.parenthesizedExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 1358;
+                this.state = 1434;
                 this.unnamedExpression();
                 }
                 break;
@@ -5486,30 +5903,30 @@ export class HqlParser extends antlr.Parser {
     }
     public joinOperatorOnClause(): JoinOperatorOnClauseContext {
         let localContext = new JoinOperatorOnClauseContext(this.context, this.state);
-        this.enterRule(localContext, 196, HqlParser.RULE_joinOperatorOnClause);
+        this.enterRule(localContext, 212, HqlParser.RULE_joinOperatorOnClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1361;
+            this.state = 1437;
             this.match(HqlParser.ON);
-            this.state = 1362;
+            this.state = 1438;
             localContext._unnamedExpression = this.unnamedExpression();
             localContext._Expressions.push(localContext._unnamedExpression!);
-            this.state = 1367;
+            this.state = 1443;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1363;
+                this.state = 1439;
                 this.match(HqlParser.COMMA);
-                this.state = 1364;
+                this.state = 1440;
                 localContext._unnamedExpression = this.unnamedExpression();
                 localContext._Expressions.push(localContext._unnamedExpression!);
                 }
                 }
-                this.state = 1369;
+                this.state = 1445;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -5530,13 +5947,13 @@ export class HqlParser extends antlr.Parser {
     }
     public joinOperatorWhereClause(): JoinOperatorWhereClauseContext {
         let localContext = new JoinOperatorWhereClauseContext(this.context, this.state);
-        this.enterRule(localContext, 198, HqlParser.RULE_joinOperatorWhereClause);
+        this.enterRule(localContext, 214, HqlParser.RULE_joinOperatorWhereClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1370;
+            this.state = 1446;
             this.match(HqlParser.WHERE);
-            this.state = 1371;
+            this.state = 1447;
             localContext._Predicate = this.unnamedExpression();
             }
         }
@@ -5555,33 +5972,33 @@ export class HqlParser extends antlr.Parser {
     }
     public lookupOperator(): LookupOperatorContext {
         let localContext = new LookupOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 200, HqlParser.RULE_lookupOperator);
+        this.enterRule(localContext, 216, HqlParser.RULE_lookupOperator);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1373;
+            this.state = 1449;
             this.match(HqlParser.LOOKUP);
-            this.state = 1377;
+            this.state = 1453;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 84, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 88, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1374;
+                    this.state = 1450;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1379;
+                this.state = 1455;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 84, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 88, this.context);
             }
-            this.state = 1380;
+            this.state = 1456;
             localContext._Table = this.unnamedExpression();
-            this.state = 1381;
+            this.state = 1457;
             localContext._OnClause = this.joinOperatorOnClause();
             }
         }
@@ -5600,72 +6017,72 @@ export class HqlParser extends antlr.Parser {
     }
     public macroExpandOperator(): MacroExpandOperatorContext {
         let localContext = new MacroExpandOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 202, HqlParser.RULE_macroExpandOperator);
+        this.enterRule(localContext, 218, HqlParser.RULE_macroExpandOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1383;
+            this.state = 1459;
             this.match(HqlParser.MACROEXPAND);
-            this.state = 1387;
+            this.state = 1463;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 85, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 89, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1384;
+                    this.state = 1460;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1389;
+                this.state = 1465;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 85, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 89, this.context);
             }
-            this.state = 1390;
+            this.state = 1466;
             localContext._EntityGroup = this.macroExpandEntityGroup();
-            this.state = 1391;
+            this.state = 1467;
             this.match(HqlParser.AS);
-            this.state = 1392;
+            this.state = 1468;
             localContext._ScopeName = this.simpleNameReference();
-            this.state = 1393;
+            this.state = 1469;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1394;
+            this.state = 1470;
             localContext._statement = this.statement();
             localContext._Statements.push(localContext._statement!);
-            this.state = 1399;
+            this.state = 1475;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 86, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 90, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1395;
+                    this.state = 1471;
                     this.match(HqlParser.SEMICOLON);
-                    this.state = 1396;
+                    this.state = 1472;
                     localContext._statement = this.statement();
                     localContext._Statements.push(localContext._statement!);
                     }
                     }
                 }
-                this.state = 1401;
+                this.state = 1477;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 86, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 90, this.context);
             }
-            this.state = 1403;
+            this.state = 1479;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 34) {
                 {
-                this.state = 1402;
+                this.state = 1478;
                 this.match(HqlParser.SEMICOLON);
                 }
             }
 
-            this.state = 1405;
+            this.state = 1481;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -5684,29 +6101,29 @@ export class HqlParser extends antlr.Parser {
     }
     public macroExpandEntityGroup(): MacroExpandEntityGroupContext {
         let localContext = new MacroExpandEntityGroupContext(this.context, this.state);
-        this.enterRule(localContext, 204, HqlParser.RULE_macroExpandEntityGroup);
+        this.enterRule(localContext, 220, HqlParser.RULE_macroExpandEntityGroup);
         try {
-            this.state = 1410;
+            this.state = 1486;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 88, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 92, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 1407;
+                this.state = 1483;
                 localContext._EntityGroup = this.entityGroupExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 1408;
+                this.state = 1484;
                 localContext._Name = this.simpleNameReference();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 1409;
+                this.state = 1485;
                 localContext._Entity = this.entityExpression();
                 }
                 break;
@@ -5727,36 +6144,36 @@ export class HqlParser extends antlr.Parser {
     }
     public entityGroupExpression(): EntityGroupExpressionContext {
         let localContext = new EntityGroupExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 206, HqlParser.RULE_entityGroupExpression);
+        this.enterRule(localContext, 222, HqlParser.RULE_entityGroupExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1412;
+            this.state = 1488;
             this.match(HqlParser.ENTITYGROUP);
-            this.state = 1413;
+            this.state = 1489;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 1414;
+            this.state = 1490;
             localContext._unnamedExpression = this.unnamedExpression();
             localContext._Expressions.push(localContext._unnamedExpression!);
-            this.state = 1419;
+            this.state = 1495;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1415;
+                this.state = 1491;
                 this.match(HqlParser.COMMA);
-                this.state = 1416;
+                this.state = 1492;
                 localContext._unnamedExpression = this.unnamedExpression();
                 localContext._Expressions.push(localContext._unnamedExpression!);
                 }
                 }
-                this.state = 1421;
+                this.state = 1497;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1422;
+            this.state = 1498;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -5775,34 +6192,34 @@ export class HqlParser extends antlr.Parser {
     }
     public makeGraphOperator(): MakeGraphOperatorContext {
         let localContext = new MakeGraphOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 208, HqlParser.RULE_makeGraphOperator);
+        this.enterRule(localContext, 224, HqlParser.RULE_makeGraphOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1424;
+            this.state = 1500;
             this.match(HqlParser.MAKEGRAPH);
-            this.state = 1428;
+            this.state = 1504;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 90, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 94, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1425;
+                    this.state = 1501;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1430;
+                this.state = 1506;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 90, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 94, this.context);
             }
-            this.state = 1431;
+            this.state = 1507;
             localContext._SourceColumn = this.simpleNameReference();
-            this.state = 1432;
+            this.state = 1508;
             localContext._Direction = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 12 || _la === 13)) {
@@ -5812,20 +6229,20 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1433;
+            this.state = 1509;
             localContext._TargetColumn = this.simpleNameReference();
-            this.state = 1436;
+            this.state = 1512;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.WITH_NODE_ID:
                 {
-                this.state = 1434;
+                this.state = 1510;
                 localContext._IdClause = this.makeGraphIdClause();
                 }
                 break;
             case HqlParser.WITH:
                 {
-                this.state = 1435;
+                this.state = 1511;
                 localContext._TablesAndKeysClause = this.makeGraphTablesAndKeysClause();
                 }
                 break;
@@ -5840,12 +6257,12 @@ export class HqlParser extends antlr.Parser {
             default:
                 break;
             }
-            this.state = 1439;
+            this.state = 1515;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 199) {
+            if (_la === 202) {
                 {
-                this.state = 1438;
+                this.state = 1514;
                 localContext._PartitionedByClause = this.makeGraphPartitionedByClause();
                 }
             }
@@ -5867,15 +6284,15 @@ export class HqlParser extends antlr.Parser {
     }
     public makeGraphIdClause(): MakeGraphIdClauseContext {
         let localContext = new MakeGraphIdClauseContext(this.context, this.state);
-        this.enterRule(localContext, 210, HqlParser.RULE_makeGraphIdClause);
+        this.enterRule(localContext, 226, HqlParser.RULE_makeGraphIdClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1441;
+            this.state = 1517;
             this.match(HqlParser.WITH_NODE_ID);
-            this.state = 1442;
+            this.state = 1518;
             this.match(HqlParser.EQUAL);
-            this.state = 1443;
+            this.state = 1519;
             localContext._Name = this.simpleNameReference();
             }
         }
@@ -5894,17 +6311,17 @@ export class HqlParser extends antlr.Parser {
     }
     public makeGraphTablesAndKeysClause(): MakeGraphTablesAndKeysClauseContext {
         let localContext = new MakeGraphTablesAndKeysClauseContext(this.context, this.state);
-        this.enterRule(localContext, 212, HqlParser.RULE_makeGraphTablesAndKeysClause);
+        this.enterRule(localContext, 228, HqlParser.RULE_makeGraphTablesAndKeysClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1445;
+            this.state = 1521;
             this.match(HqlParser.WITH);
-            this.state = 1446;
+            this.state = 1522;
             localContext._Table = this.invocationExpression();
-            this.state = 1447;
+            this.state = 1523;
             this.match(HqlParser.ON);
-            this.state = 1448;
+            this.state = 1524;
             localContext._Column = this.simpleNameReference();
             }
         }
@@ -5923,19 +6340,19 @@ export class HqlParser extends antlr.Parser {
     }
     public makeGraphPartitionedByClause(): MakeGraphPartitionedByClauseContext {
         let localContext = new MakeGraphPartitionedByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 214, HqlParser.RULE_makeGraphPartitionedByClause);
+        this.enterRule(localContext, 230, HqlParser.RULE_makeGraphPartitionedByClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1450;
+            this.state = 1526;
             this.match(HqlParser.PARTITIONEDBY);
-            this.state = 1451;
+            this.state = 1527;
             localContext._Entity = this.entityPathOrElementExpression();
-            this.state = 1452;
+            this.state = 1528;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1453;
+            this.state = 1529;
             localContext._SubQuery = this.contextualSubExpression();
-            this.state = 1454;
+            this.state = 1530;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -5954,59 +6371,59 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperator(): MakeSeriesOperatorContext {
         let localContext = new MakeSeriesOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 216, HqlParser.RULE_makeSeriesOperator);
+        this.enterRule(localContext, 232, HqlParser.RULE_makeSeriesOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1456;
+            this.state = 1532;
             this.match(HqlParser.MAKESERIES);
-            this.state = 1460;
+            this.state = 1536;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 93, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 97, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1457;
+                    this.state = 1533;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1462;
+                this.state = 1538;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 93, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 97, this.context);
             }
-            this.state = 1463;
+            this.state = 1539;
             localContext._makeSeriesOperatorAggregation = this.makeSeriesOperatorAggregation();
             localContext._Aggregations.push(localContext._makeSeriesOperatorAggregation!);
-            this.state = 1468;
+            this.state = 1544;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1464;
+                this.state = 1540;
                 this.match(HqlParser.COMMA);
-                this.state = 1465;
+                this.state = 1541;
                 localContext._makeSeriesOperatorAggregation = this.makeSeriesOperatorAggregation();
                 localContext._Aggregations.push(localContext._makeSeriesOperatorAggregation!);
                 }
                 }
-                this.state = 1470;
+                this.state = 1546;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1471;
+            this.state = 1547;
             localContext._OnClause = this.makeSeriesOperatorOnClause();
-            this.state = 1474;
+            this.state = 1550;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.IN:
                 {
-                this.state = 1472;
+                this.state = 1548;
                 localContext._InRangeClause = this.makeSeriesOperatorInRangeClause();
                 }
                 break;
@@ -6014,19 +6431,19 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.STEP:
             case HqlParser.TO:
                 {
-                this.state = 1473;
+                this.state = 1549;
                 localContext._FromToStepClause = this.makeSeriesOperatorFromToStepClause();
                 }
                 break;
             default:
                 throw new antlr.NoViableAltException(this);
             }
-            this.state = 1477;
+            this.state = 1553;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 57) {
                 {
-                this.state = 1476;
+                this.state = 1552;
                 localContext._ByClause = this.makeSeriesOperatorByClause();
                 }
             }
@@ -6048,13 +6465,13 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorOnClause(): MakeSeriesOperatorOnClauseContext {
         let localContext = new MakeSeriesOperatorOnClauseContext(this.context, this.state);
-        this.enterRule(localContext, 218, HqlParser.RULE_makeSeriesOperatorOnClause);
+        this.enterRule(localContext, 234, HqlParser.RULE_makeSeriesOperatorOnClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1479;
+            this.state = 1555;
             this.match(HqlParser.ON);
-            this.state = 1480;
+            this.state = 1556;
             localContext._Expression = this.namedExpression();
             }
         }
@@ -6073,19 +6490,19 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorAggregation(): MakeSeriesOperatorAggregationContext {
         let localContext = new MakeSeriesOperatorAggregationContext(this.context, this.state);
-        this.enterRule(localContext, 220, HqlParser.RULE_makeSeriesOperatorAggregation);
+        this.enterRule(localContext, 236, HqlParser.RULE_makeSeriesOperatorAggregation);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1482;
+            this.state = 1558;
             localContext._Expression = this.namedExpression();
-            this.state = 1484;
+            this.state = 1560;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 77) {
+            if (_la === 78) {
                 {
-                this.state = 1483;
+                this.state = 1559;
                 localContext._Default = this.makeSeriesOperatorExpressionDefaultClause();
                 }
             }
@@ -6107,15 +6524,15 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorExpressionDefaultClause(): MakeSeriesOperatorExpressionDefaultClauseContext {
         let localContext = new MakeSeriesOperatorExpressionDefaultClauseContext(this.context, this.state);
-        this.enterRule(localContext, 222, HqlParser.RULE_makeSeriesOperatorExpressionDefaultClause);
+        this.enterRule(localContext, 238, HqlParser.RULE_makeSeriesOperatorExpressionDefaultClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1486;
+            this.state = 1562;
             this.match(HqlParser.DEFAULT);
-            this.state = 1487;
+            this.state = 1563;
             this.match(HqlParser.EQUAL);
-            this.state = 1488;
+            this.state = 1564;
             localContext._Value = this.namedExpression();
             }
         }
@@ -6134,27 +6551,27 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorInRangeClause(): MakeSeriesOperatorInRangeClauseContext {
         let localContext = new MakeSeriesOperatorInRangeClauseContext(this.context, this.state);
-        this.enterRule(localContext, 224, HqlParser.RULE_makeSeriesOperatorInRangeClause);
+        this.enterRule(localContext, 240, HqlParser.RULE_makeSeriesOperatorInRangeClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1490;
+            this.state = 1566;
             this.match(HqlParser.IN);
-            this.state = 1491;
+            this.state = 1567;
             this.match(HqlParser.RANGE);
-            this.state = 1492;
+            this.state = 1568;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1493;
+            this.state = 1569;
             localContext._FromExpression = this.namedExpression();
-            this.state = 1494;
+            this.state = 1570;
             localContext._ToComma = this.match(HqlParser.COMMA);
-            this.state = 1495;
+            this.state = 1571;
             localContext._ToExpression = this.namedExpression();
-            this.state = 1496;
+            this.state = 1572;
             localContext._StepComma = this.match(HqlParser.COMMA);
-            this.state = 1497;
+            this.state = 1573;
             localContext._StepExpression = this.namedExpression();
-            this.state = 1498;
+            this.state = 1574;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -6173,38 +6590,38 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorFromToStepClause(): MakeSeriesOperatorFromToStepClauseContext {
         let localContext = new MakeSeriesOperatorFromToStepClauseContext(this.context, this.state);
-        this.enterRule(localContext, 226, HqlParser.RULE_makeSeriesOperatorFromToStepClause);
+        this.enterRule(localContext, 242, HqlParser.RULE_makeSeriesOperatorFromToStepClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1502;
+            this.state = 1578;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 98) {
+            if (_la === 99) {
                 {
-                this.state = 1500;
+                this.state = 1576;
                 this.match(HqlParser.FROM);
-                this.state = 1501;
+                this.state = 1577;
                 localContext._FromExpression = this.namedExpression();
                 }
             }
 
-            this.state = 1506;
+            this.state = 1582;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 246) {
+            if (_la === 250) {
                 {
-                this.state = 1504;
+                this.state = 1580;
                 this.match(HqlParser.TO);
-                this.state = 1505;
+                this.state = 1581;
                 localContext._ToExpression = this.namedExpression();
                 }
             }
 
-            this.state = 1508;
+            this.state = 1584;
             this.match(HqlParser.STEP);
-            this.state = 1509;
+            this.state = 1585;
             localContext._StepExpression = this.namedExpression();
             }
         }
@@ -6223,30 +6640,30 @@ export class HqlParser extends antlr.Parser {
     }
     public makeSeriesOperatorByClause(): MakeSeriesOperatorByClauseContext {
         let localContext = new MakeSeriesOperatorByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 228, HqlParser.RULE_makeSeriesOperatorByClause);
+        this.enterRule(localContext, 244, HqlParser.RULE_makeSeriesOperatorByClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1511;
+            this.state = 1587;
             this.match(HqlParser.BY);
-            this.state = 1512;
+            this.state = 1588;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 1517;
+            this.state = 1593;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1513;
+                this.state = 1589;
                 this.match(HqlParser.COMMA);
-                this.state = 1514;
+                this.state = 1590;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 1519;
+                this.state = 1595;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -6267,83 +6684,83 @@ export class HqlParser extends antlr.Parser {
     }
     public mvapplyOperator(): MvapplyOperatorContext {
         let localContext = new MvapplyOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 230, HqlParser.RULE_mvapplyOperator);
+        this.enterRule(localContext, 246, HqlParser.RULE_mvapplyOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1520;
+            this.state = 1596;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 161 || _la === 163)) {
+            if(!(_la === 164 || _la === 166)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1524;
+            this.state = 1600;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 1521;
+                this.state = 1597;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 1526;
+                this.state = 1602;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1527;
+            this.state = 1603;
             localContext._mvapplyOperatorExpression = this.mvapplyOperatorExpression();
             localContext._Expressions.push(localContext._mvapplyOperatorExpression!);
-            this.state = 1532;
+            this.state = 1608;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1528;
+                this.state = 1604;
                 this.match(HqlParser.COMMA);
-                this.state = 1529;
+                this.state = 1605;
                 localContext._mvapplyOperatorExpression = this.mvapplyOperatorExpression();
                 localContext._Expressions.push(localContext._mvapplyOperatorExpression!);
                 }
                 }
-                this.state = 1534;
+                this.state = 1610;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1536;
+            this.state = 1612;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 148) {
+            if (_la === 150) {
                 {
-                this.state = 1535;
+                this.state = 1611;
                 localContext._LimitClause = this.mvapplyOperatorLimitClause();
                 }
             }
 
-            this.state = 1539;
+            this.state = 1615;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 134) {
+            if (_la === 135) {
                 {
-                this.state = 1538;
+                this.state = 1614;
                 localContext._IdClause = this.mvapplyOperatorIdClause();
                 }
             }
 
-            this.state = 1541;
+            this.state = 1617;
             this.match(HqlParser.ON);
-            this.state = 1542;
+            this.state = 1618;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1543;
+            this.state = 1619;
             localContext._OnExpression = this.contextualSubExpression();
-            this.state = 1544;
+            this.state = 1620;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -6362,13 +6779,13 @@ export class HqlParser extends antlr.Parser {
     }
     public mvapplyOperatorLimitClause(): MvapplyOperatorLimitClauseContext {
         let localContext = new MvapplyOperatorLimitClauseContext(this.context, this.state);
-        this.enterRule(localContext, 232, HqlParser.RULE_mvapplyOperatorLimitClause);
+        this.enterRule(localContext, 248, HqlParser.RULE_mvapplyOperatorLimitClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1546;
+            this.state = 1622;
             this.match(HqlParser.LIMIT);
-            this.state = 1547;
+            this.state = 1623;
             localContext._LimitValue = this.longLiteralExpression();
             }
         }
@@ -6387,13 +6804,13 @@ export class HqlParser extends antlr.Parser {
     }
     public mvapplyOperatorIdClause(): MvapplyOperatorIdClauseContext {
         let localContext = new MvapplyOperatorIdClauseContext(this.context, this.state);
-        this.enterRule(localContext, 234, HqlParser.RULE_mvapplyOperatorIdClause);
+        this.enterRule(localContext, 250, HqlParser.RULE_mvapplyOperatorIdClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1549;
+            this.state = 1625;
             this.match(HqlParser.ID);
-            this.state = 1550;
+            this.state = 1626;
             localContext._IdValue = this.match(HqlParser.GUIDLITERAL);
             }
         }
@@ -6412,19 +6829,19 @@ export class HqlParser extends antlr.Parser {
     }
     public mvapplyOperatorExpression(): MvapplyOperatorExpressionContext {
         let localContext = new MvapplyOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 236, HqlParser.RULE_mvapplyOperatorExpression);
+        this.enterRule(localContext, 252, HqlParser.RULE_mvapplyOperatorExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1552;
+            this.state = 1628;
             localContext._Expression = this.namedExpression();
-            this.state = 1554;
+            this.state = 1630;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 246) {
+            if (_la === 250) {
                 {
-                this.state = 1553;
+                this.state = 1629;
                 localContext._ToClause = this.mvapplyOperatorExpressionToClause();
                 }
             }
@@ -6446,13 +6863,13 @@ export class HqlParser extends antlr.Parser {
     }
     public mvapplyOperatorExpressionToClause(): MvapplyOperatorExpressionToClauseContext {
         let localContext = new MvapplyOperatorExpressionToClauseContext(this.context, this.state);
-        this.enterRule(localContext, 238, HqlParser.RULE_mvapplyOperatorExpressionToClause);
+        this.enterRule(localContext, 254, HqlParser.RULE_mvapplyOperatorExpressionToClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1556;
+            this.state = 1632;
             this.match(HqlParser.TO);
-            this.state = 1557;
+            this.state = 1633;
             localContext._Type = this.scalarType();
             }
         }
@@ -6471,62 +6888,62 @@ export class HqlParser extends antlr.Parser {
     }
     public mvexpandOperator(): MvexpandOperatorContext {
         let localContext = new MvexpandOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 240, HqlParser.RULE_mvexpandOperator);
+        this.enterRule(localContext, 256, HqlParser.RULE_mvexpandOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1559;
+            this.state = 1635;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 162 || _la === 164)) {
+            if(!(_la === 165 || _la === 167)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1563;
+            this.state = 1639;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 1560;
+                this.state = 1636;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 1565;
+                this.state = 1641;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1566;
+            this.state = 1642;
             localContext._mvexpandOperatorExpression = this.mvexpandOperatorExpression();
             localContext._Expressions.push(localContext._mvexpandOperatorExpression!);
-            this.state = 1571;
+            this.state = 1647;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1567;
+                this.state = 1643;
                 this.match(HqlParser.COMMA);
-                this.state = 1568;
+                this.state = 1644;
                 localContext._mvexpandOperatorExpression = this.mvexpandOperatorExpression();
                 localContext._Expressions.push(localContext._mvexpandOperatorExpression!);
                 }
                 }
-                this.state = 1573;
+                this.state = 1649;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1575;
+            this.state = 1651;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 148) {
+            if (_la === 150) {
                 {
-                this.state = 1574;
+                this.state = 1650;
                 localContext._LimitClause = this.mvapplyOperatorLimitClause();
                 }
             }
@@ -6548,19 +6965,19 @@ export class HqlParser extends antlr.Parser {
     }
     public mvexpandOperatorExpression(): MvexpandOperatorExpressionContext {
         let localContext = new MvexpandOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 242, HqlParser.RULE_mvexpandOperatorExpression);
+        this.enterRule(localContext, 258, HqlParser.RULE_mvexpandOperatorExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1577;
+            this.state = 1653;
             localContext._Expression = this.namedExpression();
-            this.state = 1579;
+            this.state = 1655;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 246) {
+            if (_la === 250) {
                 {
-                this.state = 1578;
+                this.state = 1654;
                 localContext._ToClause = this.mvapplyOperatorExpressionToClause();
                 }
             }
@@ -6582,28 +6999,28 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperator(): ParseOperatorContext {
         let localContext = new ParseOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 244, HqlParser.RULE_parseOperator);
+        this.enterRule(localContext, 260, HqlParser.RULE_parseOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1581;
+            this.state = 1657;
             this.match(HqlParser.PARSE);
-            this.state = 1583;
+            this.state = 1659;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 143) {
+            if (_la === 145) {
                 {
-                this.state = 1582;
+                this.state = 1658;
                 localContext._KindClause = this.parseOperatorKindClause();
                 }
             }
 
-            this.state = 1585;
+            this.state = 1661;
             localContext._Expression = this.unnamedExpression();
-            this.state = 1586;
+            this.state = 1662;
             this.match(HqlParser.WITH);
-            this.state = 1587;
+            this.state = 1663;
             localContext._Pattern = this.parseOperatorPattern();
             }
         }
@@ -6622,31 +7039,31 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperatorKindClause(): ParseOperatorKindClauseContext {
         let localContext = new ParseOperatorKindClauseContext(this.context, this.state);
-        this.enterRule(localContext, 246, HqlParser.RULE_parseOperatorKindClause);
+        this.enterRule(localContext, 262, HqlParser.RULE_parseOperatorKindClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1589;
+            this.state = 1665;
             this.match(HqlParser.KIND);
-            this.state = 1590;
+            this.state = 1666;
             this.match(HqlParser.EQUAL);
-            this.state = 1591;
+            this.state = 1667;
             localContext._Kind = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 216)) & ~0x1F) === 0 && ((1 << (_la - 216)) & 8195) !== 0))) {
+            if(!(((((_la - 220)) & ~0x1F) === 0 && ((1 << (_la - 220)) & 8195) !== 0))) {
                 localContext._Kind = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1593;
+            this.state = 1669;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 96) {
+            if (_la === 97) {
                 {
-                this.state = 1592;
+                this.state = 1668;
                 localContext._FlagsClause = this.parseOperatorFlagsClause();
                 }
             }
@@ -6668,15 +7085,15 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperatorFlagsClause(): ParseOperatorFlagsClauseContext {
         let localContext = new ParseOperatorFlagsClauseContext(this.context, this.state);
-        this.enterRule(localContext, 248, HqlParser.RULE_parseOperatorFlagsClause);
+        this.enterRule(localContext, 264, HqlParser.RULE_parseOperatorFlagsClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1595;
+            this.state = 1671;
             this.match(HqlParser.FLAGS);
-            this.state = 1596;
+            this.state = 1672;
             this.match(HqlParser.EQUAL);
-            this.state = 1597;
+            this.state = 1673;
             localContext._Flags = this.match(HqlParser.IDENTIFIER);
             }
         }
@@ -6695,21 +7112,21 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperatorNameAndOptionalType(): ParseOperatorNameAndOptionalTypeContext {
         let localContext = new ParseOperatorNameAndOptionalTypeContext(this.context, this.state);
-        this.enterRule(localContext, 250, HqlParser.RULE_parseOperatorNameAndOptionalType);
+        this.enterRule(localContext, 266, HqlParser.RULE_parseOperatorNameAndOptionalType);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1599;
+            this.state = 1675;
             localContext._Name = this.simpleNameReference();
-            this.state = 1602;
+            this.state = 1678;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 10) {
                 {
-                this.state = 1600;
+                this.state = 1676;
                 this.match(HqlParser.COLON);
-                this.state = 1601;
+                this.state = 1677;
                 localContext._Type = this.scalarType();
                 }
             }
@@ -6731,45 +7148,45 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperatorPattern(): ParseOperatorPatternContext {
         let localContext = new ParseOperatorPatternContext(this.context, this.state);
-        this.enterRule(localContext, 252, HqlParser.RULE_parseOperatorPattern);
+        this.enterRule(localContext, 268, HqlParser.RULE_parseOperatorPattern);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1605;
+            this.state = 1681;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1604;
+                this.state = 1680;
                 localContext._LeadingColumn = this.parseOperatorNameAndOptionalType();
                 }
             }
 
-            this.state = 1610;
+            this.state = 1686;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 114, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 118, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1607;
+                    this.state = 1683;
                     localContext._parseOperatorPatternSegment = this.parseOperatorPatternSegment();
                     localContext._Segments.push(localContext._parseOperatorPatternSegment!);
                     }
                     }
                 }
-                this.state = 1612;
+                this.state = 1688;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 114, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 118, this.context);
             }
-            this.state = 1614;
+            this.state = 1690;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 1) {
                 {
-                this.state = 1613;
+                this.state = 1689;
                 localContext._TrailingStar = this.match(HqlParser.ASTERISK);
                 }
             }
@@ -6791,29 +7208,29 @@ export class HqlParser extends antlr.Parser {
     }
     public parseOperatorPatternSegment(): ParseOperatorPatternSegmentContext {
         let localContext = new ParseOperatorPatternSegmentContext(this.context, this.state);
-        this.enterRule(localContext, 254, HqlParser.RULE_parseOperatorPatternSegment);
+        this.enterRule(localContext, 270, HqlParser.RULE_parseOperatorPatternSegment);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1617;
+            this.state = 1693;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 1) {
                 {
-                this.state = 1616;
+                this.state = 1692;
                 this.match(HqlParser.ASTERISK);
                 }
             }
 
-            this.state = 1619;
+            this.state = 1695;
             localContext._Text = this.stringLiteralExpression();
-            this.state = 1621;
+            this.state = 1697;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1620;
+                this.state = 1696;
                 localContext._Column = this.parseOperatorNameAndOptionalType();
                 }
             }
@@ -6835,28 +7252,28 @@ export class HqlParser extends antlr.Parser {
     }
     public parseWhereOperator(): ParseWhereOperatorContext {
         let localContext = new ParseWhereOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 256, HqlParser.RULE_parseWhereOperator);
+        this.enterRule(localContext, 272, HqlParser.RULE_parseWhereOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1623;
+            this.state = 1699;
             this.match(HqlParser.PARSEWHERE);
-            this.state = 1625;
+            this.state = 1701;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 143) {
+            if (_la === 145) {
                 {
-                this.state = 1624;
+                this.state = 1700;
                 localContext._KindClause = this.parseOperatorKindClause();
                 }
             }
 
-            this.state = 1627;
+            this.state = 1703;
             localContext._Expression = this.unnamedExpression();
-            this.state = 1628;
+            this.state = 1704;
             this.match(HqlParser.WITH);
-            this.state = 1629;
+            this.state = 1705;
             localContext._Pattern = this.parseOperatorPattern();
             }
         }
@@ -6875,25 +7292,25 @@ export class HqlParser extends antlr.Parser {
     }
     public parseKvOperator(): ParseKvOperatorContext {
         let localContext = new ParseKvOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 258, HqlParser.RULE_parseKvOperator);
+        this.enterRule(localContext, 274, HqlParser.RULE_parseKvOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1631;
+            this.state = 1707;
             this.match(HqlParser.PARSEKV);
-            this.state = 1632;
+            this.state = 1708;
             localContext._Expressions = this.unnamedExpression();
-            this.state = 1633;
+            this.state = 1709;
             this.match(HqlParser.AS);
-            this.state = 1634;
+            this.state = 1710;
             localContext._Keys = this.rowSchema();
-            this.state = 1636;
+            this.state = 1712;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 261) {
+            if (_la === 265) {
                 {
-                this.state = 1635;
+                this.state = 1711;
                 localContext._WithClause = this.parseKvWithClause();
                 }
             }
@@ -6915,36 +7332,36 @@ export class HqlParser extends antlr.Parser {
     }
     public parseKvWithClause(): ParseKvWithClauseContext {
         let localContext = new ParseKvWithClauseContext(this.context, this.state);
-        this.enterRule(localContext, 260, HqlParser.RULE_parseKvWithClause);
+        this.enterRule(localContext, 276, HqlParser.RULE_parseKvWithClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1638;
+            this.state = 1714;
             this.match(HqlParser.WITH);
-            this.state = 1639;
+            this.state = 1715;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1640;
+            this.state = 1716;
             localContext._queryOperatorProperty = this.queryOperatorProperty();
             localContext._Properties.push(localContext._queryOperatorProperty!);
-            this.state = 1645;
+            this.state = 1721;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1641;
+                this.state = 1717;
                 this.match(HqlParser.COMMA);
-                this.state = 1642;
+                this.state = 1718;
                 localContext._queryOperatorProperty = this.queryOperatorProperty();
                 localContext._Properties.push(localContext._queryOperatorProperty!);
                 }
                 }
-                this.state = 1647;
+                this.state = 1723;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1648;
+            this.state = 1724;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -6963,54 +7380,54 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionOperator(): PartitionOperatorContext {
         let localContext = new PartitionOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 262, HqlParser.RULE_partitionOperator);
+        this.enterRule(localContext, 278, HqlParser.RULE_partitionOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1650;
+            this.state = 1726;
             this.match(HqlParser.PARTITION);
-            this.state = 1654;
+            this.state = 1730;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1651;
+                this.state = 1727;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1656;
+                this.state = 1732;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1657;
+            this.state = 1733;
             this.match(HqlParser.BY);
-            this.state = 1658;
+            this.state = 1734;
             localContext._ByExpression = this.entityExpression();
-            this.state = 1660;
+            this.state = 1736;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 136) {
+            if (_la === 138) {
                 {
-                this.state = 1659;
+                this.state = 1735;
                 localContext._InClause = this.partitionOperatorInClause();
                 }
             }
 
-            this.state = 1664;
+            this.state = 1740;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENPAREN:
                 {
-                this.state = 1662;
+                this.state = 1738;
                 localContext._SubExpressionBody = this.partitionOperatorSubExpressionBody();
                 }
                 break;
             case HqlParser.OPENBRACE:
                 {
-                this.state = 1663;
+                this.state = 1739;
                 localContext._FullExpressionBody = this.partitionOperatorFullExpressionBody();
                 }
                 break;
@@ -7034,13 +7451,13 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionOperatorInClause(): PartitionOperatorInClauseContext {
         let localContext = new PartitionOperatorInClauseContext(this.context, this.state);
-        this.enterRule(localContext, 264, HqlParser.RULE_partitionOperatorInClause);
+        this.enterRule(localContext, 280, HqlParser.RULE_partitionOperatorInClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1666;
+            this.state = 1742;
             this.match(HqlParser.IN);
-            this.state = 1669;
+            this.state = 1745;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -7090,6 +7507,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.MATERIALIZE:
             case HqlParser.NODES:
@@ -7156,13 +7574,13 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 1667;
+                this.state = 1743;
                 localContext._FunctionCall = this.functionCallExpression();
                 }
                 break;
             case HqlParser.DYNAMIC:
                 {
-                this.state = 1668;
+                this.state = 1744;
                 localContext._Literal = this.dynamicLiteralExpression();
                 }
                 break;
@@ -7186,15 +7604,15 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionOperatorSubExpressionBody(): PartitionOperatorSubExpressionBodyContext {
         let localContext = new PartitionOperatorSubExpressionBodyContext(this.context, this.state);
-        this.enterRule(localContext, 266, HqlParser.RULE_partitionOperatorSubExpressionBody);
+        this.enterRule(localContext, 282, HqlParser.RULE_partitionOperatorSubExpressionBody);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1671;
+            this.state = 1747;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1672;
+            this.state = 1748;
             localContext._SubExpression = this.pipeSubExpression();
-            this.state = 1673;
+            this.state = 1749;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -7213,15 +7631,15 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionOperatorFullExpressionBody(): PartitionOperatorFullExpressionBodyContext {
         let localContext = new PartitionOperatorFullExpressionBodyContext(this.context, this.state);
-        this.enterRule(localContext, 268, HqlParser.RULE_partitionOperatorFullExpressionBody);
+        this.enterRule(localContext, 284, HqlParser.RULE_partitionOperatorFullExpressionBody);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1675;
+            this.state = 1751;
             this.match(HqlParser.OPENBRACE);
-            this.state = 1676;
+            this.state = 1752;
             localContext._Expression = this.pipeExpression();
-            this.state = 1677;
+            this.state = 1753;
             this.match(HqlParser.CLOSEBRACE);
             }
         }
@@ -7240,48 +7658,48 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionByOperator(): PartitionByOperatorContext {
         let localContext = new PartitionByOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 270, HqlParser.RULE_partitionByOperator);
+        this.enterRule(localContext, 286, HqlParser.RULE_partitionByOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1679;
+            this.state = 1755;
             this.match(HqlParser.PARTITIONBY);
-            this.state = 1683;
+            this.state = 1759;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 125, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 129, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1680;
+                    this.state = 1756;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 1685;
+                this.state = 1761;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 125, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 129, this.context);
             }
-            this.state = 1686;
+            this.state = 1762;
             localContext._Column = this.entityExpression();
-            this.state = 1688;
+            this.state = 1764;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 134) {
+            if (_la === 135) {
                 {
-                this.state = 1687;
+                this.state = 1763;
                 localContext._IdClause = this.partitionByOperatorIdClause();
                 }
             }
 
-            this.state = 1690;
+            this.state = 1766;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1691;
+            this.state = 1767;
             localContext._SubExpression = this.contextualSubExpression();
-            this.state = 1692;
+            this.state = 1768;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -7300,13 +7718,13 @@ export class HqlParser extends antlr.Parser {
     }
     public partitionByOperatorIdClause(): PartitionByOperatorIdClauseContext {
         let localContext = new PartitionByOperatorIdClauseContext(this.context, this.state);
-        this.enterRule(localContext, 272, HqlParser.RULE_partitionByOperatorIdClause);
+        this.enterRule(localContext, 288, HqlParser.RULE_partitionByOperatorIdClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1694;
+            this.state = 1770;
             this.match(HqlParser.ID);
-            this.state = 1695;
+            this.state = 1771;
             localContext._IdValue = this.match(HqlParser.GUIDLITERAL);
             }
         }
@@ -7325,30 +7743,30 @@ export class HqlParser extends antlr.Parser {
     }
     public printOperator(): PrintOperatorContext {
         let localContext = new PrintOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 274, HqlParser.RULE_printOperator);
+        this.enterRule(localContext, 290, HqlParser.RULE_printOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1697;
+            this.state = 1773;
             this.match(HqlParser.PRINT);
-            this.state = 1698;
+            this.state = 1774;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 1703;
+            this.state = 1779;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1699;
+                this.state = 1775;
                 this.match(HqlParser.COMMA);
-                this.state = 1700;
+                this.state = 1776;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 1705;
+                this.state = 1781;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -7369,35 +7787,35 @@ export class HqlParser extends antlr.Parser {
     }
     public projectAwayOperator(): ProjectAwayOperatorContext {
         let localContext = new ProjectAwayOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 276, HqlParser.RULE_projectAwayOperator);
+        this.enterRule(localContext, 292, HqlParser.RULE_projectAwayOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1706;
+            this.state = 1782;
             this.match(HqlParser.PROJECTAWAY);
-            this.state = 1715;
+            this.state = 1791;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1707;
+                this.state = 1783;
                 localContext._pathReference = this.pathReference();
                 localContext._Columns.push(localContext._pathReference!);
-                this.state = 1712;
+                this.state = 1788;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 1708;
+                    this.state = 1784;
                     this.match(HqlParser.COMMA);
-                    this.state = 1709;
+                    this.state = 1785;
                     localContext._pathReference = this.pathReference();
                     localContext._Columns.push(localContext._pathReference!);
                     }
                     }
-                    this.state = 1714;
+                    this.state = 1790;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -7421,30 +7839,30 @@ export class HqlParser extends antlr.Parser {
     }
     public projectKeepOperator(): ProjectKeepOperatorContext {
         let localContext = new ProjectKeepOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 278, HqlParser.RULE_projectKeepOperator);
+        this.enterRule(localContext, 294, HqlParser.RULE_projectKeepOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1717;
+            this.state = 1793;
             this.match(HqlParser.PROJECTKEEP);
-            this.state = 1718;
+            this.state = 1794;
             localContext._pathReference = this.pathReference();
             localContext._Columns.push(localContext._pathReference!);
-            this.state = 1723;
+            this.state = 1799;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1719;
+                this.state = 1795;
                 this.match(HqlParser.COMMA);
-                this.state = 1720;
+                this.state = 1796;
                 localContext._pathReference = this.pathReference();
                 localContext._Columns.push(localContext._pathReference!);
                 }
                 }
-                this.state = 1725;
+                this.state = 1801;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -7465,35 +7883,35 @@ export class HqlParser extends antlr.Parser {
     }
     public projectOperator(): ProjectOperatorContext {
         let localContext = new ProjectOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 280, HqlParser.RULE_projectOperator);
+        this.enterRule(localContext, 296, HqlParser.RULE_projectOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1726;
+            this.state = 1802;
             this.match(HqlParser.PROJECT);
-            this.state = 1735;
+            this.state = 1811;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 894583777) !== 0) || ((((_la - 68)) & ~0x1F) === 0 && ((1 << (_la - 68)) & 1743140563) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 3611296769) !== 0) || ((((_la - 146)) & ~0x1F) === 0 && ((1 << (_la - 146)) & 1599727) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3227699999) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 3334913529) !== 0) || ((((_la - 247)) & ~0x1F) === 0 && ((1 << (_la - 247)) & 4290805343) !== 0) || ((((_la - 279)) & ~0x1F) === 0 && ((1 << (_la - 279)) & 3221226757) !== 0) || ((((_la - 311)) & ~0x1F) === 0 && ((1 << (_la - 311)) & 895) !== 0)) {
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 1766999009) !== 0) || ((((_la - 69)) & ~0x1F) === 0 && ((1 << (_la - 69)) & 1743140563) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 2805990401) !== 0) || ((((_la - 141)) & ~0x1F) === 0 && ((1 << (_la - 141)) & 409532289) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2153958175) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 2374859763) !== 0) || ((((_la - 250)) & ~0x1F) === 0 && ((1 << (_la - 250)) & 4286643391) !== 0) || ((((_la - 282)) & ~0x1F) === 0 && ((1 << (_la - 282)) & 2147486219) !== 0) || ((((_la - 314)) & ~0x1F) === 0 && ((1 << (_la - 314)) & 1791) !== 0)) {
                 {
-                this.state = 1727;
+                this.state = 1803;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
-                this.state = 1732;
+                this.state = 1808;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 1728;
+                    this.state = 1804;
                     this.match(HqlParser.COMMA);
-                    this.state = 1729;
+                    this.state = 1805;
                     localContext._namedExpression = this.namedExpression();
                     localContext._Expressions.push(localContext._namedExpression!);
                     }
                     }
-                    this.state = 1734;
+                    this.state = 1810;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -7517,35 +7935,35 @@ export class HqlParser extends antlr.Parser {
     }
     public projectRenameOperator(): ProjectRenameOperatorContext {
         let localContext = new ProjectRenameOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 282, HqlParser.RULE_projectRenameOperator);
+        this.enterRule(localContext, 298, HqlParser.RULE_projectRenameOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1737;
+            this.state = 1813;
             this.match(HqlParser.PROJECTRENAME);
-            this.state = 1746;
+            this.state = 1822;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1738;
+                this.state = 1814;
                 localContext._staticNamedExpression = this.staticNamedExpression();
                 localContext._Expressions.push(localContext._staticNamedExpression!);
-                this.state = 1743;
+                this.state = 1819;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 1739;
+                    this.state = 1815;
                     this.match(HqlParser.COMMA);
-                    this.state = 1740;
+                    this.state = 1816;
                     localContext._staticNamedExpression = this.staticNamedExpression();
                     localContext._Expressions.push(localContext._staticNamedExpression!);
                     }
                     }
-                    this.state = 1745;
+                    this.state = 1821;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -7569,35 +7987,35 @@ export class HqlParser extends antlr.Parser {
     }
     public projectReorderOperator(): ProjectReorderOperatorContext {
         let localContext = new ProjectReorderOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 284, HqlParser.RULE_projectReorderOperator);
+        this.enterRule(localContext, 300, HqlParser.RULE_projectReorderOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1748;
+            this.state = 1824;
             this.match(HqlParser.PROJECTREORDER);
-            this.state = 1757;
+            this.state = 1833;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 579869953) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289 || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1116740865) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293 || _la === 324) {
                 {
-                this.state = 1749;
+                this.state = 1825;
                 localContext._projectReorderExpression = this.projectReorderExpression();
                 localContext._Expressions.push(localContext._projectReorderExpression!);
-                this.state = 1754;
+                this.state = 1830;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 1750;
+                    this.state = 1826;
                     this.match(HqlParser.COMMA);
-                    this.state = 1751;
+                    this.state = 1827;
                     localContext._projectReorderExpression = this.projectReorderExpression();
                     localContext._Expressions.push(localContext._projectReorderExpression!);
                     }
                     }
-                    this.state = 1756;
+                    this.state = 1832;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -7621,22 +8039,22 @@ export class HqlParser extends antlr.Parser {
     }
     public projectReorderExpression(): ProjectReorderExpressionContext {
         let localContext = new ProjectReorderExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 286, HqlParser.RULE_projectReorderExpression);
+        this.enterRule(localContext, 302, HqlParser.RULE_projectReorderExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1759;
+            this.state = 1835;
             localContext._Expression = this.pathReference();
-            this.state = 1761;
+            this.state = 1837;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 48 || _la === 79 || _la === 101 || _la === 102) {
+            if (_la === 48 || ((((_la - 80)) & ~0x1F) === 0 && ((1 << (_la - 80)) & 12582913) !== 0)) {
                 {
-                this.state = 1760;
+                this.state = 1836;
                 localContext._Order = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 48 || _la === 79 || _la === 101 || _la === 102)) {
+                if(!(_la === 48 || ((((_la - 80)) & ~0x1F) === 0 && ((1 << (_la - 80)) & 12582913) !== 0))) {
                     localContext._Order = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -7661,40 +8079,91 @@ export class HqlParser extends antlr.Parser {
         }
         return localContext;
     }
+    public pushOperator(): PushOperatorContext {
+        let localContext = new PushOperatorContext(this.context, this.state);
+        this.enterRule(localContext, 304, HqlParser.RULE_pushOperator);
+        try {
+            let alternative: number;
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 1839;
+            this.match(HqlParser.PUSH);
+            this.state = 1843;
+            this.errorHandler.sync(this);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 142, this.context);
+            while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
+                if (alternative === 1) {
+                    {
+                    {
+                    this.state = 1840;
+                    localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
+                    localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
+                    }
+                    }
+                }
+                this.state = 1845;
+                this.errorHandler.sync(this);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 142, this.context);
+            }
+            this.state = 1846;
+            localContext._unnamedExpression = this.unnamedExpression();
+            localContext._Destinations.push(localContext._unnamedExpression!);
+            {
+            this.state = 1847;
+            this.match(HqlParser.COMMA);
+            this.state = 1848;
+            localContext._unnamedExpression = this.unnamedExpression();
+            localContext._Destinations.push(localContext._unnamedExpression!);
+            }
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
     public reduceByOperator(): ReduceByOperatorContext {
         let localContext = new ReduceByOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 288, HqlParser.RULE_reduceByOperator);
+        this.enterRule(localContext, 306, HqlParser.RULE_reduceByOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1763;
+            this.state = 1850;
             this.match(HqlParser.REDUCE);
-            this.state = 1767;
+            this.state = 1854;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 1764;
+                this.state = 1851;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 1769;
+                this.state = 1856;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1770;
+            this.state = 1857;
             this.match(HqlParser.BY);
-            this.state = 1771;
+            this.state = 1858;
             localContext._ByExpression = this.namedExpression();
-            this.state = 1773;
+            this.state = 1860;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 261) {
+            if (_la === 265) {
                 {
-                this.state = 1772;
+                this.state = 1859;
                 localContext._WithClause = this.reduceByWithClause();
                 }
             }
@@ -7716,30 +8185,74 @@ export class HqlParser extends antlr.Parser {
     }
     public reduceByWithClause(): ReduceByWithClauseContext {
         let localContext = new ReduceByWithClauseContext(this.context, this.state);
-        this.enterRule(localContext, 290, HqlParser.RULE_reduceByWithClause);
+        this.enterRule(localContext, 308, HqlParser.RULE_reduceByWithClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1775;
+            this.state = 1862;
             this.match(HqlParser.WITH);
-            this.state = 1776;
+            this.state = 1863;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 1781;
+            this.state = 1868;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1777;
+                this.state = 1864;
                 this.match(HqlParser.COMMA);
-                this.state = 1778;
+                this.state = 1865;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 1783;
+                this.state = 1870;
+                this.errorHandler.sync(this);
+                _la = this.tokenStream.LA(1);
+            }
+            }
+        }
+        catch (re) {
+            if (re instanceof antlr.RecognitionException) {
+                this.errorHandler.reportError(this, re);
+                this.errorHandler.recover(this, re);
+            } else {
+                throw re;
+            }
+        }
+        finally {
+            this.exitRule();
+        }
+        return localContext;
+    }
+    public mapOperator(): MapOperatorContext {
+        let localContext = new MapOperatorContext(this.context, this.state);
+        this.enterRule(localContext, 310, HqlParser.RULE_mapOperator);
+        let _la: number;
+        try {
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 1871;
+            this.match(HqlParser.MAP);
+            this.state = 1872;
+            localContext._simpleNameReference = this.simpleNameReference();
+            localContext._Names.push(localContext._simpleNameReference!);
+            this.state = 1877;
+            this.errorHandler.sync(this);
+            _la = this.tokenStream.LA(1);
+            while (_la === 9) {
+                {
+                {
+                this.state = 1873;
+                this.match(HqlParser.COMMA);
+                this.state = 1874;
+                localContext._simpleNameReference = this.simpleNameReference();
+                localContext._Names.push(localContext._simpleNameReference!);
+                }
+                }
+                this.state = 1879;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -7760,30 +8273,30 @@ export class HqlParser extends antlr.Parser {
     }
     public renameOperator(): RenameOperatorContext {
         let localContext = new RenameOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 292, HqlParser.RULE_renameOperator);
+        this.enterRule(localContext, 312, HqlParser.RULE_renameOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1784;
+            this.state = 1880;
             this.match(HqlParser.RENAME);
-            this.state = 1785;
+            this.state = 1881;
             localContext._renameToExpression = this.renameToExpression();
             localContext._Expressions.push(localContext._renameToExpression!);
-            this.state = 1790;
+            this.state = 1886;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1786;
+                this.state = 1882;
                 this.match(HqlParser.COMMA);
-                this.state = 1787;
+                this.state = 1883;
                 localContext._renameToExpression = this.renameToExpression();
                 localContext._Expressions.push(localContext._renameToExpression!);
                 }
                 }
-                this.state = 1792;
+                this.state = 1888;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -7804,15 +8317,15 @@ export class HqlParser extends antlr.Parser {
     }
     public renameToExpression(): RenameToExpressionContext {
         let localContext = new RenameToExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 294, HqlParser.RULE_renameToExpression);
+        this.enterRule(localContext, 314, HqlParser.RULE_renameToExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1793;
+            this.state = 1889;
             localContext._Source = this.tableNameReference();
-            this.state = 1794;
+            this.state = 1890;
             this.match(HqlParser.TO);
-            this.state = 1795;
+            this.state = 1891;
             localContext._Destination = this.tableNameReference();
             }
         }
@@ -7831,35 +8344,35 @@ export class HqlParser extends antlr.Parser {
     }
     public renderOperator(): RenderOperatorContext {
         let localContext = new RenderOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 296, HqlParser.RULE_renderOperator);
+        this.enterRule(localContext, 316, HqlParser.RULE_renderOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1797;
+            this.state = 1893;
             this.match(HqlParser.RENDER);
-            this.state = 1798;
+            this.state = 1894;
             localContext._CharType = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 37)) & ~0x1F) === 0 && ((1 << (_la - 37)) & 10519169) !== 0) || ((((_la - 144)) & ~0x1F) === 0 && ((1 << (_la - 144)) & 193) !== 0) || ((((_la - 202)) & ~0x1F) === 0 && ((1 << (_la - 202)) & 4194307) !== 0) || ((((_la - 234)) & ~0x1F) === 0 && ((1 << (_la - 234)) & 263969) !== 0) || _la === 320)) {
+            if(!(((((_la - 37)) & ~0x1F) === 0 && ((1 << (_la - 37)) & 18907777) !== 0) || ((((_la - 146)) & ~0x1F) === 0 && ((1 << (_la - 146)) & 193) !== 0) || ((((_la - 205)) & ~0x1F) === 0 && ((1 << (_la - 205)) & 8388611) !== 0) || ((((_la - 238)) & ~0x1F) === 0 && ((1 << (_la - 238)) & 263969) !== 0) || _la === 324)) {
                 localContext._CharType = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 1801;
+            this.state = 1897;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 142, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 148, this.context) ) {
             case 1:
                 {
-                this.state = 1799;
+                this.state = 1895;
                 localContext._WithClause = this.renderOperatorWithClause();
                 }
                 break;
             case 2:
                 {
-                this.state = 1800;
+                this.state = 1896;
                 localContext._LegacyPropertyList = this.renderOperatorLegacyPropertyList();
                 }
                 break;
@@ -7881,44 +8394,44 @@ export class HqlParser extends antlr.Parser {
     }
     public renderOperatorWithClause(): RenderOperatorWithClauseContext {
         let localContext = new RenderOperatorWithClauseContext(this.context, this.state);
-        this.enterRule(localContext, 298, HqlParser.RULE_renderOperatorWithClause);
+        this.enterRule(localContext, 318, HqlParser.RULE_renderOperatorWithClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1803;
+            this.state = 1899;
             this.match(HqlParser.WITH);
-            this.state = 1804;
+            this.state = 1900;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1813;
+            this.state = 1909;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 39 || _la === 45 || _la === 143 || _la === 146 || _la === 227 || _la === 245 || ((((_la - 269)) & ~0x1F) === 0 && ((1 << (_la - 269)) & 2047) !== 0)) {
+            if (_la === 39 || _la === 45 || _la === 145 || _la === 148 || _la === 231 || _la === 249 || ((((_la - 273)) & ~0x1F) === 0 && ((1 << (_la - 273)) & 2047) !== 0)) {
                 {
-                this.state = 1805;
+                this.state = 1901;
                 localContext._renderOperatorProperty = this.renderOperatorProperty();
                 localContext._Properties.push(localContext._renderOperatorProperty!);
-                this.state = 1810;
+                this.state = 1906;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 1806;
+                    this.state = 1902;
                     this.match(HqlParser.COMMA);
-                    this.state = 1807;
+                    this.state = 1903;
                     localContext._renderOperatorProperty = this.renderOperatorProperty();
                     localContext._Properties.push(localContext._renderOperatorProperty!);
                     }
                     }
-                    this.state = 1812;
+                    this.state = 1908;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
                 }
             }
 
-            this.state = 1815;
+            this.state = 1911;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -7937,26 +8450,26 @@ export class HqlParser extends antlr.Parser {
     }
     public renderOperatorLegacyPropertyList(): RenderOperatorLegacyPropertyListContext {
         let localContext = new RenderOperatorLegacyPropertyListContext(this.context, this.state);
-        this.enterRule(localContext, 300, HqlParser.RULE_renderOperatorLegacyPropertyList);
+        this.enterRule(localContext, 320, HqlParser.RULE_renderOperatorLegacyPropertyList);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1818;
+            this.state = 1914;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             do {
                 {
                 {
-                this.state = 1817;
+                this.state = 1913;
                 localContext._renderOperatorLegacyProperty = this.renderOperatorLegacyProperty();
                 localContext._Properties.push(localContext._renderOperatorLegacyProperty!);
                 }
                 }
-                this.state = 1820;
+                this.state = 1916;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
-            } while (_la === 39 || _la === 57 || _la === 143 || _la === 245 || _la === 261);
+            } while (_la === 39 || _la === 57 || _la === 145 || _la === 249 || _la === 265);
             }
         }
         catch (re) {
@@ -7974,21 +8487,21 @@ export class HqlParser extends antlr.Parser {
     }
     public renderOperatorProperty(): RenderOperatorPropertyContext {
         let localContext = new RenderOperatorPropertyContext(this.context, this.state);
-        this.enterRule(localContext, 302, HqlParser.RULE_renderOperatorProperty);
+        this.enterRule(localContext, 322, HqlParser.RULE_renderOperatorProperty);
         let _la: number;
         try {
-            this.state = 1873;
+            this.state = 1969;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.TITLE:
                 this.enterOuterAlt(localContext, 1);
                 {
                 {
-                this.state = 1822;
+                this.state = 1918;
                 localContext._Name = this.match(HqlParser.TITLE);
-                this.state = 1823;
+                this.state = 1919;
                 this.match(HqlParser.EQUAL);
-                this.state = 1824;
+                this.state = 1920;
                 localContext._ExpressionValue = this.functionCallOrPathExpression();
                 }
                 }
@@ -7997,11 +8510,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 2);
                 {
                 {
-                this.state = 1825;
+                this.state = 1921;
                 localContext._Name = this.match(HqlParser.XCOLUMN);
-                this.state = 1826;
+                this.state = 1922;
                 this.match(HqlParser.EQUAL);
-                this.state = 1827;
+                this.state = 1923;
                 localContext._NameValue = this.simpleNameReference();
                 }
                 }
@@ -8010,11 +8523,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 3);
                 {
                 {
-                this.state = 1828;
+                this.state = 1924;
                 localContext._Name = this.match(HqlParser.SERIES);
-                this.state = 1829;
+                this.state = 1925;
                 this.match(HqlParser.EQUAL);
-                this.state = 1830;
+                this.state = 1926;
                 localContext._NameListValue = this.renderPropertyNameList();
                 }
                 }
@@ -8023,11 +8536,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 4);
                 {
                 {
-                this.state = 1831;
+                this.state = 1927;
                 localContext._Name = this.match(HqlParser.YCOLUMNS);
-                this.state = 1832;
+                this.state = 1928;
                 this.match(HqlParser.EQUAL);
-                this.state = 1833;
+                this.state = 1929;
                 localContext._NameListValue = this.renderPropertyNameList();
                 }
                 }
@@ -8036,11 +8549,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 5);
                 {
                 {
-                this.state = 1834;
+                this.state = 1930;
                 localContext._Name = this.match(HqlParser.ANOMALYCOLUMNS);
-                this.state = 1835;
+                this.state = 1931;
                 this.match(HqlParser.EQUAL);
-                this.state = 1836;
+                this.state = 1932;
                 localContext._NameListValue = this.renderPropertyNameList();
                 }
                 }
@@ -8049,14 +8562,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 6);
                 {
                 {
-                this.state = 1837;
+                this.state = 1933;
                 localContext._Name = this.match(HqlParser.KIND);
-                this.state = 1838;
+                this.state = 1934;
                 this.match(HqlParser.EQUAL);
-                this.state = 1839;
+                this.state = 1935;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 77 || _la === 157 || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 16777219) !== 0))) {
+                if(!(_la === 78 || _la === 160 || ((((_la - 236)) & ~0x1F) === 0 && ((1 << (_la - 236)) & 16777219) !== 0))) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8070,11 +8583,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 7);
                 {
                 {
-                this.state = 1840;
+                this.state = 1936;
                 localContext._Name = this.match(HqlParser.XTITLE);
-                this.state = 1841;
+                this.state = 1937;
                 this.match(HqlParser.EQUAL);
-                this.state = 1842;
+                this.state = 1938;
                 localContext._ExpressionValue = this.functionCallOrPathExpression();
                 }
                 }
@@ -8083,11 +8596,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 8);
                 {
                 {
-                this.state = 1843;
+                this.state = 1939;
                 localContext._Name = this.match(HqlParser.YTITLE);
-                this.state = 1844;
+                this.state = 1940;
                 this.match(HqlParser.EQUAL);
-                this.state = 1845;
+                this.state = 1941;
                 localContext._ExpressionValue = this.functionCallOrPathExpression();
                 }
                 }
@@ -8096,14 +8609,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 9);
                 {
                 {
-                this.state = 1846;
+                this.state = 1942;
                 localContext._Name = this.match(HqlParser.XAXIS);
-                this.state = 1847;
+                this.state = 1943;
                 this.match(HqlParser.EQUAL);
-                this.state = 1848;
+                this.state = 1944;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 149 || _la === 153)) {
+                if(!(_la === 151 || _la === 155)) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8117,14 +8630,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 10);
                 {
                 {
-                this.state = 1849;
+                this.state = 1945;
                 localContext._Name = this.match(HqlParser.YAXIS);
-                this.state = 1850;
+                this.state = 1946;
                 this.match(HqlParser.EQUAL);
-                this.state = 1851;
+                this.state = 1947;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 149 || _la === 153)) {
+                if(!(_la === 151 || _la === 155)) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8138,14 +8651,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 11);
                 {
                 {
-                this.state = 1852;
+                this.state = 1948;
                 localContext._Name = this.match(HqlParser.LEGEND);
-                this.state = 1853;
+                this.state = 1949;
                 this.match(HqlParser.EQUAL);
-                this.state = 1854;
+                this.state = 1950;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 118 || _la === 259)) {
+                if(!(_la === 119 || _la === 263)) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8159,14 +8672,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 12);
                 {
                 {
-                this.state = 1855;
+                this.state = 1951;
                 localContext._Name = this.match(HqlParser.YSPLIT);
-                this.state = 1856;
+                this.state = 1952;
                 this.match(HqlParser.EQUAL);
-                this.state = 1857;
+                this.state = 1953;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 50 || _la === 166 || _la === 193)) {
+                if(!(_la === 50 || _la === 169 || _la === 196)) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8180,11 +8693,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 13);
                 {
                 {
-                this.state = 1858;
+                this.state = 1954;
                 localContext._Name = this.match(HqlParser.ACCUMULATE);
-                this.state = 1859;
+                this.state = 1955;
                 this.match(HqlParser.EQUAL);
-                this.state = 1860;
+                this.state = 1956;
                 localContext._BoolValue = this.match(HqlParser.BOOLEANLITERAL);
                 }
                 }
@@ -8193,11 +8706,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 14);
                 {
                 {
-                this.state = 1861;
+                this.state = 1957;
                 localContext._Name = this.match(HqlParser.YMIN);
-                this.state = 1862;
+                this.state = 1958;
                 this.match(HqlParser.EQUAL);
-                this.state = 1863;
+                this.state = 1959;
                 localContext._NumberValue = this.numericLiteralExpression();
                 }
                 }
@@ -8206,11 +8719,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 15);
                 {
                 {
-                this.state = 1864;
+                this.state = 1960;
                 localContext._Name = this.match(HqlParser.YMAX);
-                this.state = 1865;
+                this.state = 1961;
                 this.match(HqlParser.EQUAL);
-                this.state = 1866;
+                this.state = 1962;
                 localContext._NumberValue = this.numericLiteralExpression();
                 }
                 }
@@ -8219,11 +8732,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 16);
                 {
                 {
-                this.state = 1867;
+                this.state = 1963;
                 localContext._Name = this.match(HqlParser.XMIN);
-                this.state = 1868;
+                this.state = 1964;
                 this.match(HqlParser.EQUAL);
-                this.state = 1869;
+                this.state = 1965;
                 localContext._LiteralValue = this.literalExpression();
                 }
                 }
@@ -8232,11 +8745,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 17);
                 {
                 {
-                this.state = 1870;
+                this.state = 1966;
                 localContext._Name = this.match(HqlParser.XMAX);
-                this.state = 1871;
+                this.state = 1967;
                 this.match(HqlParser.EQUAL);
-                this.state = 1872;
+                this.state = 1968;
                 localContext._LiteralValue = this.literalExpression();
                 }
                 }
@@ -8260,32 +8773,32 @@ export class HqlParser extends antlr.Parser {
     }
     public renderPropertyNameList(): RenderPropertyNameListContext {
         let localContext = new RenderPropertyNameListContext(this.context, this.state);
-        this.enterRule(localContext, 304, HqlParser.RULE_renderPropertyNameList);
+        this.enterRule(localContext, 324, HqlParser.RULE_renderPropertyNameList);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1875;
+            this.state = 1971;
             localContext._extendedNameReference = this.extendedNameReference();
             localContext._Names.push(localContext._extendedNameReference!);
-            this.state = 1880;
+            this.state = 1976;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 147, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 153, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 1876;
+                    this.state = 1972;
                     this.match(HqlParser.COMMA);
-                    this.state = 1877;
+                    this.state = 1973;
                     localContext._extendedNameReference = this.extendedNameReference();
                     localContext._Names.push(localContext._extendedNameReference!);
                     }
                     }
                 }
-                this.state = 1882;
+                this.state = 1978;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 147, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 153, this.context);
             }
             }
         }
@@ -8304,21 +8817,21 @@ export class HqlParser extends antlr.Parser {
     }
     public renderOperatorLegacyProperty(): RenderOperatorLegacyPropertyContext {
         let localContext = new RenderOperatorLegacyPropertyContext(this.context, this.state);
-        this.enterRule(localContext, 306, HqlParser.RULE_renderOperatorLegacyProperty);
+        this.enterRule(localContext, 326, HqlParser.RULE_renderOperatorLegacyProperty);
         let _la: number;
         try {
-            this.state = 1896;
+            this.state = 1992;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.TITLE:
                 this.enterOuterAlt(localContext, 1);
                 {
                 {
-                this.state = 1883;
+                this.state = 1979;
                 localContext._Name = this.match(HqlParser.TITLE);
-                this.state = 1884;
+                this.state = 1980;
                 this.match(HqlParser.EQUAL);
-                this.state = 1885;
+                this.state = 1981;
                 localContext._StringValue = this.stringLiteralExpression();
                 }
                 }
@@ -8327,14 +8840,14 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 2);
                 {
                 {
-                this.state = 1886;
+                this.state = 1982;
                 localContext._Name = this.match(HqlParser.KIND);
-                this.state = 1887;
+                this.state = 1983;
                 this.match(HqlParser.EQUAL);
-                this.state = 1888;
+                this.state = 1984;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 77 || _la === 157 || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 16777219) !== 0))) {
+                if(!(_la === 78 || _la === 160 || ((((_la - 236)) & ~0x1F) === 0 && ((1 << (_la - 236)) & 16777219) !== 0))) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -8348,9 +8861,9 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 3);
                 {
                 {
-                this.state = 1889;
+                this.state = 1985;
                 localContext._Name = this.match(HqlParser.WITH);
-                this.state = 1890;
+                this.state = 1986;
                 localContext._StringValue = this.stringLiteralExpression();
                 }
                 }
@@ -8359,9 +8872,9 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 4);
                 {
                 {
-                this.state = 1891;
+                this.state = 1987;
                 localContext._Name = this.match(HqlParser.BY);
-                this.state = 1892;
+                this.state = 1988;
                 localContext._NameListValue = this.renderPropertyNameList();
                 }
                 }
@@ -8370,11 +8883,11 @@ export class HqlParser extends antlr.Parser {
                 this.enterOuterAlt(localContext, 5);
                 {
                 {
-                this.state = 1893;
+                this.state = 1989;
                 localContext._Name = this.match(HqlParser.ACCUMULATE);
-                this.state = 1894;
+                this.state = 1990;
                 this.match(HqlParser.EQUAL);
-                this.state = 1895;
+                this.state = 1991;
                 localContext._BoolValue = this.match(HqlParser.BOOLEANLITERAL);
                 }
                 }
@@ -8398,33 +8911,33 @@ export class HqlParser extends antlr.Parser {
     }
     public sampleDistinctOperator(): SampleDistinctOperatorContext {
         let localContext = new SampleDistinctOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 308, HqlParser.RULE_sampleDistinctOperator);
+        this.enterRule(localContext, 328, HqlParser.RULE_sampleDistinctOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1898;
+            this.state = 1994;
             this.match(HqlParser.SAMPLE_DISTINCT);
-            this.state = 1902;
+            this.state = 1998;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 1899;
+                this.state = 1995;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 1904;
+                this.state = 2000;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1905;
+            this.state = 2001;
             localContext._Expression = this.namedExpression();
-            this.state = 1906;
+            this.state = 2002;
             this.match(HqlParser.OF);
-            this.state = 1907;
+            this.state = 2003;
             localContext._OfExpression = this.namedExpression();
             }
         }
@@ -8443,29 +8956,29 @@ export class HqlParser extends antlr.Parser {
     }
     public sampleOperator(): SampleOperatorContext {
         let localContext = new SampleOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 310, HqlParser.RULE_sampleOperator);
+        this.enterRule(localContext, 330, HqlParser.RULE_sampleOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1909;
+            this.state = 2005;
             this.match(HqlParser.SAMPLE);
-            this.state = 1913;
+            this.state = 2009;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 1910;
+                this.state = 2006;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 1915;
+                this.state = 2011;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1916;
+            this.state = 2012;
             localContext._Expression = this.namedExpression();
             }
         }
@@ -8484,78 +8997,78 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperator(): ScanOperatorContext {
         let localContext = new ScanOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 312, HqlParser.RULE_scanOperator);
+        this.enterRule(localContext, 332, HqlParser.RULE_scanOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1918;
+            this.state = 2014;
             this.match(HqlParser.SCAN);
-            this.state = 1922;
+            this.state = 2018;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 1919;
+                this.state = 2015;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 1924;
+                this.state = 2020;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1926;
+            this.state = 2022;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 189) {
+            if (_la === 192) {
                 {
-                this.state = 1925;
+                this.state = 2021;
                 localContext._OrderByClause = this.scanOperatorOrderByClause();
                 }
             }
 
-            this.state = 1929;
+            this.state = 2025;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 197) {
+            if (_la === 200) {
                 {
-                this.state = 1928;
+                this.state = 2024;
                 localContext._PartitionByClause = this.scanOperatorPartitionByClause();
                 }
             }
 
-            this.state = 1932;
+            this.state = 2028;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 75) {
+            if (_la === 76) {
                 {
-                this.state = 1931;
+                this.state = 2027;
                 localContext._DeclareClause = this.scanOperatorDeclareClause();
                 }
             }
 
-            this.state = 1934;
+            this.state = 2030;
             this.match(HqlParser.WITH);
-            this.state = 1935;
+            this.state = 2031;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1937;
+            this.state = 2033;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             do {
                 {
                 {
-                this.state = 1936;
+                this.state = 2032;
                 localContext._scanOperatorStep = this.scanOperatorStep();
                 localContext._Steps.push(localContext._scanOperatorStep!);
                 }
                 }
-                this.state = 1939;
+                this.state = 2035;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
-            } while (_la === 237);
-            this.state = 1941;
+            } while (_la === 241);
+            this.state = 2037;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -8574,21 +9087,21 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorOrderByClause(): ScanOperatorOrderByClauseContext {
         let localContext = new ScanOperatorOrderByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 314, HqlParser.RULE_scanOperatorOrderByClause);
+        this.enterRule(localContext, 334, HqlParser.RULE_scanOperatorOrderByClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1943;
+            this.state = 2039;
             this.match(HqlParser.ORDER);
-            this.state = 1944;
+            this.state = 2040;
             this.match(HqlParser.BY);
-            this.state = 1945;
+            this.state = 2041;
             localContext._orderedExpression = this.orderedExpression();
             localContext._Expressions.push(localContext._orderedExpression!);
             {
-            this.state = 1946;
+            this.state = 2042;
             this.match(HqlParser.COMMA);
-            this.state = 1947;
+            this.state = 2043;
             localContext._orderedExpression = this.orderedExpression();
             localContext._Expressions.push(localContext._orderedExpression!);
             }
@@ -8609,32 +9122,32 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorPartitionByClause(): ScanOperatorPartitionByClauseContext {
         let localContext = new ScanOperatorPartitionByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 316, HqlParser.RULE_scanOperatorPartitionByClause);
+        this.enterRule(localContext, 336, HqlParser.RULE_scanOperatorPartitionByClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1949;
+            this.state = 2045;
             this.match(HqlParser.PARTITION);
-            this.state = 1950;
+            this.state = 2046;
             this.match(HqlParser.BY);
-            this.state = 1951;
+            this.state = 2047;
             localContext._unnamedExpression = this.unnamedExpression();
             localContext._Expressions.push(localContext._unnamedExpression!);
-            this.state = 1956;
+            this.state = 2052;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1952;
+                this.state = 2048;
                 this.match(HqlParser.COMMA);
-                this.state = 1953;
+                this.state = 2049;
                 localContext._unnamedExpression = this.unnamedExpression();
                 localContext._Expressions.push(localContext._unnamedExpression!);
                 }
                 }
-                this.state = 1958;
+                this.state = 2054;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -8655,36 +9168,36 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorDeclareClause(): ScanOperatorDeclareClauseContext {
         let localContext = new ScanOperatorDeclareClauseContext(this.context, this.state);
-        this.enterRule(localContext, 318, HqlParser.RULE_scanOperatorDeclareClause);
+        this.enterRule(localContext, 338, HqlParser.RULE_scanOperatorDeclareClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1959;
+            this.state = 2055;
             this.match(HqlParser.DECLARE);
-            this.state = 1960;
+            this.state = 2056;
             this.match(HqlParser.OPENPAREN);
-            this.state = 1961;
+            this.state = 2057;
             localContext._scalarParameter = this.scalarParameter();
             localContext._Parameters.push(localContext._scalarParameter!);
-            this.state = 1966;
+            this.state = 2062;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1962;
+                this.state = 2058;
                 this.match(HqlParser.COMMA);
-                this.state = 1963;
+                this.state = 2059;
                 localContext._scalarParameter = this.scalarParameter();
                 localContext._Parameters.push(localContext._scalarParameter!);
                 }
                 }
-                this.state = 1968;
+                this.state = 2064;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 1969;
+            this.state = 2065;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -8703,50 +9216,50 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorStep(): ScanOperatorStepContext {
         let localContext = new ScanOperatorStepContext(this.context, this.state);
-        this.enterRule(localContext, 320, HqlParser.RULE_scanOperatorStep);
+        this.enterRule(localContext, 340, HqlParser.RULE_scanOperatorStep);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1971;
+            this.state = 2067;
             this.match(HqlParser.STEP);
-            this.state = 1972;
+            this.state = 2068;
             localContext._Name = this.parameterName();
-            this.state = 1974;
+            this.state = 2070;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 187) {
+            if (_la === 190) {
                 {
-                this.state = 1973;
+                this.state = 2069;
                 this.match(HqlParser.OPTIONAL);
                 }
             }
 
-            this.state = 1977;
+            this.state = 2073;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 191) {
+            if (_la === 194) {
                 {
-                this.state = 1976;
+                this.state = 2072;
                 localContext._OutputClause = this.scanOperatorStepOutputClause();
                 }
             }
 
-            this.state = 1979;
+            this.state = 2075;
             this.match(HqlParser.COLON);
-            this.state = 1980;
+            this.state = 2076;
             localContext._Expression = this.unnamedExpression();
-            this.state = 1982;
+            this.state = 2078;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 36) {
                 {
-                this.state = 1981;
+                this.state = 2077;
                 localContext._Body = this.scanOperatorBody();
                 }
             }
 
-            this.state = 1984;
+            this.state = 2080;
             this.match(HqlParser.SEMICOLON);
             }
         }
@@ -8765,19 +9278,19 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorStepOutputClause(): ScanOperatorStepOutputClauseContext {
         let localContext = new ScanOperatorStepOutputClauseContext(this.context, this.state);
-        this.enterRule(localContext, 322, HqlParser.RULE_scanOperatorStepOutputClause);
+        this.enterRule(localContext, 342, HqlParser.RULE_scanOperatorStepOutputClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1986;
+            this.state = 2082;
             this.match(HqlParser.OUTPUT);
-            this.state = 1987;
+            this.state = 2083;
             this.match(HqlParser.EQUAL);
-            this.state = 1988;
+            this.state = 2084;
             localContext._OutputKind = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 42 || _la === 145 || _la === 166)) {
+            if(!(_la === 42 || _la === 147 || _la === 169)) {
                 localContext._OutputKind = this.errorHandler.recoverInline(this);
             }
             else {
@@ -8801,30 +9314,30 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorBody(): ScanOperatorBodyContext {
         let localContext = new ScanOperatorBodyContext(this.context, this.state);
-        this.enterRule(localContext, 324, HqlParser.RULE_scanOperatorBody);
+        this.enterRule(localContext, 344, HqlParser.RULE_scanOperatorBody);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1990;
+            this.state = 2086;
             this.match(HqlParser.EQUAL_GREATERTHAN);
-            this.state = 1991;
+            this.state = 2087;
             localContext._scanOperatorAssignment = this.scanOperatorAssignment();
             localContext._Assignments.push(localContext._scanOperatorAssignment!);
-            this.state = 1996;
+            this.state = 2092;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 1992;
+                this.state = 2088;
                 this.match(HqlParser.COMMA);
-                this.state = 1993;
+                this.state = 2089;
                 localContext._scanOperatorAssignment = this.scanOperatorAssignment();
                 localContext._Assignments.push(localContext._scanOperatorAssignment!);
                 }
                 }
-                this.state = 1998;
+                this.state = 2094;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -8845,15 +9358,15 @@ export class HqlParser extends antlr.Parser {
     }
     public scanOperatorAssignment(): ScanOperatorAssignmentContext {
         let localContext = new ScanOperatorAssignmentContext(this.context, this.state);
-        this.enterRule(localContext, 326, HqlParser.RULE_scanOperatorAssignment);
+        this.enterRule(localContext, 346, HqlParser.RULE_scanOperatorAssignment);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 1999;
+            this.state = 2095;
             localContext._Name = this.parameterName();
-            this.state = 2000;
+            this.state = 2096;
             this.match(HqlParser.EQUAL);
-            this.state = 2001;
+            this.state = 2097;
             localContext._Expression = this.unnamedExpression();
             }
         }
@@ -8872,58 +9385,58 @@ export class HqlParser extends antlr.Parser {
     }
     public searchOperator(): SearchOperatorContext {
         let localContext = new SearchOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 328, HqlParser.RULE_searchOperator);
+        this.enterRule(localContext, 348, HqlParser.RULE_searchOperator);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2003;
+            this.state = 2099;
             this.match(HqlParser.SEARCH);
-            this.state = 2007;
+            this.state = 2103;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 162, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 168, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2004;
+                    this.state = 2100;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 2009;
+                this.state = 2105;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 162, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 168, this.context);
             }
-            this.state = 2011;
+            this.state = 2107;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 163, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 169, this.context) ) {
             case 1:
                 {
-                this.state = 2010;
+                this.state = 2106;
                 localContext._InClause = this.searchOperatorInClause();
                 }
                 break;
             }
-            this.state = 2016;
+            this.state = 2112;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 164, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 170, this.context) ) {
             case 1:
                 {
-                this.state = 2013;
+                this.state = 2109;
                 localContext._Expression = this.unnamedExpression();
                 }
                 break;
             case 2:
                 {
-                this.state = 2014;
+                this.state = 2110;
                 localContext._Star = this.starExpression();
                 }
                 break;
             case 3:
                 {
-                this.state = 2015;
+                this.state = 2111;
                 localContext._StarAndExpression = this.searchOperatorStarAndExpression();
                 }
                 break;
@@ -8945,15 +9458,15 @@ export class HqlParser extends antlr.Parser {
     }
     public searchOperatorStarAndExpression(): SearchOperatorStarAndExpressionContext {
         let localContext = new SearchOperatorStarAndExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 330, HqlParser.RULE_searchOperatorStarAndExpression);
+        this.enterRule(localContext, 350, HqlParser.RULE_searchOperatorStarAndExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2018;
+            this.state = 2114;
             this.match(HqlParser.ASTERISK);
-            this.state = 2019;
+            this.state = 2115;
             this.match(HqlParser.AND);
-            this.state = 2020;
+            this.state = 2116;
             localContext._Expression = this.unnamedExpression();
             }
         }
@@ -8972,36 +9485,36 @@ export class HqlParser extends antlr.Parser {
     }
     public searchOperatorInClause(): SearchOperatorInClauseContext {
         let localContext = new SearchOperatorInClauseContext(this.context, this.state);
-        this.enterRule(localContext, 332, HqlParser.RULE_searchOperatorInClause);
+        this.enterRule(localContext, 352, HqlParser.RULE_searchOperatorInClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2022;
+            this.state = 2118;
             this.match(HqlParser.IN);
-            this.state = 2023;
+            this.state = 2119;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2024;
+            this.state = 2120;
             localContext._findOperatorSource = this.findOperatorSource();
             localContext._Expressions.push(localContext._findOperatorSource!);
-            this.state = 2029;
+            this.state = 2125;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2025;
+                this.state = 2121;
                 this.match(HqlParser.COMMA);
-                this.state = 2026;
+                this.state = 2122;
                 localContext._findOperatorSource = this.findOperatorSource();
                 localContext._Expressions.push(localContext._findOperatorSource!);
                 }
                 }
-                this.state = 2031;
+                this.state = 2127;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2032;
+            this.state = 2128;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -9020,50 +9533,50 @@ export class HqlParser extends antlr.Parser {
     }
     public serializeOperator(): SerializeOperatorContext {
         let localContext = new SerializeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 334, HqlParser.RULE_serializeOperator);
+        this.enterRule(localContext, 354, HqlParser.RULE_serializeOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2034;
+            this.state = 2130;
             this.match(HqlParser.SERIALIZE);
-            this.state = 2038;
+            this.state = 2134;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 2035;
+                this.state = 2131;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 2040;
+                this.state = 2136;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2049;
+            this.state = 2145;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 894583777) !== 0) || ((((_la - 68)) & ~0x1F) === 0 && ((1 << (_la - 68)) & 1743140563) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 3611296769) !== 0) || ((((_la - 146)) & ~0x1F) === 0 && ((1 << (_la - 146)) & 1599727) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3227699999) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 3334913529) !== 0) || ((((_la - 247)) & ~0x1F) === 0 && ((1 << (_la - 247)) & 4290805343) !== 0) || ((((_la - 279)) & ~0x1F) === 0 && ((1 << (_la - 279)) & 3221226757) !== 0) || ((((_la - 311)) & ~0x1F) === 0 && ((1 << (_la - 311)) & 895) !== 0)) {
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 1766999009) !== 0) || ((((_la - 69)) & ~0x1F) === 0 && ((1 << (_la - 69)) & 1743140563) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 2805990401) !== 0) || ((((_la - 141)) & ~0x1F) === 0 && ((1 << (_la - 141)) & 409532289) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2153958175) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 2374859763) !== 0) || ((((_la - 250)) & ~0x1F) === 0 && ((1 << (_la - 250)) & 4286643391) !== 0) || ((((_la - 282)) & ~0x1F) === 0 && ((1 << (_la - 282)) & 2147486219) !== 0) || ((((_la - 314)) & ~0x1F) === 0 && ((1 << (_la - 314)) & 1791) !== 0)) {
                 {
-                this.state = 2041;
+                this.state = 2137;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
-                this.state = 2046;
+                this.state = 2142;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2042;
+                    this.state = 2138;
                     this.match(HqlParser.COMMA);
-                    this.state = 2043;
+                    this.state = 2139;
                     localContext._namedExpression = this.namedExpression();
                     localContext._Expressions.push(localContext._namedExpression!);
                     }
                     }
-                    this.state = 2048;
+                    this.state = 2144;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -9087,55 +9600,55 @@ export class HqlParser extends antlr.Parser {
     }
     public sortOperator(): SortOperatorContext {
         let localContext = new SortOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 336, HqlParser.RULE_sortOperator);
+        this.enterRule(localContext, 356, HqlParser.RULE_sortOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2051;
+            this.state = 2147;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 189 || _la === 230)) {
+            if(!(_la === 192 || _la === 234)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2055;
+            this.state = 2151;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 2052;
+                this.state = 2148;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 2057;
+                this.state = 2153;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2058;
+            this.state = 2154;
             this.match(HqlParser.BY);
-            this.state = 2059;
+            this.state = 2155;
             localContext._orderedExpression = this.orderedExpression();
             localContext._Expressions.push(localContext._orderedExpression!);
-            this.state = 2064;
+            this.state = 2160;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2060;
+                this.state = 2156;
                 this.match(HqlParser.COMMA);
-                this.state = 2061;
+                this.state = 2157;
                 localContext._orderedExpression = this.orderedExpression();
                 localContext._Expressions.push(localContext._orderedExpression!);
                 }
                 }
-                this.state = 2066;
+                this.state = 2162;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -9156,22 +9669,22 @@ export class HqlParser extends antlr.Parser {
     }
     public orderedExpression(): OrderedExpressionContext {
         let localContext = new OrderedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 338, HqlParser.RULE_orderedExpression);
+        this.enterRule(localContext, 358, HqlParser.RULE_orderedExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2067;
+            this.state = 2163;
             localContext._Expression = this.namedExpression();
-            this.state = 2069;
+            this.state = 2165;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 48 || _la === 79) {
+            if (_la === 48 || _la === 80) {
                 {
-                this.state = 2068;
+                this.state = 2164;
                 localContext._OrderKind = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 48 || _la === 79)) {
+                if(!(_la === 48 || _la === 80)) {
                     localContext._OrderKind = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -9181,17 +9694,17 @@ export class HqlParser extends antlr.Parser {
                 }
             }
 
-            this.state = 2073;
+            this.state = 2169;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 184) {
+            if (_la === 187) {
                 {
-                this.state = 2071;
+                this.state = 2167;
                 this.match(HqlParser.NULLS);
-                this.state = 2072;
+                this.state = 2168;
                 localContext._NullsKind = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(_la === 95 || _la === 145)) {
+                if(!(_la === 96 || _la === 147)) {
                     localContext._NullsKind = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -9218,62 +9731,62 @@ export class HqlParser extends antlr.Parser {
     }
     public summarizeOperator(): SummarizeOperatorContext {
         let localContext = new SummarizeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 340, HqlParser.RULE_summarizeOperator);
+        this.enterRule(localContext, 360, HqlParser.RULE_summarizeOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2075;
+            this.state = 2171;
             this.match(HqlParser.SUMMARIZE);
-            this.state = 2079;
+            this.state = 2175;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 2076;
+                this.state = 2172;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 2081;
+                this.state = 2177;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2090;
+            this.state = 2186;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 175, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 181, this.context) ) {
             case 1:
                 {
-                this.state = 2082;
+                this.state = 2178;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
-                this.state = 2087;
+                this.state = 2183;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2083;
+                    this.state = 2179;
                     this.match(HqlParser.COMMA);
-                    this.state = 2084;
+                    this.state = 2180;
                     localContext._namedExpression = this.namedExpression();
                     localContext._Expressions.push(localContext._namedExpression!);
                     }
                     }
-                    this.state = 2089;
+                    this.state = 2185;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
                 }
                 break;
             }
-            this.state = 2093;
+            this.state = 2189;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 57) {
                 {
-                this.state = 2092;
+                this.state = 2188;
                 localContext._ByClause = this.summarizeOperatorByClause();
                 }
             }
@@ -9295,39 +9808,39 @@ export class HqlParser extends antlr.Parser {
     }
     public summarizeOperatorByClause(): SummarizeOperatorByClauseContext {
         let localContext = new SummarizeOperatorByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 342, HqlParser.RULE_summarizeOperatorByClause);
+        this.enterRule(localContext, 362, HqlParser.RULE_summarizeOperatorByClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2095;
+            this.state = 2191;
             this.match(HqlParser.BY);
-            this.state = 2096;
+            this.state = 2192;
             localContext._namedExpression = this.namedExpression();
             localContext._Expressions.push(localContext._namedExpression!);
-            this.state = 2101;
+            this.state = 2197;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2097;
+                this.state = 2193;
                 this.match(HqlParser.COMMA);
-                this.state = 2098;
+                this.state = 2194;
                 localContext._namedExpression = this.namedExpression();
                 localContext._Expressions.push(localContext._namedExpression!);
                 }
                 }
-                this.state = 2103;
+                this.state = 2199;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2105;
+            this.state = 2201;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 55) {
                 {
-                this.state = 2104;
+                this.state = 2200;
                 localContext._BinClause = this.summarizeOperatorLegacyBinClause();
                 }
             }
@@ -9349,15 +9862,15 @@ export class HqlParser extends antlr.Parser {
     }
     public summarizeOperatorLegacyBinClause(): SummarizeOperatorLegacyBinClauseContext {
         let localContext = new SummarizeOperatorLegacyBinClauseContext(this.context, this.state);
-        this.enterRule(localContext, 344, HqlParser.RULE_summarizeOperatorLegacyBinClause);
+        this.enterRule(localContext, 364, HqlParser.RULE_summarizeOperatorLegacyBinClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2107;
+            this.state = 2203;
             this.match(HqlParser.BIN);
-            this.state = 2108;
+            this.state = 2204;
             this.match(HqlParser.EQUAL);
-            this.state = 2109;
+            this.state = 2205;
             localContext._Expression = this.numberLikeLiteralExpression();
             }
         }
@@ -9376,62 +9889,62 @@ export class HqlParser extends antlr.Parser {
     }
     public takeOperator(): TakeOperatorContext {
         let localContext = new TakeOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 346, HqlParser.RULE_takeOperator);
+        this.enterRule(localContext, 366, HqlParser.RULE_takeOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2111;
+            this.state = 2207;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 148 || _la === 240)) {
+            if(!(_la === 150 || _la === 244)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2115;
+            this.state = 2211;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 2112;
+                this.state = 2208;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 2117;
+                this.state = 2213;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2118;
+            this.state = 2214;
             localContext._Limit = this.unnamedExpression();
-            this.state = 2128;
+            this.state = 2224;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 98) {
+            if (_la === 99) {
                 {
-                this.state = 2119;
+                this.state = 2215;
                 this.match(HqlParser.FROM);
-                this.state = 2120;
+                this.state = 2216;
                 localContext._tableNameReference = this.tableNameReference();
                 localContext._Tables.push(localContext._tableNameReference!);
-                this.state = 2125;
+                this.state = 2221;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2121;
+                    this.state = 2217;
                     this.match(HqlParser.COMMA);
-                    this.state = 2122;
+                    this.state = 2218;
                     localContext._tableNameReference = this.tableNameReference();
                     localContext._Tables.push(localContext._tableNameReference!);
                     }
                     }
-                    this.state = 2127;
+                    this.state = 2223;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -9455,33 +9968,33 @@ export class HqlParser extends antlr.Parser {
     }
     public topOperator(): TopOperatorContext {
         let localContext = new TopOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 348, HqlParser.RULE_topOperator);
+        this.enterRule(localContext, 368, HqlParser.RULE_topOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2130;
+            this.state = 2226;
             this.match(HqlParser.TOP);
-            this.state = 2134;
+            this.state = 2230;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 2131;
+                this.state = 2227;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 2136;
+                this.state = 2232;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2137;
+            this.state = 2233;
             localContext._Expression = this.namedExpression();
-            this.state = 2138;
+            this.state = 2234;
             this.match(HqlParser.BY);
-            this.state = 2139;
+            this.state = 2235;
             localContext._ByExpression = this.orderedExpression();
             }
         }
@@ -9500,25 +10013,25 @@ export class HqlParser extends antlr.Parser {
     }
     public topHittersOperator(): TopHittersOperatorContext {
         let localContext = new TopHittersOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 350, HqlParser.RULE_topHittersOperator);
+        this.enterRule(localContext, 370, HqlParser.RULE_topHittersOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2141;
+            this.state = 2237;
             this.match(HqlParser.TOP_HITTERS);
-            this.state = 2142;
+            this.state = 2238;
             localContext._Expression = this.namedExpression();
-            this.state = 2143;
+            this.state = 2239;
             this.match(HqlParser.OF);
-            this.state = 2144;
+            this.state = 2240;
             localContext._OfExpression = this.namedExpression();
-            this.state = 2146;
+            this.state = 2242;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 57) {
                 {
-                this.state = 2145;
+                this.state = 2241;
                 localContext._ByClause = this.topHittersOperatorByClause();
                 }
             }
@@ -9540,13 +10053,13 @@ export class HqlParser extends antlr.Parser {
     }
     public topHittersOperatorByClause(): TopHittersOperatorByClauseContext {
         let localContext = new TopHittersOperatorByClauseContext(this.context, this.state);
-        this.enterRule(localContext, 352, HqlParser.RULE_topHittersOperatorByClause);
+        this.enterRule(localContext, 372, HqlParser.RULE_topHittersOperatorByClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2148;
+            this.state = 2244;
             this.match(HqlParser.BY);
-            this.state = 2149;
+            this.state = 2245;
             localContext._ByExpression = this.orderedExpression();
             }
         }
@@ -9565,28 +10078,28 @@ export class HqlParser extends antlr.Parser {
     }
     public topNestedOperator(): TopNestedOperatorContext {
         let localContext = new TopNestedOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 354, HqlParser.RULE_topNestedOperator);
+        this.enterRule(localContext, 374, HqlParser.RULE_topNestedOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2151;
+            this.state = 2247;
             localContext._topNestedOperatorPart = this.topNestedOperatorPart();
             localContext._Segments.push(localContext._topNestedOperatorPart!);
-            this.state = 2156;
+            this.state = 2252;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2152;
+                this.state = 2248;
                 this.match(HqlParser.COMMA);
-                this.state = 2153;
+                this.state = 2249;
                 localContext._topNestedOperatorPart = this.topNestedOperatorPart();
                 localContext._Segments.push(localContext._topNestedOperatorPart!);
                 }
                 }
-                this.state = 2158;
+                this.state = 2254;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -9607,40 +10120,40 @@ export class HqlParser extends antlr.Parser {
     }
     public topNestedOperatorPart(): TopNestedOperatorPartContext {
         let localContext = new TopNestedOperatorPartContext(this.context, this.state);
-        this.enterRule(localContext, 356, HqlParser.RULE_topNestedOperatorPart);
+        this.enterRule(localContext, 376, HqlParser.RULE_topNestedOperatorPart);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2159;
+            this.state = 2255;
             this.match(HqlParser.TOP_NESTED);
-            this.state = 2161;
+            this.state = 2257;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 185, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 191, this.context) ) {
             case 1:
                 {
-                this.state = 2160;
+                this.state = 2256;
                 localContext._Expression = this.namedExpression();
                 }
                 break;
             }
-            this.state = 2163;
+            this.state = 2259;
             this.match(HqlParser.OF);
-            this.state = 2164;
+            this.state = 2260;
             localContext._OfExpression = this.namedExpression();
-            this.state = 2166;
+            this.state = 2262;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 261) {
+            if (_la === 265) {
                 {
-                this.state = 2165;
+                this.state = 2261;
                 localContext._WithOthers = this.topNestedOperatorWithOthersClause();
                 }
             }
 
-            this.state = 2168;
+            this.state = 2264;
             this.match(HqlParser.BY);
-            this.state = 2169;
+            this.state = 2265;
             localContext._ByExpression = this.orderedExpression();
             }
         }
@@ -9659,17 +10172,17 @@ export class HqlParser extends antlr.Parser {
     }
     public topNestedOperatorWithOthersClause(): TopNestedOperatorWithOthersClauseContext {
         let localContext = new TopNestedOperatorWithOthersClauseContext(this.context, this.state);
-        this.enterRule(localContext, 358, HqlParser.RULE_topNestedOperatorWithOthersClause);
+        this.enterRule(localContext, 378, HqlParser.RULE_topNestedOperatorWithOthersClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2171;
+            this.state = 2267;
             this.match(HqlParser.WITH);
-            this.state = 2172;
+            this.state = 2268;
             this.match(HqlParser.OTHERS);
-            this.state = 2173;
+            this.state = 2269;
             this.match(HqlParser.EQUAL);
-            this.state = 2174;
+            this.state = 2270;
             localContext._Expression = this.namedExpression();
             }
         }
@@ -9688,57 +10201,57 @@ export class HqlParser extends antlr.Parser {
     }
     public unionOperator(): UnionOperatorContext {
         let localContext = new UnionOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 360, HqlParser.RULE_unionOperator);
+        this.enterRule(localContext, 380, HqlParser.RULE_unionOperator);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2176;
+            this.state = 2272;
             this.match(HqlParser.UNION);
-            this.state = 2180;
+            this.state = 2276;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 187, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 193, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2177;
+                    this.state = 2273;
                     localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                     localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                     }
                     }
                 }
-                this.state = 2182;
+                this.state = 2278;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 187, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 193, this.context);
             }
-            this.state = 2183;
+            this.state = 2279;
             localContext._dynamicTableNameReference = this.dynamicTableNameReference();
             localContext._Expressions.push(localContext._dynamicTableNameReference!);
-            this.state = 2188;
+            this.state = 2284;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2184;
+                this.state = 2280;
                 this.match(HqlParser.COMMA);
-                this.state = 2185;
+                this.state = 2281;
                 localContext._dynamicTableNameReference = this.dynamicTableNameReference();
                 localContext._Expressions.push(localContext._dynamicTableNameReference!);
                 }
                 }
-                this.state = 2190;
+                this.state = 2286;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2192;
+            this.state = 2288;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 47) {
                 {
-                this.state = 2191;
+                this.state = 2287;
                 localContext._TableName = this.unionAsOperator();
                 }
             }
@@ -9760,13 +10273,13 @@ export class HqlParser extends antlr.Parser {
     }
     public unionAsOperator(): UnionAsOperatorContext {
         let localContext = new UnionAsOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 362, HqlParser.RULE_unionAsOperator);
+        this.enterRule(localContext, 382, HqlParser.RULE_unionAsOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2194;
+            this.state = 2290;
             this.match(HqlParser.AS);
-            this.state = 2195;
+            this.state = 2291;
             localContext._TableName = this.dynamicTableNameReference();
             }
         }
@@ -9785,37 +10298,37 @@ export class HqlParser extends antlr.Parser {
     }
     public whereOperator(): WhereOperatorContext {
         let localContext = new WhereOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 364, HqlParser.RULE_whereOperator);
+        this.enterRule(localContext, 384, HqlParser.RULE_whereOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2197;
+            this.state = 2293;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 93 || _la === 260)) {
+            if(!(_la === 94 || _la === 264)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2201;
+            this.state = 2297;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0)) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0)) {
                 {
                 {
-                this.state = 2198;
+                this.state = 2294;
                 localContext._strictQueryOperatorParameter = this.strictQueryOperatorParameter();
                 localContext._Parameters.push(localContext._strictQueryOperatorParameter!);
                 }
                 }
-                this.state = 2203;
+                this.state = 2299;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2204;
+            this.state = 2300;
             localContext._Predicate = this.namedExpression();
             }
         }
@@ -9834,21 +10347,21 @@ export class HqlParser extends antlr.Parser {
     }
     public unnestOperator(): UnnestOperatorContext {
         let localContext = new UnnestOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 366, HqlParser.RULE_unnestOperator);
+        this.enterRule(localContext, 386, HqlParser.RULE_unnestOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2206;
+            this.state = 2302;
             this.match(HqlParser.UNNEST);
-            this.state = 2207;
+            this.state = 2303;
             localContext._Field = this.unnamedExpression();
-            this.state = 2209;
+            this.state = 2305;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 186) {
+            if (_la === 189) {
                 {
-                this.state = 2208;
+                this.state = 2304;
                 localContext._OnClause = this.unnestOperatorOnClause();
                 }
             }
@@ -9870,35 +10383,35 @@ export class HqlParser extends antlr.Parser {
     }
     public unnestOperatorOnClause(): UnnestOperatorOnClauseContext {
         let localContext = new UnnestOperatorOnClauseContext(this.context, this.state);
-        this.enterRule(localContext, 368, HqlParser.RULE_unnestOperatorOnClause);
+        this.enterRule(localContext, 388, HqlParser.RULE_unnestOperatorOnClause);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2211;
+            this.state = 2307;
             this.match(HqlParser.ON);
-            this.state = 2220;
+            this.state = 2316;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 1 || _la === 30 || _la === 320 || _la === 321) {
+            if (_la === 1 || _la === 30 || _la === 324 || _la === 325) {
                 {
-                this.state = 2212;
+                this.state = 2308;
                 localContext._tableNameReference = this.tableNameReference();
                 localContext._Expressions.push(localContext._tableNameReference!);
-                this.state = 2217;
+                this.state = 2313;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2213;
+                    this.state = 2309;
                     this.match(HqlParser.COMMA);
-                    this.state = 2214;
+                    this.state = 2310;
                     localContext._tableNameReference = this.tableNameReference();
                     localContext._Expressions.push(localContext._tableNameReference!);
                     }
                     }
-                    this.state = 2219;
+                    this.state = 2315;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
@@ -9922,9 +10435,9 @@ export class HqlParser extends antlr.Parser {
     }
     public contextualSubExpression(): ContextualSubExpressionContext {
         let localContext = new ContextualSubExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 370, HqlParser.RULE_contextualSubExpression);
+        this.enterRule(localContext, 390, HqlParser.RULE_contextualSubExpression);
         try {
-            this.state = 2224;
+            this.state = 2320;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.AS:
@@ -9951,6 +10464,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LOOKUP:
             case HqlParser.MAKEGRAPH:
             case HqlParser.MAKESERIES:
+            case HqlParser.MAP:
             case HqlParser.MV_APPLY:
             case HqlParser.MV_EXPAND:
             case HqlParser.MVAPPLY:
@@ -9985,14 +10499,14 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.RENAME:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2222;
+                this.state = 2318;
                 this.pipeSubExpression();
                 }
                 break;
             case HqlParser.CONTEXTUAL_DATATABLE:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2223;
+                this.state = 2319;
                 this.contextualPipeExpression();
                 }
                 break;
@@ -10015,25 +10529,25 @@ export class HqlParser extends antlr.Parser {
     }
     public contextualPipeExpression(): ContextualPipeExpressionContext {
         let localContext = new ContextualPipeExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 372, HqlParser.RULE_contextualPipeExpression);
+        this.enterRule(localContext, 392, HqlParser.RULE_contextualPipeExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2226;
+            this.state = 2322;
             localContext._Expression = this.contextualDataTableExpression();
-            this.state = 2230;
+            this.state = 2326;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 3) {
                 {
                 {
-                this.state = 2227;
+                this.state = 2323;
                 localContext._contextualPipeExpressionPipedOperator = this.contextualPipeExpressionPipedOperator();
                 localContext._PipedOperators.push(localContext._contextualPipeExpressionPipedOperator!);
                 }
                 }
-                this.state = 2232;
+                this.state = 2328;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -10054,13 +10568,13 @@ export class HqlParser extends antlr.Parser {
     }
     public contextualPipeExpressionPipedOperator(): ContextualPipeExpressionPipedOperatorContext {
         let localContext = new ContextualPipeExpressionPipedOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 374, HqlParser.RULE_contextualPipeExpressionPipedOperator);
+        this.enterRule(localContext, 394, HqlParser.RULE_contextualPipeExpressionPipedOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2233;
+            this.state = 2329;
             this.match(HqlParser.BAR);
-            this.state = 2234;
+            this.state = 2330;
             localContext._Operator = this.afterPipeOperator();
             }
         }
@@ -10079,24 +10593,24 @@ export class HqlParser extends antlr.Parser {
     }
     public strictQueryOperatorParameter(): StrictQueryOperatorParameterContext {
         let localContext = new StrictQueryOperatorParameterContext(this.context, this.state);
-        this.enterRule(localContext, 376, HqlParser.RULE_strictQueryOperatorParameter);
+        this.enterRule(localContext, 396, HqlParser.RULE_strictQueryOperatorParameter);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2236;
+            this.state = 2332;
             localContext._NameToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || ((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & 2147487745) !== 0) || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0))) {
+            if(!(((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || ((((_la - 89)) & ~0x1F) === 0 && ((1 << (_la - 89)) & 2147487745) !== 0) || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0))) {
                 localContext._NameToken = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2237;
+            this.state = 2333;
             this.match(HqlParser.EQUAL);
-            this.state = 2240;
+            this.state = 2336;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -10130,6 +10644,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -10175,7 +10690,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 2238;
+                this.state = 2334;
                 localContext._NameValue = this.simpleNameReference();
                 }
                 break;
@@ -10193,7 +10708,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.TYPELITERAL:
             case HqlParser.GUIDLITERAL:
                 {
-                this.state = 2239;
+                this.state = 2335;
                 localContext._LiteralValue = this.literalExpression();
                 }
                 break;
@@ -10217,24 +10732,24 @@ export class HqlParser extends antlr.Parser {
     }
     public relaxedQueryOperatorParameter(): RelaxedQueryOperatorParameterContext {
         let localContext = new RelaxedQueryOperatorParameterContext(this.context, this.state);
-        this.enterRule(localContext, 378, HqlParser.RULE_relaxedQueryOperatorParameter);
+        this.enterRule(localContext, 398, HqlParser.RULE_relaxedQueryOperatorParameter);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2242;
+            this.state = 2338;
             localContext._NameToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320)) {
+            if(!(((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324)) {
                 localContext._NameToken = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2243;
+            this.state = 2339;
             this.match(HqlParser.EQUAL);
-            this.state = 2246;
+            this.state = 2342;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -10268,6 +10783,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -10313,7 +10829,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 2244;
+                this.state = 2340;
                 localContext._NameValue = this.simpleNameReference();
                 }
                 break;
@@ -10331,7 +10847,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.TYPELITERAL:
             case HqlParser.GUIDLITERAL:
                 {
-                this.state = 2245;
+                this.state = 2341;
                 localContext._LiteralValue = this.literalExpression();
                 }
                 break;
@@ -10355,15 +10871,15 @@ export class HqlParser extends antlr.Parser {
     }
     public queryOperatorProperty(): QueryOperatorPropertyContext {
         let localContext = new QueryOperatorPropertyContext(this.context, this.state);
-        this.enterRule(localContext, 380, HqlParser.RULE_queryOperatorProperty);
+        this.enterRule(localContext, 400, HqlParser.RULE_queryOperatorProperty);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2248;
+            this.state = 2344;
             localContext._Name = this.match(HqlParser.IDENTIFIER);
-            this.state = 2249;
+            this.state = 2345;
             this.match(HqlParser.EQUAL);
-            this.state = 2252;
+            this.state = 2348;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -10397,6 +10913,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -10442,7 +10959,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 2250;
+                this.state = 2346;
                 localContext._NameValue = this.simpleNameReference();
                 }
                 break;
@@ -10460,7 +10977,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.TYPELITERAL:
             case HqlParser.GUIDLITERAL:
                 {
-                this.state = 2251;
+                this.state = 2347;
                 localContext._LiteralValue = this.literalExpression();
                 }
                 break;
@@ -10484,21 +11001,21 @@ export class HqlParser extends antlr.Parser {
     }
     public namedExpression(): NamedExpressionContext {
         let localContext = new NamedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 382, HqlParser.RULE_namedExpression);
+        this.enterRule(localContext, 402, HqlParser.RULE_namedExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2255;
+            this.state = 2351;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 199, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 205, this.context) ) {
             case 1:
                 {
-                this.state = 2254;
+                this.state = 2350;
                 localContext._Name = this.namedExpressionNameClause();
                 }
                 break;
             }
-            this.state = 2257;
+            this.state = 2353;
             localContext._Expression = this.unnamedExpression();
             }
         }
@@ -10517,15 +11034,15 @@ export class HqlParser extends antlr.Parser {
     }
     public staticNamedExpression(): StaticNamedExpressionContext {
         let localContext = new StaticNamedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 384, HqlParser.RULE_staticNamedExpression);
+        this.enterRule(localContext, 404, HqlParser.RULE_staticNamedExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2259;
+            this.state = 2355;
             localContext._Name = this.pathReference();
-            this.state = 2260;
+            this.state = 2356;
             this.match(HqlParser.EQUAL);
-            this.state = 2261;
+            this.state = 2357;
             localContext._Value = this.pathReference();
             }
         }
@@ -10544,11 +11061,11 @@ export class HqlParser extends antlr.Parser {
     }
     public namedExpressionNameClause(): NamedExpressionNameClauseContext {
         let localContext = new NamedExpressionNameClauseContext(this.context, this.state);
-        this.enterRule(localContext, 386, HqlParser.RULE_namedExpressionNameClause);
+        this.enterRule(localContext, 406, HqlParser.RULE_namedExpressionNameClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2265;
+            this.state = 2361;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -10582,6 +11099,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -10627,20 +11145,20 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 2263;
+                this.state = 2359;
                 localContext._Name = this.pathReference();
                 }
                 break;
             case HqlParser.OPENPAREN:
                 {
-                this.state = 2264;
+                this.state = 2360;
                 localContext._NameList = this.namedExpressionNameList();
                 }
                 break;
             default:
                 throw new antlr.NoViableAltException(this);
             }
-            this.state = 2267;
+            this.state = 2363;
             this.match(HqlParser.EQUAL);
             }
         }
@@ -10659,34 +11177,34 @@ export class HqlParser extends antlr.Parser {
     }
     public namedExpressionNameList(): NamedExpressionNameListContext {
         let localContext = new NamedExpressionNameListContext(this.context, this.state);
-        this.enterRule(localContext, 388, HqlParser.RULE_namedExpressionNameList);
+        this.enterRule(localContext, 408, HqlParser.RULE_namedExpressionNameList);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2269;
+            this.state = 2365;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2270;
+            this.state = 2366;
             localContext._pathReference = this.pathReference();
             localContext._Names.push(localContext._pathReference!);
-            this.state = 2275;
+            this.state = 2371;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2271;
+                this.state = 2367;
                 this.match(HqlParser.COMMA);
-                this.state = 2272;
+                this.state = 2368;
                 localContext._pathReference = this.pathReference();
                 localContext._Names.push(localContext._pathReference!);
                 }
                 }
-                this.state = 2277;
+                this.state = 2373;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2278;
+            this.state = 2374;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -10705,15 +11223,15 @@ export class HqlParser extends antlr.Parser {
     }
     public scopedFunctionCallExpression(): ScopedFunctionCallExpressionContext {
         let localContext = new ScopedFunctionCallExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 390, HqlParser.RULE_scopedFunctionCallExpression);
+        this.enterRule(localContext, 410, HqlParser.RULE_scopedFunctionCallExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2280;
+            this.state = 2376;
             localContext._Scope = this.simpleNameReference();
-            this.state = 2281;
+            this.state = 2377;
             this.match(HqlParser.DOT);
-            this.state = 2282;
+            this.state = 2378;
             localContext._FunctionCall = this.functionCallExpression();
             }
         }
@@ -10732,11 +11250,11 @@ export class HqlParser extends antlr.Parser {
     }
     public unnamedExpression(): UnnamedExpressionContext {
         let localContext = new UnnamedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 392, HqlParser.RULE_unnamedExpression);
+        this.enterRule(localContext, 412, HqlParser.RULE_unnamedExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2284;
+            this.state = 2380;
             this.logicalOrExpression();
             }
         }
@@ -10755,25 +11273,25 @@ export class HqlParser extends antlr.Parser {
     }
     public logicalOrExpression(): LogicalOrExpressionContext {
         let localContext = new LogicalOrExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 394, HqlParser.RULE_logicalOrExpression);
+        this.enterRule(localContext, 414, HqlParser.RULE_logicalOrExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2286;
+            this.state = 2382;
             localContext._Left = this.logicalAndExpression();
-            this.state = 2290;
+            this.state = 2386;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (_la === 188) {
+            while (_la === 191) {
                 {
                 {
-                this.state = 2287;
+                this.state = 2383;
                 localContext._logicalOrOperation = this.logicalOrOperation();
                 localContext._Operations.push(localContext._logicalOrOperation!);
                 }
                 }
-                this.state = 2292;
+                this.state = 2388;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -10794,13 +11312,13 @@ export class HqlParser extends antlr.Parser {
     }
     public logicalOrOperation(): LogicalOrOperationContext {
         let localContext = new LogicalOrOperationContext(this.context, this.state);
-        this.enterRule(localContext, 396, HqlParser.RULE_logicalOrOperation);
+        this.enterRule(localContext, 416, HqlParser.RULE_logicalOrOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2293;
+            this.state = 2389;
             this.match(HqlParser.OR);
-            this.state = 2294;
+            this.state = 2390;
             localContext._Right = this.logicalAndExpression();
             }
         }
@@ -10819,25 +11337,25 @@ export class HqlParser extends antlr.Parser {
     }
     public logicalAndExpression(): LogicalAndExpressionContext {
         let localContext = new LogicalAndExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 398, HqlParser.RULE_logicalAndExpression);
+        this.enterRule(localContext, 418, HqlParser.RULE_logicalAndExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2296;
+            this.state = 2392;
             localContext._Left = this.equalityExpression();
-            this.state = 2300;
+            this.state = 2396;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 43) {
                 {
                 {
-                this.state = 2297;
+                this.state = 2393;
                 localContext._logicalAndOperation = this.logicalAndOperation();
                 localContext._Operations.push(localContext._logicalAndOperation!);
                 }
                 }
-                this.state = 2302;
+                this.state = 2398;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -10858,13 +11376,13 @@ export class HqlParser extends antlr.Parser {
     }
     public logicalAndOperation(): LogicalAndOperationContext {
         let localContext = new LogicalAndOperationContext(this.context, this.state);
-        this.enterRule(localContext, 400, HqlParser.RULE_logicalAndOperation);
+        this.enterRule(localContext, 420, HqlParser.RULE_logicalAndOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2303;
+            this.state = 2399;
             this.match(HqlParser.AND);
-            this.state = 2304;
+            this.state = 2400;
             localContext._Right = this.equalityExpression();
             }
         }
@@ -10883,43 +11401,43 @@ export class HqlParser extends antlr.Parser {
     }
     public equalityExpression(): EqualityExpressionContext {
         let localContext = new EqualityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 402, HqlParser.RULE_equalityExpression);
+        this.enterRule(localContext, 422, HqlParser.RULE_equalityExpression);
         try {
-            this.state = 2311;
+            this.state = 2407;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 204, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 210, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2306;
+                this.state = 2402;
                 this.relationalExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2307;
+                this.state = 2403;
                 this.equalsEqualityExpression();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2308;
+                this.state = 2404;
                 this.listEqualityExpression();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2309;
+                this.state = 2405;
                 this.betweenEqualityExpression();
                 }
                 break;
             case 5:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2310;
+                this.state = 2406;
                 this.starEqualityExpression();
                 }
                 break;
@@ -10940,14 +11458,14 @@ export class HqlParser extends antlr.Parser {
     }
     public equalsEqualityExpression(): EqualsEqualityExpressionContext {
         let localContext = new EqualsEqualityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 404, HqlParser.RULE_equalsEqualityExpression);
+        this.enterRule(localContext, 424, HqlParser.RULE_equalsEqualityExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2313;
+            this.state = 2409;
             localContext._Left = this.relationalExpression();
-            this.state = 2314;
+            this.state = 2410;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!((((_la) & ~0x1F) === 0 && ((1 << _la) & 269746176) !== 0))) {
@@ -10957,7 +11475,7 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2315;
+            this.state = 2411;
             localContext._Right = this.relationalExpression();
             }
         }
@@ -10976,46 +11494,46 @@ export class HqlParser extends antlr.Parser {
     }
     public listEqualityExpression(): ListEqualityExpressionContext {
         let localContext = new ListEqualityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 406, HqlParser.RULE_listEqualityExpression);
+        this.enterRule(localContext, 426, HqlParser.RULE_listEqualityExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2317;
+            this.state = 2413;
             localContext._Left = this.relationalExpression();
-            this.state = 2318;
+            this.state = 2414;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 64)) & ~0x1F) === 0 && ((1 << (_la - 64)) & 15) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 402653199) !== 0) || _la === 179 || _la === 180)) {
+            if(!(((((_la - 65)) & ~0x1F) === 0 && ((1 << (_la - 65)) & 15) !== 0) || ((((_la - 110)) & ~0x1F) === 0 && ((1 << (_la - 110)) & 805306383) !== 0) || _la === 182 || _la === 183)) {
                 localContext._OperatorToken = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2319;
+            this.state = 2415;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2320;
+            this.state = 2416;
             localContext._invocationExpression = this.invocationExpression();
             localContext._Expressions.push(localContext._invocationExpression!);
-            this.state = 2325;
+            this.state = 2421;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2321;
+                this.state = 2417;
                 this.match(HqlParser.COMMA);
-                this.state = 2322;
+                this.state = 2418;
                 localContext._invocationExpression = this.invocationExpression();
                 localContext._Expressions.push(localContext._invocationExpression!);
                 }
                 }
-                this.state = 2327;
+                this.state = 2423;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2328;
+            this.state = 2424;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -11034,34 +11552,34 @@ export class HqlParser extends antlr.Parser {
     }
     public betweenEqualityExpression(): BetweenEqualityExpressionContext {
         let localContext = new BetweenEqualityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 408, HqlParser.RULE_betweenEqualityExpression);
+        this.enterRule(localContext, 428, HqlParser.RULE_betweenEqualityExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2330;
+            this.state = 2426;
             localContext._Left = this.relationalExpression();
-            this.state = 2331;
+            this.state = 2427;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 54 || _la === 168)) {
+            if(!(_la === 54 || _la === 171)) {
                 localContext._OperatorToken = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2332;
+            this.state = 2428;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2333;
+            this.state = 2429;
             localContext._invocationExpression = this.invocationExpression();
             localContext._Expressions.push(localContext._invocationExpression!);
-            this.state = 2334;
+            this.state = 2430;
             this.match(HqlParser.DOTDOT);
-            this.state = 2335;
+            this.state = 2431;
             localContext._invocationExpression = this.invocationExpression();
             localContext._Expressions.push(localContext._invocationExpression!);
-            this.state = 2336;
+            this.state = 2432;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -11080,15 +11598,15 @@ export class HqlParser extends antlr.Parser {
     }
     public starEqualityExpression(): StarEqualityExpressionContext {
         let localContext = new StarEqualityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 410, HqlParser.RULE_starEqualityExpression);
+        this.enterRule(localContext, 430, HqlParser.RULE_starEqualityExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2338;
+            this.state = 2434;
             this.match(HqlParser.ASTERISK);
-            this.state = 2339;
+            this.state = 2435;
             this.match(HqlParser.EQUALEQUAL);
-            this.state = 2340;
+            this.state = 2436;
             localContext._Expression = this.relationalExpression();
             }
         }
@@ -11107,19 +11625,19 @@ export class HqlParser extends antlr.Parser {
     }
     public relationalExpression(): RelationalExpressionContext {
         let localContext = new RelationalExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 412, HqlParser.RULE_relationalExpression);
+        this.enterRule(localContext, 432, HqlParser.RULE_relationalExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2342;
+            this.state = 2438;
             localContext._Left = this.additiveExpression();
-            this.state = 2345;
+            this.state = 2441;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 163577856) !== 0)) {
                 {
-                this.state = 2343;
+                this.state = 2439;
                 localContext._OperatorToken = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
                 if(!((((_la) & ~0x1F) === 0 && ((1 << _la) & 163577856) !== 0))) {
@@ -11129,7 +11647,7 @@ export class HqlParser extends antlr.Parser {
                     this.errorHandler.reportMatch(this);
                     this.consume();
                 }
-                this.state = 2344;
+                this.state = 2440;
                 localContext._Right = this.additiveExpression();
                 }
             }
@@ -11151,25 +11669,25 @@ export class HqlParser extends antlr.Parser {
     }
     public additiveExpression(): AdditiveExpressionContext {
         let localContext = new AdditiveExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 414, HqlParser.RULE_additiveExpression);
+        this.enterRule(localContext, 434, HqlParser.RULE_additiveExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2347;
+            this.state = 2443;
             localContext._Left = this.multiplicativeExpression();
-            this.state = 2351;
+            this.state = 2447;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 11 || _la === 33) {
                 {
                 {
-                this.state = 2348;
+                this.state = 2444;
                 localContext._additiveOperation = this.additiveOperation();
                 localContext._Operations.push(localContext._additiveOperation!);
                 }
                 }
-                this.state = 2353;
+                this.state = 2449;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -11190,12 +11708,12 @@ export class HqlParser extends antlr.Parser {
     }
     public additiveOperation(): AdditiveOperationContext {
         let localContext = new AdditiveOperationContext(this.context, this.state);
-        this.enterRule(localContext, 416, HqlParser.RULE_additiveOperation);
+        this.enterRule(localContext, 436, HqlParser.RULE_additiveOperation);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2354;
+            this.state = 2450;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 11 || _la === 33)) {
@@ -11205,7 +11723,7 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2355;
+            this.state = 2451;
             localContext._Right = this.multiplicativeExpression();
             }
         }
@@ -11224,25 +11742,25 @@ export class HqlParser extends antlr.Parser {
     }
     public multiplicativeExpression(): MultiplicativeExpressionContext {
         let localContext = new MultiplicativeExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 418, HqlParser.RULE_multiplicativeExpression);
+        this.enterRule(localContext, 438, HqlParser.RULE_multiplicativeExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2357;
+            this.state = 2453;
             localContext._Left = this.stringOperatorExpression();
-            this.state = 2361;
+            this.state = 2457;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 1 || _la === 32 || _la === 35) {
                 {
                 {
-                this.state = 2358;
+                this.state = 2454;
                 localContext._multiplicativeOperation = this.multiplicativeOperation();
                 localContext._Operations.push(localContext._multiplicativeOperation!);
                 }
                 }
-                this.state = 2363;
+                this.state = 2459;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -11263,12 +11781,12 @@ export class HqlParser extends antlr.Parser {
     }
     public multiplicativeOperation(): MultiplicativeOperationContext {
         let localContext = new MultiplicativeOperationContext(this.context, this.state);
-        this.enterRule(localContext, 420, HqlParser.RULE_multiplicativeOperation);
+        this.enterRule(localContext, 440, HqlParser.RULE_multiplicativeOperation);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2364;
+            this.state = 2460;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 1 || _la === 32 || _la === 35)) {
@@ -11278,7 +11796,7 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2365;
+            this.state = 2461;
             localContext._Right = this.stringOperatorExpression();
             }
         }
@@ -11297,9 +11815,9 @@ export class HqlParser extends antlr.Parser {
     }
     public stringOperatorExpression(): StringOperatorExpressionContext {
         let localContext = new StringOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 422, HqlParser.RULE_stringOperatorExpression);
+        this.enterRule(localContext, 442, HqlParser.RULE_stringOperatorExpression);
         try {
-            this.state = 2369;
+            this.state = 2465;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.DASH:
@@ -11354,6 +11872,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.MATERIALIZE:
             case HqlParser.MATERIALIZED_VIEW_COMBINE:
@@ -11433,14 +11952,14 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2367;
+                this.state = 2463;
                 this.stringBinaryOperatorExpression();
                 }
                 break;
             case HqlParser.ASTERISK:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2368;
+                this.state = 2464;
                 this.stringStarOperatorExpression();
                 }
                 break;
@@ -11463,19 +11982,19 @@ export class HqlParser extends antlr.Parser {
     }
     public stringBinaryOperatorExpression(): StringBinaryOperatorExpressionContext {
         let localContext = new StringBinaryOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 424, HqlParser.RULE_stringBinaryOperatorExpression);
+        this.enterRule(localContext, 444, HqlParser.RULE_stringBinaryOperatorExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2371;
+            this.state = 2467;
             localContext._Left = this.invocationExpression();
-            this.state = 2377;
+            this.state = 2473;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 2622464) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3145731) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 993) !== 0) || ((((_la - 158)) & ~0x1F) === 0 && ((1 << (_la - 158)) & 27260929) !== 0) || _la === 235 || _la === 236) {
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 2622464) !== 0) || ((((_la - 63)) & ~0x1F) === 0 && ((1 << (_la - 63)) & 3145731) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 993) !== 0) || ((((_la - 161)) & ~0x1F) === 0 && ((1 << (_la - 161)) & 27260929) !== 0) || _la === 239 || _la === 240) {
                 {
-                this.state = 2374;
+                this.state = 2470;
                 this.errorHandler.sync(this);
                 switch (this.tokenStream.LA(1)) {
                 case HqlParser.EQUALTILDE:
@@ -11506,20 +12025,20 @@ export class HqlParser extends antlr.Parser {
                 case HqlParser.STARTSWITH:
                 case HqlParser.STARTSWITH_CS:
                     {
-                    this.state = 2372;
+                    this.state = 2468;
                     localContext._Operator = this.stringBinaryOperator();
                     }
                     break;
                 case HqlParser.COLON:
                     {
-                    this.state = 2373;
+                    this.state = 2469;
                     localContext._HasOperator = this.match(HqlParser.COLON);
                     }
                     break;
                 default:
                     throw new antlr.NoViableAltException(this);
                 }
-                this.state = 2376;
+                this.state = 2472;
                 localContext._Right = this.invocationExpression();
                 }
             }
@@ -11541,15 +12060,15 @@ export class HqlParser extends antlr.Parser {
     }
     public stringBinaryOperator(): StringBinaryOperatorContext {
         let localContext = new StringBinaryOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 426, HqlParser.RULE_stringBinaryOperator);
+        this.enterRule(localContext, 446, HqlParser.RULE_stringBinaryOperator);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2379;
+            this.state = 2475;
             localContext._OperatorToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 19 || _la === 21 || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3145731) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 993) !== 0) || ((((_la - 158)) & ~0x1F) === 0 && ((1 << (_la - 158)) & 27260929) !== 0) || _la === 235 || _la === 236)) {
+            if(!(_la === 19 || _la === 21 || ((((_la - 63)) & ~0x1F) === 0 && ((1 << (_la - 63)) & 3145731) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 993) !== 0) || ((((_la - 161)) & ~0x1F) === 0 && ((1 << (_la - 161)) & 27260929) !== 0) || _la === 239 || _la === 240)) {
                 localContext._OperatorToken = this.errorHandler.recoverInline(this);
             }
             else {
@@ -11573,15 +12092,15 @@ export class HqlParser extends antlr.Parser {
     }
     public stringStarOperatorExpression(): StringStarOperatorExpressionContext {
         let localContext = new StringStarOperatorExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 428, HqlParser.RULE_stringStarOperatorExpression);
+        this.enterRule(localContext, 448, HqlParser.RULE_stringStarOperatorExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2381;
+            this.state = 2477;
             localContext._LeftStarToken = this.match(HqlParser.ASTERISK);
-            this.state = 2382;
+            this.state = 2478;
             localContext._Operator = this.stringBinaryOperator();
-            this.state = 2383;
+            this.state = 2479;
             localContext._Right = this.invocationExpression();
             }
         }
@@ -11600,17 +12119,17 @@ export class HqlParser extends antlr.Parser {
     }
     public invocationExpression(): InvocationExpressionContext {
         let localContext = new InvocationExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 430, HqlParser.RULE_invocationExpression);
+        this.enterRule(localContext, 450, HqlParser.RULE_invocationExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2386;
+            this.state = 2482;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 11 || _la === 33) {
                 {
-                this.state = 2385;
+                this.state = 2481;
                 localContext._OperatorToken = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
                 if(!(_la === 11 || _la === 33)) {
@@ -11623,7 +12142,7 @@ export class HqlParser extends antlr.Parser {
                 }
             }
 
-            this.state = 2388;
+            this.state = 2484;
             localContext._Expression = this.functionCallOrPathExpression();
             }
         }
@@ -11642,29 +12161,29 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathExpression(): FunctionCallOrPathExpressionContext {
         let localContext = new FunctionCallOrPathExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 432, HqlParser.RULE_functionCallOrPathExpression);
+        this.enterRule(localContext, 452, HqlParser.RULE_functionCallOrPathExpression);
         try {
-            this.state = 2393;
+            this.state = 2489;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 213, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 219, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2390;
+                this.state = 2486;
                 this.functionCallOrPathRoot();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2391;
+                this.state = 2487;
                 this.functionCallOrPathPathExpression();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2392;
+                this.state = 2488;
                 this.toTableExpression();
                 }
                 break;
@@ -11685,29 +12204,29 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathRoot(): FunctionCallOrPathRootContext {
         let localContext = new FunctionCallOrPathRootContext(this.context, this.state);
-        this.enterRule(localContext, 434, HqlParser.RULE_functionCallOrPathRoot);
+        this.enterRule(localContext, 454, HqlParser.RULE_functionCallOrPathRoot);
         try {
-            this.state = 2398;
+            this.state = 2494;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 214, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 220, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2395;
+                this.state = 2491;
                 this.dotCompositeFunctionCallExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2396;
+                this.state = 2492;
                 this.primaryExpression();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2397;
+                this.state = 2493;
                 this.toScalarExpression();
                 }
                 break;
@@ -11728,25 +12247,25 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathPathExpression(): FunctionCallOrPathPathExpressionContext {
         let localContext = new FunctionCallOrPathPathExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 436, HqlParser.RULE_functionCallOrPathPathExpression);
+        this.enterRule(localContext, 456, HqlParser.RULE_functionCallOrPathPathExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2400;
+            this.state = 2496;
             localContext._Expression = this.functionCallOrPathRoot();
-            this.state = 2402;
+            this.state = 2498;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             do {
                 {
                 {
-                this.state = 2401;
+                this.state = 2497;
                 localContext._functionCallOrPathOperation = this.functionCallOrPathOperation();
                 localContext._Operations.push(localContext._functionCallOrPathOperation!);
                 }
                 }
-                this.state = 2404;
+                this.state = 2500;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             } while (_la === 15 || _la === 30);
@@ -11767,36 +12286,36 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathOperation(): FunctionCallOrPathOperationContext {
         let localContext = new FunctionCallOrPathOperationContext(this.context, this.state);
-        this.enterRule(localContext, 438, HqlParser.RULE_functionCallOrPathOperation);
+        this.enterRule(localContext, 458, HqlParser.RULE_functionCallOrPathOperation);
         try {
-            this.state = 2410;
+            this.state = 2506;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 216, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 222, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2406;
+                this.state = 2502;
                 this.functionCallOrPathCallOperation();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2407;
+                this.state = 2503;
                 this.functionalCallOrPathPathOperation();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2408;
+                this.state = 2504;
                 this.functionCallOrPathElementOperation();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2409;
+                this.state = 2505;
                 this.legacyFunctionCallOrPathElementOperation();
                 }
                 break;
@@ -11817,13 +12336,13 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathCallOperation(): FunctionCallOrPathCallOperationContext {
         let localContext = new FunctionCallOrPathCallOperationContext(this.context, this.state);
-        this.enterRule(localContext, 440, HqlParser.RULE_functionCallOrPathCallOperation);
+        this.enterRule(localContext, 460, HqlParser.RULE_functionCallOrPathCallOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2412;
+            this.state = 2508;
             this.match(HqlParser.DOT);
-            this.state = 2413;
+            this.state = 2509;
             localContext._Call = this.functionCallExpression();
             }
         }
@@ -11842,13 +12361,13 @@ export class HqlParser extends antlr.Parser {
     }
     public functionalCallOrPathPathOperation(): FunctionalCallOrPathPathOperationContext {
         let localContext = new FunctionalCallOrPathPathOperationContext(this.context, this.state);
-        this.enterRule(localContext, 442, HqlParser.RULE_functionalCallOrPathPathOperation);
+        this.enterRule(localContext, 462, HqlParser.RULE_functionalCallOrPathPathOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2415;
+            this.state = 2511;
             this.match(HqlParser.DOT);
-            this.state = 2416;
+            this.state = 2512;
             localContext._Name = this.simpleNameReference();
             }
         }
@@ -11867,15 +12386,15 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallOrPathElementOperation(): FunctionCallOrPathElementOperationContext {
         let localContext = new FunctionCallOrPathElementOperationContext(this.context, this.state);
-        this.enterRule(localContext, 444, HqlParser.RULE_functionCallOrPathElementOperation);
+        this.enterRule(localContext, 464, HqlParser.RULE_functionCallOrPathElementOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2418;
+            this.state = 2514;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2419;
+            this.state = 2515;
             localContext._Element = this.unnamedExpression();
-            this.state = 2420;
+            this.state = 2516;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -11894,17 +12413,17 @@ export class HqlParser extends antlr.Parser {
     }
     public legacyFunctionCallOrPathElementOperation(): LegacyFunctionCallOrPathElementOperationContext {
         let localContext = new LegacyFunctionCallOrPathElementOperationContext(this.context, this.state);
-        this.enterRule(localContext, 446, HqlParser.RULE_legacyFunctionCallOrPathElementOperation);
+        this.enterRule(localContext, 466, HqlParser.RULE_legacyFunctionCallOrPathElementOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2422;
+            this.state = 2518;
             this.match(HqlParser.DOT);
-            this.state = 2423;
+            this.state = 2519;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2424;
+            this.state = 2520;
             localContext._Element = this.unnamedExpression();
-            this.state = 2425;
+            this.state = 2521;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -11923,28 +12442,28 @@ export class HqlParser extends antlr.Parser {
     }
     public toScalarExpression(): ToScalarExpressionContext {
         let localContext = new ToScalarExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 448, HqlParser.RULE_toScalarExpression);
+        this.enterRule(localContext, 468, HqlParser.RULE_toScalarExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2427;
+            this.state = 2523;
             this.match(HqlParser.TOSCALAR);
-            this.state = 2429;
+            this.state = 2525;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 143) {
+            if (_la === 145) {
                 {
-                this.state = 2428;
+                this.state = 2524;
                 this.noOptimizationParameter();
                 }
             }
 
-            this.state = 2431;
+            this.state = 2527;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2432;
+            this.state = 2528;
             localContext._Expression = this.pipeExpression();
-            this.state = 2433;
+            this.state = 2529;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -11963,28 +12482,28 @@ export class HqlParser extends antlr.Parser {
     }
     public toTableExpression(): ToTableExpressionContext {
         let localContext = new ToTableExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 450, HqlParser.RULE_toTableExpression);
+        this.enterRule(localContext, 470, HqlParser.RULE_toTableExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2435;
+            this.state = 2531;
             this.match(HqlParser.TOTABLE);
-            this.state = 2437;
+            this.state = 2533;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 143) {
+            if (_la === 145) {
                 {
-                this.state = 2436;
+                this.state = 2532;
                 this.noOptimizationParameter();
                 }
             }
 
-            this.state = 2439;
+            this.state = 2535;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2440;
+            this.state = 2536;
             localContext._Expression = this.pipeExpression();
-            this.state = 2441;
+            this.state = 2537;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -12003,15 +12522,15 @@ export class HqlParser extends antlr.Parser {
     }
     public noOptimizationParameter(): NoOptimizationParameterContext {
         let localContext = new NoOptimizationParameterContext(this.context, this.state);
-        this.enterRule(localContext, 452, HqlParser.RULE_noOptimizationParameter);
+        this.enterRule(localContext, 472, HqlParser.RULE_noOptimizationParameter);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2443;
+            this.state = 2539;
             this.match(HqlParser.KIND);
-            this.state = 2444;
+            this.state = 2540;
             this.match(HqlParser.EQUAL);
-            this.state = 2445;
+            this.state = 2541;
             this.match(HqlParser.NOOPTIMIZATION);
             }
         }
@@ -12030,29 +12549,29 @@ export class HqlParser extends antlr.Parser {
     }
     public dotCompositeFunctionCallExpression(): DotCompositeFunctionCallExpressionContext {
         let localContext = new DotCompositeFunctionCallExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 454, HqlParser.RULE_dotCompositeFunctionCallExpression);
+        this.enterRule(localContext, 474, HqlParser.RULE_dotCompositeFunctionCallExpression);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2447;
+            this.state = 2543;
             localContext._Call = this.functionCallExpression();
-            this.state = 2451;
+            this.state = 2547;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 219, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 225, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2448;
+                    this.state = 2544;
                     localContext._dotCompositeFunctionCallOperation = this.dotCompositeFunctionCallOperation();
                     localContext._Operations.push(localContext._dotCompositeFunctionCallOperation!);
                     }
                     }
                 }
-                this.state = 2453;
+                this.state = 2549;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 219, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 225, this.context);
             }
             }
         }
@@ -12071,13 +12590,13 @@ export class HqlParser extends antlr.Parser {
     }
     public dotCompositeFunctionCallOperation(): DotCompositeFunctionCallOperationContext {
         let localContext = new DotCompositeFunctionCallOperationContext(this.context, this.state);
-        this.enterRule(localContext, 456, HqlParser.RULE_dotCompositeFunctionCallOperation);
+        this.enterRule(localContext, 476, HqlParser.RULE_dotCompositeFunctionCallOperation);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2454;
+            this.state = 2550;
             this.match(HqlParser.DOT);
-            this.state = 2455;
+            this.state = 2551;
             localContext._Call = this.functionCallExpression();
             }
         }
@@ -12096,44 +12615,44 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallExpression(): FunctionCallExpressionContext {
         let localContext = new FunctionCallExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 458, HqlParser.RULE_functionCallExpression);
+        this.enterRule(localContext, 478, HqlParser.RULE_functionCallExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2457;
+            this.state = 2553;
             localContext._Name = this.functionCallName();
-            this.state = 2458;
+            this.state = 2554;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2467;
+            this.state = 2563;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 894583777) !== 0) || ((((_la - 68)) & ~0x1F) === 0 && ((1 << (_la - 68)) & 1743140563) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 3611296769) !== 0) || ((((_la - 146)) & ~0x1F) === 0 && ((1 << (_la - 146)) & 1599727) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3227699999) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 3334913529) !== 0) || ((((_la - 247)) & ~0x1F) === 0 && ((1 << (_la - 247)) & 4290805343) !== 0) || ((((_la - 279)) & ~0x1F) === 0 && ((1 << (_la - 279)) & 3221226757) !== 0) || ((((_la - 311)) & ~0x1F) === 0 && ((1 << (_la - 311)) & 895) !== 0)) {
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 3221227522) !== 0) || ((((_la - 33)) & ~0x1F) === 0 && ((1 << (_la - 33)) & 1766999009) !== 0) || ((((_la - 69)) & ~0x1F) === 0 && ((1 << (_la - 69)) & 1743140563) !== 0) || ((((_la - 109)) & ~0x1F) === 0 && ((1 << (_la - 109)) & 2805990401) !== 0) || ((((_la - 141)) & ~0x1F) === 0 && ((1 << (_la - 141)) & 409532289) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2153958175) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 2374859763) !== 0) || ((((_la - 250)) & ~0x1F) === 0 && ((1 << (_la - 250)) & 4286643391) !== 0) || ((((_la - 282)) & ~0x1F) === 0 && ((1 << (_la - 282)) & 2147486219) !== 0) || ((((_la - 314)) & ~0x1F) === 0 && ((1 << (_la - 314)) & 1791) !== 0)) {
                 {
-                this.state = 2459;
+                this.state = 2555;
                 localContext._argumentExpression = this.argumentExpression();
                 localContext._Arguments.push(localContext._argumentExpression!);
-                this.state = 2464;
+                this.state = 2560;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2460;
+                    this.state = 2556;
                     this.match(HqlParser.COMMA);
-                    this.state = 2461;
+                    this.state = 2557;
                     localContext._argumentExpression = this.argumentExpression();
                     localContext._Arguments.push(localContext._argumentExpression!);
                     }
                     }
-                    this.state = 2466;
+                    this.state = 2562;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
                 }
             }
 
-            this.state = 2469;
+            this.state = 2565;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -12152,9 +12671,9 @@ export class HqlParser extends antlr.Parser {
     }
     public functionCallName(): FunctionCallNameContext {
         let localContext = new FunctionCallNameContext(this.context, this.state);
-        this.enterRule(localContext, 460, HqlParser.RULE_functionCallName);
+        this.enterRule(localContext, 480, HqlParser.RULE_functionCallName);
         try {
-            this.state = 2473;
+            this.state = 2569;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -12188,6 +12707,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -12234,7 +12754,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2471;
+                this.state = 2567;
                 this.simpleNameReference();
                 }
                 break;
@@ -12277,7 +12797,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.WHERE:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2472;
+                this.state = 2568;
                 this.extendedKeywordName();
                 }
                 break;
@@ -12300,22 +12820,22 @@ export class HqlParser extends antlr.Parser {
     }
     public argumentExpression(): ArgumentExpressionContext {
         let localContext = new ArgumentExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 462, HqlParser.RULE_argumentExpression);
+        this.enterRule(localContext, 482, HqlParser.RULE_argumentExpression);
         try {
-            this.state = 2477;
+            this.state = 2573;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 223, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 229, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2475;
+                this.state = 2571;
                 this.namedExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2476;
+                this.state = 2572;
                 this.starExpression();
                 }
                 break;
@@ -12336,11 +12856,11 @@ export class HqlParser extends antlr.Parser {
     }
     public starExpression(): StarExpressionContext {
         let localContext = new StarExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 464, HqlParser.RULE_starExpression);
+        this.enterRule(localContext, 484, HqlParser.RULE_starExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2479;
+            this.state = 2575;
             this.match(HqlParser.ASTERISK);
             }
         }
@@ -12359,9 +12879,9 @@ export class HqlParser extends antlr.Parser {
     }
     public primaryExpression(): PrimaryExpressionContext {
         let localContext = new PrimaryExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 466, HqlParser.RULE_primaryExpression);
+        this.enterRule(localContext, 486, HqlParser.RULE_primaryExpression);
         try {
-            this.state = 2488;
+            this.state = 2584;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.DYNAMIC:
@@ -12377,7 +12897,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUIDLITERAL:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2481;
+                this.state = 2577;
                 this.unsignedLiteralExpression();
                 }
                 break;
@@ -12412,6 +12932,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -12458,14 +12979,14 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2482;
+                this.state = 2578;
                 this.simpleNameReference();
                 }
                 break;
             case HqlParser.DATATABLE:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2483;
+                this.state = 2579;
                 this.dataTableExpression();
                 }
                 break;
@@ -12473,28 +12994,28 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.EXTERNAL_DATA:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2484;
+                this.state = 2580;
                 this.externalDataExpression();
                 }
                 break;
             case HqlParser.CONTEXTUAL_DATATABLE:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2485;
+                this.state = 2581;
                 this.contextualDataTableExpression();
                 }
                 break;
             case HqlParser.MATERIALIZED_VIEW_COMBINE:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 2486;
+                this.state = 2582;
                 this.materializedViewCombineExpression();
                 }
                 break;
             case HqlParser.OPENPAREN:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 2487;
+                this.state = 2583;
                 this.parenthesizedExpression();
                 }
                 break;
@@ -12517,15 +13038,15 @@ export class HqlParser extends antlr.Parser {
     }
     public parenthesizedExpression(): ParenthesizedExpressionContext {
         let localContext = new ParenthesizedExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 468, HqlParser.RULE_parenthesizedExpression);
+        this.enterRule(localContext, 488, HqlParser.RULE_parenthesizedExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2490;
+            this.state = 2586;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2491;
+            this.state = 2587;
             localContext._Expression = this.expression();
-            this.state = 2492;
+            this.state = 2588;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -12544,25 +13065,25 @@ export class HqlParser extends antlr.Parser {
     }
     public rangeExpression(): RangeExpressionContext {
         let localContext = new RangeExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 470, HqlParser.RULE_rangeExpression);
+        this.enterRule(localContext, 490, HqlParser.RULE_rangeExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2494;
+            this.state = 2590;
             this.match(HqlParser.RANGE);
-            this.state = 2495;
+            this.state = 2591;
             localContext._Expression = this.simpleNameReference();
-            this.state = 2496;
+            this.state = 2592;
             this.match(HqlParser.FROM);
-            this.state = 2497;
+            this.state = 2593;
             localContext._FromExpression = this.unnamedExpression();
-            this.state = 2498;
+            this.state = 2594;
             this.match(HqlParser.TO);
-            this.state = 2499;
+            this.state = 2595;
             localContext._ToExpression = this.unnamedExpression();
-            this.state = 2500;
+            this.state = 2596;
             this.match(HqlParser.STEP);
-            this.state = 2501;
+            this.state = 2597;
             localContext._StepExpression = this.unnamedExpression();
             }
         }
@@ -12581,22 +13102,22 @@ export class HqlParser extends antlr.Parser {
     }
     public entityExpression(): EntityExpressionContext {
         let localContext = new EntityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 472, HqlParser.RULE_entityExpression);
+        this.enterRule(localContext, 492, HqlParser.RULE_entityExpression);
         try {
-            this.state = 2505;
+            this.state = 2601;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 225, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 231, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2503;
+                this.state = 2599;
                 this.entityNameReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2504;
+                this.state = 2600;
                 this.entityPathOrElementExpression();
                 }
                 break;
@@ -12617,25 +13138,25 @@ export class HqlParser extends antlr.Parser {
     }
     public entityPathOrElementExpression(): EntityPathOrElementExpressionContext {
         let localContext = new EntityPathOrElementExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 474, HqlParser.RULE_entityPathOrElementExpression);
+        this.enterRule(localContext, 494, HqlParser.RULE_entityPathOrElementExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2507;
+            this.state = 2603;
             localContext._Expression = this.entityNameReference();
-            this.state = 2509;
+            this.state = 2605;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             do {
                 {
                 {
-                this.state = 2508;
+                this.state = 2604;
                 localContext._entityPathOrElementOperator = this.entityPathOrElementOperator();
                 localContext._Operators.push(localContext._entityPathOrElementOperator!);
                 }
                 }
-                this.state = 2511;
+                this.state = 2607;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             } while (_la === 15 || _la === 30);
@@ -12656,29 +13177,29 @@ export class HqlParser extends antlr.Parser {
     }
     public entityPathOrElementOperator(): EntityPathOrElementOperatorContext {
         let localContext = new EntityPathOrElementOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 476, HqlParser.RULE_entityPathOrElementOperator);
+        this.enterRule(localContext, 496, HqlParser.RULE_entityPathOrElementOperator);
         try {
-            this.state = 2516;
+            this.state = 2612;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 227, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 233, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2513;
+                this.state = 2609;
                 localContext._Path = this.entityPathOperator();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2514;
+                this.state = 2610;
                 localContext._Element = this.entityElementOperator();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2515;
+                this.state = 2611;
                 localContext._PathElement = this.legacyEntityPathElementOperator();
                 }
                 break;
@@ -12699,13 +13220,13 @@ export class HqlParser extends antlr.Parser {
     }
     public entityPathOperator(): EntityPathOperatorContext {
         let localContext = new EntityPathOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 478, HqlParser.RULE_entityPathOperator);
+        this.enterRule(localContext, 498, HqlParser.RULE_entityPathOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2518;
+            this.state = 2614;
             this.match(HqlParser.DOT);
-            this.state = 2519;
+            this.state = 2615;
             localContext._Name = this.entityName();
             }
         }
@@ -12724,15 +13245,15 @@ export class HqlParser extends antlr.Parser {
     }
     public entityElementOperator(): EntityElementOperatorContext {
         let localContext = new EntityElementOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 480, HqlParser.RULE_entityElementOperator);
+        this.enterRule(localContext, 500, HqlParser.RULE_entityElementOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2521;
+            this.state = 2617;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2522;
+            this.state = 2618;
             localContext._Expression = this.unnamedExpression();
-            this.state = 2523;
+            this.state = 2619;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -12751,17 +13272,17 @@ export class HqlParser extends antlr.Parser {
     }
     public legacyEntityPathElementOperator(): LegacyEntityPathElementOperatorContext {
         let localContext = new LegacyEntityPathElementOperatorContext(this.context, this.state);
-        this.enterRule(localContext, 482, HqlParser.RULE_legacyEntityPathElementOperator);
+        this.enterRule(localContext, 502, HqlParser.RULE_legacyEntityPathElementOperator);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2525;
+            this.state = 2621;
             this.match(HqlParser.DOT);
-            this.state = 2526;
+            this.state = 2622;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2527;
+            this.state = 2623;
             localContext._Expression = this.unnamedExpression();
-            this.state = 2528;
+            this.state = 2624;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -12780,15 +13301,15 @@ export class HqlParser extends antlr.Parser {
     }
     public entityName(): EntityNameContext {
         let localContext = new EntityNameContext(this.context, this.state);
-        this.enterRule(localContext, 484, HqlParser.RULE_entityName);
+        this.enterRule(localContext, 504, HqlParser.RULE_entityName);
         try {
-            this.state = 2533;
+            this.state = 2629;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ATSIGN:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2530;
+                this.state = 2626;
                 localContext._ATSIGN = this.atSignName();
                 }
                 break;
@@ -12823,6 +13344,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -12869,7 +13391,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2531;
+                this.state = 2627;
                 localContext._Name = this.simpleNameReference();
                 }
                 break;
@@ -12878,7 +13400,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.WITH_SOURCE:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2532;
+                this.state = 2628;
                 localContext._ExtendedName = this.extendedPathName();
                 }
                 break;
@@ -12901,11 +13423,11 @@ export class HqlParser extends antlr.Parser {
     }
     public entityNameReference(): EntityNameReferenceContext {
         let localContext = new EntityNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 486, HqlParser.RULE_entityNameReference);
+        this.enterRule(localContext, 506, HqlParser.RULE_entityNameReference);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2535;
+            this.state = 2631;
             localContext._Name = this.entityName();
             }
         }
@@ -12924,11 +13446,11 @@ export class HqlParser extends antlr.Parser {
     }
     public atSignName(): AtSignNameContext {
         let localContext = new AtSignNameContext(this.context, this.state);
-        this.enterRule(localContext, 488, HqlParser.RULE_atSignName);
+        this.enterRule(localContext, 508, HqlParser.RULE_atSignName);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2537;
+            this.state = 2633;
             localContext._NameToken = this.match(HqlParser.ATSIGN);
             }
         }
@@ -12947,15 +13469,15 @@ export class HqlParser extends antlr.Parser {
     }
     public extendedPathName(): ExtendedPathNameContext {
         let localContext = new ExtendedPathNameContext(this.context, this.state);
-        this.enterRule(localContext, 490, HqlParser.RULE_extendedPathName);
+        this.enterRule(localContext, 510, HqlParser.RULE_extendedPathName);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2539;
+            this.state = 2635;
             localContext._NameToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 143 || _la === 263 || _la === 267)) {
+            if(!(_la === 145 || _la === 267 || _la === 271)) {
                 localContext._NameToken = this.errorHandler.recoverInline(this);
             }
             else {
@@ -12979,29 +13501,29 @@ export class HqlParser extends antlr.Parser {
     }
     public wildcardedEntityExpression(): WildcardedEntityExpressionContext {
         let localContext = new WildcardedEntityExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 492, HqlParser.RULE_wildcardedEntityExpression);
+        this.enterRule(localContext, 512, HqlParser.RULE_wildcardedEntityExpression);
         try {
-            this.state = 2544;
+            this.state = 2640;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 229, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 235, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2541;
+                this.state = 2637;
                 this.wildcardedNameReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2542;
+                this.state = 2638;
                 this.dotCompositeFunctionCallExpression();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2543;
+                this.state = 2639;
                 this.wildcardedPathExpression();
                 }
                 break;
@@ -13022,15 +13544,15 @@ export class HqlParser extends antlr.Parser {
     }
     public wildcardedPathExpression(): WildcardedPathExpressionContext {
         let localContext = new WildcardedPathExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 494, HqlParser.RULE_wildcardedPathExpression);
+        this.enterRule(localContext, 514, HqlParser.RULE_wildcardedPathExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2546;
+            this.state = 2642;
             localContext._Expression = this.dotCompositeFunctionCallExpression();
-            this.state = 2547;
+            this.state = 2643;
             this.match(HqlParser.DOT);
-            this.state = 2548;
+            this.state = 2644;
             localContext._Name = this.wildcardedPathName();
             }
         }
@@ -13049,16 +13571,16 @@ export class HqlParser extends antlr.Parser {
     }
     public wildcardedPathName(): WildcardedPathNameContext {
         let localContext = new WildcardedPathNameContext(this.context, this.state);
-        this.enterRule(localContext, 496, HqlParser.RULE_wildcardedPathName);
+        this.enterRule(localContext, 516, HqlParser.RULE_wildcardedPathName);
         try {
-            this.state = 2552;
+            this.state = 2648;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ASTERISK:
             case HqlParser.WILDCARD:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2550;
+                this.state = 2646;
                 this.wildcardedName();
                 }
                 break;
@@ -13095,6 +13617,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -13143,7 +13666,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2551;
+                this.state = 2647;
                 this.entityName();
                 }
                 break;
@@ -13166,15 +13689,15 @@ export class HqlParser extends antlr.Parser {
     }
     public contextualDataTableExpression(): ContextualDataTableExpressionContext {
         let localContext = new ContextualDataTableExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 498, HqlParser.RULE_contextualDataTableExpression);
+        this.enterRule(localContext, 518, HqlParser.RULE_contextualDataTableExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2554;
+            this.state = 2650;
             this.match(HqlParser.CONTEXTUAL_DATATABLE);
-            this.state = 2555;
+            this.state = 2651;
             localContext._Id = this.match(HqlParser.GUIDLITERAL);
-            this.state = 2556;
+            this.state = 2652;
             localContext._Schema = this.rowSchema();
             }
         }
@@ -13193,83 +13716,83 @@ export class HqlParser extends antlr.Parser {
     }
     public dataTableExpression(): DataTableExpressionContext {
         let localContext = new DataTableExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 500, HqlParser.RULE_dataTableExpression);
+        this.enterRule(localContext, 520, HqlParser.RULE_dataTableExpression);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2558;
+            this.state = 2654;
             this.match(HqlParser.DATATABLE);
-            this.state = 2562;
+            this.state = 2658;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 2559;
+                this.state = 2655;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 2564;
+                this.state = 2660;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2565;
+            this.state = 2661;
             localContext._Schema = this.rowSchema();
-            this.state = 2566;
+            this.state = 2662;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2568;
+            this.state = 2664;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 11 || _la === 33 || ((((_la - 287)) & ~0x1F) === 0 && ((1 << (_la - 287)) & 2143289345) !== 0) || _la === 319) {
+            if (_la === 11 || _la === 33 || ((((_la - 291)) & ~0x1F) === 0 && ((1 << (_la - 291)) & 2143289345) !== 0) || _la === 323) {
                 {
-                this.state = 2567;
+                this.state = 2663;
                 localContext._literalExpression = this.literalExpression();
                 localContext._Values.push(localContext._literalExpression!);
                 }
             }
 
-            this.state = 2574;
+            this.state = 2670;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 233, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 239, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2570;
+                    this.state = 2666;
                     this.match(HqlParser.COMMA);
-                    this.state = 2571;
+                    this.state = 2667;
                     localContext._literalExpression = this.literalExpression();
                     localContext._Values.push(localContext._literalExpression!);
                     }
                     }
                 }
-                this.state = 2576;
+                this.state = 2672;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 233, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 239, this.context);
             }
-            this.state = 2578;
+            this.state = 2674;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 9) {
                 {
-                this.state = 2577;
+                this.state = 2673;
                 this.match(HqlParser.COMMA);
                 }
             }
 
-            this.state = 2580;
+            this.state = 2676;
             this.match(HqlParser.CLOSEBRACKET);
-            this.state = 2583;
+            this.state = 2679;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 235, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 241, this.context) ) {
             case 1:
                 {
-                this.state = 2581;
+                this.state = 2677;
                 this.match(HqlParser.AS);
-                this.state = 2582;
+                this.state = 2678;
                 localContext._TableName = this.tableNameReference();
                 }
                 break;
@@ -13291,55 +13814,55 @@ export class HqlParser extends antlr.Parser {
     }
     public rowSchema(): RowSchemaContext {
         let localContext = new RowSchemaContext(this.context, this.state);
-        this.enterRule(localContext, 502, HqlParser.RULE_rowSchema);
+        this.enterRule(localContext, 522, HqlParser.RULE_rowSchema);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2585;
+            this.state = 2681;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2587;
+            this.state = 2683;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 2861702913) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3649942657) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 16793625) !== 0) || ((((_la - 130)) & ~0x1F) === 0 && ((1 << (_la - 130)) & 686752605) !== 0) || ((((_la - 165)) & ~0x1F) === 0 && ((1 << (_la - 165)) & 746323971) !== 0) || ((((_la - 197)) & ~0x1F) === 0 && ((1 << (_la - 197)) & 4159111563) !== 0) || ((((_la - 230)) & ~0x1F) === 0 && ((1 << (_la - 230)) & 4240412045) !== 0) || ((((_la - 269)) & ~0x1F) === 0 && ((1 << (_la - 269)) & 1054719) !== 0) || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1251090177) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3004918019) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 33587251) !== 0) || ((((_la - 131)) & ~0x1F) === 0 && ((1 << (_la - 131)) & 2749236893) !== 0) || ((((_la - 168)) & ~0x1F) === 0 && ((1 << (_la - 168)) & 746323971) !== 0) || ((((_la - 200)) & ~0x1F) === 0 && ((1 << (_la - 200)) & 4023255435) !== 0) || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 4076746293) !== 0) || ((((_la - 264)) & ~0x1F) === 0 && ((1 << (_la - 264)) & 540016131) !== 0) || _la === 324) {
                 {
-                this.state = 2586;
+                this.state = 2682;
                 localContext._rowSchemaColumnDeclaration = this.rowSchemaColumnDeclaration();
                 localContext._Columns.push(localContext._rowSchemaColumnDeclaration!);
                 }
             }
 
-            this.state = 2593;
+            this.state = 2689;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 237, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 243, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2589;
+                    this.state = 2685;
                     this.match(HqlParser.COMMA);
-                    this.state = 2590;
+                    this.state = 2686;
                     localContext._rowSchemaColumnDeclaration = this.rowSchemaColumnDeclaration();
                     localContext._Columns.push(localContext._rowSchemaColumnDeclaration!);
                     }
                     }
                 }
-                this.state = 2595;
+                this.state = 2691;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 237, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 243, this.context);
             }
-            this.state = 2597;
+            this.state = 2693;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 9) {
                 {
-                this.state = 2596;
+                this.state = 2692;
                 this.match(HqlParser.COMMA);
                 }
             }
 
-            this.state = 2599;
+            this.state = 2695;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -13358,15 +13881,15 @@ export class HqlParser extends antlr.Parser {
     }
     public rowSchemaColumnDeclaration(): RowSchemaColumnDeclarationContext {
         let localContext = new RowSchemaColumnDeclarationContext(this.context, this.state);
-        this.enterRule(localContext, 504, HqlParser.RULE_rowSchemaColumnDeclaration);
+        this.enterRule(localContext, 524, HqlParser.RULE_rowSchemaColumnDeclaration);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2601;
+            this.state = 2697;
             localContext._Name = this.parameterName();
-            this.state = 2602;
+            this.state = 2698;
             this.match(HqlParser.COLON);
-            this.state = 2603;
+            this.state = 2699;
             localContext._Type = this.scalarType();
             }
         }
@@ -13385,68 +13908,68 @@ export class HqlParser extends antlr.Parser {
     }
     public externalDataExpression(): ExternalDataExpressionContext {
         let localContext = new ExternalDataExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 506, HqlParser.RULE_externalDataExpression);
+        this.enterRule(localContext, 526, HqlParser.RULE_externalDataExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2605;
+            this.state = 2701;
             localContext._Keyword = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(_la === 90 || _la === 91)) {
+            if(!(_la === 91 || _la === 92)) {
                 localContext._Keyword = this.errorHandler.recoverInline(this);
             }
             else {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2609;
+            this.state = 2705;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 35127329) !== 0) || _la === 88 || _la === 119 || ((((_la - 120)) & ~0x1F) === 0 && ((1 << (_la - 120)) & 11568127) !== 0) || _la === 201 || _la === 231 || ((((_la - 262)) & ~0x1F) === 0 && ((1 << (_la - 262)) & 111) !== 0) || _la === 320) {
+            while (((((_la - 51)) & ~0x1F) === 0 && ((1 << (_la - 51)) & 70254625) !== 0) || _la === 89 || _la === 120 || ((((_la - 121)) & ~0x1F) === 0 && ((1 << (_la - 121)) & 23102463) !== 0) || _la === 204 || _la === 235 || ((((_la - 266)) & ~0x1F) === 0 && ((1 << (_la - 266)) & 111) !== 0) || _la === 324) {
                 {
                 {
-                this.state = 2606;
+                this.state = 2702;
                 localContext._relaxedQueryOperatorParameter = this.relaxedQueryOperatorParameter();
                 localContext._Parameters.push(localContext._relaxedQueryOperatorParameter!);
                 }
                 }
-                this.state = 2611;
+                this.state = 2707;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2612;
+            this.state = 2708;
             localContext._Schema = this.rowSchema();
-            this.state = 2613;
+            this.state = 2709;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2614;
+            this.state = 2710;
             localContext._stringLiteralExpression = this.stringLiteralExpression();
             localContext._ConnectionStrings.push(localContext._stringLiteralExpression!);
-            this.state = 2619;
+            this.state = 2715;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 9) {
                 {
                 {
-                this.state = 2615;
+                this.state = 2711;
                 this.match(HqlParser.COMMA);
-                this.state = 2616;
+                this.state = 2712;
                 localContext._stringLiteralExpression = this.stringLiteralExpression();
                 localContext._ConnectionStrings.push(localContext._stringLiteralExpression!);
                 }
                 }
-                this.state = 2621;
+                this.state = 2717;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
-            this.state = 2622;
+            this.state = 2718;
             this.match(HqlParser.CLOSEBRACKET);
-            this.state = 2624;
+            this.state = 2720;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 241, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 247, this.context) ) {
             case 1:
                 {
-                this.state = 2623;
+                this.state = 2719;
                 localContext._WithClause = this.externalDataWithClause();
                 }
                 break;
@@ -13468,49 +13991,49 @@ export class HqlParser extends antlr.Parser {
     }
     public externalDataWithClause(): ExternalDataWithClauseContext {
         let localContext = new ExternalDataWithClauseContext(this.context, this.state);
-        this.enterRule(localContext, 508, HqlParser.RULE_externalDataWithClause);
+        this.enterRule(localContext, 528, HqlParser.RULE_externalDataWithClause);
         let _la: number;
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2626;
+            this.state = 2722;
             this.match(HqlParser.WITH);
-            this.state = 2627;
+            this.state = 2723;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2639;
+            this.state = 2735;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 2861702913) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3649942657) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 16793625) !== 0) || ((((_la - 130)) & ~0x1F) === 0 && ((1 << (_la - 130)) & 686752605) !== 0) || ((((_la - 165)) & ~0x1F) === 0 && ((1 << (_la - 165)) & 746323971) !== 0) || ((((_la - 197)) & ~0x1F) === 0 && ((1 << (_la - 197)) & 4159111563) !== 0) || ((((_la - 230)) & ~0x1F) === 0 && ((1 << (_la - 230)) & 4240412045) !== 0) || ((((_la - 269)) & ~0x1F) === 0 && ((1 << (_la - 269)) & 1054719) !== 0) || _la === 320) {
+            if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & 1251090177) !== 0) || ((((_la - 62)) & ~0x1F) === 0 && ((1 << (_la - 62)) & 3004918019) !== 0) || ((((_la - 94)) & ~0x1F) === 0 && ((1 << (_la - 94)) & 33587251) !== 0) || ((((_la - 131)) & ~0x1F) === 0 && ((1 << (_la - 131)) & 2749236893) !== 0) || ((((_la - 168)) & ~0x1F) === 0 && ((1 << (_la - 168)) & 746323971) !== 0) || ((((_la - 200)) & ~0x1F) === 0 && ((1 << (_la - 200)) & 4023255435) !== 0) || ((((_la - 232)) & ~0x1F) === 0 && ((1 << (_la - 232)) & 4076746293) !== 0) || ((((_la - 264)) & ~0x1F) === 0 && ((1 << (_la - 264)) & 540016131) !== 0) || _la === 324) {
                 {
-                this.state = 2628;
+                this.state = 2724;
                 localContext._externalDataWithClauseProperty = this.externalDataWithClauseProperty();
                 localContext._Properties.push(localContext._externalDataWithClauseProperty!);
-                this.state = 2633;
+                this.state = 2729;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 242, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 248, this.context);
                 while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                     if (alternative === 1) {
                         {
                         {
-                        this.state = 2629;
+                        this.state = 2725;
                         this.match(HqlParser.COMMA);
-                        this.state = 2630;
+                        this.state = 2726;
                         localContext._externalDataWithClauseProperty = this.externalDataWithClauseProperty();
                         localContext._Properties.push(localContext._externalDataWithClauseProperty!);
                         }
                         }
                     }
-                    this.state = 2635;
+                    this.state = 2731;
                     this.errorHandler.sync(this);
-                    alternative = this.interpreter.adaptivePredict(this.tokenStream, 242, this.context);
+                    alternative = this.interpreter.adaptivePredict(this.tokenStream, 248, this.context);
                 }
-                this.state = 2637;
+                this.state = 2733;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 if (_la === 9) {
                     {
-                    this.state = 2636;
+                    this.state = 2732;
                     this.match(HqlParser.COMMA);
                     }
                 }
@@ -13518,7 +14041,7 @@ export class HqlParser extends antlr.Parser {
                 }
             }
 
-            this.state = 2641;
+            this.state = 2737;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -13537,21 +14060,21 @@ export class HqlParser extends antlr.Parser {
     }
     public externalDataWithClauseProperty(): ExternalDataWithClausePropertyContext {
         let localContext = new ExternalDataWithClausePropertyContext(this.context, this.state);
-        this.enterRule(localContext, 510, HqlParser.RULE_externalDataWithClauseProperty);
+        this.enterRule(localContext, 530, HqlParser.RULE_externalDataWithClauseProperty);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2643;
+            this.state = 2739;
             localContext._Name = this.parameterName();
-            this.state = 2644;
+            this.state = 2740;
             this.match(HqlParser.EQUAL);
-            this.state = 2648;
+            this.state = 2744;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.STRINGLITERAL:
                 {
-                this.state = 2645;
+                this.state = 2741;
                 localContext._StringValue = this.stringLiteralExpression();
                 }
                 break;
@@ -13563,10 +14086,10 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.RAWGUIDLITERAL:
             case HqlParser.GUIDLITERAL:
                 {
-                this.state = 2646;
+                this.state = 2742;
                 localContext._TokenValue = this.tokenStream.LT(1);
                 _la = this.tokenStream.LA(1);
-                if(!(((((_la - 309)) & ~0x1F) === 0 && ((1 << (_la - 309)) & 1893) !== 0))) {
+                if(!(((((_la - 313)) & ~0x1F) === 0 && ((1 << (_la - 313)) & 1893) !== 0))) {
                     localContext._TokenValue = this.errorHandler.recoverInline(this);
                 }
                 else {
@@ -13622,6 +14145,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.MATERIALIZE:
             case HqlParser.NODES:
@@ -13688,7 +14212,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
             case HqlParser.IDENTIFIER:
                 {
-                this.state = 2647;
+                this.state = 2743;
                 localContext._NameValue = this.parameterName();
                 }
                 break;
@@ -13712,23 +14236,23 @@ export class HqlParser extends antlr.Parser {
     }
     public materializedViewCombineExpression(): MaterializedViewCombineExpressionContext {
         let localContext = new MaterializedViewCombineExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 512, HqlParser.RULE_materializedViewCombineExpression);
+        this.enterRule(localContext, 532, HqlParser.RULE_materializedViewCombineExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2650;
+            this.state = 2746;
             this.match(HqlParser.MATERIALIZED_VIEW_COMBINE);
-            this.state = 2651;
+            this.state = 2747;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2652;
+            this.state = 2748;
             localContext._Name = this.stringLiteralExpression();
-            this.state = 2653;
+            this.state = 2749;
             this.match(HqlParser.CLOSEPAREN);
-            this.state = 2654;
+            this.state = 2750;
             localContext._BaseClause = this.materializeViewCombineBaseClause();
-            this.state = 2655;
+            this.state = 2751;
             localContext._DeltaClause = this.materializedViewCombineDeltaClause();
-            this.state = 2656;
+            this.state = 2752;
             localContext._AggregationsClause = this.materializedViewCombineAggregationsClause();
             }
         }
@@ -13747,17 +14271,17 @@ export class HqlParser extends antlr.Parser {
     }
     public materializeViewCombineBaseClause(): MaterializeViewCombineBaseClauseContext {
         let localContext = new MaterializeViewCombineBaseClauseContext(this.context, this.state);
-        this.enterRule(localContext, 514, HqlParser.RULE_materializeViewCombineBaseClause);
+        this.enterRule(localContext, 534, HqlParser.RULE_materializeViewCombineBaseClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2658;
+            this.state = 2754;
             this.match(HqlParser.BASE);
-            this.state = 2659;
+            this.state = 2755;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2660;
+            this.state = 2756;
             localContext._Expression = this.expression();
-            this.state = 2661;
+            this.state = 2757;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -13776,17 +14300,17 @@ export class HqlParser extends antlr.Parser {
     }
     public materializedViewCombineDeltaClause(): MaterializedViewCombineDeltaClauseContext {
         let localContext = new MaterializedViewCombineDeltaClauseContext(this.context, this.state);
-        this.enterRule(localContext, 516, HqlParser.RULE_materializedViewCombineDeltaClause);
+        this.enterRule(localContext, 536, HqlParser.RULE_materializedViewCombineDeltaClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2663;
+            this.state = 2759;
             this.match(HqlParser.DELTA);
-            this.state = 2664;
+            this.state = 2760;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2665;
+            this.state = 2761;
             localContext._Expression = this.expression();
-            this.state = 2666;
+            this.state = 2762;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -13805,17 +14329,17 @@ export class HqlParser extends antlr.Parser {
     }
     public materializedViewCombineAggregationsClause(): MaterializedViewCombineAggregationsClauseContext {
         let localContext = new MaterializedViewCombineAggregationsClauseContext(this.context, this.state);
-        this.enterRule(localContext, 518, HqlParser.RULE_materializedViewCombineAggregationsClause);
+        this.enterRule(localContext, 538, HqlParser.RULE_materializedViewCombineAggregationsClause);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2668;
+            this.state = 2764;
             this.match(HqlParser.AGGREGATIONS);
-            this.state = 2669;
+            this.state = 2765;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2670;
+            this.state = 2766;
             localContext._Operator = this.summarizeOperator();
-            this.state = 2671;
+            this.state = 2767;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -13834,15 +14358,15 @@ export class HqlParser extends antlr.Parser {
     }
     public scalarType(): ScalarTypeContext {
         let localContext = new ScalarTypeContext(this.context, this.state);
-        this.enterRule(localContext, 520, HqlParser.RULE_scalarType);
+        this.enterRule(localContext, 540, HqlParser.RULE_scalarType);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2673;
+            this.state = 2769;
             localContext._Token = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 281)) & ~0x1F) === 0 && ((1 << (_la - 281)) & 235399039) !== 0))) {
+            if(!(((((_la - 285)) & ~0x1F) === 0 && ((1 << (_la - 285)) & 235399039) !== 0))) {
                 localContext._Token = this.errorHandler.recoverInline(this);
             }
             else {
@@ -13866,15 +14390,15 @@ export class HqlParser extends antlr.Parser {
     }
     public extendedScalarType(): ExtendedScalarTypeContext {
         let localContext = new ExtendedScalarTypeContext(this.context, this.state);
-        this.enterRule(localContext, 522, HqlParser.RULE_extendedScalarType);
+        this.enterRule(localContext, 542, HqlParser.RULE_extendedScalarType);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2675;
+            this.state = 2771;
             localContext._Token = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 281)) & ~0x1F) === 0 && ((1 << (_la - 281)) & 268435455) !== 0))) {
+            if(!(((((_la - 285)) & ~0x1F) === 0 && ((1 << (_la - 285)) & 268435455) !== 0))) {
                 localContext._Token = this.errorHandler.recoverInline(this);
             }
             else {
@@ -13898,11 +14422,11 @@ export class HqlParser extends antlr.Parser {
     }
     public parameterName(): ParameterNameContext {
         let localContext = new ParameterNameContext(this.context, this.state);
-        this.enterRule(localContext, 524, HqlParser.RULE_parameterName);
+        this.enterRule(localContext, 544, HqlParser.RULE_parameterName);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2677;
+            this.state = 2773;
             localContext._Name = this.extendedNameReference();
             }
         }
@@ -13921,15 +14445,15 @@ export class HqlParser extends antlr.Parser {
     }
     public simpleNameReference(): SimpleNameReferenceContext {
         let localContext = new SimpleNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 526, HqlParser.RULE_simpleNameReference);
+        this.enterRule(localContext, 546, HqlParser.RULE_simpleNameReference);
         try {
-            this.state = 2682;
+            this.state = 2778;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2679;
+                this.state = 2775;
                 localContext._Identifier = this.identifierName();
                 }
                 break;
@@ -13963,6 +14487,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -14008,14 +14533,14 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUID:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2680;
+                this.state = 2776;
                 localContext._KeywordName = this.keywordName();
                 }
                 break;
             case HqlParser.OPENBRACKET:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2681;
+                this.state = 2777;
                 localContext._EscapedName = this.escapedName();
                 }
                 break;
@@ -14038,9 +14563,9 @@ export class HqlParser extends antlr.Parser {
     }
     public extendedNameReference(): ExtendedNameReferenceContext {
         let localContext = new ExtendedNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 528, HqlParser.RULE_extendedNameReference);
+        this.enterRule(localContext, 548, HqlParser.RULE_extendedNameReference);
         try {
-            this.state = 2686;
+            this.state = 2782;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ACCUMULATE:
@@ -14082,7 +14607,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.WHERE:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2684;
+                this.state = 2780;
                 localContext._ExtendedKeywordName = this.extendedKeywordName();
                 }
                 break;
@@ -14117,6 +14642,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -14163,7 +14689,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2685;
+                this.state = 2781;
                 localContext._Name = this.simpleNameReference();
                 }
                 break;
@@ -14186,11 +14712,11 @@ export class HqlParser extends antlr.Parser {
     }
     public wildcardedNameReference(): WildcardedNameReferenceContext {
         let localContext = new WildcardedNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 530, HqlParser.RULE_wildcardedNameReference);
+        this.enterRule(localContext, 550, HqlParser.RULE_wildcardedNameReference);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2688;
+            this.state = 2784;
             localContext._Name = this.wildcardedName();
             }
         }
@@ -14209,9 +14735,9 @@ export class HqlParser extends antlr.Parser {
     }
     public simpleOrWildcardedNameReference(): SimpleOrWildcardedNameReferenceContext {
         let localContext = new SimpleOrWildcardedNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 532, HqlParser.RULE_simpleOrWildcardedNameReference);
+        this.enterRule(localContext, 552, HqlParser.RULE_simpleOrWildcardedNameReference);
         try {
-            this.state = 2692;
+            this.state = 2788;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.OPENBRACKET:
@@ -14245,6 +14771,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.LIST:
             case HqlParser.LOOKUP:
             case HqlParser.LOG:
+            case HqlParser.MACRO:
             case HqlParser.MAP:
             case HqlParser.NODES:
             case HqlParser.NONE:
@@ -14291,7 +14818,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2690;
+                this.state = 2786;
                 localContext._SimpleName = this.simpleNameReference();
                 }
                 break;
@@ -14299,7 +14826,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.WILDCARD:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2691;
+                this.state = 2787;
                 localContext._WildcardedName = this.wildcardedNameReference();
                 }
                 break;
@@ -14322,28 +14849,28 @@ export class HqlParser extends antlr.Parser {
     }
     public pathReference(): PathReferenceContext {
         let localContext = new PathReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 534, HqlParser.RULE_pathReference);
+        this.enterRule(localContext, 554, HqlParser.RULE_pathReference);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2694;
+            this.state = 2790;
             localContext._simpleNameReference = this.simpleNameReference();
             localContext._Parts.push(localContext._simpleNameReference!);
-            this.state = 2699;
+            this.state = 2795;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             while (_la === 15) {
                 {
                 {
-                this.state = 2695;
+                this.state = 2791;
                 this.match(HqlParser.DOT);
-                this.state = 2696;
+                this.state = 2792;
                 localContext._simpleNameReference = this.simpleNameReference();
                 localContext._Parts.push(localContext._simpleNameReference!);
                 }
                 }
-                this.state = 2701;
+                this.state = 2797;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -14364,22 +14891,22 @@ export class HqlParser extends antlr.Parser {
     }
     public simpleOrPathNameReference(): SimpleOrPathNameReferenceContext {
         let localContext = new SimpleOrPathNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 536, HqlParser.RULE_simpleOrPathNameReference);
+        this.enterRule(localContext, 556, HqlParser.RULE_simpleOrPathNameReference);
         try {
-            this.state = 2704;
+            this.state = 2800;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 250, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 256, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2702;
+                this.state = 2798;
                 localContext._SimpleName = this.simpleNameReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2703;
+                this.state = 2799;
                 localContext._Path = this.pathReference();
                 }
                 break;
@@ -14400,30 +14927,30 @@ export class HqlParser extends antlr.Parser {
     }
     public tableNameReference(): TableNameReferenceContext {
         let localContext = new TableNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 538, HqlParser.RULE_tableNameReference);
+        this.enterRule(localContext, 558, HqlParser.RULE_tableNameReference);
         try {
-            this.state = 2709;
+            this.state = 2805;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.ASTERISK:
             case HqlParser.WILDCARD:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2706;
+                this.state = 2802;
                 localContext._WildcardName = this.wildcardedName();
                 }
                 break;
             case HqlParser.IDENTIFIER:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2707;
+                this.state = 2803;
                 localContext._IdentifierName = this.identifierName();
                 }
                 break;
             case HqlParser.OPENBRACKET:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2708;
+                this.state = 2804;
                 localContext._EscapedName = this.escapedName();
                 }
                 break;
@@ -14446,22 +14973,22 @@ export class HqlParser extends antlr.Parser {
     }
     public dynamicTableNameReference(): DynamicTableNameReferenceContext {
         let localContext = new DynamicTableNameReferenceContext(this.context, this.state);
-        this.enterRule(localContext, 540, HqlParser.RULE_dynamicTableNameReference);
+        this.enterRule(localContext, 560, HqlParser.RULE_dynamicTableNameReference);
         try {
-            this.state = 2713;
+            this.state = 2809;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 252, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 258, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2711;
+                this.state = 2807;
                 localContext._TableName = this.tableNameReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2712;
+                this.state = 2808;
                 localContext._DotFunction = this.dotCompositeFunctionCallExpression();
                 }
                 break;
@@ -14482,11 +15009,11 @@ export class HqlParser extends antlr.Parser {
     }
     public identifierName(): IdentifierNameContext {
         let localContext = new IdentifierNameContext(this.context, this.state);
-        this.enterRule(localContext, 542, HqlParser.RULE_identifierName);
+        this.enterRule(localContext, 562, HqlParser.RULE_identifierName);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2715;
+            this.state = 2811;
             localContext._Token = this.match(HqlParser.IDENTIFIER);
             }
         }
@@ -14505,15 +15032,15 @@ export class HqlParser extends antlr.Parser {
     }
     public keywordName(): KeywordNameContext {
         let localContext = new KeywordNameContext(this.context, this.state);
-        this.enterRule(localContext, 544, HqlParser.RULE_keywordName);
+        this.enterRule(localContext, 564, HqlParser.RULE_keywordName);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2717;
+            this.state = 2813;
             localContext._Token = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 38)) & ~0x1F) === 0 && ((1 << (_la - 38)) & 2265117) !== 0) || ((((_la - 72)) & ~0x1F) === 0 && ((1 << (_la - 72)) & 101737065) !== 0) || ((((_la - 118)) & ~0x1F) === 0 && ((1 << (_la - 118)) & 2953957377) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 49223) !== 0) || ((((_la - 183)) & ~0x1F) === 0 && ((1 << (_la - 183)) & 3223503643) !== 0) || ((((_la - 215)) & ~0x1F) === 0 && ((1 << (_la - 215)) & 71700537) !== 0) || ((((_la - 253)) & ~0x1F) === 0 && ((1 << (_la - 253)) & 402588025) !== 0) || _la === 289)) {
+            if(!(((((_la - 38)) & ~0x1F) === 0 && ((1 << (_la - 38)) & 4362269) !== 0) || ((((_la - 73)) & ~0x1F) === 0 && ((1 << (_la - 73)) & 101737065) !== 0) || ((((_la - 119)) & ~0x1F) === 0 && ((1 << (_la - 119)) & 1612828673) !== 0) || ((((_la - 151)) & ~0x1F) === 0 && ((1 << (_la - 151)) & 393789) !== 0) || ((((_la - 186)) & ~0x1F) === 0 && ((1 << (_la - 186)) & 2149761819) !== 0) || ((((_la - 218)) & ~0x1F) === 0 && ((1 << (_la - 218)) & 143401075) !== 0) || ((((_la - 257)) & ~0x1F) === 0 && ((1 << (_la - 257)) & 402588025) !== 0) || _la === 293)) {
                 localContext._Token = this.errorHandler.recoverInline(this);
             }
             else {
@@ -14537,15 +15064,15 @@ export class HqlParser extends antlr.Parser {
     }
     public extendedKeywordName(): ExtendedKeywordNameContext {
         let localContext = new ExtendedKeywordNameContext(this.context, this.state);
-        this.enterRule(localContext, 546, HqlParser.RULE_extendedKeywordName);
+        this.enterRule(localContext, 566, HqlParser.RULE_extendedKeywordName);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2719;
+            this.state = 2815;
             localContext._Token = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
-            if(!(((((_la - 39)) & ~0x1F) === 0 && ((1 << (_la - 39)) & 1086587137) !== 0) || ((((_la - 74)) & ~0x1F) === 0 && ((1 << (_la - 74)) & 1671233) !== 0) || ((((_la - 108)) & ~0x1F) === 0 && ((1 << (_la - 108)) & 2415919105) !== 0) || _la === 148 || _la === 159 || ((((_la - 185)) & ~0x1F) === 0 && ((1 << (_la - 185)) & 1049089) !== 0) || ((((_la - 221)) & ~0x1F) === 0 && ((1 << (_la - 221)) & 2131362487) !== 0) || _la === 260)) {
+            if(!(((((_la - 39)) & ~0x1F) === 0 && ((1 << (_la - 39)) & 2172911873) !== 0) || ((((_la - 75)) & ~0x1F) === 0 && ((1 << (_la - 75)) & 1671233) !== 0) || _la === 109 || _la === 138 || ((((_la - 141)) & ~0x1F) === 0 && ((1 << (_la - 141)) & 2097665) !== 0) || ((((_la - 188)) & ~0x1F) === 0 && ((1 << (_la - 188)) & 1049089) !== 0) || ((((_la - 225)) & ~0x1F) === 0 && ((1 << (_la - 225)) & 2131362487) !== 0) || _la === 264)) {
                 localContext._Token = this.errorHandler.recoverInline(this);
             }
             else {
@@ -14569,15 +15096,15 @@ export class HqlParser extends antlr.Parser {
     }
     public escapedName(): EscapedNameContext {
         let localContext = new EscapedNameContext(this.context, this.state);
-        this.enterRule(localContext, 548, HqlParser.RULE_escapedName);
+        this.enterRule(localContext, 568, HqlParser.RULE_escapedName);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2721;
+            this.state = 2817;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2722;
+            this.state = 2818;
             localContext._StringLiteral = this.stringLiteralExpression();
-            this.state = 2723;
+            this.state = 2819;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -14596,22 +15123,22 @@ export class HqlParser extends antlr.Parser {
     }
     public pathOrKeyword(): PathOrKeywordContext {
         let localContext = new PathOrKeywordContext(this.context, this.state);
-        this.enterRule(localContext, 550, HqlParser.RULE_pathOrKeyword);
+        this.enterRule(localContext, 570, HqlParser.RULE_pathOrKeyword);
         try {
-            this.state = 2727;
+            this.state = 2823;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 253, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 259, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2725;
+                this.state = 2821;
                 localContext._Path = this.pathReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2726;
+                this.state = 2822;
                 localContext._Keyword = this.keywordName();
                 }
                 break;
@@ -14632,29 +15159,29 @@ export class HqlParser extends antlr.Parser {
     }
     public pathOrExtendedKeyword(): PathOrExtendedKeywordContext {
         let localContext = new PathOrExtendedKeywordContext(this.context, this.state);
-        this.enterRule(localContext, 552, HqlParser.RULE_pathOrExtendedKeyword);
+        this.enterRule(localContext, 572, HqlParser.RULE_pathOrExtendedKeyword);
         try {
-            this.state = 2732;
+            this.state = 2828;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 254, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 260, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2729;
+                this.state = 2825;
                 localContext._Path = this.pathReference();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2730;
+                this.state = 2826;
                 localContext._Keyword = this.keywordName();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2731;
+                this.state = 2827;
                 localContext._ExtendedKeyword = this.extendedKeywordName();
                 }
                 break;
@@ -14675,22 +15202,22 @@ export class HqlParser extends antlr.Parser {
     }
     public wildcardedName(): WildcardedNameContext {
         let localContext = new WildcardedNameContext(this.context, this.state);
-        this.enterRule(localContext, 554, HqlParser.RULE_wildcardedName);
+        this.enterRule(localContext, 574, HqlParser.RULE_wildcardedName);
         try {
-            this.state = 2736;
+            this.state = 2832;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.WILDCARD:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2734;
+                this.state = 2830;
                 localContext._Name = this.match(HqlParser.WILDCARD);
                 }
                 break;
             case HqlParser.ASTERISK:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2735;
+                this.state = 2831;
                 localContext._Star = this.starExpression();
                 }
                 break;
@@ -14713,16 +15240,16 @@ export class HqlParser extends antlr.Parser {
     }
     public literalExpression(): LiteralExpressionContext {
         let localContext = new LiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 556, HqlParser.RULE_literalExpression);
+        this.enterRule(localContext, 576, HqlParser.RULE_literalExpression);
         try {
-            this.state = 2740;
+            this.state = 2836;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.DASH:
             case HqlParser.PLUS:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2738;
+                this.state = 2834;
                 localContext._Signed = this.signedLiteralExpression();
                 }
                 break;
@@ -14739,7 +15266,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.GUIDLITERAL:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2739;
+                this.state = 2835;
                 localContext._Unsigned = this.unsignedLiteralExpression();
                 }
                 break;
@@ -14762,85 +15289,85 @@ export class HqlParser extends antlr.Parser {
     }
     public unsignedLiteralExpression(): UnsignedLiteralExpressionContext {
         let localContext = new UnsignedLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 558, HqlParser.RULE_unsignedLiteralExpression);
+        this.enterRule(localContext, 578, HqlParser.RULE_unsignedLiteralExpression);
         try {
-            this.state = 2753;
+            this.state = 2849;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.LONGLITERAL:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2742;
+                this.state = 2838;
                 localContext._Long = this.longLiteralExpression();
                 }
                 break;
             case HqlParser.INTLITERAL:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2743;
+                this.state = 2839;
                 localContext._Int = this.intLiteralExpression();
                 }
                 break;
             case HqlParser.REALLITERAL:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2744;
+                this.state = 2840;
                 localContext._Real = this.realLiteralExpression();
                 }
                 break;
             case HqlParser.DECIMALLITERAL:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2745;
+                this.state = 2841;
                 localContext._Decimal = this.decimalLiteralExpression();
                 }
                 break;
             case HqlParser.DATETIMELITERAL:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2746;
+                this.state = 2842;
                 localContext._DateTime = this.dateTimeLiteralExpression();
                 }
                 break;
             case HqlParser.TIMESPANLITERAL:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 2747;
+                this.state = 2843;
                 localContext._TimeSpan = this.timeSpanLiteralExpression();
                 }
                 break;
             case HqlParser.BOOLEANLITERAL:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 2748;
+                this.state = 2844;
                 localContext._Boolean = this.booleanLiteralExpression();
                 }
                 break;
             case HqlParser.GUIDLITERAL:
                 this.enterOuterAlt(localContext, 8);
                 {
-                this.state = 2749;
+                this.state = 2845;
                 localContext._Guid = this.guidLiteralExpression();
                 }
                 break;
             case HqlParser.TYPELITERAL:
                 this.enterOuterAlt(localContext, 9);
                 {
-                this.state = 2750;
+                this.state = 2846;
                 localContext._Type = this.typeLiteralExpression();
                 }
                 break;
             case HqlParser.STRINGLITERAL:
                 this.enterOuterAlt(localContext, 10);
                 {
-                this.state = 2751;
+                this.state = 2847;
                 localContext._String = this.stringLiteralExpression();
                 }
                 break;
             case HqlParser.DYNAMIC:
                 this.enterOuterAlt(localContext, 11);
                 {
-                this.state = 2752;
+                this.state = 2848;
                 localContext._Dynamic = this.dynamicLiteralExpression();
                 }
                 break;
@@ -14863,36 +15390,36 @@ export class HqlParser extends antlr.Parser {
     }
     public numberLikeLiteralExpression(): NumberLikeLiteralExpressionContext {
         let localContext = new NumberLikeLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 560, HqlParser.RULE_numberLikeLiteralExpression);
+        this.enterRule(localContext, 580, HqlParser.RULE_numberLikeLiteralExpression);
         try {
-            this.state = 2762;
+            this.state = 2858;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.LONGLITERAL:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2755;
+                this.state = 2851;
                 localContext._Long = this.longLiteralExpression();
                 }
                 break;
             case HqlParser.INTLITERAL:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2756;
+                this.state = 2852;
                 localContext._Int = this.intLiteralExpression();
                 }
                 break;
             case HqlParser.REALLITERAL:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2757;
+                this.state = 2853;
                 localContext._Real = this.realLiteralExpression();
                 }
                 break;
             case HqlParser.DECIMALLITERAL:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2758;
+                this.state = 2854;
                 localContext._Decimal = this.decimalLiteralExpression();
                 }
                 break;
@@ -14900,21 +15427,21 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.PLUS:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2759;
+                this.state = 2855;
                 localContext._Signed = this.signedLiteralExpression();
                 }
                 break;
             case HqlParser.DATETIMELITERAL:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 2760;
+                this.state = 2856;
                 localContext._DateTime = this.dateTimeLiteralExpression();
                 }
                 break;
             case HqlParser.TIMESPANLITERAL:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 2761;
+                this.state = 2857;
                 localContext._TimeSpan = this.timeSpanLiteralExpression();
                 }
                 break;
@@ -14937,36 +15464,36 @@ export class HqlParser extends antlr.Parser {
     }
     public numericLiteralExpression(): NumericLiteralExpressionContext {
         let localContext = new NumericLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 562, HqlParser.RULE_numericLiteralExpression);
+        this.enterRule(localContext, 582, HqlParser.RULE_numericLiteralExpression);
         try {
-            this.state = 2769;
+            this.state = 2865;
             this.errorHandler.sync(this);
             switch (this.tokenStream.LA(1)) {
             case HqlParser.LONGLITERAL:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2764;
+                this.state = 2860;
                 localContext._Long = this.longLiteralExpression();
                 }
                 break;
             case HqlParser.INTLITERAL:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2765;
+                this.state = 2861;
                 localContext._Int = this.intLiteralExpression();
                 }
                 break;
             case HqlParser.REALLITERAL:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2766;
+                this.state = 2862;
                 localContext._Real = this.realLiteralExpression();
                 }
                 break;
             case HqlParser.DECIMALLITERAL:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2767;
+                this.state = 2863;
                 localContext._Decimal = this.decimalLiteralExpression();
                 }
                 break;
@@ -14974,7 +15501,7 @@ export class HqlParser extends antlr.Parser {
             case HqlParser.PLUS:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2768;
+                this.state = 2864;
                 localContext._Signed = this.signedLiteralExpression();
                 }
                 break;
@@ -14997,22 +15524,22 @@ export class HqlParser extends antlr.Parser {
     }
     public signedLiteralExpression(): SignedLiteralExpressionContext {
         let localContext = new SignedLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 564, HqlParser.RULE_signedLiteralExpression);
+        this.enterRule(localContext, 584, HqlParser.RULE_signedLiteralExpression);
         try {
-            this.state = 2773;
+            this.state = 2869;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 260, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 266, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2771;
+                this.state = 2867;
                 localContext._Long = this.signedLongLiteralExpression();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2772;
+                this.state = 2868;
                 localContext._Real = this.signedRealLiteralExpression();
                 }
                 break;
@@ -15033,11 +15560,11 @@ export class HqlParser extends antlr.Parser {
     }
     public longLiteralExpression(): LongLiteralExpressionContext {
         let localContext = new LongLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 566, HqlParser.RULE_longLiteralExpression);
+        this.enterRule(localContext, 586, HqlParser.RULE_longLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2775;
+            this.state = 2871;
             localContext._Token = this.match(HqlParser.LONGLITERAL);
             }
         }
@@ -15056,11 +15583,11 @@ export class HqlParser extends antlr.Parser {
     }
     public intLiteralExpression(): IntLiteralExpressionContext {
         let localContext = new IntLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 568, HqlParser.RULE_intLiteralExpression);
+        this.enterRule(localContext, 588, HqlParser.RULE_intLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2777;
+            this.state = 2873;
             localContext._Token = this.match(HqlParser.INTLITERAL);
             }
         }
@@ -15079,11 +15606,11 @@ export class HqlParser extends antlr.Parser {
     }
     public realLiteralExpression(): RealLiteralExpressionContext {
         let localContext = new RealLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 570, HqlParser.RULE_realLiteralExpression);
+        this.enterRule(localContext, 590, HqlParser.RULE_realLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2779;
+            this.state = 2875;
             localContext._Token = this.match(HqlParser.REALLITERAL);
             }
         }
@@ -15102,11 +15629,11 @@ export class HqlParser extends antlr.Parser {
     }
     public decimalLiteralExpression(): DecimalLiteralExpressionContext {
         let localContext = new DecimalLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 572, HqlParser.RULE_decimalLiteralExpression);
+        this.enterRule(localContext, 592, HqlParser.RULE_decimalLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2781;
+            this.state = 2877;
             localContext._Token = this.match(HqlParser.DECIMALLITERAL);
             }
         }
@@ -15125,11 +15652,11 @@ export class HqlParser extends antlr.Parser {
     }
     public dateTimeLiteralExpression(): DateTimeLiteralExpressionContext {
         let localContext = new DateTimeLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 574, HqlParser.RULE_dateTimeLiteralExpression);
+        this.enterRule(localContext, 594, HqlParser.RULE_dateTimeLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2783;
+            this.state = 2879;
             localContext._Token = this.match(HqlParser.DATETIMELITERAL);
             }
         }
@@ -15148,11 +15675,11 @@ export class HqlParser extends antlr.Parser {
     }
     public timeSpanLiteralExpression(): TimeSpanLiteralExpressionContext {
         let localContext = new TimeSpanLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 576, HqlParser.RULE_timeSpanLiteralExpression);
+        this.enterRule(localContext, 596, HqlParser.RULE_timeSpanLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2785;
+            this.state = 2881;
             localContext._Token = this.match(HqlParser.TIMESPANLITERAL);
             }
         }
@@ -15171,11 +15698,11 @@ export class HqlParser extends antlr.Parser {
     }
     public booleanLiteralExpression(): BooleanLiteralExpressionContext {
         let localContext = new BooleanLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 578, HqlParser.RULE_booleanLiteralExpression);
+        this.enterRule(localContext, 598, HqlParser.RULE_booleanLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2787;
+            this.state = 2883;
             localContext._Token = this.match(HqlParser.BOOLEANLITERAL);
             }
         }
@@ -15194,11 +15721,11 @@ export class HqlParser extends antlr.Parser {
     }
     public guidLiteralExpression(): GuidLiteralExpressionContext {
         let localContext = new GuidLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 580, HqlParser.RULE_guidLiteralExpression);
+        this.enterRule(localContext, 600, HqlParser.RULE_guidLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2789;
+            this.state = 2885;
             localContext._Token = this.match(HqlParser.GUIDLITERAL);
             }
         }
@@ -15217,11 +15744,11 @@ export class HqlParser extends antlr.Parser {
     }
     public typeLiteralExpression(): TypeLiteralExpressionContext {
         let localContext = new TypeLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 582, HqlParser.RULE_typeLiteralExpression);
+        this.enterRule(localContext, 602, HqlParser.RULE_typeLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2791;
+            this.state = 2887;
             localContext._Token = this.match(HqlParser.TYPELITERAL);
             }
         }
@@ -15240,12 +15767,12 @@ export class HqlParser extends antlr.Parser {
     }
     public signedLongLiteralExpression(): SignedLongLiteralExpressionContext {
         let localContext = new SignedLongLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 584, HqlParser.RULE_signedLongLiteralExpression);
+        this.enterRule(localContext, 604, HqlParser.RULE_signedLongLiteralExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2793;
+            this.state = 2889;
             localContext._SignToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 11 || _la === 33)) {
@@ -15255,7 +15782,7 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2794;
+            this.state = 2890;
             localContext._LiteralToken = this.match(HqlParser.LONGLITERAL);
             }
         }
@@ -15274,12 +15801,12 @@ export class HqlParser extends antlr.Parser {
     }
     public signedRealLiteralExpression(): SignedRealLiteralExpressionContext {
         let localContext = new SignedRealLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 586, HqlParser.RULE_signedRealLiteralExpression);
+        this.enterRule(localContext, 606, HqlParser.RULE_signedRealLiteralExpression);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2796;
+            this.state = 2892;
             localContext._SignToken = this.tokenStream.LT(1);
             _la = this.tokenStream.LA(1);
             if(!(_la === 11 || _la === 33)) {
@@ -15289,7 +15816,7 @@ export class HqlParser extends antlr.Parser {
                 this.errorHandler.reportMatch(this);
                 this.consume();
             }
-            this.state = 2797;
+            this.state = 2893;
             localContext._LiteralToken = this.match(HqlParser.REALLITERAL);
             }
         }
@@ -15308,30 +15835,30 @@ export class HqlParser extends antlr.Parser {
     }
     public stringLiteralExpression(): StringLiteralExpressionContext {
         let localContext = new StringLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 588, HqlParser.RULE_stringLiteralExpression);
+        this.enterRule(localContext, 608, HqlParser.RULE_stringLiteralExpression);
         try {
             let alternative: number;
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2799;
+            this.state = 2895;
             localContext._STRINGLITERAL = this.match(HqlParser.STRINGLITERAL);
             localContext._Tokens.push(localContext._STRINGLITERAL!);
-            this.state = 2803;
+            this.state = 2899;
             this.errorHandler.sync(this);
-            alternative = this.interpreter.adaptivePredict(this.tokenStream, 261, this.context);
+            alternative = this.interpreter.adaptivePredict(this.tokenStream, 267, this.context);
             while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER) {
                 if (alternative === 1) {
                     {
                     {
-                    this.state = 2800;
+                    this.state = 2896;
                     localContext._STRINGLITERAL = this.match(HqlParser.STRINGLITERAL);
                     localContext._Tokens.push(localContext._STRINGLITERAL!);
                     }
                     }
                 }
-                this.state = 2805;
+                this.state = 2901;
                 this.errorHandler.sync(this);
-                alternative = this.interpreter.adaptivePredict(this.tokenStream, 261, this.context);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 267, this.context);
             }
             }
         }
@@ -15350,17 +15877,17 @@ export class HqlParser extends antlr.Parser {
     }
     public dynamicLiteralExpression(): DynamicLiteralExpressionContext {
         let localContext = new DynamicLiteralExpressionContext(this.context, this.state);
-        this.enterRule(localContext, 590, HqlParser.RULE_dynamicLiteralExpression);
+        this.enterRule(localContext, 610, HqlParser.RULE_dynamicLiteralExpression);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2806;
+            this.state = 2902;
             this.match(HqlParser.DYNAMIC);
-            this.state = 2807;
+            this.state = 2903;
             this.match(HqlParser.OPENPAREN);
-            this.state = 2808;
+            this.state = 2904;
             localContext._Value = this.jsonValue();
-            this.state = 2809;
+            this.state = 2905;
             this.match(HqlParser.CLOSEPAREN);
             }
         }
@@ -15379,85 +15906,85 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonValue(): JsonValueContext {
         let localContext = new JsonValueContext(this.context, this.state);
-        this.enterRule(localContext, 592, HqlParser.RULE_jsonValue);
+        this.enterRule(localContext, 612, HqlParser.RULE_jsonValue);
         try {
-            this.state = 2822;
+            this.state = 2918;
             this.errorHandler.sync(this);
-            switch (this.interpreter.adaptivePredict(this.tokenStream, 262, this.context) ) {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 268, this.context) ) {
             case 1:
                 this.enterOuterAlt(localContext, 1);
                 {
-                this.state = 2811;
+                this.state = 2907;
                 localContext._Array = this.jsonArray();
                 }
                 break;
             case 2:
                 this.enterOuterAlt(localContext, 2);
                 {
-                this.state = 2812;
+                this.state = 2908;
                 localContext._Boolean = this.jsonBoolean();
                 }
                 break;
             case 3:
                 this.enterOuterAlt(localContext, 3);
                 {
-                this.state = 2813;
+                this.state = 2909;
                 localContext._DateTime = this.jsonDateTime();
                 }
                 break;
             case 4:
                 this.enterOuterAlt(localContext, 4);
                 {
-                this.state = 2814;
+                this.state = 2910;
                 localContext._Guid = this.jsonGuid();
                 }
                 break;
             case 5:
                 this.enterOuterAlt(localContext, 5);
                 {
-                this.state = 2815;
+                this.state = 2911;
                 localContext._Long = this.jsonLong();
                 }
                 break;
             case 6:
                 this.enterOuterAlt(localContext, 6);
                 {
-                this.state = 2816;
+                this.state = 2912;
                 localContext._Null = this.jsonNull();
                 }
                 break;
             case 7:
                 this.enterOuterAlt(localContext, 7);
                 {
-                this.state = 2817;
+                this.state = 2913;
                 localContext._Object = this.jsonObject();
                 }
                 break;
             case 8:
                 this.enterOuterAlt(localContext, 8);
                 {
-                this.state = 2818;
+                this.state = 2914;
                 localContext._Real = this.jsonReal();
                 }
                 break;
             case 9:
                 this.enterOuterAlt(localContext, 9);
                 {
-                this.state = 2819;
+                this.state = 2915;
                 localContext._String = this.jsonString();
                 }
                 break;
             case 10:
                 this.enterOuterAlt(localContext, 10);
                 {
-                this.state = 2820;
+                this.state = 2916;
                 localContext._Timespan = this.jsonTimeSpan();
                 }
                 break;
             case 11:
                 this.enterOuterAlt(localContext, 11);
                 {
-                this.state = 2821;
+                this.state = 2917;
                 localContext._Dynamic = this.dynamicLiteralExpression();
                 }
                 break;
@@ -15478,42 +16005,42 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonObject(): JsonObjectContext {
         let localContext = new JsonObjectContext(this.context, this.state);
-        this.enterRule(localContext, 594, HqlParser.RULE_jsonObject);
+        this.enterRule(localContext, 614, HqlParser.RULE_jsonObject);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2824;
+            this.state = 2920;
             this.match(HqlParser.OPENBRACE);
-            this.state = 2833;
+            this.state = 2929;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if (_la === 313) {
+            if (_la === 317) {
                 {
-                this.state = 2825;
+                this.state = 2921;
                 localContext._jsonPair = this.jsonPair();
                 localContext._Pairs.push(localContext._jsonPair!);
-                this.state = 2830;
+                this.state = 2926;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2826;
+                    this.state = 2922;
                     this.match(HqlParser.COMMA);
-                    this.state = 2827;
+                    this.state = 2923;
                     localContext._jsonPair = this.jsonPair();
                     localContext._Pairs.push(localContext._jsonPair!);
                     }
                     }
-                    this.state = 2832;
+                    this.state = 2928;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
                 }
             }
 
-            this.state = 2835;
+            this.state = 2931;
             this.match(HqlParser.CLOSEBRACE);
             }
         }
@@ -15532,15 +16059,15 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonPair(): JsonPairContext {
         let localContext = new JsonPairContext(this.context, this.state);
-        this.enterRule(localContext, 596, HqlParser.RULE_jsonPair);
+        this.enterRule(localContext, 616, HqlParser.RULE_jsonPair);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2837;
+            this.state = 2933;
             localContext._Name = this.match(HqlParser.STRINGLITERAL);
-            this.state = 2838;
+            this.state = 2934;
             this.match(HqlParser.COLON);
-            this.state = 2839;
+            this.state = 2935;
             localContext._Value = this.jsonValue();
             }
         }
@@ -15559,42 +16086,42 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonArray(): JsonArrayContext {
         let localContext = new JsonArrayContext(this.context, this.state);
-        this.enterRule(localContext, 598, HqlParser.RULE_jsonArray);
+        this.enterRule(localContext, 618, HqlParser.RULE_jsonArray);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2841;
+            this.state = 2937;
             this.match(HqlParser.OPENBRACKET);
-            this.state = 2850;
+            this.state = 2946;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 1610614784) !== 0) || _la === 183 || ((((_la - 287)) & ~0x1F) === 0 && ((1 << (_la - 287)) & 1027604481) !== 0) || _la === 319) {
+            if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 1610614784) !== 0) || _la === 186 || ((((_la - 291)) & ~0x1F) === 0 && ((1 << (_la - 291)) & 1027604481) !== 0) || _la === 323) {
                 {
-                this.state = 2842;
+                this.state = 2938;
                 localContext._jsonValue = this.jsonValue();
                 localContext._Values.push(localContext._jsonValue!);
-                this.state = 2847;
+                this.state = 2943;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
                 while (_la === 9) {
                     {
                     {
-                    this.state = 2843;
+                    this.state = 2939;
                     this.match(HqlParser.COMMA);
-                    this.state = 2844;
+                    this.state = 2940;
                     localContext._jsonValue = this.jsonValue();
                     localContext._Values.push(localContext._jsonValue!);
                     }
                     }
-                    this.state = 2849;
+                    this.state = 2945;
                     this.errorHandler.sync(this);
                     _la = this.tokenStream.LA(1);
                 }
                 }
             }
 
-            this.state = 2852;
+            this.state = 2948;
             this.match(HqlParser.CLOSEBRACKET);
             }
         }
@@ -15613,11 +16140,11 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonBoolean(): JsonBooleanContext {
         let localContext = new JsonBooleanContext(this.context, this.state);
-        this.enterRule(localContext, 600, HqlParser.RULE_jsonBoolean);
+        this.enterRule(localContext, 620, HqlParser.RULE_jsonBoolean);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2854;
+            this.state = 2950;
             localContext._Token = this.match(HqlParser.BOOLEANLITERAL);
             }
         }
@@ -15636,11 +16163,11 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonDateTime(): JsonDateTimeContext {
         let localContext = new JsonDateTimeContext(this.context, this.state);
-        this.enterRule(localContext, 602, HqlParser.RULE_jsonDateTime);
+        this.enterRule(localContext, 622, HqlParser.RULE_jsonDateTime);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2856;
+            this.state = 2952;
             localContext._Token = this.match(HqlParser.DATETIMELITERAL);
             }
         }
@@ -15659,11 +16186,11 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonGuid(): JsonGuidContext {
         let localContext = new JsonGuidContext(this.context, this.state);
-        this.enterRule(localContext, 604, HqlParser.RULE_jsonGuid);
+        this.enterRule(localContext, 624, HqlParser.RULE_jsonGuid);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2858;
+            this.state = 2954;
             localContext._Token = this.match(HqlParser.GUIDLITERAL);
             }
         }
@@ -15682,11 +16209,11 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonNull(): JsonNullContext {
         let localContext = new JsonNullContext(this.context, this.state);
-        this.enterRule(localContext, 606, HqlParser.RULE_jsonNull);
+        this.enterRule(localContext, 626, HqlParser.RULE_jsonNull);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2860;
+            this.state = 2956;
             localContext._Token = this.match(HqlParser.NULL);
             }
         }
@@ -15705,26 +16232,26 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonString(): JsonStringContext {
         let localContext = new JsonStringContext(this.context, this.state);
-        this.enterRule(localContext, 608, HqlParser.RULE_jsonString);
+        this.enterRule(localContext, 628, HqlParser.RULE_jsonString);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2862;
+            this.state = 2958;
             localContext._STRINGLITERAL = this.match(HqlParser.STRINGLITERAL);
             localContext._Tokens.push(localContext._STRINGLITERAL!);
-            this.state = 2866;
+            this.state = 2962;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
-            while (_la === 313) {
+            while (_la === 317) {
                 {
                 {
-                this.state = 2863;
+                this.state = 2959;
                 localContext._STRINGLITERAL = this.match(HqlParser.STRINGLITERAL);
                 localContext._Tokens.push(localContext._STRINGLITERAL!);
                 }
                 }
-                this.state = 2868;
+                this.state = 2964;
                 this.errorHandler.sync(this);
                 _la = this.tokenStream.LA(1);
             }
@@ -15745,11 +16272,11 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonTimeSpan(): JsonTimeSpanContext {
         let localContext = new JsonTimeSpanContext(this.context, this.state);
-        this.enterRule(localContext, 610, HqlParser.RULE_jsonTimeSpan);
+        this.enterRule(localContext, 630, HqlParser.RULE_jsonTimeSpan);
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2869;
+            this.state = 2965;
             localContext._Token = this.match(HqlParser.TIMESPANLITERAL);
             }
         }
@@ -15768,22 +16295,22 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonLong(): JsonLongContext {
         let localContext = new JsonLongContext(this.context, this.state);
-        this.enterRule(localContext, 612, HqlParser.RULE_jsonLong);
+        this.enterRule(localContext, 632, HqlParser.RULE_jsonLong);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2872;
+            this.state = 2968;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 11) {
                 {
-                this.state = 2871;
+                this.state = 2967;
                 localContext._SignToken = this.match(HqlParser.DASH);
                 }
             }
 
-            this.state = 2874;
+            this.state = 2970;
             localContext._LiteralToken = this.match(HqlParser.LONGLITERAL);
             }
         }
@@ -15802,22 +16329,22 @@ export class HqlParser extends antlr.Parser {
     }
     public jsonReal(): JsonRealContext {
         let localContext = new JsonRealContext(this.context, this.state);
-        this.enterRule(localContext, 614, HqlParser.RULE_jsonReal);
+        this.enterRule(localContext, 634, HqlParser.RULE_jsonReal);
         let _la: number;
         try {
             this.enterOuterAlt(localContext, 1);
             {
-            this.state = 2877;
+            this.state = 2973;
             this.errorHandler.sync(this);
             _la = this.tokenStream.LA(1);
             if (_la === 11) {
                 {
-                this.state = 2876;
+                this.state = 2972;
                 localContext._SignToken = this.match(HqlParser.DASH);
                 }
             }
 
-            this.state = 2879;
+            this.state = 2975;
             localContext._LiteralToken = this.match(HqlParser.REALLITERAL);
             }
         }
@@ -15836,7 +16363,7 @@ export class HqlParser extends antlr.Parser {
     }
 
     public static readonly _serializedATN: number[] = [
-        4,1,324,2882,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,
+        4,1,328,2978,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,
         7,6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,
         13,2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,
         20,7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,
@@ -15889,1143 +16416,1183 @@ export class HqlParser extends antlr.Parser {
         2,291,7,291,2,292,7,292,2,293,7,293,2,294,7,294,2,295,7,295,2,296,
         7,296,2,297,7,297,2,298,7,298,2,299,7,299,2,300,7,300,2,301,7,301,
         2,302,7,302,2,303,7,303,2,304,7,304,2,305,7,305,2,306,7,306,2,307,
-        7,307,1,0,1,0,1,1,1,1,1,1,5,1,622,8,1,10,1,12,1,625,9,1,1,1,3,1,
-        628,8,1,1,1,1,1,1,2,1,2,1,2,1,2,1,2,1,2,3,2,638,8,2,1,3,1,3,1,3,
-        1,3,1,3,1,3,1,3,3,3,647,8,3,1,4,1,4,1,4,1,4,1,4,1,5,1,5,1,5,1,5,
-        1,5,3,5,659,8,5,1,5,1,5,1,5,1,6,1,6,1,6,1,6,1,6,1,6,3,6,670,8,6,
-        1,6,1,6,1,6,1,7,1,7,1,7,5,7,678,8,7,10,7,12,7,681,9,7,1,8,1,8,1,
-        8,1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,
-        10,1,11,1,11,1,11,1,11,1,11,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,
-        12,1,12,1,12,1,12,3,12,717,8,12,1,13,1,13,1,13,1,13,3,13,723,8,13,
-        1,14,1,14,1,14,1,15,1,15,1,15,1,15,3,15,732,8,15,1,16,1,16,1,16,
-        1,16,1,17,1,17,1,17,1,17,5,17,742,8,17,10,17,12,17,745,9,17,1,17,
-        1,17,1,18,1,18,1,18,1,18,1,19,1,19,1,19,1,19,5,19,757,8,19,10,19,
-        12,19,760,9,19,1,19,3,19,763,8,19,1,19,3,19,766,8,19,1,19,1,19,1,
-        20,1,20,3,20,772,8,20,1,21,1,21,1,21,1,21,3,21,778,8,21,1,22,1,22,
-        1,22,3,22,783,8,22,1,22,1,22,4,22,787,8,22,11,22,12,22,788,1,22,
-        1,22,1,23,1,23,1,23,1,23,5,23,797,8,23,10,23,12,23,800,9,23,1,23,
-        1,23,1,24,1,24,1,24,1,24,1,25,1,25,1,25,1,25,1,26,1,26,3,26,814,
-        8,26,1,26,1,26,1,26,3,26,819,8,26,1,27,1,27,1,27,1,27,5,27,825,8,
-        27,10,27,12,27,828,9,27,1,27,1,27,1,28,1,28,1,28,1,28,1,28,1,29,
-        1,29,1,30,1,30,1,30,1,30,5,30,843,8,30,10,30,12,30,846,9,30,1,30,
-        1,30,1,30,1,31,1,31,1,31,1,31,1,31,1,31,1,31,5,31,858,8,31,10,31,
-        12,31,861,9,31,1,31,1,31,1,32,1,32,3,32,867,8,32,1,33,1,33,1,33,
-        1,33,3,33,873,8,33,1,34,1,34,3,34,877,8,34,1,35,1,35,1,35,1,35,1,
-        35,1,35,5,35,885,8,35,10,35,12,35,888,9,35,1,35,1,35,1,36,1,36,1,
-        36,1,36,3,36,896,8,36,1,37,1,37,1,38,1,38,1,39,1,39,3,39,904,8,39,
-        1,40,1,40,5,40,908,8,40,10,40,12,40,911,9,40,1,41,1,41,1,41,1,42,
-        1,42,5,42,918,8,42,10,42,12,42,921,9,42,1,43,1,43,1,43,1,43,1,43,
-        1,43,3,43,929,8,43,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,
-        1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,
-        1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,
-        1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,
-        1,44,1,44,1,44,3,44,982,8,44,1,45,1,45,1,45,1,45,3,45,988,8,45,1,
-        46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,
-        46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,3,46,1015,
-        8,46,1,47,1,47,5,47,1019,8,47,10,47,12,47,1022,9,47,1,47,1,47,1,
-        48,1,48,1,48,1,49,1,49,5,49,1031,8,49,10,49,12,49,1034,9,49,1,50,
-        1,50,5,50,1038,8,50,10,50,12,50,1041,9,50,1,50,1,50,3,50,1045,8,
-        50,1,51,1,51,5,51,1049,8,51,10,51,12,51,1052,9,51,1,51,1,51,3,51,
-        1056,8,51,1,52,1,52,1,53,1,53,1,53,5,53,1063,8,53,10,53,12,53,1066,
-        9,53,1,54,1,54,5,54,1070,8,54,10,54,12,54,1073,9,54,1,54,1,54,3,
-        54,1077,8,54,1,55,1,55,1,55,1,56,1,56,1,56,1,56,5,56,1086,8,56,10,
-        56,12,56,1089,9,56,1,57,1,57,1,58,1,58,1,58,1,58,1,58,5,58,1098,
-        8,58,10,58,12,58,1101,9,58,1,58,1,58,3,58,1105,8,58,1,59,1,59,1,
-        59,1,60,1,60,1,60,1,60,1,60,1,61,1,61,3,61,1117,8,61,1,61,1,61,1,
-        61,3,61,1122,8,61,1,61,3,61,1125,8,61,1,62,5,62,1128,8,62,10,62,
-        12,62,1131,9,62,1,62,3,62,1134,8,62,1,62,1,62,1,63,1,63,1,63,1,63,
-        1,63,5,63,1143,8,63,10,63,12,63,1146,9,63,1,63,1,63,1,64,1,64,1,
-        64,1,64,5,64,1154,8,64,10,64,12,64,1157,9,64,1,65,1,65,3,65,1161,
-        8,65,1,66,1,66,3,66,1165,8,66,1,67,1,67,1,67,1,68,1,68,1,68,1,68,
-        1,68,1,69,1,69,1,70,1,70,1,70,3,70,1180,8,70,1,71,1,71,1,72,1,72,
-        1,72,5,72,1187,8,72,10,72,12,72,1190,9,72,1,73,1,73,3,73,1194,8,
-        73,1,74,1,74,1,74,5,74,1199,8,74,10,74,12,74,1202,9,74,1,75,1,75,
-        4,75,1206,8,75,11,75,12,75,1207,1,76,3,76,1211,8,76,1,76,1,76,1,
-        76,1,76,1,77,1,77,1,77,1,78,1,78,5,78,1222,8,78,10,78,12,78,1225,
-        9,78,1,79,1,79,1,79,1,80,1,80,1,81,1,81,5,81,1234,8,81,10,81,12,
-        81,1237,9,81,1,82,1,82,5,82,1241,8,82,10,82,12,82,1244,9,82,1,82,
-        1,82,1,82,5,82,1249,8,82,10,82,12,82,1252,9,82,1,82,3,82,1255,8,
-        82,1,82,3,82,1258,8,82,1,83,1,83,1,83,3,83,1263,8,83,1,84,1,84,1,
-        84,1,84,1,85,1,85,1,86,1,86,1,86,3,86,1274,8,86,1,86,1,86,1,87,1,
-        87,1,87,1,87,1,87,1,88,1,88,1,88,1,89,1,89,1,89,1,89,5,89,1290,8,
-        89,10,89,12,89,1293,9,89,1,90,1,90,1,90,3,90,1298,8,90,1,91,1,91,
-        1,91,1,91,5,91,1304,8,91,10,91,12,91,1307,9,91,1,92,1,92,3,92,1311,
-        8,92,1,92,5,92,1314,8,92,10,92,12,92,1317,9,92,1,93,1,93,1,93,1,
-        94,1,94,5,94,1324,8,94,10,94,12,94,1327,9,94,1,94,1,94,1,94,5,94,
-        1332,8,94,10,94,12,94,1335,9,94,1,94,3,94,1338,8,94,1,94,3,94,1341,
-        8,94,1,95,1,95,1,95,1,96,1,96,5,96,1348,8,96,10,96,12,96,1351,9,
-        96,1,96,1,96,1,96,3,96,1356,8,96,1,97,1,97,3,97,1360,8,97,1,98,1,
-        98,1,98,1,98,5,98,1366,8,98,10,98,12,98,1369,9,98,1,99,1,99,1,99,
-        1,100,1,100,5,100,1376,8,100,10,100,12,100,1379,9,100,1,100,1,100,
-        1,100,1,101,1,101,5,101,1386,8,101,10,101,12,101,1389,9,101,1,101,
-        1,101,1,101,1,101,1,101,1,101,1,101,5,101,1398,8,101,10,101,12,101,
-        1401,9,101,1,101,3,101,1404,8,101,1,101,1,101,1,102,1,102,1,102,
-        3,102,1411,8,102,1,103,1,103,1,103,1,103,1,103,5,103,1418,8,103,
-        10,103,12,103,1421,9,103,1,103,1,103,1,104,1,104,5,104,1427,8,104,
-        10,104,12,104,1430,9,104,1,104,1,104,1,104,1,104,1,104,3,104,1437,
-        8,104,1,104,3,104,1440,8,104,1,105,1,105,1,105,1,105,1,106,1,106,
-        1,106,1,106,1,106,1,107,1,107,1,107,1,107,1,107,1,107,1,108,1,108,
-        5,108,1459,8,108,10,108,12,108,1462,9,108,1,108,1,108,1,108,5,108,
-        1467,8,108,10,108,12,108,1470,9,108,1,108,1,108,1,108,3,108,1475,
-        8,108,1,108,3,108,1478,8,108,1,109,1,109,1,109,1,110,1,110,3,110,
-        1485,8,110,1,111,1,111,1,111,1,111,1,112,1,112,1,112,1,112,1,112,
-        1,112,1,112,1,112,1,112,1,112,1,113,1,113,3,113,1503,8,113,1,113,
-        1,113,3,113,1507,8,113,1,113,1,113,1,113,1,114,1,114,1,114,1,114,
-        5,114,1516,8,114,10,114,12,114,1519,9,114,1,115,1,115,5,115,1523,
-        8,115,10,115,12,115,1526,9,115,1,115,1,115,1,115,5,115,1531,8,115,
-        10,115,12,115,1534,9,115,1,115,3,115,1537,8,115,1,115,3,115,1540,
-        8,115,1,115,1,115,1,115,1,115,1,115,1,116,1,116,1,116,1,117,1,117,
-        1,117,1,118,1,118,3,118,1555,8,118,1,119,1,119,1,119,1,120,1,120,
-        5,120,1562,8,120,10,120,12,120,1565,9,120,1,120,1,120,1,120,5,120,
-        1570,8,120,10,120,12,120,1573,9,120,1,120,3,120,1576,8,120,1,121,
-        1,121,3,121,1580,8,121,1,122,1,122,3,122,1584,8,122,1,122,1,122,
-        1,122,1,122,1,123,1,123,1,123,1,123,3,123,1594,8,123,1,124,1,124,
-        1,124,1,124,1,125,1,125,1,125,3,125,1603,8,125,1,126,3,126,1606,
-        8,126,1,126,5,126,1609,8,126,10,126,12,126,1612,9,126,1,126,3,126,
-        1615,8,126,1,127,3,127,1618,8,127,1,127,1,127,3,127,1622,8,127,1,
-        128,1,128,3,128,1626,8,128,1,128,1,128,1,128,1,128,1,129,1,129,1,
-        129,1,129,1,129,3,129,1637,8,129,1,130,1,130,1,130,1,130,1,130,5,
-        130,1644,8,130,10,130,12,130,1647,9,130,1,130,1,130,1,131,1,131,
-        5,131,1653,8,131,10,131,12,131,1656,9,131,1,131,1,131,1,131,3,131,
-        1661,8,131,1,131,1,131,3,131,1665,8,131,1,132,1,132,1,132,3,132,
-        1670,8,132,1,133,1,133,1,133,1,133,1,134,1,134,1,134,1,134,1,135,
-        1,135,5,135,1682,8,135,10,135,12,135,1685,9,135,1,135,1,135,3,135,
-        1689,8,135,1,135,1,135,1,135,1,135,1,136,1,136,1,136,1,137,1,137,
-        1,137,1,137,5,137,1702,8,137,10,137,12,137,1705,9,137,1,138,1,138,
-        1,138,1,138,5,138,1711,8,138,10,138,12,138,1714,9,138,3,138,1716,
-        8,138,1,139,1,139,1,139,1,139,5,139,1722,8,139,10,139,12,139,1725,
-        9,139,1,140,1,140,1,140,1,140,5,140,1731,8,140,10,140,12,140,1734,
-        9,140,3,140,1736,8,140,1,141,1,141,1,141,1,141,5,141,1742,8,141,
-        10,141,12,141,1745,9,141,3,141,1747,8,141,1,142,1,142,1,142,1,142,
-        5,142,1753,8,142,10,142,12,142,1756,9,142,3,142,1758,8,142,1,143,
-        1,143,3,143,1762,8,143,1,144,1,144,5,144,1766,8,144,10,144,12,144,
-        1769,9,144,1,144,1,144,1,144,3,144,1774,8,144,1,145,1,145,1,145,
-        1,145,5,145,1780,8,145,10,145,12,145,1783,9,145,1,146,1,146,1,146,
-        1,146,5,146,1789,8,146,10,146,12,146,1792,9,146,1,147,1,147,1,147,
-        1,147,1,148,1,148,1,148,1,148,3,148,1802,8,148,1,149,1,149,1,149,
-        1,149,1,149,5,149,1809,8,149,10,149,12,149,1812,9,149,3,149,1814,
-        8,149,1,149,1,149,1,150,4,150,1819,8,150,11,150,12,150,1820,1,151,
-        1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,
-        1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,
-        1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,
-        1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,1,151,
-        1,151,1,151,1,151,1,151,1,151,1,151,3,151,1874,8,151,1,152,1,152,
-        1,152,5,152,1879,8,152,10,152,12,152,1882,9,152,1,153,1,153,1,153,
-        1,153,1,153,1,153,1,153,1,153,1,153,1,153,1,153,1,153,1,153,3,153,
-        1897,8,153,1,154,1,154,5,154,1901,8,154,10,154,12,154,1904,9,154,
-        1,154,1,154,1,154,1,154,1,155,1,155,5,155,1912,8,155,10,155,12,155,
-        1915,9,155,1,155,1,155,1,156,1,156,5,156,1921,8,156,10,156,12,156,
-        1924,9,156,1,156,3,156,1927,8,156,1,156,3,156,1930,8,156,1,156,3,
-        156,1933,8,156,1,156,1,156,1,156,4,156,1938,8,156,11,156,12,156,
-        1939,1,156,1,156,1,157,1,157,1,157,1,157,1,157,1,157,1,158,1,158,
-        1,158,1,158,1,158,5,158,1955,8,158,10,158,12,158,1958,9,158,1,159,
-        1,159,1,159,1,159,1,159,5,159,1965,8,159,10,159,12,159,1968,9,159,
-        1,159,1,159,1,160,1,160,1,160,3,160,1975,8,160,1,160,3,160,1978,
-        8,160,1,160,1,160,1,160,3,160,1983,8,160,1,160,1,160,1,161,1,161,
-        1,161,1,161,1,162,1,162,1,162,1,162,5,162,1995,8,162,10,162,12,162,
-        1998,9,162,1,163,1,163,1,163,1,163,1,164,1,164,5,164,2006,8,164,
-        10,164,12,164,2009,9,164,1,164,3,164,2012,8,164,1,164,1,164,1,164,
-        3,164,2017,8,164,1,165,1,165,1,165,1,165,1,166,1,166,1,166,1,166,
-        1,166,5,166,2028,8,166,10,166,12,166,2031,9,166,1,166,1,166,1,167,
-        1,167,5,167,2037,8,167,10,167,12,167,2040,9,167,1,167,1,167,1,167,
-        5,167,2045,8,167,10,167,12,167,2048,9,167,3,167,2050,8,167,1,168,
-        1,168,5,168,2054,8,168,10,168,12,168,2057,9,168,1,168,1,168,1,168,
-        1,168,5,168,2063,8,168,10,168,12,168,2066,9,168,1,169,1,169,3,169,
-        2070,8,169,1,169,1,169,3,169,2074,8,169,1,170,1,170,5,170,2078,8,
-        170,10,170,12,170,2081,9,170,1,170,1,170,1,170,5,170,2086,8,170,
-        10,170,12,170,2089,9,170,3,170,2091,8,170,1,170,3,170,2094,8,170,
-        1,171,1,171,1,171,1,171,5,171,2100,8,171,10,171,12,171,2103,9,171,
-        1,171,3,171,2106,8,171,1,172,1,172,1,172,1,172,1,173,1,173,5,173,
-        2114,8,173,10,173,12,173,2117,9,173,1,173,1,173,1,173,1,173,1,173,
-        5,173,2124,8,173,10,173,12,173,2127,9,173,3,173,2129,8,173,1,174,
-        1,174,5,174,2133,8,174,10,174,12,174,2136,9,174,1,174,1,174,1,174,
-        1,174,1,175,1,175,1,175,1,175,1,175,3,175,2147,8,175,1,176,1,176,
-        1,176,1,177,1,177,1,177,5,177,2155,8,177,10,177,12,177,2158,9,177,
-        1,178,1,178,3,178,2162,8,178,1,178,1,178,1,178,3,178,2167,8,178,
-        1,178,1,178,1,178,1,179,1,179,1,179,1,179,1,179,1,180,1,180,5,180,
-        2179,8,180,10,180,12,180,2182,9,180,1,180,1,180,1,180,5,180,2187,
-        8,180,10,180,12,180,2190,9,180,1,180,3,180,2193,8,180,1,181,1,181,
-        1,181,1,182,1,182,5,182,2200,8,182,10,182,12,182,2203,9,182,1,182,
-        1,182,1,183,1,183,1,183,3,183,2210,8,183,1,184,1,184,1,184,1,184,
-        5,184,2216,8,184,10,184,12,184,2219,9,184,3,184,2221,8,184,1,185,
-        1,185,3,185,2225,8,185,1,186,1,186,5,186,2229,8,186,10,186,12,186,
-        2232,9,186,1,187,1,187,1,187,1,188,1,188,1,188,1,188,3,188,2241,
-        8,188,1,189,1,189,1,189,1,189,3,189,2247,8,189,1,190,1,190,1,190,
-        1,190,3,190,2253,8,190,1,191,3,191,2256,8,191,1,191,1,191,1,192,
-        1,192,1,192,1,192,1,193,1,193,3,193,2266,8,193,1,193,1,193,1,194,
-        1,194,1,194,1,194,5,194,2274,8,194,10,194,12,194,2277,9,194,1,194,
-        1,194,1,195,1,195,1,195,1,195,1,196,1,196,1,197,1,197,5,197,2289,
-        8,197,10,197,12,197,2292,9,197,1,198,1,198,1,198,1,199,1,199,5,199,
-        2299,8,199,10,199,12,199,2302,9,199,1,200,1,200,1,200,1,201,1,201,
-        1,201,1,201,1,201,3,201,2312,8,201,1,202,1,202,1,202,1,202,1,203,
-        1,203,1,203,1,203,1,203,1,203,5,203,2324,8,203,10,203,12,203,2327,
-        9,203,1,203,1,203,1,204,1,204,1,204,1,204,1,204,1,204,1,204,1,204,
-        1,205,1,205,1,205,1,205,1,206,1,206,1,206,3,206,2346,8,206,1,207,
-        1,207,5,207,2350,8,207,10,207,12,207,2353,9,207,1,208,1,208,1,208,
-        1,209,1,209,5,209,2360,8,209,10,209,12,209,2363,9,209,1,210,1,210,
-        1,210,1,211,1,211,3,211,2370,8,211,1,212,1,212,1,212,3,212,2375,
-        8,212,1,212,3,212,2378,8,212,1,213,1,213,1,214,1,214,1,214,1,214,
-        1,215,3,215,2387,8,215,1,215,1,215,1,216,1,216,1,216,3,216,2394,
-        8,216,1,217,1,217,1,217,3,217,2399,8,217,1,218,1,218,4,218,2403,
-        8,218,11,218,12,218,2404,1,219,1,219,1,219,1,219,3,219,2411,8,219,
-        1,220,1,220,1,220,1,221,1,221,1,221,1,222,1,222,1,222,1,222,1,223,
-        1,223,1,223,1,223,1,223,1,224,1,224,3,224,2430,8,224,1,224,1,224,
-        1,224,1,224,1,225,1,225,3,225,2438,8,225,1,225,1,225,1,225,1,225,
-        1,226,1,226,1,226,1,226,1,227,1,227,5,227,2450,8,227,10,227,12,227,
-        2453,9,227,1,228,1,228,1,228,1,229,1,229,1,229,1,229,1,229,5,229,
-        2463,8,229,10,229,12,229,2466,9,229,3,229,2468,8,229,1,229,1,229,
-        1,230,1,230,3,230,2474,8,230,1,231,1,231,3,231,2478,8,231,1,232,
-        1,232,1,233,1,233,1,233,1,233,1,233,1,233,1,233,3,233,2489,8,233,
-        1,234,1,234,1,234,1,234,1,235,1,235,1,235,1,235,1,235,1,235,1,235,
-        1,235,1,235,1,236,1,236,3,236,2506,8,236,1,237,1,237,4,237,2510,
-        8,237,11,237,12,237,2511,1,238,1,238,1,238,3,238,2517,8,238,1,239,
-        1,239,1,239,1,240,1,240,1,240,1,240,1,241,1,241,1,241,1,241,1,241,
-        1,242,1,242,1,242,3,242,2534,8,242,1,243,1,243,1,244,1,244,1,245,
-        1,245,1,246,1,246,1,246,3,246,2545,8,246,1,247,1,247,1,247,1,247,
-        1,248,1,248,3,248,2553,8,248,1,249,1,249,1,249,1,249,1,250,1,250,
-        5,250,2561,8,250,10,250,12,250,2564,9,250,1,250,1,250,1,250,3,250,
-        2569,8,250,1,250,1,250,5,250,2573,8,250,10,250,12,250,2576,9,250,
-        1,250,3,250,2579,8,250,1,250,1,250,1,250,3,250,2584,8,250,1,251,
-        1,251,3,251,2588,8,251,1,251,1,251,5,251,2592,8,251,10,251,12,251,
-        2595,9,251,1,251,3,251,2598,8,251,1,251,1,251,1,252,1,252,1,252,
-        1,252,1,253,1,253,5,253,2608,8,253,10,253,12,253,2611,9,253,1,253,
-        1,253,1,253,1,253,1,253,5,253,2618,8,253,10,253,12,253,2621,9,253,
-        1,253,1,253,3,253,2625,8,253,1,254,1,254,1,254,1,254,1,254,5,254,
-        2632,8,254,10,254,12,254,2635,9,254,1,254,3,254,2638,8,254,3,254,
-        2640,8,254,1,254,1,254,1,255,1,255,1,255,1,255,1,255,3,255,2649,
-        8,255,1,256,1,256,1,256,1,256,1,256,1,256,1,256,1,256,1,257,1,257,
-        1,257,1,257,1,257,1,258,1,258,1,258,1,258,1,258,1,259,1,259,1,259,
-        1,259,1,259,1,260,1,260,1,261,1,261,1,262,1,262,1,263,1,263,1,263,
-        3,263,2683,8,263,1,264,1,264,3,264,2687,8,264,1,265,1,265,1,266,
-        1,266,3,266,2693,8,266,1,267,1,267,1,267,5,267,2698,8,267,10,267,
-        12,267,2701,9,267,1,268,1,268,3,268,2705,8,268,1,269,1,269,1,269,
-        3,269,2710,8,269,1,270,1,270,3,270,2714,8,270,1,271,1,271,1,272,
-        1,272,1,273,1,273,1,274,1,274,1,274,1,274,1,275,1,275,3,275,2728,
-        8,275,1,276,1,276,1,276,3,276,2733,8,276,1,277,1,277,3,277,2737,
-        8,277,1,278,1,278,3,278,2741,8,278,1,279,1,279,1,279,1,279,1,279,
-        1,279,1,279,1,279,1,279,1,279,1,279,3,279,2754,8,279,1,280,1,280,
-        1,280,1,280,1,280,1,280,1,280,3,280,2763,8,280,1,281,1,281,1,281,
-        1,281,1,281,3,281,2770,8,281,1,282,1,282,3,282,2774,8,282,1,283,
-        1,283,1,284,1,284,1,285,1,285,1,286,1,286,1,287,1,287,1,288,1,288,
-        1,289,1,289,1,290,1,290,1,291,1,291,1,292,1,292,1,292,1,293,1,293,
-        1,293,1,294,1,294,5,294,2802,8,294,10,294,12,294,2805,9,294,1,295,
-        1,295,1,295,1,295,1,295,1,296,1,296,1,296,1,296,1,296,1,296,1,296,
-        1,296,1,296,1,296,1,296,3,296,2823,8,296,1,297,1,297,1,297,1,297,
-        5,297,2829,8,297,10,297,12,297,2832,9,297,3,297,2834,8,297,1,297,
-        1,297,1,298,1,298,1,298,1,298,1,299,1,299,1,299,1,299,5,299,2846,
-        8,299,10,299,12,299,2849,9,299,3,299,2851,8,299,1,299,1,299,1,300,
-        1,300,1,301,1,301,1,302,1,302,1,303,1,303,1,304,1,304,5,304,2865,
-        8,304,10,304,12,304,2868,9,304,1,305,1,305,1,306,3,306,2873,8,306,
-        1,306,1,306,1,307,3,307,2878,8,307,1,307,1,307,1,307,0,0,308,0,2,
-        4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,
-        50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,
-        94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126,
-        128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,
-        160,162,164,166,168,170,172,174,176,178,180,182,184,186,188,190,
-        192,194,196,198,200,202,204,206,208,210,212,214,216,218,220,222,
-        224,226,228,230,232,234,236,238,240,242,244,246,248,250,252,254,
-        256,258,260,262,264,266,268,270,272,274,276,278,280,282,284,286,
-        288,290,292,294,296,298,300,302,304,306,308,310,312,314,316,318,
-        320,322,324,326,328,330,332,334,336,338,340,342,344,346,348,350,
-        352,354,356,358,360,362,364,366,368,370,372,374,376,378,380,382,
-        384,386,388,390,392,394,396,398,400,402,404,406,408,410,412,414,
-        416,418,420,422,424,426,428,430,432,434,436,438,440,442,444,446,
-        448,450,452,454,456,458,460,462,464,466,468,470,472,474,476,478,
-        480,482,484,486,488,490,492,494,496,498,500,502,504,506,508,510,
-        512,514,516,518,520,522,524,526,528,530,532,534,536,538,540,542,
-        544,546,548,550,552,554,556,558,560,562,564,566,568,570,572,574,
-        576,578,580,582,584,586,588,590,592,594,596,598,600,602,604,606,
-        608,610,612,614,0,36,2,0,12,13,25,25,2,0,14,14,26,26,1,0,6,7,2,0,
-        81,81,165,165,1,0,12,13,2,0,161,161,163,163,2,0,162,162,164,164,
-        2,0,216,217,229,229,3,0,48,48,79,79,101,102,15,0,37,37,44,44,46,
-        46,52,52,58,58,60,60,144,144,150,151,202,203,224,224,234,234,239,
-        239,242,244,252,252,320,320,4,0,77,77,157,157,232,233,256,256,2,
-        0,149,149,153,153,2,0,118,118,259,259,3,0,50,50,166,166,193,193,
-        3,0,42,42,145,145,166,166,2,0,189,189,230,230,2,0,48,48,79,79,2,
-        0,95,95,145,145,2,0,148,148,240,240,2,0,93,93,260,260,14,0,51,51,
-        56,56,70,71,76,76,88,88,100,100,119,129,135,135,140,141,143,143,
-        201,201,231,231,262,265,267,268,14,0,51,51,56,56,70,71,76,76,88,
-        88,119,129,135,135,140,141,143,143,201,201,231,231,262,265,267,268,
-        320,320,3,0,18,18,20,20,28,28,4,0,64,67,109,112,136,137,179,180,
-        2,0,54,54,168,168,2,0,22,24,27,27,2,0,11,11,33,33,3,0,1,1,32,32,
-        35,35,10,0,19,19,21,21,62,63,82,83,108,108,113,117,158,158,169,178,
-        181,182,235,236,3,0,143,143,263,263,267,267,1,0,90,91,4,0,309,309,
-        311,311,314,315,317,319,4,0,281,287,289,291,294,299,306,308,1,0,
-        281,308,40,0,38,38,40,42,50,50,53,53,55,55,59,59,72,72,75,75,77,
-        78,81,81,85,86,92,92,97,98,118,118,130,130,132,134,138,138,146,147,
-        149,149,151,153,157,157,165,166,183,184,186,187,191,192,197,198,
-        200,200,204,204,213,215,218,220,227,227,232,233,237,237,241,241,
-        253,253,256,259,261,261,269,279,281,281,289,289,25,0,39,39,47,47,
-        57,57,61,62,69,69,74,74,80,80,89,90,93,94,108,108,136,136,139,139,
-        148,148,159,159,185,185,194,194,205,205,221,223,225,226,228,228,
-        230,230,238,238,240,240,245,251,260,260,3001,0,616,1,0,0,0,2,618,
-        1,0,0,0,4,637,1,0,0,0,6,646,1,0,0,0,8,648,1,0,0,0,10,653,1,0,0,0,
-        12,663,1,0,0,0,14,674,1,0,0,0,16,682,1,0,0,0,18,690,1,0,0,0,20,695,
-        1,0,0,0,22,700,1,0,0,0,24,716,1,0,0,0,26,718,1,0,0,0,28,724,1,0,
-        0,0,30,727,1,0,0,0,32,733,1,0,0,0,34,737,1,0,0,0,36,748,1,0,0,0,
-        38,752,1,0,0,0,40,771,1,0,0,0,42,773,1,0,0,0,44,779,1,0,0,0,46,792,
-        1,0,0,0,48,803,1,0,0,0,50,807,1,0,0,0,52,811,1,0,0,0,54,820,1,0,
-        0,0,56,831,1,0,0,0,58,836,1,0,0,0,60,838,1,0,0,0,62,850,1,0,0,0,
-        64,866,1,0,0,0,66,868,1,0,0,0,68,876,1,0,0,0,70,878,1,0,0,0,72,891,
-        1,0,0,0,74,897,1,0,0,0,76,899,1,0,0,0,78,901,1,0,0,0,80,905,1,0,
-        0,0,82,912,1,0,0,0,84,915,1,0,0,0,86,928,1,0,0,0,88,981,1,0,0,0,
-        90,987,1,0,0,0,92,1014,1,0,0,0,94,1016,1,0,0,0,96,1025,1,0,0,0,98,
-        1028,1,0,0,0,100,1035,1,0,0,0,102,1046,1,0,0,0,104,1057,1,0,0,0,
-        106,1059,1,0,0,0,108,1067,1,0,0,0,110,1078,1,0,0,0,112,1081,1,0,
-        0,0,114,1090,1,0,0,0,116,1092,1,0,0,0,118,1106,1,0,0,0,120,1109,
-        1,0,0,0,122,1114,1,0,0,0,124,1129,1,0,0,0,126,1137,1,0,0,0,128,1149,
-        1,0,0,0,130,1160,1,0,0,0,132,1162,1,0,0,0,134,1166,1,0,0,0,136,1169,
-        1,0,0,0,138,1174,1,0,0,0,140,1176,1,0,0,0,142,1181,1,0,0,0,144,1183,
-        1,0,0,0,146,1193,1,0,0,0,148,1195,1,0,0,0,150,1203,1,0,0,0,152,1210,
-        1,0,0,0,154,1216,1,0,0,0,156,1219,1,0,0,0,158,1226,1,0,0,0,160,1229,
-        1,0,0,0,162,1231,1,0,0,0,164,1238,1,0,0,0,166,1262,1,0,0,0,168,1264,
-        1,0,0,0,170,1268,1,0,0,0,172,1270,1,0,0,0,174,1277,1,0,0,0,176,1282,
-        1,0,0,0,178,1285,1,0,0,0,180,1294,1,0,0,0,182,1299,1,0,0,0,184,1308,
-        1,0,0,0,186,1318,1,0,0,0,188,1321,1,0,0,0,190,1342,1,0,0,0,192,1345,
-        1,0,0,0,194,1359,1,0,0,0,196,1361,1,0,0,0,198,1370,1,0,0,0,200,1373,
-        1,0,0,0,202,1383,1,0,0,0,204,1410,1,0,0,0,206,1412,1,0,0,0,208,1424,
-        1,0,0,0,210,1441,1,0,0,0,212,1445,1,0,0,0,214,1450,1,0,0,0,216,1456,
-        1,0,0,0,218,1479,1,0,0,0,220,1482,1,0,0,0,222,1486,1,0,0,0,224,1490,
-        1,0,0,0,226,1502,1,0,0,0,228,1511,1,0,0,0,230,1520,1,0,0,0,232,1546,
-        1,0,0,0,234,1549,1,0,0,0,236,1552,1,0,0,0,238,1556,1,0,0,0,240,1559,
-        1,0,0,0,242,1577,1,0,0,0,244,1581,1,0,0,0,246,1589,1,0,0,0,248,1595,
-        1,0,0,0,250,1599,1,0,0,0,252,1605,1,0,0,0,254,1617,1,0,0,0,256,1623,
-        1,0,0,0,258,1631,1,0,0,0,260,1638,1,0,0,0,262,1650,1,0,0,0,264,1666,
-        1,0,0,0,266,1671,1,0,0,0,268,1675,1,0,0,0,270,1679,1,0,0,0,272,1694,
-        1,0,0,0,274,1697,1,0,0,0,276,1706,1,0,0,0,278,1717,1,0,0,0,280,1726,
-        1,0,0,0,282,1737,1,0,0,0,284,1748,1,0,0,0,286,1759,1,0,0,0,288,1763,
-        1,0,0,0,290,1775,1,0,0,0,292,1784,1,0,0,0,294,1793,1,0,0,0,296,1797,
-        1,0,0,0,298,1803,1,0,0,0,300,1818,1,0,0,0,302,1873,1,0,0,0,304,1875,
-        1,0,0,0,306,1896,1,0,0,0,308,1898,1,0,0,0,310,1909,1,0,0,0,312,1918,
-        1,0,0,0,314,1943,1,0,0,0,316,1949,1,0,0,0,318,1959,1,0,0,0,320,1971,
-        1,0,0,0,322,1986,1,0,0,0,324,1990,1,0,0,0,326,1999,1,0,0,0,328,2003,
-        1,0,0,0,330,2018,1,0,0,0,332,2022,1,0,0,0,334,2034,1,0,0,0,336,2051,
-        1,0,0,0,338,2067,1,0,0,0,340,2075,1,0,0,0,342,2095,1,0,0,0,344,2107,
-        1,0,0,0,346,2111,1,0,0,0,348,2130,1,0,0,0,350,2141,1,0,0,0,352,2148,
-        1,0,0,0,354,2151,1,0,0,0,356,2159,1,0,0,0,358,2171,1,0,0,0,360,2176,
-        1,0,0,0,362,2194,1,0,0,0,364,2197,1,0,0,0,366,2206,1,0,0,0,368,2211,
-        1,0,0,0,370,2224,1,0,0,0,372,2226,1,0,0,0,374,2233,1,0,0,0,376,2236,
-        1,0,0,0,378,2242,1,0,0,0,380,2248,1,0,0,0,382,2255,1,0,0,0,384,2259,
-        1,0,0,0,386,2265,1,0,0,0,388,2269,1,0,0,0,390,2280,1,0,0,0,392,2284,
-        1,0,0,0,394,2286,1,0,0,0,396,2293,1,0,0,0,398,2296,1,0,0,0,400,2303,
-        1,0,0,0,402,2311,1,0,0,0,404,2313,1,0,0,0,406,2317,1,0,0,0,408,2330,
-        1,0,0,0,410,2338,1,0,0,0,412,2342,1,0,0,0,414,2347,1,0,0,0,416,2354,
-        1,0,0,0,418,2357,1,0,0,0,420,2364,1,0,0,0,422,2369,1,0,0,0,424,2371,
-        1,0,0,0,426,2379,1,0,0,0,428,2381,1,0,0,0,430,2386,1,0,0,0,432,2393,
-        1,0,0,0,434,2398,1,0,0,0,436,2400,1,0,0,0,438,2410,1,0,0,0,440,2412,
-        1,0,0,0,442,2415,1,0,0,0,444,2418,1,0,0,0,446,2422,1,0,0,0,448,2427,
-        1,0,0,0,450,2435,1,0,0,0,452,2443,1,0,0,0,454,2447,1,0,0,0,456,2454,
-        1,0,0,0,458,2457,1,0,0,0,460,2473,1,0,0,0,462,2477,1,0,0,0,464,2479,
-        1,0,0,0,466,2488,1,0,0,0,468,2490,1,0,0,0,470,2494,1,0,0,0,472,2505,
-        1,0,0,0,474,2507,1,0,0,0,476,2516,1,0,0,0,478,2518,1,0,0,0,480,2521,
-        1,0,0,0,482,2525,1,0,0,0,484,2533,1,0,0,0,486,2535,1,0,0,0,488,2537,
-        1,0,0,0,490,2539,1,0,0,0,492,2544,1,0,0,0,494,2546,1,0,0,0,496,2552,
-        1,0,0,0,498,2554,1,0,0,0,500,2558,1,0,0,0,502,2585,1,0,0,0,504,2601,
-        1,0,0,0,506,2605,1,0,0,0,508,2626,1,0,0,0,510,2643,1,0,0,0,512,2650,
-        1,0,0,0,514,2658,1,0,0,0,516,2663,1,0,0,0,518,2668,1,0,0,0,520,2673,
-        1,0,0,0,522,2675,1,0,0,0,524,2677,1,0,0,0,526,2682,1,0,0,0,528,2686,
-        1,0,0,0,530,2688,1,0,0,0,532,2692,1,0,0,0,534,2694,1,0,0,0,536,2704,
-        1,0,0,0,538,2709,1,0,0,0,540,2713,1,0,0,0,542,2715,1,0,0,0,544,2717,
-        1,0,0,0,546,2719,1,0,0,0,548,2721,1,0,0,0,550,2727,1,0,0,0,552,2732,
-        1,0,0,0,554,2736,1,0,0,0,556,2740,1,0,0,0,558,2753,1,0,0,0,560,2762,
-        1,0,0,0,562,2769,1,0,0,0,564,2773,1,0,0,0,566,2775,1,0,0,0,568,2777,
-        1,0,0,0,570,2779,1,0,0,0,572,2781,1,0,0,0,574,2783,1,0,0,0,576,2785,
-        1,0,0,0,578,2787,1,0,0,0,580,2789,1,0,0,0,582,2791,1,0,0,0,584,2793,
-        1,0,0,0,586,2796,1,0,0,0,588,2799,1,0,0,0,590,2806,1,0,0,0,592,2822,
-        1,0,0,0,594,2824,1,0,0,0,596,2837,1,0,0,0,598,2841,1,0,0,0,600,2854,
-        1,0,0,0,602,2856,1,0,0,0,604,2858,1,0,0,0,606,2860,1,0,0,0,608,2862,
-        1,0,0,0,610,2869,1,0,0,0,612,2872,1,0,0,0,614,2877,1,0,0,0,616,617,
-        3,2,1,0,617,1,1,0,0,0,618,623,3,4,2,0,619,620,5,34,0,0,620,622,3,
-        4,2,0,621,619,1,0,0,0,622,625,1,0,0,0,623,621,1,0,0,0,623,624,1,
-        0,0,0,624,627,1,0,0,0,625,623,1,0,0,0,626,628,5,34,0,0,627,626,1,
-        0,0,0,627,628,1,0,0,0,628,629,1,0,0,0,629,630,5,0,0,1,630,3,1,0,
-        0,0,631,638,3,42,21,0,632,638,3,70,35,0,633,638,3,6,3,0,634,638,
-        3,74,37,0,635,638,3,62,31,0,636,638,3,66,33,0,637,631,1,0,0,0,637,
-        632,1,0,0,0,637,633,1,0,0,0,637,634,1,0,0,0,637,635,1,0,0,0,637,
-        636,1,0,0,0,638,5,1,0,0,0,639,647,3,10,5,0,640,647,3,12,6,0,641,
-        647,3,8,4,0,642,647,3,16,8,0,643,647,3,18,9,0,644,647,3,20,10,0,
-        645,647,3,22,11,0,646,639,1,0,0,0,646,640,1,0,0,0,646,641,1,0,0,
-        0,646,642,1,0,0,0,646,643,1,0,0,0,646,644,1,0,0,0,646,645,1,0,0,
-        0,647,7,1,0,0,0,648,649,5,147,0,0,649,650,3,526,263,0,650,651,5,
-        17,0,0,651,652,3,76,38,0,652,9,1,0,0,0,653,654,5,147,0,0,654,655,
-        3,526,263,0,655,656,5,17,0,0,656,658,5,31,0,0,657,659,3,24,12,0,
-        658,657,1,0,0,0,658,659,1,0,0,0,659,660,1,0,0,0,660,661,5,8,0,0,
-        661,662,3,38,19,0,662,11,1,0,0,0,663,664,5,147,0,0,664,665,3,526,
-        263,0,665,666,5,17,0,0,666,667,5,258,0,0,667,669,5,31,0,0,668,670,
-        3,14,7,0,669,668,1,0,0,0,669,670,1,0,0,0,670,671,1,0,0,0,671,672,
-        5,8,0,0,672,673,3,38,19,0,673,13,1,0,0,0,674,679,3,26,13,0,675,676,
-        5,9,0,0,676,678,3,26,13,0,677,675,1,0,0,0,678,681,1,0,0,0,679,677,
-        1,0,0,0,679,680,1,0,0,0,680,15,1,0,0,0,681,679,1,0,0,0,682,683,5,
-        147,0,0,683,684,3,526,263,0,684,685,5,17,0,0,685,686,5,159,0,0,686,
-        687,5,31,0,0,687,688,3,78,39,0,688,689,5,8,0,0,689,17,1,0,0,0,690,
-        691,5,147,0,0,691,692,3,526,263,0,692,693,5,17,0,0,693,694,3,206,
-        103,0,694,19,1,0,0,0,695,696,5,147,0,0,696,697,3,526,263,0,697,698,
-        5,17,0,0,698,699,3,80,40,0,699,21,1,0,0,0,700,701,5,147,0,0,701,
-        702,3,526,263,0,702,703,5,17,0,0,703,704,3,392,196,0,704,23,1,0,
-        0,0,705,706,3,30,15,0,706,707,5,9,0,0,707,708,3,30,15,0,708,709,
-        1,0,0,0,709,710,5,9,0,0,710,711,3,26,13,0,711,717,1,0,0,0,712,713,
-        3,26,13,0,713,714,5,9,0,0,714,715,3,26,13,0,715,717,1,0,0,0,716,
-        705,1,0,0,0,716,712,1,0,0,0,717,25,1,0,0,0,718,719,3,524,262,0,719,
-        720,5,10,0,0,720,722,3,520,260,0,721,723,3,28,14,0,722,721,1,0,0,
-        0,722,723,1,0,0,0,723,27,1,0,0,0,724,725,5,17,0,0,725,726,3,556,
-        278,0,726,29,1,0,0,0,727,728,3,524,262,0,728,731,5,10,0,0,729,732,
-        3,32,16,0,730,732,3,34,17,0,731,729,1,0,0,0,731,730,1,0,0,0,732,
-        31,1,0,0,0,733,734,5,31,0,0,734,735,5,1,0,0,735,736,5,8,0,0,736,
-        33,1,0,0,0,737,738,5,31,0,0,738,743,3,36,18,0,739,740,5,9,0,0,740,
-        742,3,36,18,0,741,739,1,0,0,0,742,745,1,0,0,0,743,741,1,0,0,0,743,
-        744,1,0,0,0,744,746,1,0,0,0,745,743,1,0,0,0,746,747,5,8,0,0,747,
-        35,1,0,0,0,748,749,3,524,262,0,749,750,5,10,0,0,750,751,3,520,260,
-        0,751,37,1,0,0,0,752,758,5,29,0,0,753,754,3,40,20,0,754,755,5,34,
-        0,0,755,757,1,0,0,0,756,753,1,0,0,0,757,760,1,0,0,0,758,756,1,0,
-        0,0,758,759,1,0,0,0,759,762,1,0,0,0,760,758,1,0,0,0,761,763,3,76,
-        38,0,762,761,1,0,0,0,762,763,1,0,0,0,763,765,1,0,0,0,764,766,5,34,
-        0,0,765,764,1,0,0,0,765,766,1,0,0,0,766,767,1,0,0,0,767,768,5,4,
-        0,0,768,39,1,0,0,0,769,772,3,6,3,0,770,772,3,70,35,0,771,769,1,0,
-        0,0,771,770,1,0,0,0,772,41,1,0,0,0,773,774,5,75,0,0,774,775,5,200,
-        0,0,775,777,3,526,263,0,776,778,3,44,22,0,777,776,1,0,0,0,777,778,
-        1,0,0,0,778,43,1,0,0,0,779,780,5,17,0,0,780,782,3,46,23,0,781,783,
-        3,50,25,0,782,781,1,0,0,0,782,783,1,0,0,0,783,784,1,0,0,0,784,786,
-        5,29,0,0,785,787,3,52,26,0,786,785,1,0,0,0,787,788,1,0,0,0,788,786,
-        1,0,0,0,788,789,1,0,0,0,789,790,1,0,0,0,790,791,5,4,0,0,791,45,1,
-        0,0,0,792,793,5,31,0,0,793,798,3,48,24,0,794,795,5,9,0,0,795,797,
-        3,48,24,0,796,794,1,0,0,0,797,800,1,0,0,0,798,796,1,0,0,0,798,799,
-        1,0,0,0,799,801,1,0,0,0,800,798,1,0,0,0,801,802,5,8,0,0,802,47,1,
-        0,0,0,803,804,3,524,262,0,804,805,5,10,0,0,805,806,3,520,260,0,806,
-        49,1,0,0,0,807,808,5,30,0,0,808,809,3,48,24,0,809,810,5,5,0,0,810,
-        51,1,0,0,0,811,813,3,54,27,0,812,814,3,56,28,0,813,812,1,0,0,0,813,
-        814,1,0,0,0,814,815,1,0,0,0,815,816,5,17,0,0,816,818,3,60,30,0,817,
-        819,5,34,0,0,818,817,1,0,0,0,818,819,1,0,0,0,819,53,1,0,0,0,820,
-        821,5,31,0,0,821,826,3,58,29,0,822,823,5,9,0,0,823,825,3,58,29,0,
-        824,822,1,0,0,0,825,828,1,0,0,0,826,824,1,0,0,0,826,827,1,0,0,0,
-        827,829,1,0,0,0,828,826,1,0,0,0,829,830,5,8,0,0,830,55,1,0,0,0,831,
-        832,5,15,0,0,832,833,5,30,0,0,833,834,3,58,29,0,834,835,5,5,0,0,
-        835,57,1,0,0,0,836,837,3,588,294,0,837,59,1,0,0,0,838,844,5,29,0,
-        0,839,840,3,40,20,0,840,841,5,34,0,0,841,843,1,0,0,0,842,839,1,0,
-        0,0,843,846,1,0,0,0,844,842,1,0,0,0,844,845,1,0,0,0,845,847,1,0,
-        0,0,846,844,1,0,0,0,847,848,3,76,38,0,848,849,5,4,0,0,849,61,1,0,
-        0,0,850,851,5,220,0,0,851,852,5,38,0,0,852,853,5,246,0,0,853,854,
-        5,31,0,0,854,859,3,64,32,0,855,856,5,9,0,0,856,858,3,64,32,0,857,
-        855,1,0,0,0,858,861,1,0,0,0,859,857,1,0,0,0,859,860,1,0,0,0,860,
-        862,1,0,0,0,861,859,1,0,0,0,862,863,5,8,0,0,863,63,1,0,0,0,864,867,
-        3,526,263,0,865,867,3,492,246,0,866,864,1,0,0,0,866,865,1,0,0,0,
-        867,65,1,0,0,0,868,869,5,228,0,0,869,872,3,526,263,0,870,871,5,17,
-        0,0,871,873,3,68,34,0,872,870,1,0,0,0,872,873,1,0,0,0,873,67,1,0,
-        0,0,874,877,3,526,263,0,875,877,3,556,278,0,876,874,1,0,0,0,876,
-        875,1,0,0,0,877,69,1,0,0,0,878,879,5,75,0,0,879,880,5,213,0,0,880,
-        881,5,31,0,0,881,886,3,72,36,0,882,883,5,9,0,0,883,885,3,72,36,0,
-        884,882,1,0,0,0,885,888,1,0,0,0,886,884,1,0,0,0,886,887,1,0,0,0,
-        887,889,1,0,0,0,888,886,1,0,0,0,889,890,5,8,0,0,890,71,1,0,0,0,891,
-        892,3,524,262,0,892,893,5,10,0,0,893,895,3,520,260,0,894,896,3,28,
-        14,0,895,894,1,0,0,0,895,896,1,0,0,0,896,73,1,0,0,0,897,898,3,76,
-        38,0,898,75,1,0,0,0,899,900,3,78,39,0,900,77,1,0,0,0,901,903,3,86,
-        43,0,902,904,3,80,40,0,903,902,1,0,0,0,903,904,1,0,0,0,904,79,1,
-        0,0,0,905,909,3,82,41,0,906,908,3,82,41,0,907,906,1,0,0,0,908,911,
-        1,0,0,0,909,907,1,0,0,0,909,910,1,0,0,0,910,81,1,0,0,0,911,909,1,
-        0,0,0,912,913,5,3,0,0,913,914,3,88,44,0,914,83,1,0,0,0,915,919,3,
-        88,44,0,916,918,3,82,41,0,917,916,1,0,0,0,918,921,1,0,0,0,919,917,
-        1,0,0,0,919,920,1,0,0,0,920,85,1,0,0,0,921,919,1,0,0,0,922,929,3,
-        90,45,0,923,929,3,274,137,0,924,929,3,202,101,0,925,929,3,470,235,
-        0,926,929,3,390,195,0,927,929,3,392,196,0,928,922,1,0,0,0,928,923,
-        1,0,0,0,928,924,1,0,0,0,928,925,1,0,0,0,928,926,1,0,0,0,928,927,
-        1,0,0,0,929,87,1,0,0,0,930,982,3,94,47,0,931,982,3,96,48,0,932,982,
-        3,98,49,0,933,982,3,100,50,0,934,982,3,102,51,0,935,982,3,114,57,
-        0,936,982,3,112,56,0,937,982,3,116,58,0,938,982,3,122,61,0,939,982,
-        3,150,75,0,940,982,3,160,80,0,941,982,3,162,81,0,942,982,3,164,82,
-        0,943,982,3,180,90,0,944,982,3,188,94,0,945,982,3,182,91,0,946,982,
-        3,190,95,0,947,982,3,192,96,0,948,982,3,200,100,0,949,982,3,208,
-        104,0,950,982,3,216,108,0,951,982,3,240,120,0,952,982,3,230,115,
-        0,953,982,3,108,54,0,954,982,3,244,122,0,955,982,3,258,129,0,956,
-        982,3,256,128,0,957,982,3,262,131,0,958,982,3,270,135,0,959,982,
-        3,280,140,0,960,982,3,276,138,0,961,982,3,282,141,0,962,982,3,284,
-        142,0,963,982,3,278,139,0,964,982,3,288,144,0,965,982,3,292,146,
-        0,966,982,3,296,148,0,967,982,3,310,155,0,968,982,3,308,154,0,969,
-        982,3,312,156,0,970,982,3,328,164,0,971,982,3,334,167,0,972,982,
-        3,336,168,0,973,982,3,340,170,0,974,982,3,346,173,0,975,982,3,350,
-        175,0,976,982,3,348,174,0,977,982,3,354,177,0,978,982,3,360,180,
-        0,979,982,3,364,182,0,980,982,3,366,183,0,981,930,1,0,0,0,981,931,
-        1,0,0,0,981,932,1,0,0,0,981,933,1,0,0,0,981,934,1,0,0,0,981,935,
-        1,0,0,0,981,936,1,0,0,0,981,937,1,0,0,0,981,938,1,0,0,0,981,939,
-        1,0,0,0,981,940,1,0,0,0,981,941,1,0,0,0,981,942,1,0,0,0,981,943,
-        1,0,0,0,981,944,1,0,0,0,981,945,1,0,0,0,981,946,1,0,0,0,981,947,
-        1,0,0,0,981,948,1,0,0,0,981,949,1,0,0,0,981,950,1,0,0,0,981,951,
-        1,0,0,0,981,952,1,0,0,0,981,953,1,0,0,0,981,954,1,0,0,0,981,955,
-        1,0,0,0,981,956,1,0,0,0,981,957,1,0,0,0,981,958,1,0,0,0,981,959,
-        1,0,0,0,981,960,1,0,0,0,981,961,1,0,0,0,981,962,1,0,0,0,981,963,
-        1,0,0,0,981,964,1,0,0,0,981,965,1,0,0,0,981,966,1,0,0,0,981,967,
-        1,0,0,0,981,968,1,0,0,0,981,969,1,0,0,0,981,970,1,0,0,0,981,971,
-        1,0,0,0,981,972,1,0,0,0,981,973,1,0,0,0,981,974,1,0,0,0,981,975,
-        1,0,0,0,981,976,1,0,0,0,981,977,1,0,0,0,981,978,1,0,0,0,981,979,
-        1,0,0,0,981,980,1,0,0,0,982,89,1,0,0,0,983,988,3,122,61,0,984,988,
-        3,328,164,0,985,988,3,360,180,0,986,988,3,108,54,0,987,983,1,0,0,
-        0,987,984,1,0,0,0,987,985,1,0,0,0,987,986,1,0,0,0,988,91,1,0,0,0,
-        989,1015,3,100,50,0,990,1015,3,112,56,0,991,1015,3,364,182,0,992,
-        1015,3,244,122,0,993,1015,3,256,128,0,994,1015,3,346,173,0,995,1015,
-        3,354,177,0,996,1015,3,280,140,0,997,1015,3,276,138,0,998,1015,3,
-        282,141,0,999,1015,3,284,142,0,1000,1015,3,278,139,0,1001,1015,3,
-        340,170,0,1002,1015,3,102,51,0,1003,1015,3,350,175,0,1004,1015,3,
-        348,174,0,1005,1015,3,336,168,0,1006,1015,3,240,120,0,1007,1015,
-        3,288,144,0,1008,1015,3,310,155,0,1009,1015,3,308,154,0,1010,1015,
-        3,94,47,0,1011,1015,3,190,95,0,1012,1015,3,114,57,0,1013,1015,3,
-        312,156,0,1014,989,1,0,0,0,1014,990,1,0,0,0,1014,991,1,0,0,0,1014,
-        992,1,0,0,0,1014,993,1,0,0,0,1014,994,1,0,0,0,1014,995,1,0,0,0,1014,
-        996,1,0,0,0,1014,997,1,0,0,0,1014,998,1,0,0,0,1014,999,1,0,0,0,1014,
-        1000,1,0,0,0,1014,1001,1,0,0,0,1014,1002,1,0,0,0,1014,1003,1,0,0,
-        0,1014,1004,1,0,0,0,1014,1005,1,0,0,0,1014,1006,1,0,0,0,1014,1007,
-        1,0,0,0,1014,1008,1,0,0,0,1014,1009,1,0,0,0,1014,1010,1,0,0,0,1014,
-        1011,1,0,0,0,1014,1012,1,0,0,0,1014,1013,1,0,0,0,1015,93,1,0,0,0,
-        1016,1020,5,47,0,0,1017,1019,3,378,189,0,1018,1017,1,0,0,0,1019,
-        1022,1,0,0,0,1020,1018,1,0,0,0,1020,1021,1,0,0,0,1021,1023,1,0,0,
-        0,1022,1020,1,0,0,0,1023,1024,3,526,263,0,1024,95,1,0,0,0,1025,1026,
-        5,49,0,0,1026,1027,3,502,251,0,1027,97,1,0,0,0,1028,1032,5,61,0,
-        0,1029,1031,3,378,189,0,1030,1029,1,0,0,0,1031,1034,1,0,0,0,1032,
-        1030,1,0,0,0,1032,1033,1,0,0,0,1033,99,1,0,0,0,1034,1032,1,0,0,0,
-        1035,1039,5,69,0,0,1036,1038,3,378,189,0,1037,1036,1,0,0,0,1038,
-        1041,1,0,0,0,1039,1037,1,0,0,0,1039,1040,1,0,0,0,1040,1044,1,0,0,
-        0,1041,1039,1,0,0,0,1042,1043,5,47,0,0,1043,1045,3,538,269,0,1044,
-        1042,1,0,0,0,1044,1045,1,0,0,0,1045,101,1,0,0,0,1046,1050,5,80,0,
-        0,1047,1049,3,378,189,0,1048,1047,1,0,0,0,1049,1052,1,0,0,0,1050,
-        1048,1,0,0,0,1050,1051,1,0,0,0,1051,1055,1,0,0,0,1052,1050,1,0,0,
-        0,1053,1056,3,104,52,0,1054,1056,3,106,53,0,1055,1053,1,0,0,0,1055,
-        1054,1,0,0,0,1056,103,1,0,0,0,1057,1058,5,1,0,0,1058,105,1,0,0,0,
-        1059,1064,3,392,196,0,1060,1061,5,9,0,0,1061,1063,3,392,196,0,1062,
-        1060,1,0,0,0,1063,1066,1,0,0,0,1064,1062,1,0,0,0,1064,1065,1,0,0,
-        0,1065,107,1,0,0,0,1066,1064,1,0,0,0,1067,1071,5,85,0,0,1068,1070,
-        3,378,189,0,1069,1068,1,0,0,0,1070,1073,1,0,0,0,1071,1069,1,0,0,
-        0,1071,1072,1,0,0,0,1072,1074,1,0,0,0,1073,1071,1,0,0,0,1074,1076,
-        3,458,229,0,1075,1077,3,110,55,0,1076,1075,1,0,0,0,1076,1077,1,0,
-        0,0,1077,109,1,0,0,0,1078,1079,5,10,0,0,1079,1080,3,502,251,0,1080,
-        111,1,0,0,0,1081,1082,5,89,0,0,1082,1087,3,382,191,0,1083,1084,5,
-        9,0,0,1084,1086,3,382,191,0,1085,1083,1,0,0,0,1086,1089,1,0,0,0,
-        1087,1085,1,0,0,0,1087,1088,1,0,0,0,1088,113,1,0,0,0,1089,1087,1,
-        0,0,0,1090,1091,5,87,0,0,1091,115,1,0,0,0,1092,1093,5,92,0,0,1093,
-        1094,5,57,0,0,1094,1099,3,472,236,0,1095,1096,5,9,0,0,1096,1098,
-        3,472,236,0,1097,1095,1,0,0,0,1098,1101,1,0,0,0,1099,1097,1,0,0,
-        0,1099,1100,1,0,0,0,1100,1104,1,0,0,0,1101,1099,1,0,0,0,1102,1105,
-        3,118,59,0,1103,1105,3,120,60,0,1104,1102,1,0,0,0,1104,1103,1,0,
-        0,0,1104,1105,1,0,0,0,1105,117,1,0,0,0,1106,1107,5,261,0,0,1107,
-        1108,3,92,46,0,1108,119,1,0,0,0,1109,1110,5,261,0,0,1110,1111,5,
-        31,0,0,1111,1112,3,156,78,0,1112,1113,5,8,0,0,1113,121,1,0,0,0,1114,
-        1116,5,94,0,0,1115,1117,3,124,62,0,1116,1115,1,0,0,0,1116,1117,1,
-        0,0,0,1117,1118,1,0,0,0,1118,1121,3,392,196,0,1119,1122,3,128,64,
-        0,1120,1122,3,138,69,0,1121,1119,1,0,0,0,1121,1120,1,0,0,0,1121,
-        1122,1,0,0,0,1122,1124,1,0,0,0,1123,1125,3,140,70,0,1124,1123,1,
-        0,0,0,1124,1125,1,0,0,0,1125,123,1,0,0,0,1126,1128,3,378,189,0,1127,
-        1126,1,0,0,0,1128,1131,1,0,0,0,1129,1127,1,0,0,0,1129,1130,1,0,0,
-        0,1130,1133,1,0,0,0,1131,1129,1,0,0,0,1132,1134,3,126,63,0,1133,
-        1132,1,0,0,0,1133,1134,1,0,0,0,1134,1135,1,0,0,0,1135,1136,5,260,
-        0,0,1136,125,1,0,0,0,1137,1138,5,136,0,0,1138,1139,5,31,0,0,1139,
-        1144,3,146,73,0,1140,1141,5,9,0,0,1141,1143,3,146,73,0,1142,1140,
-        1,0,0,0,1143,1146,1,0,0,0,1144,1142,1,0,0,0,1144,1145,1,0,0,0,1145,
-        1147,1,0,0,0,1146,1144,1,0,0,0,1147,1148,5,8,0,0,1148,127,1,0,0,
-        0,1149,1150,5,206,0,0,1150,1155,3,130,65,0,1151,1152,5,9,0,0,1152,
-        1154,3,130,65,0,1153,1151,1,0,0,0,1154,1157,1,0,0,0,1155,1153,1,
-        0,0,0,1155,1156,1,0,0,0,1156,129,1,0,0,0,1157,1155,1,0,0,0,1158,
-        1161,3,132,66,0,1159,1161,3,136,68,0,1160,1158,1,0,0,0,1160,1159,
-        1,0,0,0,1161,131,1,0,0,0,1162,1164,3,524,262,0,1163,1165,3,134,67,
-        0,1164,1163,1,0,0,0,1164,1165,1,0,0,0,1165,133,1,0,0,0,1166,1167,
-        5,10,0,0,1167,1168,3,522,261,0,1168,135,1,0,0,0,1169,1170,5,192,
-        0,0,1170,1171,5,31,0,0,1171,1172,5,1,0,0,1172,1173,5,8,0,0,1173,
-        137,1,0,0,0,1174,1175,5,212,0,0,1175,139,1,0,0,0,1176,1179,5,208,
-        0,0,1177,1180,3,142,71,0,1178,1180,3,144,72,0,1179,1177,1,0,0,0,
-        1179,1178,1,0,0,0,1180,141,1,0,0,0,1181,1182,5,1,0,0,1182,143,1,
-        0,0,0,1183,1188,3,132,66,0,1184,1185,5,9,0,0,1185,1187,3,132,66,
-        0,1186,1184,1,0,0,0,1187,1190,1,0,0,0,1188,1186,1,0,0,0,1188,1189,
-        1,0,0,0,1189,145,1,0,0,0,1190,1188,1,0,0,0,1191,1194,3,148,74,0,
-        1192,1194,3,492,246,0,1193,1191,1,0,0,0,1193,1192,1,0,0,0,1194,147,
-        1,0,0,0,1195,1200,3,486,243,0,1196,1197,5,3,0,0,1197,1199,3,94,47,
-        0,1198,1196,1,0,0,0,1199,1202,1,0,0,0,1200,1198,1,0,0,0,1200,1201,
-        1,0,0,0,1201,149,1,0,0,0,1202,1200,1,0,0,0,1203,1205,5,97,0,0,1204,
-        1206,3,152,76,0,1205,1204,1,0,0,0,1206,1207,1,0,0,0,1207,1205,1,
-        0,0,0,1207,1208,1,0,0,0,1208,151,1,0,0,0,1209,1211,3,154,77,0,1210,
-        1209,1,0,0,0,1210,1211,1,0,0,0,1211,1212,1,0,0,0,1212,1213,5,31,
-        0,0,1213,1214,3,156,78,0,1214,1215,5,8,0,0,1215,153,1,0,0,0,1216,
-        1217,3,526,263,0,1217,1218,5,17,0,0,1218,155,1,0,0,0,1219,1223,3,
-        92,46,0,1220,1222,3,158,79,0,1221,1220,1,0,0,0,1222,1225,1,0,0,0,
-        1223,1221,1,0,0,0,1223,1224,1,0,0,0,1224,157,1,0,0,0,1225,1223,1,
-        0,0,0,1226,1227,5,3,0,0,1227,1228,3,92,46,0,1228,159,1,0,0,0,1229,
-        1230,5,99,0,0,1230,161,1,0,0,0,1231,1235,5,103,0,0,1232,1234,3,378,
-        189,0,1233,1232,1,0,0,0,1234,1237,1,0,0,0,1235,1233,1,0,0,0,1235,
-        1236,1,0,0,0,1236,163,1,0,0,0,1237,1235,1,0,0,0,1238,1242,5,104,
-        0,0,1239,1241,3,378,189,0,1240,1239,1,0,0,0,1241,1244,1,0,0,0,1242,
-        1240,1,0,0,0,1242,1243,1,0,0,0,1243,1245,1,0,0,0,1244,1242,1,0,0,
-        0,1245,1250,3,166,83,0,1246,1247,5,9,0,0,1247,1249,3,166,83,0,1248,
-        1246,1,0,0,0,1249,1252,1,0,0,0,1250,1248,1,0,0,0,1250,1251,1,0,0,
-        0,1251,1254,1,0,0,0,1252,1250,1,0,0,0,1253,1255,3,176,88,0,1254,
-        1253,1,0,0,0,1254,1255,1,0,0,0,1255,1257,1,0,0,0,1256,1258,3,178,
-        89,0,1257,1256,1,0,0,0,1257,1258,1,0,0,0,1258,165,1,0,0,0,1259,1263,
-        3,168,84,0,1260,1263,3,170,85,0,1261,1263,3,172,86,0,1262,1259,1,
-        0,0,0,1262,1260,1,0,0,0,1262,1261,1,0,0,0,1263,167,1,0,0,0,1264,
-        1265,5,31,0,0,1265,1266,3,526,263,0,1266,1267,5,8,0,0,1267,169,1,
-        0,0,0,1268,1269,7,0,0,0,1269,171,1,0,0,0,1270,1271,7,1,0,0,1271,
-        1273,3,526,263,0,1272,1274,3,174,87,0,1273,1272,1,0,0,0,1273,1274,
-        1,0,0,0,1274,1275,1,0,0,0,1275,1276,7,2,0,0,1276,173,1,0,0,0,1277,
-        1278,5,1,0,0,1278,1279,3,430,215,0,1279,1280,5,16,0,0,1280,1281,
-        3,430,215,0,1281,175,1,0,0,0,1282,1283,5,260,0,0,1283,1284,3,76,
-        38,0,1284,177,1,0,0,0,1285,1286,5,206,0,0,1286,1291,3,382,191,0,
-        1287,1288,5,9,0,0,1288,1290,3,382,191,0,1289,1287,1,0,0,0,1290,1293,
-        1,0,0,0,1291,1289,1,0,0,0,1291,1292,1,0,0,0,1292,179,1,0,0,0,1293,
-        1291,1,0,0,0,1294,1295,5,105,0,0,1295,1297,3,430,215,0,1296,1298,
-        3,196,98,0,1297,1296,1,0,0,0,1297,1298,1,0,0,0,1298,181,1,0,0,0,
-        1299,1300,5,107,0,0,1300,1305,3,184,92,0,1301,1302,5,9,0,0,1302,
-        1304,3,184,92,0,1303,1301,1,0,0,0,1304,1307,1,0,0,0,1305,1303,1,
-        0,0,0,1305,1306,1,0,0,0,1306,183,1,0,0,0,1307,1305,1,0,0,0,1308,
-        1310,7,3,0,0,1309,1311,3,186,93,0,1310,1309,1,0,0,0,1310,1311,1,
-        0,0,0,1311,1315,1,0,0,0,1312,1314,3,378,189,0,1313,1312,1,0,0,0,
-        1314,1317,1,0,0,0,1315,1313,1,0,0,0,1315,1316,1,0,0,0,1316,185,1,
-        0,0,0,1317,1315,1,0,0,0,1318,1319,5,47,0,0,1319,1320,3,526,263,0,
-        1320,187,1,0,0,0,1321,1325,5,106,0,0,1322,1324,3,378,189,0,1323,
-        1322,1,0,0,0,1324,1327,1,0,0,0,1325,1323,1,0,0,0,1325,1326,1,0,0,
-        0,1326,1328,1,0,0,0,1327,1325,1,0,0,0,1328,1333,3,166,83,0,1329,
-        1330,5,9,0,0,1330,1332,3,166,83,0,1331,1329,1,0,0,0,1332,1335,1,
-        0,0,0,1333,1331,1,0,0,0,1333,1334,1,0,0,0,1334,1337,1,0,0,0,1335,
-        1333,1,0,0,0,1336,1338,3,176,88,0,1337,1336,1,0,0,0,1337,1338,1,
-        0,0,0,1338,1340,1,0,0,0,1339,1341,3,178,89,0,1340,1339,1,0,0,0,1340,
-        1341,1,0,0,0,1341,189,1,0,0,0,1342,1343,5,139,0,0,1343,1344,3,454,
-        227,0,1344,191,1,0,0,0,1345,1349,5,142,0,0,1346,1348,3,378,189,0,
-        1347,1346,1,0,0,0,1348,1351,1,0,0,0,1349,1347,1,0,0,0,1349,1350,
-        1,0,0,0,1350,1352,1,0,0,0,1351,1349,1,0,0,0,1352,1355,3,194,97,0,
-        1353,1356,3,196,98,0,1354,1356,3,198,99,0,1355,1353,1,0,0,0,1355,
-        1354,1,0,0,0,1355,1356,1,0,0,0,1356,193,1,0,0,0,1357,1360,3,468,
-        234,0,1358,1360,3,392,196,0,1359,1357,1,0,0,0,1359,1358,1,0,0,0,
-        1360,195,1,0,0,0,1361,1362,5,186,0,0,1362,1367,3,392,196,0,1363,
-        1364,5,9,0,0,1364,1366,3,392,196,0,1365,1363,1,0,0,0,1366,1369,1,
-        0,0,0,1367,1365,1,0,0,0,1367,1368,1,0,0,0,1368,197,1,0,0,0,1369,
-        1367,1,0,0,0,1370,1371,5,260,0,0,1371,1372,3,392,196,0,1372,199,
-        1,0,0,0,1373,1377,5,152,0,0,1374,1376,3,378,189,0,1375,1374,1,0,
-        0,0,1376,1379,1,0,0,0,1377,1375,1,0,0,0,1377,1378,1,0,0,0,1378,1380,
-        1,0,0,0,1379,1377,1,0,0,0,1380,1381,3,392,196,0,1381,1382,3,196,
-        98,0,1382,201,1,0,0,0,1383,1387,5,154,0,0,1384,1386,3,378,189,0,
-        1385,1384,1,0,0,0,1386,1389,1,0,0,0,1387,1385,1,0,0,0,1387,1388,
-        1,0,0,0,1388,1390,1,0,0,0,1389,1387,1,0,0,0,1390,1391,3,204,102,
-        0,1391,1392,5,47,0,0,1392,1393,3,526,263,0,1393,1394,5,31,0,0,1394,
-        1399,3,4,2,0,1395,1396,5,34,0,0,1396,1398,3,4,2,0,1397,1395,1,0,
-        0,0,1398,1401,1,0,0,0,1399,1397,1,0,0,0,1399,1400,1,0,0,0,1400,1403,
-        1,0,0,0,1401,1399,1,0,0,0,1402,1404,5,34,0,0,1403,1402,1,0,0,0,1403,
-        1404,1,0,0,0,1404,1405,1,0,0,0,1405,1406,5,8,0,0,1406,203,1,0,0,
-        0,1407,1411,3,206,103,0,1408,1411,3,526,263,0,1409,1411,3,472,236,
-        0,1410,1407,1,0,0,0,1410,1408,1,0,0,0,1410,1409,1,0,0,0,1411,205,
-        1,0,0,0,1412,1413,5,84,0,0,1413,1414,5,30,0,0,1414,1419,3,392,196,
-        0,1415,1416,5,9,0,0,1416,1418,3,392,196,0,1417,1415,1,0,0,0,1418,
-        1421,1,0,0,0,1419,1417,1,0,0,0,1419,1420,1,0,0,0,1420,1422,1,0,0,
-        0,1421,1419,1,0,0,0,1422,1423,5,5,0,0,1423,207,1,0,0,0,1424,1428,
-        5,155,0,0,1425,1427,3,378,189,0,1426,1425,1,0,0,0,1427,1430,1,0,
-        0,0,1428,1426,1,0,0,0,1428,1429,1,0,0,0,1429,1431,1,0,0,0,1430,1428,
-        1,0,0,0,1431,1432,3,526,263,0,1432,1433,7,4,0,0,1433,1436,3,526,
-        263,0,1434,1437,3,210,105,0,1435,1437,3,212,106,0,1436,1434,1,0,
-        0,0,1436,1435,1,0,0,0,1436,1437,1,0,0,0,1437,1439,1,0,0,0,1438,1440,
-        3,214,107,0,1439,1438,1,0,0,0,1439,1440,1,0,0,0,1440,209,1,0,0,0,
-        1441,1442,5,266,0,0,1442,1443,5,17,0,0,1443,1444,3,526,263,0,1444,
-        211,1,0,0,0,1445,1446,5,261,0,0,1446,1447,3,430,215,0,1447,1448,
-        5,186,0,0,1448,1449,3,526,263,0,1449,213,1,0,0,0,1450,1451,5,199,
-        0,0,1451,1452,3,474,237,0,1452,1453,5,31,0,0,1453,1454,3,370,185,
-        0,1454,1455,5,8,0,0,1455,215,1,0,0,0,1456,1460,5,156,0,0,1457,1459,
-        3,378,189,0,1458,1457,1,0,0,0,1459,1462,1,0,0,0,1460,1458,1,0,0,
-        0,1460,1461,1,0,0,0,1461,1463,1,0,0,0,1462,1460,1,0,0,0,1463,1468,
-        3,220,110,0,1464,1465,5,9,0,0,1465,1467,3,220,110,0,1466,1464,1,
-        0,0,0,1467,1470,1,0,0,0,1468,1466,1,0,0,0,1468,1469,1,0,0,0,1469,
-        1471,1,0,0,0,1470,1468,1,0,0,0,1471,1474,3,218,109,0,1472,1475,3,
-        224,112,0,1473,1475,3,226,113,0,1474,1472,1,0,0,0,1474,1473,1,0,
-        0,0,1475,1477,1,0,0,0,1476,1478,3,228,114,0,1477,1476,1,0,0,0,1477,
-        1478,1,0,0,0,1478,217,1,0,0,0,1479,1480,5,186,0,0,1480,1481,3,382,
-        191,0,1481,219,1,0,0,0,1482,1484,3,382,191,0,1483,1485,3,222,111,
-        0,1484,1483,1,0,0,0,1484,1485,1,0,0,0,1485,221,1,0,0,0,1486,1487,
-        5,77,0,0,1487,1488,5,17,0,0,1488,1489,3,382,191,0,1489,223,1,0,0,
-        0,1490,1491,5,136,0,0,1491,1492,5,214,0,0,1492,1493,5,31,0,0,1493,
-        1494,3,382,191,0,1494,1495,5,9,0,0,1495,1496,3,382,191,0,1496,1497,
-        5,9,0,0,1497,1498,3,382,191,0,1498,1499,5,8,0,0,1499,225,1,0,0,0,
-        1500,1501,5,98,0,0,1501,1503,3,382,191,0,1502,1500,1,0,0,0,1502,
-        1503,1,0,0,0,1503,1506,1,0,0,0,1504,1505,5,246,0,0,1505,1507,3,382,
-        191,0,1506,1504,1,0,0,0,1506,1507,1,0,0,0,1507,1508,1,0,0,0,1508,
-        1509,5,237,0,0,1509,1510,3,382,191,0,1510,227,1,0,0,0,1511,1512,
-        5,57,0,0,1512,1517,3,382,191,0,1513,1514,5,9,0,0,1514,1516,3,382,
-        191,0,1515,1513,1,0,0,0,1516,1519,1,0,0,0,1517,1515,1,0,0,0,1517,
-        1518,1,0,0,0,1518,229,1,0,0,0,1519,1517,1,0,0,0,1520,1524,7,5,0,
-        0,1521,1523,3,376,188,0,1522,1521,1,0,0,0,1523,1526,1,0,0,0,1524,
-        1522,1,0,0,0,1524,1525,1,0,0,0,1525,1527,1,0,0,0,1526,1524,1,0,0,
-        0,1527,1532,3,236,118,0,1528,1529,5,9,0,0,1529,1531,3,236,118,0,
-        1530,1528,1,0,0,0,1531,1534,1,0,0,0,1532,1530,1,0,0,0,1532,1533,
-        1,0,0,0,1533,1536,1,0,0,0,1534,1532,1,0,0,0,1535,1537,3,232,116,
-        0,1536,1535,1,0,0,0,1536,1537,1,0,0,0,1537,1539,1,0,0,0,1538,1540,
-        3,234,117,0,1539,1538,1,0,0,0,1539,1540,1,0,0,0,1540,1541,1,0,0,
-        0,1541,1542,5,186,0,0,1542,1543,5,31,0,0,1543,1544,3,370,185,0,1544,
-        1545,5,8,0,0,1545,231,1,0,0,0,1546,1547,5,148,0,0,1547,1548,3,566,
-        283,0,1548,233,1,0,0,0,1549,1550,5,134,0,0,1550,1551,5,319,0,0,1551,
-        235,1,0,0,0,1552,1554,3,382,191,0,1553,1555,3,238,119,0,1554,1553,
-        1,0,0,0,1554,1555,1,0,0,0,1555,237,1,0,0,0,1556,1557,5,246,0,0,1557,
-        1558,3,520,260,0,1558,239,1,0,0,0,1559,1563,7,6,0,0,1560,1562,3,
-        376,188,0,1561,1560,1,0,0,0,1562,1565,1,0,0,0,1563,1561,1,0,0,0,
-        1563,1564,1,0,0,0,1564,1566,1,0,0,0,1565,1563,1,0,0,0,1566,1571,
-        3,242,121,0,1567,1568,5,9,0,0,1568,1570,3,242,121,0,1569,1567,1,
-        0,0,0,1570,1573,1,0,0,0,1571,1569,1,0,0,0,1571,1572,1,0,0,0,1572,
-        1575,1,0,0,0,1573,1571,1,0,0,0,1574,1576,3,232,116,0,1575,1574,1,
-        0,0,0,1575,1576,1,0,0,0,1576,241,1,0,0,0,1577,1579,3,382,191,0,1578,
-        1580,3,238,119,0,1579,1578,1,0,0,0,1579,1580,1,0,0,0,1580,243,1,
-        0,0,0,1581,1583,5,194,0,0,1582,1584,3,246,123,0,1583,1582,1,0,0,
-        0,1583,1584,1,0,0,0,1584,1585,1,0,0,0,1585,1586,3,392,196,0,1586,
-        1587,5,261,0,0,1587,1588,3,252,126,0,1588,245,1,0,0,0,1589,1590,
-        5,143,0,0,1590,1591,5,17,0,0,1591,1593,7,7,0,0,1592,1594,3,248,124,
-        0,1593,1592,1,0,0,0,1593,1594,1,0,0,0,1594,247,1,0,0,0,1595,1596,
-        5,96,0,0,1596,1597,5,17,0,0,1597,1598,5,320,0,0,1598,249,1,0,0,0,
-        1599,1602,3,526,263,0,1600,1601,5,10,0,0,1601,1603,3,520,260,0,1602,
-        1600,1,0,0,0,1602,1603,1,0,0,0,1603,251,1,0,0,0,1604,1606,3,250,
-        125,0,1605,1604,1,0,0,0,1605,1606,1,0,0,0,1606,1610,1,0,0,0,1607,
-        1609,3,254,127,0,1608,1607,1,0,0,0,1609,1612,1,0,0,0,1610,1608,1,
-        0,0,0,1610,1611,1,0,0,0,1611,1614,1,0,0,0,1612,1610,1,0,0,0,1613,
-        1615,5,1,0,0,1614,1613,1,0,0,0,1614,1615,1,0,0,0,1615,253,1,0,0,
-        0,1616,1618,5,1,0,0,1617,1616,1,0,0,0,1617,1618,1,0,0,0,1618,1619,
-        1,0,0,0,1619,1621,3,588,294,0,1620,1622,3,250,125,0,1621,1620,1,
-        0,0,0,1621,1622,1,0,0,0,1622,255,1,0,0,0,1623,1625,5,196,0,0,1624,
-        1626,3,246,123,0,1625,1624,1,0,0,0,1625,1626,1,0,0,0,1626,1627,1,
-        0,0,0,1627,1628,3,392,196,0,1628,1629,5,261,0,0,1629,1630,3,252,
-        126,0,1630,257,1,0,0,0,1631,1632,5,195,0,0,1632,1633,3,392,196,0,
-        1633,1634,5,47,0,0,1634,1636,3,502,251,0,1635,1637,3,260,130,0,1636,
-        1635,1,0,0,0,1636,1637,1,0,0,0,1637,259,1,0,0,0,1638,1639,5,261,
-        0,0,1639,1640,5,31,0,0,1640,1645,3,380,190,0,1641,1642,5,9,0,0,1642,
-        1644,3,380,190,0,1643,1641,1,0,0,0,1644,1647,1,0,0,0,1645,1643,1,
-        0,0,0,1645,1646,1,0,0,0,1646,1648,1,0,0,0,1647,1645,1,0,0,0,1648,
-        1649,5,8,0,0,1649,261,1,0,0,0,1650,1654,5,197,0,0,1651,1653,3,378,
-        189,0,1652,1651,1,0,0,0,1653,1656,1,0,0,0,1654,1652,1,0,0,0,1654,
-        1655,1,0,0,0,1655,1657,1,0,0,0,1656,1654,1,0,0,0,1657,1658,5,57,
-        0,0,1658,1660,3,472,236,0,1659,1661,3,264,132,0,1660,1659,1,0,0,
-        0,1660,1661,1,0,0,0,1661,1664,1,0,0,0,1662,1665,3,266,133,0,1663,
-        1665,3,268,134,0,1664,1662,1,0,0,0,1664,1663,1,0,0,0,1665,263,1,
-        0,0,0,1666,1669,5,136,0,0,1667,1670,3,458,229,0,1668,1670,3,590,
-        295,0,1669,1667,1,0,0,0,1669,1668,1,0,0,0,1670,265,1,0,0,0,1671,
-        1672,5,31,0,0,1672,1673,3,84,42,0,1673,1674,5,8,0,0,1674,267,1,0,
-        0,0,1675,1676,5,29,0,0,1676,1677,3,78,39,0,1677,1678,5,4,0,0,1678,
-        269,1,0,0,0,1679,1683,5,198,0,0,1680,1682,3,378,189,0,1681,1680,
-        1,0,0,0,1682,1685,1,0,0,0,1683,1681,1,0,0,0,1683,1684,1,0,0,0,1684,
-        1686,1,0,0,0,1685,1683,1,0,0,0,1686,1688,3,472,236,0,1687,1689,3,
-        272,136,0,1688,1687,1,0,0,0,1688,1689,1,0,0,0,1689,1690,1,0,0,0,
-        1690,1691,5,31,0,0,1691,1692,3,370,185,0,1692,1693,5,8,0,0,1693,
-        271,1,0,0,0,1694,1695,5,134,0,0,1695,1696,5,319,0,0,1696,273,1,0,
-        0,0,1697,1698,5,205,0,0,1698,1703,3,382,191,0,1699,1700,5,9,0,0,
-        1700,1702,3,382,191,0,1701,1699,1,0,0,0,1702,1705,1,0,0,0,1703,1701,
-        1,0,0,0,1703,1704,1,0,0,0,1704,275,1,0,0,0,1705,1703,1,0,0,0,1706,
-        1715,5,207,0,0,1707,1712,3,534,267,0,1708,1709,5,9,0,0,1709,1711,
-        3,534,267,0,1710,1708,1,0,0,0,1711,1714,1,0,0,0,1712,1710,1,0,0,
-        0,1712,1713,1,0,0,0,1713,1716,1,0,0,0,1714,1712,1,0,0,0,1715,1707,
-        1,0,0,0,1715,1716,1,0,0,0,1716,277,1,0,0,0,1717,1718,5,209,0,0,1718,
-        1723,3,534,267,0,1719,1720,5,9,0,0,1720,1722,3,534,267,0,1721,1719,
-        1,0,0,0,1722,1725,1,0,0,0,1723,1721,1,0,0,0,1723,1724,1,0,0,0,1724,
-        279,1,0,0,0,1725,1723,1,0,0,0,1726,1735,5,206,0,0,1727,1732,3,382,
-        191,0,1728,1729,5,9,0,0,1729,1731,3,382,191,0,1730,1728,1,0,0,0,
-        1731,1734,1,0,0,0,1732,1730,1,0,0,0,1732,1733,1,0,0,0,1733,1736,
-        1,0,0,0,1734,1732,1,0,0,0,1735,1727,1,0,0,0,1735,1736,1,0,0,0,1736,
-        281,1,0,0,0,1737,1746,5,210,0,0,1738,1743,3,384,192,0,1739,1740,
-        5,9,0,0,1740,1742,3,384,192,0,1741,1739,1,0,0,0,1742,1745,1,0,0,
-        0,1743,1741,1,0,0,0,1743,1744,1,0,0,0,1744,1747,1,0,0,0,1745,1743,
-        1,0,0,0,1746,1738,1,0,0,0,1746,1747,1,0,0,0,1747,283,1,0,0,0,1748,
-        1757,5,211,0,0,1749,1754,3,286,143,0,1750,1751,5,9,0,0,1751,1753,
-        3,286,143,0,1752,1750,1,0,0,0,1753,1756,1,0,0,0,1754,1752,1,0,0,
-        0,1754,1755,1,0,0,0,1755,1758,1,0,0,0,1756,1754,1,0,0,0,1757,1749,
-        1,0,0,0,1757,1758,1,0,0,0,1758,285,1,0,0,0,1759,1761,3,534,267,0,
-        1760,1762,7,8,0,0,1761,1760,1,0,0,0,1761,1762,1,0,0,0,1762,287,1,
-        0,0,0,1763,1767,5,215,0,0,1764,1766,3,376,188,0,1765,1764,1,0,0,
-        0,1766,1769,1,0,0,0,1767,1765,1,0,0,0,1767,1768,1,0,0,0,1768,1770,
-        1,0,0,0,1769,1767,1,0,0,0,1770,1771,5,57,0,0,1771,1773,3,382,191,
-        0,1772,1774,3,290,145,0,1773,1772,1,0,0,0,1773,1774,1,0,0,0,1774,
-        289,1,0,0,0,1775,1776,5,261,0,0,1776,1781,3,382,191,0,1777,1778,
-        5,9,0,0,1778,1780,3,382,191,0,1779,1777,1,0,0,0,1780,1783,1,0,0,
-        0,1781,1779,1,0,0,0,1781,1782,1,0,0,0,1782,291,1,0,0,0,1783,1781,
-        1,0,0,0,1784,1785,5,280,0,0,1785,1790,3,294,147,0,1786,1787,5,9,
-        0,0,1787,1789,3,294,147,0,1788,1786,1,0,0,0,1789,1792,1,0,0,0,1790,
-        1788,1,0,0,0,1790,1791,1,0,0,0,1791,293,1,0,0,0,1792,1790,1,0,0,
-        0,1793,1794,3,538,269,0,1794,1795,5,246,0,0,1795,1796,3,538,269,
-        0,1796,295,1,0,0,0,1797,1798,5,218,0,0,1798,1801,7,9,0,0,1799,1802,
-        3,298,149,0,1800,1802,3,300,150,0,1801,1799,1,0,0,0,1801,1800,1,
-        0,0,0,1801,1802,1,0,0,0,1802,297,1,0,0,0,1803,1804,5,261,0,0,1804,
-        1813,5,31,0,0,1805,1810,3,302,151,0,1806,1807,5,9,0,0,1807,1809,
-        3,302,151,0,1808,1806,1,0,0,0,1809,1812,1,0,0,0,1810,1808,1,0,0,
-        0,1810,1811,1,0,0,0,1811,1814,1,0,0,0,1812,1810,1,0,0,0,1813,1805,
-        1,0,0,0,1813,1814,1,0,0,0,1814,1815,1,0,0,0,1815,1816,5,8,0,0,1816,
-        299,1,0,0,0,1817,1819,3,306,153,0,1818,1817,1,0,0,0,1819,1820,1,
-        0,0,0,1820,1818,1,0,0,0,1820,1821,1,0,0,0,1821,301,1,0,0,0,1822,
-        1823,5,245,0,0,1823,1824,5,17,0,0,1824,1874,3,432,216,0,1825,1826,
-        5,270,0,0,1826,1827,5,17,0,0,1827,1874,3,526,263,0,1828,1829,5,227,
-        0,0,1829,1830,5,17,0,0,1830,1874,3,304,152,0,1831,1832,5,275,0,0,
-        1832,1833,5,17,0,0,1833,1874,3,304,152,0,1834,1835,5,45,0,0,1835,
-        1836,5,17,0,0,1836,1874,3,304,152,0,1837,1838,5,143,0,0,1838,1839,
-        5,17,0,0,1839,1874,7,10,0,0,1840,1841,5,273,0,0,1841,1842,5,17,0,
-        0,1842,1874,3,432,216,0,1843,1844,5,279,0,0,1844,1845,5,17,0,0,1845,
-        1874,3,432,216,0,1846,1847,5,269,0,0,1847,1848,5,17,0,0,1848,1874,
-        7,11,0,0,1849,1850,5,274,0,0,1850,1851,5,17,0,0,1851,1874,7,11,0,
-        0,1852,1853,5,146,0,0,1853,1854,5,17,0,0,1854,1874,7,12,0,0,1855,
-        1856,5,278,0,0,1856,1857,5,17,0,0,1857,1874,7,13,0,0,1858,1859,5,
-        39,0,0,1859,1860,5,17,0,0,1860,1874,5,314,0,0,1861,1862,5,277,0,
-        0,1862,1863,5,17,0,0,1863,1874,3,562,281,0,1864,1865,5,276,0,0,1865,
-        1866,5,17,0,0,1866,1874,3,562,281,0,1867,1868,5,272,0,0,1868,1869,
-        5,17,0,0,1869,1874,3,556,278,0,1870,1871,5,271,0,0,1871,1872,5,17,
-        0,0,1872,1874,3,556,278,0,1873,1822,1,0,0,0,1873,1825,1,0,0,0,1873,
-        1828,1,0,0,0,1873,1831,1,0,0,0,1873,1834,1,0,0,0,1873,1837,1,0,0,
-        0,1873,1840,1,0,0,0,1873,1843,1,0,0,0,1873,1846,1,0,0,0,1873,1849,
-        1,0,0,0,1873,1852,1,0,0,0,1873,1855,1,0,0,0,1873,1858,1,0,0,0,1873,
-        1861,1,0,0,0,1873,1864,1,0,0,0,1873,1867,1,0,0,0,1873,1870,1,0,0,
-        0,1874,303,1,0,0,0,1875,1880,3,528,264,0,1876,1877,5,9,0,0,1877,
-        1879,3,528,264,0,1878,1876,1,0,0,0,1879,1882,1,0,0,0,1880,1878,1,
-        0,0,0,1880,1881,1,0,0,0,1881,305,1,0,0,0,1882,1880,1,0,0,0,1883,
-        1884,5,245,0,0,1884,1885,5,17,0,0,1885,1897,3,588,294,0,1886,1887,
-        5,143,0,0,1887,1888,5,17,0,0,1888,1897,7,10,0,0,1889,1890,5,261,
-        0,0,1890,1897,3,588,294,0,1891,1892,5,57,0,0,1892,1897,3,304,152,
-        0,1893,1894,5,39,0,0,1894,1895,5,17,0,0,1895,1897,5,314,0,0,1896,
-        1883,1,0,0,0,1896,1886,1,0,0,0,1896,1889,1,0,0,0,1896,1891,1,0,0,
-        0,1896,1893,1,0,0,0,1897,307,1,0,0,0,1898,1902,5,222,0,0,1899,1901,
-        3,376,188,0,1900,1899,1,0,0,0,1901,1904,1,0,0,0,1902,1900,1,0,0,
-        0,1902,1903,1,0,0,0,1903,1905,1,0,0,0,1904,1902,1,0,0,0,1905,1906,
-        3,382,191,0,1906,1907,5,185,0,0,1907,1908,3,382,191,0,1908,309,1,
-        0,0,0,1909,1913,5,221,0,0,1910,1912,3,376,188,0,1911,1910,1,0,0,
-        0,1912,1915,1,0,0,0,1913,1911,1,0,0,0,1913,1914,1,0,0,0,1914,1916,
-        1,0,0,0,1915,1913,1,0,0,0,1916,1917,3,382,191,0,1917,311,1,0,0,0,
-        1918,1922,5,223,0,0,1919,1921,3,378,189,0,1920,1919,1,0,0,0,1921,
-        1924,1,0,0,0,1922,1920,1,0,0,0,1922,1923,1,0,0,0,1923,1926,1,0,0,
-        0,1924,1922,1,0,0,0,1925,1927,3,314,157,0,1926,1925,1,0,0,0,1926,
-        1927,1,0,0,0,1927,1929,1,0,0,0,1928,1930,3,316,158,0,1929,1928,1,
-        0,0,0,1929,1930,1,0,0,0,1930,1932,1,0,0,0,1931,1933,3,318,159,0,
-        1932,1931,1,0,0,0,1932,1933,1,0,0,0,1933,1934,1,0,0,0,1934,1935,
-        5,261,0,0,1935,1937,5,31,0,0,1936,1938,3,320,160,0,1937,1936,1,0,
-        0,0,1938,1939,1,0,0,0,1939,1937,1,0,0,0,1939,1940,1,0,0,0,1940,1941,
-        1,0,0,0,1941,1942,5,8,0,0,1942,313,1,0,0,0,1943,1944,5,189,0,0,1944,
-        1945,5,57,0,0,1945,1946,3,338,169,0,1946,1947,5,9,0,0,1947,1948,
-        3,338,169,0,1948,315,1,0,0,0,1949,1950,5,197,0,0,1950,1951,5,57,
-        0,0,1951,1956,3,392,196,0,1952,1953,5,9,0,0,1953,1955,3,392,196,
-        0,1954,1952,1,0,0,0,1955,1958,1,0,0,0,1956,1954,1,0,0,0,1956,1957,
-        1,0,0,0,1957,317,1,0,0,0,1958,1956,1,0,0,0,1959,1960,5,75,0,0,1960,
-        1961,5,31,0,0,1961,1966,3,26,13,0,1962,1963,5,9,0,0,1963,1965,3,
-        26,13,0,1964,1962,1,0,0,0,1965,1968,1,0,0,0,1966,1964,1,0,0,0,1966,
-        1967,1,0,0,0,1967,1969,1,0,0,0,1968,1966,1,0,0,0,1969,1970,5,8,0,
-        0,1970,319,1,0,0,0,1971,1972,5,237,0,0,1972,1974,3,524,262,0,1973,
-        1975,5,187,0,0,1974,1973,1,0,0,0,1974,1975,1,0,0,0,1975,1977,1,0,
-        0,0,1976,1978,3,322,161,0,1977,1976,1,0,0,0,1977,1978,1,0,0,0,1978,
-        1979,1,0,0,0,1979,1980,5,10,0,0,1980,1982,3,392,196,0,1981,1983,
-        3,324,162,0,1982,1981,1,0,0,0,1982,1983,1,0,0,0,1983,1984,1,0,0,
-        0,1984,1985,5,34,0,0,1985,321,1,0,0,0,1986,1987,5,191,0,0,1987,1988,
-        5,17,0,0,1988,1989,7,14,0,0,1989,323,1,0,0,0,1990,1991,5,36,0,0,
-        1991,1996,3,326,163,0,1992,1993,5,9,0,0,1993,1995,3,326,163,0,1994,
-        1992,1,0,0,0,1995,1998,1,0,0,0,1996,1994,1,0,0,0,1996,1997,1,0,0,
-        0,1997,325,1,0,0,0,1998,1996,1,0,0,0,1999,2000,3,524,262,0,2000,
-        2001,5,17,0,0,2001,2002,3,392,196,0,2002,327,1,0,0,0,2003,2007,5,
-        225,0,0,2004,2006,3,378,189,0,2005,2004,1,0,0,0,2006,2009,1,0,0,
-        0,2007,2005,1,0,0,0,2007,2008,1,0,0,0,2008,2011,1,0,0,0,2009,2007,
-        1,0,0,0,2010,2012,3,332,166,0,2011,2010,1,0,0,0,2011,2012,1,0,0,
-        0,2012,2016,1,0,0,0,2013,2017,3,392,196,0,2014,2017,3,464,232,0,
-        2015,2017,3,330,165,0,2016,2013,1,0,0,0,2016,2014,1,0,0,0,2016,2015,
-        1,0,0,0,2017,329,1,0,0,0,2018,2019,5,1,0,0,2019,2020,5,43,0,0,2020,
-        2021,3,392,196,0,2021,331,1,0,0,0,2022,2023,5,136,0,0,2023,2024,
-        5,31,0,0,2024,2029,3,146,73,0,2025,2026,5,9,0,0,2026,2028,3,146,
-        73,0,2027,2025,1,0,0,0,2028,2031,1,0,0,0,2029,2027,1,0,0,0,2029,
-        2030,1,0,0,0,2030,2032,1,0,0,0,2031,2029,1,0,0,0,2032,2033,5,8,0,
-        0,2033,333,1,0,0,0,2034,2038,5,226,0,0,2035,2037,3,376,188,0,2036,
-        2035,1,0,0,0,2037,2040,1,0,0,0,2038,2036,1,0,0,0,2038,2039,1,0,0,
-        0,2039,2049,1,0,0,0,2040,2038,1,0,0,0,2041,2046,3,382,191,0,2042,
-        2043,5,9,0,0,2043,2045,3,382,191,0,2044,2042,1,0,0,0,2045,2048,1,
-        0,0,0,2046,2044,1,0,0,0,2046,2047,1,0,0,0,2047,2050,1,0,0,0,2048,
-        2046,1,0,0,0,2049,2041,1,0,0,0,2049,2050,1,0,0,0,2050,335,1,0,0,
-        0,2051,2055,7,15,0,0,2052,2054,3,378,189,0,2053,2052,1,0,0,0,2054,
-        2057,1,0,0,0,2055,2053,1,0,0,0,2055,2056,1,0,0,0,2056,2058,1,0,0,
-        0,2057,2055,1,0,0,0,2058,2059,5,57,0,0,2059,2064,3,338,169,0,2060,
-        2061,5,9,0,0,2061,2063,3,338,169,0,2062,2060,1,0,0,0,2063,2066,1,
-        0,0,0,2064,2062,1,0,0,0,2064,2065,1,0,0,0,2065,337,1,0,0,0,2066,
-        2064,1,0,0,0,2067,2069,3,382,191,0,2068,2070,7,16,0,0,2069,2068,
-        1,0,0,0,2069,2070,1,0,0,0,2070,2073,1,0,0,0,2071,2072,5,184,0,0,
-        2072,2074,7,17,0,0,2073,2071,1,0,0,0,2073,2074,1,0,0,0,2074,339,
-        1,0,0,0,2075,2079,5,238,0,0,2076,2078,3,376,188,0,2077,2076,1,0,
-        0,0,2078,2081,1,0,0,0,2079,2077,1,0,0,0,2079,2080,1,0,0,0,2080,2090,
-        1,0,0,0,2081,2079,1,0,0,0,2082,2087,3,382,191,0,2083,2084,5,9,0,
-        0,2084,2086,3,382,191,0,2085,2083,1,0,0,0,2086,2089,1,0,0,0,2087,
-        2085,1,0,0,0,2087,2088,1,0,0,0,2088,2091,1,0,0,0,2089,2087,1,0,0,
-        0,2090,2082,1,0,0,0,2090,2091,1,0,0,0,2091,2093,1,0,0,0,2092,2094,
-        3,342,171,0,2093,2092,1,0,0,0,2093,2094,1,0,0,0,2094,341,1,0,0,0,
-        2095,2096,5,57,0,0,2096,2101,3,382,191,0,2097,2098,5,9,0,0,2098,
-        2100,3,382,191,0,2099,2097,1,0,0,0,2100,2103,1,0,0,0,2101,2099,1,
-        0,0,0,2101,2102,1,0,0,0,2102,2105,1,0,0,0,2103,2101,1,0,0,0,2104,
-        2106,3,344,172,0,2105,2104,1,0,0,0,2105,2106,1,0,0,0,2106,343,1,
-        0,0,0,2107,2108,5,55,0,0,2108,2109,5,17,0,0,2109,2110,3,560,280,
-        0,2110,345,1,0,0,0,2111,2115,7,18,0,0,2112,2114,3,376,188,0,2113,
-        2112,1,0,0,0,2114,2117,1,0,0,0,2115,2113,1,0,0,0,2115,2116,1,0,0,
-        0,2116,2118,1,0,0,0,2117,2115,1,0,0,0,2118,2128,3,392,196,0,2119,
-        2120,5,98,0,0,2120,2125,3,538,269,0,2121,2122,5,9,0,0,2122,2124,
-        3,538,269,0,2123,2121,1,0,0,0,2124,2127,1,0,0,0,2125,2123,1,0,0,
-        0,2125,2126,1,0,0,0,2126,2129,1,0,0,0,2127,2125,1,0,0,0,2128,2119,
-        1,0,0,0,2128,2129,1,0,0,0,2129,347,1,0,0,0,2130,2134,5,247,0,0,2131,
-        2133,3,376,188,0,2132,2131,1,0,0,0,2133,2136,1,0,0,0,2134,2132,1,
-        0,0,0,2134,2135,1,0,0,0,2135,2137,1,0,0,0,2136,2134,1,0,0,0,2137,
-        2138,3,382,191,0,2138,2139,5,57,0,0,2139,2140,3,338,169,0,2140,349,
-        1,0,0,0,2141,2142,5,248,0,0,2142,2143,3,382,191,0,2143,2144,5,185,
-        0,0,2144,2146,3,382,191,0,2145,2147,3,352,176,0,2146,2145,1,0,0,
-        0,2146,2147,1,0,0,0,2147,351,1,0,0,0,2148,2149,5,57,0,0,2149,2150,
-        3,338,169,0,2150,353,1,0,0,0,2151,2156,3,356,178,0,2152,2153,5,9,
-        0,0,2153,2155,3,356,178,0,2154,2152,1,0,0,0,2155,2158,1,0,0,0,2156,
-        2154,1,0,0,0,2156,2157,1,0,0,0,2157,355,1,0,0,0,2158,2156,1,0,0,
-        0,2159,2161,5,249,0,0,2160,2162,3,382,191,0,2161,2160,1,0,0,0,2161,
-        2162,1,0,0,0,2162,2163,1,0,0,0,2163,2164,5,185,0,0,2164,2166,3,382,
-        191,0,2165,2167,3,358,179,0,2166,2165,1,0,0,0,2166,2167,1,0,0,0,
-        2167,2168,1,0,0,0,2168,2169,5,57,0,0,2169,2170,3,338,169,0,2170,
-        357,1,0,0,0,2171,2172,5,261,0,0,2172,2173,5,190,0,0,2173,2174,5,
-        17,0,0,2174,2175,3,382,191,0,2175,359,1,0,0,0,2176,2180,5,254,0,
-        0,2177,2179,3,378,189,0,2178,2177,1,0,0,0,2179,2182,1,0,0,0,2180,
-        2178,1,0,0,0,2180,2181,1,0,0,0,2181,2183,1,0,0,0,2182,2180,1,0,0,
-        0,2183,2188,3,540,270,0,2184,2185,5,9,0,0,2185,2187,3,540,270,0,
-        2186,2184,1,0,0,0,2187,2190,1,0,0,0,2188,2186,1,0,0,0,2188,2189,
-        1,0,0,0,2189,2192,1,0,0,0,2190,2188,1,0,0,0,2191,2193,3,362,181,
-        0,2192,2191,1,0,0,0,2192,2193,1,0,0,0,2193,361,1,0,0,0,2194,2195,
-        5,47,0,0,2195,2196,3,540,270,0,2196,363,1,0,0,0,2197,2201,7,19,0,
-        0,2198,2200,3,376,188,0,2199,2198,1,0,0,0,2200,2203,1,0,0,0,2201,
-        2199,1,0,0,0,2201,2202,1,0,0,0,2202,2204,1,0,0,0,2203,2201,1,0,0,
-        0,2204,2205,3,382,191,0,2205,365,1,0,0,0,2206,2207,5,255,0,0,2207,
-        2209,3,392,196,0,2208,2210,3,368,184,0,2209,2208,1,0,0,0,2209,2210,
-        1,0,0,0,2210,367,1,0,0,0,2211,2220,5,186,0,0,2212,2217,3,538,269,
-        0,2213,2214,5,9,0,0,2214,2216,3,538,269,0,2215,2213,1,0,0,0,2216,
-        2219,1,0,0,0,2217,2215,1,0,0,0,2217,2218,1,0,0,0,2218,2221,1,0,0,
-        0,2219,2217,1,0,0,0,2220,2212,1,0,0,0,2220,2221,1,0,0,0,2221,369,
-        1,0,0,0,2222,2225,3,84,42,0,2223,2225,3,372,186,0,2224,2222,1,0,
-        0,0,2224,2223,1,0,0,0,2225,371,1,0,0,0,2226,2230,3,498,249,0,2227,
-        2229,3,374,187,0,2228,2227,1,0,0,0,2229,2232,1,0,0,0,2230,2228,1,
-        0,0,0,2230,2231,1,0,0,0,2231,373,1,0,0,0,2232,2230,1,0,0,0,2233,
-        2234,5,3,0,0,2234,2235,3,88,44,0,2235,375,1,0,0,0,2236,2237,7,20,
-        0,0,2237,2240,5,17,0,0,2238,2241,3,526,263,0,2239,2241,3,556,278,
-        0,2240,2238,1,0,0,0,2240,2239,1,0,0,0,2241,377,1,0,0,0,2242,2243,
-        7,21,0,0,2243,2246,5,17,0,0,2244,2247,3,526,263,0,2245,2247,3,556,
-        278,0,2246,2244,1,0,0,0,2246,2245,1,0,0,0,2247,379,1,0,0,0,2248,
-        2249,5,320,0,0,2249,2252,5,17,0,0,2250,2253,3,526,263,0,2251,2253,
-        3,556,278,0,2252,2250,1,0,0,0,2252,2251,1,0,0,0,2253,381,1,0,0,0,
-        2254,2256,3,386,193,0,2255,2254,1,0,0,0,2255,2256,1,0,0,0,2256,2257,
-        1,0,0,0,2257,2258,3,392,196,0,2258,383,1,0,0,0,2259,2260,3,534,267,
-        0,2260,2261,5,17,0,0,2261,2262,3,534,267,0,2262,385,1,0,0,0,2263,
-        2266,3,534,267,0,2264,2266,3,388,194,0,2265,2263,1,0,0,0,2265,2264,
-        1,0,0,0,2266,2267,1,0,0,0,2267,2268,5,17,0,0,2268,387,1,0,0,0,2269,
-        2270,5,31,0,0,2270,2275,3,534,267,0,2271,2272,5,9,0,0,2272,2274,
-        3,534,267,0,2273,2271,1,0,0,0,2274,2277,1,0,0,0,2275,2273,1,0,0,
-        0,2275,2276,1,0,0,0,2276,2278,1,0,0,0,2277,2275,1,0,0,0,2278,2279,
-        5,8,0,0,2279,389,1,0,0,0,2280,2281,3,526,263,0,2281,2282,5,15,0,
-        0,2282,2283,3,458,229,0,2283,391,1,0,0,0,2284,2285,3,394,197,0,2285,
-        393,1,0,0,0,2286,2290,3,398,199,0,2287,2289,3,396,198,0,2288,2287,
-        1,0,0,0,2289,2292,1,0,0,0,2290,2288,1,0,0,0,2290,2291,1,0,0,0,2291,
-        395,1,0,0,0,2292,2290,1,0,0,0,2293,2294,5,188,0,0,2294,2295,3,398,
-        199,0,2295,397,1,0,0,0,2296,2300,3,402,201,0,2297,2299,3,400,200,
-        0,2298,2297,1,0,0,0,2299,2302,1,0,0,0,2300,2298,1,0,0,0,2300,2301,
-        1,0,0,0,2301,399,1,0,0,0,2302,2300,1,0,0,0,2303,2304,5,43,0,0,2304,
-        2305,3,402,201,0,2305,401,1,0,0,0,2306,2312,3,412,206,0,2307,2312,
-        3,404,202,0,2308,2312,3,406,203,0,2309,2312,3,408,204,0,2310,2312,
-        3,410,205,0,2311,2306,1,0,0,0,2311,2307,1,0,0,0,2311,2308,1,0,0,
-        0,2311,2309,1,0,0,0,2311,2310,1,0,0,0,2312,403,1,0,0,0,2313,2314,
-        3,412,206,0,2314,2315,7,22,0,0,2315,2316,3,412,206,0,2316,405,1,
-        0,0,0,2317,2318,3,412,206,0,2318,2319,7,23,0,0,2319,2320,5,31,0,
-        0,2320,2325,3,430,215,0,2321,2322,5,9,0,0,2322,2324,3,430,215,0,
-        2323,2321,1,0,0,0,2324,2327,1,0,0,0,2325,2323,1,0,0,0,2325,2326,
-        1,0,0,0,2326,2328,1,0,0,0,2327,2325,1,0,0,0,2328,2329,5,8,0,0,2329,
-        407,1,0,0,0,2330,2331,3,412,206,0,2331,2332,7,24,0,0,2332,2333,5,
-        31,0,0,2333,2334,3,430,215,0,2334,2335,5,16,0,0,2335,2336,3,430,
-        215,0,2336,2337,5,8,0,0,2337,409,1,0,0,0,2338,2339,5,1,0,0,2339,
-        2340,5,18,0,0,2340,2341,3,412,206,0,2341,411,1,0,0,0,2342,2345,3,
-        414,207,0,2343,2344,7,25,0,0,2344,2346,3,414,207,0,2345,2343,1,0,
-        0,0,2345,2346,1,0,0,0,2346,413,1,0,0,0,2347,2351,3,418,209,0,2348,
-        2350,3,416,208,0,2349,2348,1,0,0,0,2350,2353,1,0,0,0,2351,2349,1,
-        0,0,0,2351,2352,1,0,0,0,2352,415,1,0,0,0,2353,2351,1,0,0,0,2354,
-        2355,7,26,0,0,2355,2356,3,418,209,0,2356,417,1,0,0,0,2357,2361,3,
-        422,211,0,2358,2360,3,420,210,0,2359,2358,1,0,0,0,2360,2363,1,0,
-        0,0,2361,2359,1,0,0,0,2361,2362,1,0,0,0,2362,419,1,0,0,0,2363,2361,
-        1,0,0,0,2364,2365,7,27,0,0,2365,2366,3,422,211,0,2366,421,1,0,0,
-        0,2367,2370,3,424,212,0,2368,2370,3,428,214,0,2369,2367,1,0,0,0,
-        2369,2368,1,0,0,0,2370,423,1,0,0,0,2371,2377,3,430,215,0,2372,2375,
-        3,426,213,0,2373,2375,5,10,0,0,2374,2372,1,0,0,0,2374,2373,1,0,0,
-        0,2375,2376,1,0,0,0,2376,2378,3,430,215,0,2377,2374,1,0,0,0,2377,
-        2378,1,0,0,0,2378,425,1,0,0,0,2379,2380,7,28,0,0,2380,427,1,0,0,
-        0,2381,2382,5,1,0,0,2382,2383,3,426,213,0,2383,2384,3,430,215,0,
-        2384,429,1,0,0,0,2385,2387,7,26,0,0,2386,2385,1,0,0,0,2386,2387,
-        1,0,0,0,2387,2388,1,0,0,0,2388,2389,3,432,216,0,2389,431,1,0,0,0,
-        2390,2394,3,434,217,0,2391,2394,3,436,218,0,2392,2394,3,450,225,
-        0,2393,2390,1,0,0,0,2393,2391,1,0,0,0,2393,2392,1,0,0,0,2394,433,
-        1,0,0,0,2395,2399,3,454,227,0,2396,2399,3,466,233,0,2397,2399,3,
-        448,224,0,2398,2395,1,0,0,0,2398,2396,1,0,0,0,2398,2397,1,0,0,0,
-        2399,435,1,0,0,0,2400,2402,3,434,217,0,2401,2403,3,438,219,0,2402,
-        2401,1,0,0,0,2403,2404,1,0,0,0,2404,2402,1,0,0,0,2404,2405,1,0,0,
-        0,2405,437,1,0,0,0,2406,2411,3,440,220,0,2407,2411,3,442,221,0,2408,
-        2411,3,444,222,0,2409,2411,3,446,223,0,2410,2406,1,0,0,0,2410,2407,
-        1,0,0,0,2410,2408,1,0,0,0,2410,2409,1,0,0,0,2411,439,1,0,0,0,2412,
-        2413,5,15,0,0,2413,2414,3,458,229,0,2414,441,1,0,0,0,2415,2416,5,
-        15,0,0,2416,2417,3,526,263,0,2417,443,1,0,0,0,2418,2419,5,30,0,0,
-        2419,2420,3,392,196,0,2420,2421,5,5,0,0,2421,445,1,0,0,0,2422,2423,
-        5,15,0,0,2423,2424,5,30,0,0,2424,2425,3,392,196,0,2425,2426,5,5,
-        0,0,2426,447,1,0,0,0,2427,2429,5,250,0,0,2428,2430,3,452,226,0,2429,
-        2428,1,0,0,0,2429,2430,1,0,0,0,2430,2431,1,0,0,0,2431,2432,5,31,
-        0,0,2432,2433,3,78,39,0,2433,2434,5,8,0,0,2434,449,1,0,0,0,2435,
-        2437,5,251,0,0,2436,2438,3,452,226,0,2437,2436,1,0,0,0,2437,2438,
-        1,0,0,0,2438,2439,1,0,0,0,2439,2440,5,31,0,0,2440,2441,3,78,39,0,
-        2441,2442,5,8,0,0,2442,451,1,0,0,0,2443,2444,5,143,0,0,2444,2445,
-        5,17,0,0,2445,2446,5,167,0,0,2446,453,1,0,0,0,2447,2451,3,458,229,
-        0,2448,2450,3,456,228,0,2449,2448,1,0,0,0,2450,2453,1,0,0,0,2451,
-        2449,1,0,0,0,2451,2452,1,0,0,0,2452,455,1,0,0,0,2453,2451,1,0,0,
-        0,2454,2455,5,15,0,0,2455,2456,3,458,229,0,2456,457,1,0,0,0,2457,
-        2458,3,460,230,0,2458,2467,5,31,0,0,2459,2464,3,462,231,0,2460,2461,
-        5,9,0,0,2461,2463,3,462,231,0,2462,2460,1,0,0,0,2463,2466,1,0,0,
-        0,2464,2462,1,0,0,0,2464,2465,1,0,0,0,2465,2468,1,0,0,0,2466,2464,
-        1,0,0,0,2467,2459,1,0,0,0,2467,2468,1,0,0,0,2468,2469,1,0,0,0,2469,
-        2470,5,8,0,0,2470,459,1,0,0,0,2471,2474,3,526,263,0,2472,2474,3,
-        546,273,0,2473,2471,1,0,0,0,2473,2472,1,0,0,0,2474,461,1,0,0,0,2475,
-        2478,3,382,191,0,2476,2478,3,464,232,0,2477,2475,1,0,0,0,2477,2476,
-        1,0,0,0,2478,463,1,0,0,0,2479,2480,5,1,0,0,2480,465,1,0,0,0,2481,
-        2489,3,558,279,0,2482,2489,3,526,263,0,2483,2489,3,500,250,0,2484,
-        2489,3,506,253,0,2485,2489,3,498,249,0,2486,2489,3,512,256,0,2487,
-        2489,3,468,234,0,2488,2481,1,0,0,0,2488,2482,1,0,0,0,2488,2483,1,
-        0,0,0,2488,2484,1,0,0,0,2488,2485,1,0,0,0,2488,2486,1,0,0,0,2488,
-        2487,1,0,0,0,2489,467,1,0,0,0,2490,2491,5,31,0,0,2491,2492,3,76,
-        38,0,2492,2493,5,8,0,0,2493,469,1,0,0,0,2494,2495,5,214,0,0,2495,
-        2496,3,526,263,0,2496,2497,5,98,0,0,2497,2498,3,392,196,0,2498,2499,
-        5,246,0,0,2499,2500,3,392,196,0,2500,2501,5,237,0,0,2501,2502,3,
-        392,196,0,2502,471,1,0,0,0,2503,2506,3,486,243,0,2504,2506,3,474,
-        237,0,2505,2503,1,0,0,0,2505,2504,1,0,0,0,2506,473,1,0,0,0,2507,
-        2509,3,486,243,0,2508,2510,3,476,238,0,2509,2508,1,0,0,0,2510,2511,
-        1,0,0,0,2511,2509,1,0,0,0,2511,2512,1,0,0,0,2512,475,1,0,0,0,2513,
-        2517,3,478,239,0,2514,2517,3,480,240,0,2515,2517,3,482,241,0,2516,
-        2513,1,0,0,0,2516,2514,1,0,0,0,2516,2515,1,0,0,0,2517,477,1,0,0,
-        0,2518,2519,5,15,0,0,2519,2520,3,484,242,0,2520,479,1,0,0,0,2521,
-        2522,5,30,0,0,2522,2523,3,392,196,0,2523,2524,5,5,0,0,2524,481,1,
-        0,0,0,2525,2526,5,15,0,0,2526,2527,5,30,0,0,2527,2528,3,392,196,
-        0,2528,2529,5,5,0,0,2529,483,1,0,0,0,2530,2534,3,488,244,0,2531,
-        2534,3,526,263,0,2532,2534,3,490,245,0,2533,2530,1,0,0,0,2533,2531,
-        1,0,0,0,2533,2532,1,0,0,0,2534,485,1,0,0,0,2535,2536,3,484,242,0,
-        2536,487,1,0,0,0,2537,2538,5,2,0,0,2538,489,1,0,0,0,2539,2540,7,
-        29,0,0,2540,491,1,0,0,0,2541,2545,3,530,265,0,2542,2545,3,454,227,
-        0,2543,2545,3,494,247,0,2544,2541,1,0,0,0,2544,2542,1,0,0,0,2544,
-        2543,1,0,0,0,2545,493,1,0,0,0,2546,2547,3,454,227,0,2547,2548,5,
-        15,0,0,2548,2549,3,496,248,0,2549,495,1,0,0,0,2550,2553,3,554,277,
-        0,2551,2553,3,484,242,0,2552,2550,1,0,0,0,2552,2551,1,0,0,0,2553,
-        497,1,0,0,0,2554,2555,5,68,0,0,2555,2556,5,319,0,0,2556,2557,3,502,
-        251,0,2557,499,1,0,0,0,2558,2562,5,74,0,0,2559,2561,3,378,189,0,
-        2560,2559,1,0,0,0,2561,2564,1,0,0,0,2562,2560,1,0,0,0,2562,2563,
-        1,0,0,0,2563,2565,1,0,0,0,2564,2562,1,0,0,0,2565,2566,3,502,251,
-        0,2566,2568,5,30,0,0,2567,2569,3,556,278,0,2568,2567,1,0,0,0,2568,
-        2569,1,0,0,0,2569,2574,1,0,0,0,2570,2571,5,9,0,0,2571,2573,3,556,
-        278,0,2572,2570,1,0,0,0,2573,2576,1,0,0,0,2574,2572,1,0,0,0,2574,
-        2575,1,0,0,0,2575,2578,1,0,0,0,2576,2574,1,0,0,0,2577,2579,5,9,0,
-        0,2578,2577,1,0,0,0,2578,2579,1,0,0,0,2579,2580,1,0,0,0,2580,2583,
-        5,5,0,0,2581,2582,5,47,0,0,2582,2584,3,538,269,0,2583,2581,1,0,0,
-        0,2583,2584,1,0,0,0,2584,501,1,0,0,0,2585,2587,5,31,0,0,2586,2588,
-        3,504,252,0,2587,2586,1,0,0,0,2587,2588,1,0,0,0,2588,2593,1,0,0,
-        0,2589,2590,5,9,0,0,2590,2592,3,504,252,0,2591,2589,1,0,0,0,2592,
-        2595,1,0,0,0,2593,2591,1,0,0,0,2593,2594,1,0,0,0,2594,2597,1,0,0,
-        0,2595,2593,1,0,0,0,2596,2598,5,9,0,0,2597,2596,1,0,0,0,2597,2598,
-        1,0,0,0,2598,2599,1,0,0,0,2599,2600,5,8,0,0,2600,503,1,0,0,0,2601,
-        2602,3,524,262,0,2602,2603,5,10,0,0,2603,2604,3,520,260,0,2604,505,
-        1,0,0,0,2605,2609,7,30,0,0,2606,2608,3,378,189,0,2607,2606,1,0,0,
-        0,2608,2611,1,0,0,0,2609,2607,1,0,0,0,2609,2610,1,0,0,0,2610,2612,
-        1,0,0,0,2611,2609,1,0,0,0,2612,2613,3,502,251,0,2613,2614,5,30,0,
-        0,2614,2619,3,588,294,0,2615,2616,5,9,0,0,2616,2618,3,588,294,0,
-        2617,2615,1,0,0,0,2618,2621,1,0,0,0,2619,2617,1,0,0,0,2619,2620,
-        1,0,0,0,2620,2622,1,0,0,0,2621,2619,1,0,0,0,2622,2624,5,5,0,0,2623,
-        2625,3,508,254,0,2624,2623,1,0,0,0,2624,2625,1,0,0,0,2625,507,1,
-        0,0,0,2626,2627,5,261,0,0,2627,2639,5,31,0,0,2628,2633,3,510,255,
-        0,2629,2630,5,9,0,0,2630,2632,3,510,255,0,2631,2629,1,0,0,0,2632,
-        2635,1,0,0,0,2633,2631,1,0,0,0,2633,2634,1,0,0,0,2634,2637,1,0,0,
-        0,2635,2633,1,0,0,0,2636,2638,5,9,0,0,2637,2636,1,0,0,0,2637,2638,
-        1,0,0,0,2638,2640,1,0,0,0,2639,2628,1,0,0,0,2639,2640,1,0,0,0,2640,
-        2641,1,0,0,0,2641,2642,5,8,0,0,2642,509,1,0,0,0,2643,2644,3,524,
-        262,0,2644,2648,5,17,0,0,2645,2649,3,588,294,0,2646,2649,7,31,0,
-        0,2647,2649,3,524,262,0,2648,2645,1,0,0,0,2648,2646,1,0,0,0,2648,
-        2647,1,0,0,0,2649,511,1,0,0,0,2650,2651,5,160,0,0,2651,2652,5,31,
-        0,0,2652,2653,3,588,294,0,2653,2654,5,8,0,0,2654,2655,3,514,257,
-        0,2655,2656,3,516,258,0,2656,2657,3,518,259,0,2657,513,1,0,0,0,2658,
-        2659,5,53,0,0,2659,2660,5,31,0,0,2660,2661,3,76,38,0,2661,2662,5,
-        8,0,0,2662,515,1,0,0,0,2663,2664,5,78,0,0,2664,2665,5,31,0,0,2665,
-        2666,3,76,38,0,2666,2667,5,8,0,0,2667,517,1,0,0,0,2668,2669,5,40,
-        0,0,2669,2670,5,31,0,0,2670,2671,3,340,170,0,2671,2672,5,8,0,0,2672,
-        519,1,0,0,0,2673,2674,7,32,0,0,2674,521,1,0,0,0,2675,2676,7,33,0,
-        0,2676,523,1,0,0,0,2677,2678,3,528,264,0,2678,525,1,0,0,0,2679,2683,
-        3,542,271,0,2680,2683,3,544,272,0,2681,2683,3,548,274,0,2682,2679,
-        1,0,0,0,2682,2680,1,0,0,0,2682,2681,1,0,0,0,2683,527,1,0,0,0,2684,
-        2687,3,546,273,0,2685,2687,3,526,263,0,2686,2684,1,0,0,0,2686,2685,
-        1,0,0,0,2687,529,1,0,0,0,2688,2689,3,554,277,0,2689,531,1,0,0,0,
-        2690,2693,3,526,263,0,2691,2693,3,530,265,0,2692,2690,1,0,0,0,2692,
-        2691,1,0,0,0,2693,533,1,0,0,0,2694,2699,3,526,263,0,2695,2696,5,
-        15,0,0,2696,2698,3,526,263,0,2697,2695,1,0,0,0,2698,2701,1,0,0,0,
-        2699,2697,1,0,0,0,2699,2700,1,0,0,0,2700,535,1,0,0,0,2701,2699,1,
-        0,0,0,2702,2705,3,526,263,0,2703,2705,3,534,267,0,2704,2702,1,0,
-        0,0,2704,2703,1,0,0,0,2705,537,1,0,0,0,2706,2710,3,554,277,0,2707,
-        2710,3,542,271,0,2708,2710,3,548,274,0,2709,2706,1,0,0,0,2709,2707,
-        1,0,0,0,2709,2708,1,0,0,0,2710,539,1,0,0,0,2711,2714,3,538,269,0,
-        2712,2714,3,454,227,0,2713,2711,1,0,0,0,2713,2712,1,0,0,0,2714,541,
-        1,0,0,0,2715,2716,5,320,0,0,2716,543,1,0,0,0,2717,2718,7,34,0,0,
-        2718,545,1,0,0,0,2719,2720,7,35,0,0,2720,547,1,0,0,0,2721,2722,5,
-        30,0,0,2722,2723,3,588,294,0,2723,2724,5,5,0,0,2724,549,1,0,0,0,
-        2725,2728,3,534,267,0,2726,2728,3,544,272,0,2727,2725,1,0,0,0,2727,
-        2726,1,0,0,0,2728,551,1,0,0,0,2729,2733,3,534,267,0,2730,2733,3,
-        544,272,0,2731,2733,3,546,273,0,2732,2729,1,0,0,0,2732,2730,1,0,
-        0,0,2732,2731,1,0,0,0,2733,553,1,0,0,0,2734,2737,5,321,0,0,2735,
-        2737,3,464,232,0,2736,2734,1,0,0,0,2736,2735,1,0,0,0,2737,555,1,
-        0,0,0,2738,2741,3,564,282,0,2739,2741,3,558,279,0,2740,2738,1,0,
-        0,0,2740,2739,1,0,0,0,2741,557,1,0,0,0,2742,2754,3,566,283,0,2743,
-        2754,3,568,284,0,2744,2754,3,570,285,0,2745,2754,3,572,286,0,2746,
-        2754,3,574,287,0,2747,2754,3,576,288,0,2748,2754,3,578,289,0,2749,
-        2754,3,580,290,0,2750,2754,3,582,291,0,2751,2754,3,588,294,0,2752,
-        2754,3,590,295,0,2753,2742,1,0,0,0,2753,2743,1,0,0,0,2753,2744,1,
-        0,0,0,2753,2745,1,0,0,0,2753,2746,1,0,0,0,2753,2747,1,0,0,0,2753,
-        2748,1,0,0,0,2753,2749,1,0,0,0,2753,2750,1,0,0,0,2753,2751,1,0,0,
-        0,2753,2752,1,0,0,0,2754,559,1,0,0,0,2755,2763,3,566,283,0,2756,
-        2763,3,568,284,0,2757,2763,3,570,285,0,2758,2763,3,572,286,0,2759,
-        2763,3,564,282,0,2760,2763,3,574,287,0,2761,2763,3,576,288,0,2762,
-        2755,1,0,0,0,2762,2756,1,0,0,0,2762,2757,1,0,0,0,2762,2758,1,0,0,
-        0,2762,2759,1,0,0,0,2762,2760,1,0,0,0,2762,2761,1,0,0,0,2763,561,
-        1,0,0,0,2764,2770,3,566,283,0,2765,2770,3,568,284,0,2766,2770,3,
-        570,285,0,2767,2770,3,572,286,0,2768,2770,3,564,282,0,2769,2764,
-        1,0,0,0,2769,2765,1,0,0,0,2769,2766,1,0,0,0,2769,2767,1,0,0,0,2769,
-        2768,1,0,0,0,2770,563,1,0,0,0,2771,2774,3,584,292,0,2772,2774,3,
-        586,293,0,2773,2771,1,0,0,0,2773,2772,1,0,0,0,2774,565,1,0,0,0,2775,
-        2776,5,309,0,0,2776,567,1,0,0,0,2777,2778,5,310,0,0,2778,569,1,0,
-        0,0,2779,2780,5,311,0,0,2780,571,1,0,0,0,2781,2782,5,312,0,0,2782,
-        573,1,0,0,0,2783,2784,5,315,0,0,2784,575,1,0,0,0,2785,2786,5,316,
-        0,0,2786,577,1,0,0,0,2787,2788,5,314,0,0,2788,579,1,0,0,0,2789,2790,
-        5,319,0,0,2790,581,1,0,0,0,2791,2792,5,317,0,0,2792,583,1,0,0,0,
-        2793,2794,7,26,0,0,2794,2795,5,309,0,0,2795,585,1,0,0,0,2796,2797,
-        7,26,0,0,2797,2798,5,311,0,0,2798,587,1,0,0,0,2799,2803,5,313,0,
-        0,2800,2802,5,313,0,0,2801,2800,1,0,0,0,2802,2805,1,0,0,0,2803,2801,
-        1,0,0,0,2803,2804,1,0,0,0,2804,589,1,0,0,0,2805,2803,1,0,0,0,2806,
-        2807,5,287,0,0,2807,2808,5,31,0,0,2808,2809,3,592,296,0,2809,2810,
-        5,8,0,0,2810,591,1,0,0,0,2811,2823,3,598,299,0,2812,2823,3,600,300,
-        0,2813,2823,3,602,301,0,2814,2823,3,604,302,0,2815,2823,3,612,306,
-        0,2816,2823,3,606,303,0,2817,2823,3,594,297,0,2818,2823,3,614,307,
-        0,2819,2823,3,608,304,0,2820,2823,3,610,305,0,2821,2823,3,590,295,
-        0,2822,2811,1,0,0,0,2822,2812,1,0,0,0,2822,2813,1,0,0,0,2822,2814,
-        1,0,0,0,2822,2815,1,0,0,0,2822,2816,1,0,0,0,2822,2817,1,0,0,0,2822,
-        2818,1,0,0,0,2822,2819,1,0,0,0,2822,2820,1,0,0,0,2822,2821,1,0,0,
-        0,2823,593,1,0,0,0,2824,2833,5,29,0,0,2825,2830,3,596,298,0,2826,
-        2827,5,9,0,0,2827,2829,3,596,298,0,2828,2826,1,0,0,0,2829,2832,1,
-        0,0,0,2830,2828,1,0,0,0,2830,2831,1,0,0,0,2831,2834,1,0,0,0,2832,
-        2830,1,0,0,0,2833,2825,1,0,0,0,2833,2834,1,0,0,0,2834,2835,1,0,0,
-        0,2835,2836,5,4,0,0,2836,595,1,0,0,0,2837,2838,5,313,0,0,2838,2839,
-        5,10,0,0,2839,2840,3,592,296,0,2840,597,1,0,0,0,2841,2850,5,30,0,
-        0,2842,2847,3,592,296,0,2843,2844,5,9,0,0,2844,2846,3,592,296,0,
-        2845,2843,1,0,0,0,2846,2849,1,0,0,0,2847,2845,1,0,0,0,2847,2848,
-        1,0,0,0,2848,2851,1,0,0,0,2849,2847,1,0,0,0,2850,2842,1,0,0,0,2850,
-        2851,1,0,0,0,2851,2852,1,0,0,0,2852,2853,5,5,0,0,2853,599,1,0,0,
-        0,2854,2855,5,314,0,0,2855,601,1,0,0,0,2856,2857,5,315,0,0,2857,
-        603,1,0,0,0,2858,2859,5,319,0,0,2859,605,1,0,0,0,2860,2861,5,183,
-        0,0,2861,607,1,0,0,0,2862,2866,5,313,0,0,2863,2865,5,313,0,0,2864,
-        2863,1,0,0,0,2865,2868,1,0,0,0,2866,2864,1,0,0,0,2866,2867,1,0,0,
-        0,2867,609,1,0,0,0,2868,2866,1,0,0,0,2869,2870,5,316,0,0,2870,611,
-        1,0,0,0,2871,2873,5,11,0,0,2872,2871,1,0,0,0,2872,2873,1,0,0,0,2873,
-        2874,1,0,0,0,2874,2875,5,309,0,0,2875,613,1,0,0,0,2876,2878,5,11,
-        0,0,2877,2876,1,0,0,0,2877,2878,1,0,0,0,2878,2879,1,0,0,0,2879,2880,
-        5,311,0,0,2880,615,1,0,0,0,270,623,627,637,646,658,669,679,716,722,
-        731,743,758,762,765,771,777,782,788,798,813,818,826,844,859,866,
-        872,876,886,895,903,909,919,928,981,987,1014,1020,1032,1039,1044,
-        1050,1055,1064,1071,1076,1087,1099,1104,1116,1121,1124,1129,1133,
-        1144,1155,1160,1164,1179,1188,1193,1200,1207,1210,1223,1235,1242,
-        1250,1254,1257,1262,1273,1291,1297,1305,1310,1315,1325,1333,1337,
-        1340,1349,1355,1359,1367,1377,1387,1399,1403,1410,1419,1428,1436,
-        1439,1460,1468,1474,1477,1484,1502,1506,1517,1524,1532,1536,1539,
-        1554,1563,1571,1575,1579,1583,1593,1602,1605,1610,1614,1617,1621,
-        1625,1636,1645,1654,1660,1664,1669,1683,1688,1703,1712,1715,1723,
-        1732,1735,1743,1746,1754,1757,1761,1767,1773,1781,1790,1801,1810,
-        1813,1820,1873,1880,1896,1902,1913,1922,1926,1929,1932,1939,1956,
-        1966,1974,1977,1982,1996,2007,2011,2016,2029,2038,2046,2049,2055,
-        2064,2069,2073,2079,2087,2090,2093,2101,2105,2115,2125,2128,2134,
-        2146,2156,2161,2166,2180,2188,2192,2201,2209,2217,2220,2224,2230,
-        2240,2246,2252,2255,2265,2275,2290,2300,2311,2325,2345,2351,2361,
-        2369,2374,2377,2386,2393,2398,2404,2410,2429,2437,2451,2464,2467,
-        2473,2477,2488,2505,2511,2516,2533,2544,2552,2562,2568,2574,2578,
-        2583,2587,2593,2597,2609,2619,2624,2633,2637,2639,2648,2682,2686,
-        2692,2699,2704,2709,2713,2727,2732,2736,2740,2753,2762,2769,2773,
-        2803,2822,2830,2833,2847,2850,2866,2872,2877
+        7,307,2,308,7,308,2,309,7,309,2,310,7,310,2,311,7,311,2,312,7,312,
+        2,313,7,313,2,314,7,314,2,315,7,315,2,316,7,316,2,317,7,317,1,0,
+        1,0,1,0,1,1,1,1,1,1,5,1,643,8,1,10,1,12,1,646,9,1,1,1,3,1,649,8,
+        1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,661,8,2,1,3,1,3,1,
+        3,1,3,1,3,1,3,3,3,669,8,3,1,4,1,4,1,4,1,4,1,4,1,5,1,5,1,5,1,5,1,
+        5,3,5,681,8,5,1,5,1,5,1,5,1,6,1,6,1,6,1,6,1,6,1,6,3,6,692,8,6,1,
+        6,1,6,1,6,1,7,1,7,1,7,5,7,700,8,7,10,7,12,7,703,9,7,1,8,1,8,1,8,
+        1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,10,
+        1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,3,11,734,
+        8,11,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,13,1,13,1,13,1,13,1,13,
+        1,13,1,13,1,14,1,14,1,14,1,14,1,14,1,14,1,14,5,14,757,8,14,10,14,
+        12,14,760,9,14,1,14,1,14,1,15,1,15,1,15,1,15,3,15,768,8,15,1,16,
+        1,16,1,17,1,17,1,17,1,17,5,17,776,8,17,10,17,12,17,779,9,17,1,17,
+        1,17,1,18,1,18,3,18,785,8,18,1,19,1,19,1,19,1,20,1,20,1,20,1,20,
+        1,21,1,21,1,21,1,21,3,21,798,8,21,1,22,1,22,1,22,1,23,1,23,1,23,
+        1,23,3,23,807,8,23,1,24,1,24,1,24,1,24,1,25,1,25,1,25,1,25,5,25,
+        817,8,25,10,25,12,25,820,9,25,1,25,1,25,1,26,1,26,1,26,1,26,1,27,
+        1,27,1,27,1,27,5,27,832,8,27,10,27,12,27,835,9,27,1,27,3,27,838,
+        8,27,1,27,3,27,841,8,27,1,27,1,27,1,28,1,28,3,28,847,8,28,1,29,1,
+        29,1,29,1,29,3,29,853,8,29,1,30,1,30,1,30,3,30,858,8,30,1,30,1,30,
+        4,30,862,8,30,11,30,12,30,863,1,30,1,30,1,31,1,31,1,31,1,31,5,31,
+        872,8,31,10,31,12,31,875,9,31,1,31,1,31,1,32,1,32,1,32,1,32,1,33,
+        1,33,1,33,1,33,1,34,1,34,3,34,889,8,34,1,34,1,34,1,34,3,34,894,8,
+        34,1,35,1,35,1,35,1,35,5,35,900,8,35,10,35,12,35,903,9,35,1,35,1,
+        35,1,36,1,36,1,36,1,36,1,36,1,37,1,37,1,38,1,38,1,38,1,38,5,38,918,
+        8,38,10,38,12,38,921,9,38,1,38,1,38,1,38,1,39,1,39,1,39,1,39,1,39,
+        1,39,1,39,5,39,933,8,39,10,39,12,39,936,9,39,1,39,1,39,1,40,1,40,
+        3,40,942,8,40,1,41,1,41,1,41,1,41,3,41,948,8,41,1,42,1,42,3,42,952,
+        8,42,1,43,1,43,1,43,1,43,1,43,1,43,5,43,960,8,43,10,43,12,43,963,
+        9,43,1,43,1,43,1,44,1,44,1,44,1,44,3,44,971,8,44,1,45,1,45,1,46,
+        1,46,1,47,1,47,3,47,979,8,47,1,48,1,48,5,48,983,8,48,10,48,12,48,
+        986,9,48,1,49,1,49,1,49,1,50,1,50,5,50,993,8,50,10,50,12,50,996,
+        9,50,1,51,1,51,1,51,1,51,1,51,1,51,3,51,1004,8,51,1,52,1,52,1,52,
+        1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,
+        1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,
+        1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,
+        1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,3,52,1058,8,52,
+        1,53,1,53,1,53,1,53,3,53,1064,8,53,1,54,1,54,1,54,1,54,1,54,1,54,
+        1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,1,54,
+        1,54,1,54,1,54,1,54,1,54,1,54,3,54,1091,8,54,1,55,1,55,5,55,1095,
+        8,55,10,55,12,55,1098,9,55,1,55,1,55,1,56,1,56,1,56,1,57,1,57,5,
+        57,1107,8,57,10,57,12,57,1110,9,57,1,58,1,58,5,58,1114,8,58,10,58,
+        12,58,1117,9,58,1,58,1,58,3,58,1121,8,58,1,59,1,59,5,59,1125,8,59,
+        10,59,12,59,1128,9,59,1,59,1,59,3,59,1132,8,59,1,60,1,60,1,61,1,
+        61,1,61,5,61,1139,8,61,10,61,12,61,1142,9,61,1,62,1,62,5,62,1146,
+        8,62,10,62,12,62,1149,9,62,1,62,1,62,3,62,1153,8,62,1,63,1,63,1,
+        63,1,64,1,64,1,64,1,64,5,64,1162,8,64,10,64,12,64,1165,9,64,1,65,
+        1,65,1,66,1,66,1,66,1,66,1,66,5,66,1174,8,66,10,66,12,66,1177,9,
+        66,1,66,1,66,3,66,1181,8,66,1,67,1,67,1,67,1,68,1,68,1,68,1,68,1,
+        68,1,69,1,69,3,69,1193,8,69,1,69,1,69,1,69,3,69,1198,8,69,1,69,3,
+        69,1201,8,69,1,70,5,70,1204,8,70,10,70,12,70,1207,9,70,1,70,3,70,
+        1210,8,70,1,70,1,70,1,71,1,71,1,71,1,71,1,71,5,71,1219,8,71,10,71,
+        12,71,1222,9,71,1,71,1,71,1,72,1,72,1,72,1,72,5,72,1230,8,72,10,
+        72,12,72,1233,9,72,1,73,1,73,3,73,1237,8,73,1,74,1,74,3,74,1241,
+        8,74,1,75,1,75,1,75,1,76,1,76,1,76,1,76,1,76,1,77,1,77,1,78,1,78,
+        1,78,3,78,1256,8,78,1,79,1,79,1,80,1,80,1,80,5,80,1263,8,80,10,80,
+        12,80,1266,9,80,1,81,1,81,3,81,1270,8,81,1,82,1,82,1,82,5,82,1275,
+        8,82,10,82,12,82,1278,9,82,1,83,1,83,4,83,1282,8,83,11,83,12,83,
+        1283,1,84,3,84,1287,8,84,1,84,1,84,1,84,1,84,1,85,1,85,1,85,1,86,
+        1,86,5,86,1298,8,86,10,86,12,86,1301,9,86,1,87,1,87,1,87,1,88,1,
+        88,1,89,1,89,5,89,1310,8,89,10,89,12,89,1313,9,89,1,90,1,90,5,90,
+        1317,8,90,10,90,12,90,1320,9,90,1,90,1,90,1,90,5,90,1325,8,90,10,
+        90,12,90,1328,9,90,1,90,3,90,1331,8,90,1,90,3,90,1334,8,90,1,91,
+        1,91,1,91,3,91,1339,8,91,1,92,1,92,1,92,1,92,1,93,1,93,1,94,1,94,
+        1,94,3,94,1350,8,94,1,94,1,94,1,95,1,95,1,95,1,95,1,95,1,96,1,96,
+        1,96,1,97,1,97,1,97,1,97,5,97,1366,8,97,10,97,12,97,1369,9,97,1,
+        98,1,98,1,98,3,98,1374,8,98,1,99,1,99,1,99,1,99,5,99,1380,8,99,10,
+        99,12,99,1383,9,99,1,100,1,100,3,100,1387,8,100,1,100,5,100,1390,
+        8,100,10,100,12,100,1393,9,100,1,101,1,101,1,101,1,102,1,102,5,102,
+        1400,8,102,10,102,12,102,1403,9,102,1,102,1,102,1,102,5,102,1408,
+        8,102,10,102,12,102,1411,9,102,1,102,3,102,1414,8,102,1,102,3,102,
+        1417,8,102,1,103,1,103,1,103,1,104,1,104,5,104,1424,8,104,10,104,
+        12,104,1427,9,104,1,104,1,104,1,104,3,104,1432,8,104,1,105,1,105,
+        3,105,1436,8,105,1,106,1,106,1,106,1,106,5,106,1442,8,106,10,106,
+        12,106,1445,9,106,1,107,1,107,1,107,1,108,1,108,5,108,1452,8,108,
+        10,108,12,108,1455,9,108,1,108,1,108,1,108,1,109,1,109,5,109,1462,
+        8,109,10,109,12,109,1465,9,109,1,109,1,109,1,109,1,109,1,109,1,109,
+        1,109,5,109,1474,8,109,10,109,12,109,1477,9,109,1,109,3,109,1480,
+        8,109,1,109,1,109,1,110,1,110,1,110,3,110,1487,8,110,1,111,1,111,
+        1,111,1,111,1,111,5,111,1494,8,111,10,111,12,111,1497,9,111,1,111,
+        1,111,1,112,1,112,5,112,1503,8,112,10,112,12,112,1506,9,112,1,112,
+        1,112,1,112,1,112,1,112,3,112,1513,8,112,1,112,3,112,1516,8,112,
+        1,113,1,113,1,113,1,113,1,114,1,114,1,114,1,114,1,114,1,115,1,115,
+        1,115,1,115,1,115,1,115,1,116,1,116,5,116,1535,8,116,10,116,12,116,
+        1538,9,116,1,116,1,116,1,116,5,116,1543,8,116,10,116,12,116,1546,
+        9,116,1,116,1,116,1,116,3,116,1551,8,116,1,116,3,116,1554,8,116,
+        1,117,1,117,1,117,1,118,1,118,3,118,1561,8,118,1,119,1,119,1,119,
+        1,119,1,120,1,120,1,120,1,120,1,120,1,120,1,120,1,120,1,120,1,120,
+        1,121,1,121,3,121,1579,8,121,1,121,1,121,3,121,1583,8,121,1,121,
+        1,121,1,121,1,122,1,122,1,122,1,122,5,122,1592,8,122,10,122,12,122,
+        1595,9,122,1,123,1,123,5,123,1599,8,123,10,123,12,123,1602,9,123,
+        1,123,1,123,1,123,5,123,1607,8,123,10,123,12,123,1610,9,123,1,123,
+        3,123,1613,8,123,1,123,3,123,1616,8,123,1,123,1,123,1,123,1,123,
+        1,123,1,124,1,124,1,124,1,125,1,125,1,125,1,126,1,126,3,126,1631,
+        8,126,1,127,1,127,1,127,1,128,1,128,5,128,1638,8,128,10,128,12,128,
+        1641,9,128,1,128,1,128,1,128,5,128,1646,8,128,10,128,12,128,1649,
+        9,128,1,128,3,128,1652,8,128,1,129,1,129,3,129,1656,8,129,1,130,
+        1,130,3,130,1660,8,130,1,130,1,130,1,130,1,130,1,131,1,131,1,131,
+        1,131,3,131,1670,8,131,1,132,1,132,1,132,1,132,1,133,1,133,1,133,
+        3,133,1679,8,133,1,134,3,134,1682,8,134,1,134,5,134,1685,8,134,10,
+        134,12,134,1688,9,134,1,134,3,134,1691,8,134,1,135,3,135,1694,8,
+        135,1,135,1,135,3,135,1698,8,135,1,136,1,136,3,136,1702,8,136,1,
+        136,1,136,1,136,1,136,1,137,1,137,1,137,1,137,1,137,3,137,1713,8,
+        137,1,138,1,138,1,138,1,138,1,138,5,138,1720,8,138,10,138,12,138,
+        1723,9,138,1,138,1,138,1,139,1,139,5,139,1729,8,139,10,139,12,139,
+        1732,9,139,1,139,1,139,1,139,3,139,1737,8,139,1,139,1,139,3,139,
+        1741,8,139,1,140,1,140,1,140,3,140,1746,8,140,1,141,1,141,1,141,
+        1,141,1,142,1,142,1,142,1,142,1,143,1,143,5,143,1758,8,143,10,143,
+        12,143,1761,9,143,1,143,1,143,3,143,1765,8,143,1,143,1,143,1,143,
+        1,143,1,144,1,144,1,144,1,145,1,145,1,145,1,145,5,145,1778,8,145,
+        10,145,12,145,1781,9,145,1,146,1,146,1,146,1,146,5,146,1787,8,146,
+        10,146,12,146,1790,9,146,3,146,1792,8,146,1,147,1,147,1,147,1,147,
+        5,147,1798,8,147,10,147,12,147,1801,9,147,1,148,1,148,1,148,1,148,
+        5,148,1807,8,148,10,148,12,148,1810,9,148,3,148,1812,8,148,1,149,
+        1,149,1,149,1,149,5,149,1818,8,149,10,149,12,149,1821,9,149,3,149,
+        1823,8,149,1,150,1,150,1,150,1,150,5,150,1829,8,150,10,150,12,150,
+        1832,9,150,3,150,1834,8,150,1,151,1,151,3,151,1838,8,151,1,152,1,
+        152,5,152,1842,8,152,10,152,12,152,1845,9,152,1,152,1,152,1,152,
+        1,152,1,153,1,153,5,153,1853,8,153,10,153,12,153,1856,9,153,1,153,
+        1,153,1,153,3,153,1861,8,153,1,154,1,154,1,154,1,154,5,154,1867,
+        8,154,10,154,12,154,1870,9,154,1,155,1,155,1,155,1,155,5,155,1876,
+        8,155,10,155,12,155,1879,9,155,1,156,1,156,1,156,1,156,5,156,1885,
+        8,156,10,156,12,156,1888,9,156,1,157,1,157,1,157,1,157,1,158,1,158,
+        1,158,1,158,3,158,1898,8,158,1,159,1,159,1,159,1,159,1,159,5,159,
+        1905,8,159,10,159,12,159,1908,9,159,3,159,1910,8,159,1,159,1,159,
+        1,160,4,160,1915,8,160,11,160,12,160,1916,1,161,1,161,1,161,1,161,
+        1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,
+        1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,
+        1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,
+        1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,1,161,
+        1,161,1,161,1,161,3,161,1970,8,161,1,162,1,162,1,162,5,162,1975,
+        8,162,10,162,12,162,1978,9,162,1,163,1,163,1,163,1,163,1,163,1,163,
+        1,163,1,163,1,163,1,163,1,163,1,163,1,163,3,163,1993,8,163,1,164,
+        1,164,5,164,1997,8,164,10,164,12,164,2000,9,164,1,164,1,164,1,164,
+        1,164,1,165,1,165,5,165,2008,8,165,10,165,12,165,2011,9,165,1,165,
+        1,165,1,166,1,166,5,166,2017,8,166,10,166,12,166,2020,9,166,1,166,
+        3,166,2023,8,166,1,166,3,166,2026,8,166,1,166,3,166,2029,8,166,1,
+        166,1,166,1,166,4,166,2034,8,166,11,166,12,166,2035,1,166,1,166,
+        1,167,1,167,1,167,1,167,1,167,1,167,1,168,1,168,1,168,1,168,1,168,
+        5,168,2051,8,168,10,168,12,168,2054,9,168,1,169,1,169,1,169,1,169,
+        1,169,5,169,2061,8,169,10,169,12,169,2064,9,169,1,169,1,169,1,170,
+        1,170,1,170,3,170,2071,8,170,1,170,3,170,2074,8,170,1,170,1,170,
+        1,170,3,170,2079,8,170,1,170,1,170,1,171,1,171,1,171,1,171,1,172,
+        1,172,1,172,1,172,5,172,2091,8,172,10,172,12,172,2094,9,172,1,173,
+        1,173,1,173,1,173,1,174,1,174,5,174,2102,8,174,10,174,12,174,2105,
+        9,174,1,174,3,174,2108,8,174,1,174,1,174,1,174,3,174,2113,8,174,
+        1,175,1,175,1,175,1,175,1,176,1,176,1,176,1,176,1,176,5,176,2124,
+        8,176,10,176,12,176,2127,9,176,1,176,1,176,1,177,1,177,5,177,2133,
+        8,177,10,177,12,177,2136,9,177,1,177,1,177,1,177,5,177,2141,8,177,
+        10,177,12,177,2144,9,177,3,177,2146,8,177,1,178,1,178,5,178,2150,
+        8,178,10,178,12,178,2153,9,178,1,178,1,178,1,178,1,178,5,178,2159,
+        8,178,10,178,12,178,2162,9,178,1,179,1,179,3,179,2166,8,179,1,179,
+        1,179,3,179,2170,8,179,1,180,1,180,5,180,2174,8,180,10,180,12,180,
+        2177,9,180,1,180,1,180,1,180,5,180,2182,8,180,10,180,12,180,2185,
+        9,180,3,180,2187,8,180,1,180,3,180,2190,8,180,1,181,1,181,1,181,
+        1,181,5,181,2196,8,181,10,181,12,181,2199,9,181,1,181,3,181,2202,
+        8,181,1,182,1,182,1,182,1,182,1,183,1,183,5,183,2210,8,183,10,183,
+        12,183,2213,9,183,1,183,1,183,1,183,1,183,1,183,5,183,2220,8,183,
+        10,183,12,183,2223,9,183,3,183,2225,8,183,1,184,1,184,5,184,2229,
+        8,184,10,184,12,184,2232,9,184,1,184,1,184,1,184,1,184,1,185,1,185,
+        1,185,1,185,1,185,3,185,2243,8,185,1,186,1,186,1,186,1,187,1,187,
+        1,187,5,187,2251,8,187,10,187,12,187,2254,9,187,1,188,1,188,3,188,
+        2258,8,188,1,188,1,188,1,188,3,188,2263,8,188,1,188,1,188,1,188,
+        1,189,1,189,1,189,1,189,1,189,1,190,1,190,5,190,2275,8,190,10,190,
+        12,190,2278,9,190,1,190,1,190,1,190,5,190,2283,8,190,10,190,12,190,
+        2286,9,190,1,190,3,190,2289,8,190,1,191,1,191,1,191,1,192,1,192,
+        5,192,2296,8,192,10,192,12,192,2299,9,192,1,192,1,192,1,193,1,193,
+        1,193,3,193,2306,8,193,1,194,1,194,1,194,1,194,5,194,2312,8,194,
+        10,194,12,194,2315,9,194,3,194,2317,8,194,1,195,1,195,3,195,2321,
+        8,195,1,196,1,196,5,196,2325,8,196,10,196,12,196,2328,9,196,1,197,
+        1,197,1,197,1,198,1,198,1,198,1,198,3,198,2337,8,198,1,199,1,199,
+        1,199,1,199,3,199,2343,8,199,1,200,1,200,1,200,1,200,3,200,2349,
+        8,200,1,201,3,201,2352,8,201,1,201,1,201,1,202,1,202,1,202,1,202,
+        1,203,1,203,3,203,2362,8,203,1,203,1,203,1,204,1,204,1,204,1,204,
+        5,204,2370,8,204,10,204,12,204,2373,9,204,1,204,1,204,1,205,1,205,
+        1,205,1,205,1,206,1,206,1,207,1,207,5,207,2385,8,207,10,207,12,207,
+        2388,9,207,1,208,1,208,1,208,1,209,1,209,5,209,2395,8,209,10,209,
+        12,209,2398,9,209,1,210,1,210,1,210,1,211,1,211,1,211,1,211,1,211,
+        3,211,2408,8,211,1,212,1,212,1,212,1,212,1,213,1,213,1,213,1,213,
+        1,213,1,213,5,213,2420,8,213,10,213,12,213,2423,9,213,1,213,1,213,
+        1,214,1,214,1,214,1,214,1,214,1,214,1,214,1,214,1,215,1,215,1,215,
+        1,215,1,216,1,216,1,216,3,216,2442,8,216,1,217,1,217,5,217,2446,
+        8,217,10,217,12,217,2449,9,217,1,218,1,218,1,218,1,219,1,219,5,219,
+        2456,8,219,10,219,12,219,2459,9,219,1,220,1,220,1,220,1,221,1,221,
+        3,221,2466,8,221,1,222,1,222,1,222,3,222,2471,8,222,1,222,3,222,
+        2474,8,222,1,223,1,223,1,224,1,224,1,224,1,224,1,225,3,225,2483,
+        8,225,1,225,1,225,1,226,1,226,1,226,3,226,2490,8,226,1,227,1,227,
+        1,227,3,227,2495,8,227,1,228,1,228,4,228,2499,8,228,11,228,12,228,
+        2500,1,229,1,229,1,229,1,229,3,229,2507,8,229,1,230,1,230,1,230,
+        1,231,1,231,1,231,1,232,1,232,1,232,1,232,1,233,1,233,1,233,1,233,
+        1,233,1,234,1,234,3,234,2526,8,234,1,234,1,234,1,234,1,234,1,235,
+        1,235,3,235,2534,8,235,1,235,1,235,1,235,1,235,1,236,1,236,1,236,
+        1,236,1,237,1,237,5,237,2546,8,237,10,237,12,237,2549,9,237,1,238,
+        1,238,1,238,1,239,1,239,1,239,1,239,1,239,5,239,2559,8,239,10,239,
+        12,239,2562,9,239,3,239,2564,8,239,1,239,1,239,1,240,1,240,3,240,
+        2570,8,240,1,241,1,241,3,241,2574,8,241,1,242,1,242,1,243,1,243,
+        1,243,1,243,1,243,1,243,1,243,3,243,2585,8,243,1,244,1,244,1,244,
+        1,244,1,245,1,245,1,245,1,245,1,245,1,245,1,245,1,245,1,245,1,246,
+        1,246,3,246,2602,8,246,1,247,1,247,4,247,2606,8,247,11,247,12,247,
+        2607,1,248,1,248,1,248,3,248,2613,8,248,1,249,1,249,1,249,1,250,
+        1,250,1,250,1,250,1,251,1,251,1,251,1,251,1,251,1,252,1,252,1,252,
+        3,252,2630,8,252,1,253,1,253,1,254,1,254,1,255,1,255,1,256,1,256,
+        1,256,3,256,2641,8,256,1,257,1,257,1,257,1,257,1,258,1,258,3,258,
+        2649,8,258,1,259,1,259,1,259,1,259,1,260,1,260,5,260,2657,8,260,
+        10,260,12,260,2660,9,260,1,260,1,260,1,260,3,260,2665,8,260,1,260,
+        1,260,5,260,2669,8,260,10,260,12,260,2672,9,260,1,260,3,260,2675,
+        8,260,1,260,1,260,1,260,3,260,2680,8,260,1,261,1,261,3,261,2684,
+        8,261,1,261,1,261,5,261,2688,8,261,10,261,12,261,2691,9,261,1,261,
+        3,261,2694,8,261,1,261,1,261,1,262,1,262,1,262,1,262,1,263,1,263,
+        5,263,2704,8,263,10,263,12,263,2707,9,263,1,263,1,263,1,263,1,263,
+        1,263,5,263,2714,8,263,10,263,12,263,2717,9,263,1,263,1,263,3,263,
+        2721,8,263,1,264,1,264,1,264,1,264,1,264,5,264,2728,8,264,10,264,
+        12,264,2731,9,264,1,264,3,264,2734,8,264,3,264,2736,8,264,1,264,
+        1,264,1,265,1,265,1,265,1,265,1,265,3,265,2745,8,265,1,266,1,266,
+        1,266,1,266,1,266,1,266,1,266,1,266,1,267,1,267,1,267,1,267,1,267,
+        1,268,1,268,1,268,1,268,1,268,1,269,1,269,1,269,1,269,1,269,1,270,
+        1,270,1,271,1,271,1,272,1,272,1,273,1,273,1,273,3,273,2779,8,273,
+        1,274,1,274,3,274,2783,8,274,1,275,1,275,1,276,1,276,3,276,2789,
+        8,276,1,277,1,277,1,277,5,277,2794,8,277,10,277,12,277,2797,9,277,
+        1,278,1,278,3,278,2801,8,278,1,279,1,279,1,279,3,279,2806,8,279,
+        1,280,1,280,3,280,2810,8,280,1,281,1,281,1,282,1,282,1,283,1,283,
+        1,284,1,284,1,284,1,284,1,285,1,285,3,285,2824,8,285,1,286,1,286,
+        1,286,3,286,2829,8,286,1,287,1,287,3,287,2833,8,287,1,288,1,288,
+        3,288,2837,8,288,1,289,1,289,1,289,1,289,1,289,1,289,1,289,1,289,
+        1,289,1,289,1,289,3,289,2850,8,289,1,290,1,290,1,290,1,290,1,290,
+        1,290,1,290,3,290,2859,8,290,1,291,1,291,1,291,1,291,1,291,3,291,
+        2866,8,291,1,292,1,292,3,292,2870,8,292,1,293,1,293,1,294,1,294,
+        1,295,1,295,1,296,1,296,1,297,1,297,1,298,1,298,1,299,1,299,1,300,
+        1,300,1,301,1,301,1,302,1,302,1,302,1,303,1,303,1,303,1,304,1,304,
+        5,304,2898,8,304,10,304,12,304,2901,9,304,1,305,1,305,1,305,1,305,
+        1,305,1,306,1,306,1,306,1,306,1,306,1,306,1,306,1,306,1,306,1,306,
+        1,306,3,306,2919,8,306,1,307,1,307,1,307,1,307,5,307,2925,8,307,
+        10,307,12,307,2928,9,307,3,307,2930,8,307,1,307,1,307,1,308,1,308,
+        1,308,1,308,1,309,1,309,1,309,1,309,5,309,2942,8,309,10,309,12,309,
+        2945,9,309,3,309,2947,8,309,1,309,1,309,1,310,1,310,1,311,1,311,
+        1,312,1,312,1,313,1,313,1,314,1,314,5,314,2961,8,314,10,314,12,314,
+        2964,9,314,1,315,1,315,1,316,3,316,2969,8,316,1,316,1,316,1,317,
+        3,317,2974,8,317,1,317,1,317,1,317,0,0,318,0,2,4,6,8,10,12,14,16,
+        18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,
+        62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,
+        104,106,108,110,112,114,116,118,120,122,124,126,128,130,132,134,
+        136,138,140,142,144,146,148,150,152,154,156,158,160,162,164,166,
+        168,170,172,174,176,178,180,182,184,186,188,190,192,194,196,198,
+        200,202,204,206,208,210,212,214,216,218,220,222,224,226,228,230,
+        232,234,236,238,240,242,244,246,248,250,252,254,256,258,260,262,
+        264,266,268,270,272,274,276,278,280,282,284,286,288,290,292,294,
+        296,298,300,302,304,306,308,310,312,314,316,318,320,322,324,326,
+        328,330,332,334,336,338,340,342,344,346,348,350,352,354,356,358,
+        360,362,364,366,368,370,372,374,376,378,380,382,384,386,388,390,
+        392,394,396,398,400,402,404,406,408,410,412,414,416,418,420,422,
+        424,426,428,430,432,434,436,438,440,442,444,446,448,450,452,454,
+        456,458,460,462,464,466,468,470,472,474,476,478,480,482,484,486,
+        488,490,492,494,496,498,500,502,504,506,508,510,512,514,516,518,
+        520,522,524,526,528,530,532,534,536,538,540,542,544,546,548,550,
+        552,554,556,558,560,562,564,566,568,570,572,574,576,578,580,582,
+        584,586,588,590,592,594,596,598,600,602,604,606,608,610,612,614,
+        616,618,620,622,624,626,628,630,632,634,0,36,2,0,12,13,25,25,2,0,
+        14,14,26,26,1,0,6,7,2,0,82,82,168,168,1,0,12,13,2,0,164,164,166,
+        166,2,0,165,165,167,167,2,0,220,221,233,233,3,0,48,48,80,80,102,
+        103,15,0,37,37,44,44,46,46,52,52,58,58,61,61,146,146,152,153,205,
+        206,228,228,238,238,243,243,246,248,256,256,324,324,4,0,78,78,160,
+        160,236,237,260,260,2,0,151,151,155,155,2,0,119,119,263,263,3,0,
+        50,50,169,169,196,196,3,0,42,42,147,147,169,169,2,0,192,192,234,
+        234,2,0,48,48,80,80,2,0,96,96,147,147,2,0,150,150,244,244,2,0,94,
+        94,264,264,14,0,51,51,56,56,71,72,77,77,89,89,101,101,120,130,136,
+        136,142,143,145,145,204,204,235,235,266,269,271,272,14,0,51,51,56,
+        56,71,72,77,77,89,89,120,130,136,136,142,143,145,145,204,204,235,
+        235,266,269,271,272,324,324,3,0,18,18,20,20,28,28,4,0,65,68,110,
+        113,138,139,182,183,2,0,54,54,171,171,2,0,22,24,27,27,2,0,11,11,
+        33,33,3,0,1,1,32,32,35,35,10,0,19,19,21,21,63,64,83,84,109,109,114,
+        118,161,161,172,181,184,185,239,240,3,0,145,145,267,267,271,271,
+        1,0,91,92,4,0,313,313,315,315,318,319,321,323,4,0,285,291,293,295,
+        298,303,310,312,1,0,285,312,40,0,38,38,40,42,50,50,53,53,55,55,60,
+        60,73,73,76,76,78,79,82,82,86,87,93,93,98,99,119,119,131,131,133,
+        135,140,140,148,149,151,151,153,156,160,160,168,169,186,187,189,
+        190,194,195,200,201,203,203,207,207,217,219,222,224,231,231,236,
+        237,241,241,245,245,257,257,260,263,265,265,273,283,285,285,293,
+        293,25,0,39,39,47,47,57,57,62,63,70,70,75,75,81,81,90,91,94,95,109,
+        109,138,138,141,141,150,150,162,162,188,188,197,197,208,208,225,
+        227,229,230,232,232,234,234,242,242,244,244,249,255,264,264,3097,
+        0,636,1,0,0,0,2,639,1,0,0,0,4,660,1,0,0,0,6,668,1,0,0,0,8,670,1,
+        0,0,0,10,675,1,0,0,0,12,685,1,0,0,0,14,696,1,0,0,0,16,704,1,0,0,
+        0,18,712,1,0,0,0,20,717,1,0,0,0,22,733,1,0,0,0,24,735,1,0,0,0,26,
+        742,1,0,0,0,28,749,1,0,0,0,30,763,1,0,0,0,32,769,1,0,0,0,34,771,
+        1,0,0,0,36,784,1,0,0,0,38,786,1,0,0,0,40,789,1,0,0,0,42,793,1,0,
+        0,0,44,799,1,0,0,0,46,802,1,0,0,0,48,808,1,0,0,0,50,812,1,0,0,0,
+        52,823,1,0,0,0,54,827,1,0,0,0,56,846,1,0,0,0,58,848,1,0,0,0,60,854,
+        1,0,0,0,62,867,1,0,0,0,64,878,1,0,0,0,66,882,1,0,0,0,68,886,1,0,
+        0,0,70,895,1,0,0,0,72,906,1,0,0,0,74,911,1,0,0,0,76,913,1,0,0,0,
+        78,925,1,0,0,0,80,941,1,0,0,0,82,943,1,0,0,0,84,951,1,0,0,0,86,953,
+        1,0,0,0,88,966,1,0,0,0,90,972,1,0,0,0,92,974,1,0,0,0,94,976,1,0,
+        0,0,96,980,1,0,0,0,98,987,1,0,0,0,100,990,1,0,0,0,102,1003,1,0,0,
+        0,104,1057,1,0,0,0,106,1063,1,0,0,0,108,1090,1,0,0,0,110,1092,1,
+        0,0,0,112,1101,1,0,0,0,114,1104,1,0,0,0,116,1111,1,0,0,0,118,1122,
+        1,0,0,0,120,1133,1,0,0,0,122,1135,1,0,0,0,124,1143,1,0,0,0,126,1154,
+        1,0,0,0,128,1157,1,0,0,0,130,1166,1,0,0,0,132,1168,1,0,0,0,134,1182,
+        1,0,0,0,136,1185,1,0,0,0,138,1190,1,0,0,0,140,1205,1,0,0,0,142,1213,
+        1,0,0,0,144,1225,1,0,0,0,146,1236,1,0,0,0,148,1238,1,0,0,0,150,1242,
+        1,0,0,0,152,1245,1,0,0,0,154,1250,1,0,0,0,156,1252,1,0,0,0,158,1257,
+        1,0,0,0,160,1259,1,0,0,0,162,1269,1,0,0,0,164,1271,1,0,0,0,166,1279,
+        1,0,0,0,168,1286,1,0,0,0,170,1292,1,0,0,0,172,1295,1,0,0,0,174,1302,
+        1,0,0,0,176,1305,1,0,0,0,178,1307,1,0,0,0,180,1314,1,0,0,0,182,1338,
+        1,0,0,0,184,1340,1,0,0,0,186,1344,1,0,0,0,188,1346,1,0,0,0,190,1353,
+        1,0,0,0,192,1358,1,0,0,0,194,1361,1,0,0,0,196,1370,1,0,0,0,198,1375,
+        1,0,0,0,200,1384,1,0,0,0,202,1394,1,0,0,0,204,1397,1,0,0,0,206,1418,
+        1,0,0,0,208,1421,1,0,0,0,210,1435,1,0,0,0,212,1437,1,0,0,0,214,1446,
+        1,0,0,0,216,1449,1,0,0,0,218,1459,1,0,0,0,220,1486,1,0,0,0,222,1488,
+        1,0,0,0,224,1500,1,0,0,0,226,1517,1,0,0,0,228,1521,1,0,0,0,230,1526,
+        1,0,0,0,232,1532,1,0,0,0,234,1555,1,0,0,0,236,1558,1,0,0,0,238,1562,
+        1,0,0,0,240,1566,1,0,0,0,242,1578,1,0,0,0,244,1587,1,0,0,0,246,1596,
+        1,0,0,0,248,1622,1,0,0,0,250,1625,1,0,0,0,252,1628,1,0,0,0,254,1632,
+        1,0,0,0,256,1635,1,0,0,0,258,1653,1,0,0,0,260,1657,1,0,0,0,262,1665,
+        1,0,0,0,264,1671,1,0,0,0,266,1675,1,0,0,0,268,1681,1,0,0,0,270,1693,
+        1,0,0,0,272,1699,1,0,0,0,274,1707,1,0,0,0,276,1714,1,0,0,0,278,1726,
+        1,0,0,0,280,1742,1,0,0,0,282,1747,1,0,0,0,284,1751,1,0,0,0,286,1755,
+        1,0,0,0,288,1770,1,0,0,0,290,1773,1,0,0,0,292,1782,1,0,0,0,294,1793,
+        1,0,0,0,296,1802,1,0,0,0,298,1813,1,0,0,0,300,1824,1,0,0,0,302,1835,
+        1,0,0,0,304,1839,1,0,0,0,306,1850,1,0,0,0,308,1862,1,0,0,0,310,1871,
+        1,0,0,0,312,1880,1,0,0,0,314,1889,1,0,0,0,316,1893,1,0,0,0,318,1899,
+        1,0,0,0,320,1914,1,0,0,0,322,1969,1,0,0,0,324,1971,1,0,0,0,326,1992,
+        1,0,0,0,328,1994,1,0,0,0,330,2005,1,0,0,0,332,2014,1,0,0,0,334,2039,
+        1,0,0,0,336,2045,1,0,0,0,338,2055,1,0,0,0,340,2067,1,0,0,0,342,2082,
+        1,0,0,0,344,2086,1,0,0,0,346,2095,1,0,0,0,348,2099,1,0,0,0,350,2114,
+        1,0,0,0,352,2118,1,0,0,0,354,2130,1,0,0,0,356,2147,1,0,0,0,358,2163,
+        1,0,0,0,360,2171,1,0,0,0,362,2191,1,0,0,0,364,2203,1,0,0,0,366,2207,
+        1,0,0,0,368,2226,1,0,0,0,370,2237,1,0,0,0,372,2244,1,0,0,0,374,2247,
+        1,0,0,0,376,2255,1,0,0,0,378,2267,1,0,0,0,380,2272,1,0,0,0,382,2290,
+        1,0,0,0,384,2293,1,0,0,0,386,2302,1,0,0,0,388,2307,1,0,0,0,390,2320,
+        1,0,0,0,392,2322,1,0,0,0,394,2329,1,0,0,0,396,2332,1,0,0,0,398,2338,
+        1,0,0,0,400,2344,1,0,0,0,402,2351,1,0,0,0,404,2355,1,0,0,0,406,2361,
+        1,0,0,0,408,2365,1,0,0,0,410,2376,1,0,0,0,412,2380,1,0,0,0,414,2382,
+        1,0,0,0,416,2389,1,0,0,0,418,2392,1,0,0,0,420,2399,1,0,0,0,422,2407,
+        1,0,0,0,424,2409,1,0,0,0,426,2413,1,0,0,0,428,2426,1,0,0,0,430,2434,
+        1,0,0,0,432,2438,1,0,0,0,434,2443,1,0,0,0,436,2450,1,0,0,0,438,2453,
+        1,0,0,0,440,2460,1,0,0,0,442,2465,1,0,0,0,444,2467,1,0,0,0,446,2475,
+        1,0,0,0,448,2477,1,0,0,0,450,2482,1,0,0,0,452,2489,1,0,0,0,454,2494,
+        1,0,0,0,456,2496,1,0,0,0,458,2506,1,0,0,0,460,2508,1,0,0,0,462,2511,
+        1,0,0,0,464,2514,1,0,0,0,466,2518,1,0,0,0,468,2523,1,0,0,0,470,2531,
+        1,0,0,0,472,2539,1,0,0,0,474,2543,1,0,0,0,476,2550,1,0,0,0,478,2553,
+        1,0,0,0,480,2569,1,0,0,0,482,2573,1,0,0,0,484,2575,1,0,0,0,486,2584,
+        1,0,0,0,488,2586,1,0,0,0,490,2590,1,0,0,0,492,2601,1,0,0,0,494,2603,
+        1,0,0,0,496,2612,1,0,0,0,498,2614,1,0,0,0,500,2617,1,0,0,0,502,2621,
+        1,0,0,0,504,2629,1,0,0,0,506,2631,1,0,0,0,508,2633,1,0,0,0,510,2635,
+        1,0,0,0,512,2640,1,0,0,0,514,2642,1,0,0,0,516,2648,1,0,0,0,518,2650,
+        1,0,0,0,520,2654,1,0,0,0,522,2681,1,0,0,0,524,2697,1,0,0,0,526,2701,
+        1,0,0,0,528,2722,1,0,0,0,530,2739,1,0,0,0,532,2746,1,0,0,0,534,2754,
+        1,0,0,0,536,2759,1,0,0,0,538,2764,1,0,0,0,540,2769,1,0,0,0,542,2771,
+        1,0,0,0,544,2773,1,0,0,0,546,2778,1,0,0,0,548,2782,1,0,0,0,550,2784,
+        1,0,0,0,552,2788,1,0,0,0,554,2790,1,0,0,0,556,2800,1,0,0,0,558,2805,
+        1,0,0,0,560,2809,1,0,0,0,562,2811,1,0,0,0,564,2813,1,0,0,0,566,2815,
+        1,0,0,0,568,2817,1,0,0,0,570,2823,1,0,0,0,572,2828,1,0,0,0,574,2832,
+        1,0,0,0,576,2836,1,0,0,0,578,2849,1,0,0,0,580,2858,1,0,0,0,582,2865,
+        1,0,0,0,584,2869,1,0,0,0,586,2871,1,0,0,0,588,2873,1,0,0,0,590,2875,
+        1,0,0,0,592,2877,1,0,0,0,594,2879,1,0,0,0,596,2881,1,0,0,0,598,2883,
+        1,0,0,0,600,2885,1,0,0,0,602,2887,1,0,0,0,604,2889,1,0,0,0,606,2892,
+        1,0,0,0,608,2895,1,0,0,0,610,2902,1,0,0,0,612,2918,1,0,0,0,614,2920,
+        1,0,0,0,616,2933,1,0,0,0,618,2937,1,0,0,0,620,2950,1,0,0,0,622,2952,
+        1,0,0,0,624,2954,1,0,0,0,626,2956,1,0,0,0,628,2958,1,0,0,0,630,2965,
+        1,0,0,0,632,2968,1,0,0,0,634,2973,1,0,0,0,636,637,3,2,1,0,637,638,
+        5,0,0,1,638,1,1,0,0,0,639,644,3,4,2,0,640,641,5,34,0,0,641,643,3,
+        4,2,0,642,640,1,0,0,0,643,646,1,0,0,0,644,642,1,0,0,0,644,645,1,
+        0,0,0,645,648,1,0,0,0,646,644,1,0,0,0,647,649,5,34,0,0,648,647,1,
+        0,0,0,648,649,1,0,0,0,649,3,1,0,0,0,650,661,3,58,29,0,651,661,3,
+        86,43,0,652,661,3,6,3,0,653,661,3,24,12,0,654,661,3,26,13,0,655,
+        661,3,28,14,0,656,661,3,36,18,0,657,661,3,90,45,0,658,661,3,78,39,
+        0,659,661,3,82,41,0,660,650,1,0,0,0,660,651,1,0,0,0,660,652,1,0,
+        0,0,660,653,1,0,0,0,660,654,1,0,0,0,660,655,1,0,0,0,660,656,1,0,
+        0,0,660,657,1,0,0,0,660,658,1,0,0,0,660,659,1,0,0,0,661,5,1,0,0,
+        0,662,669,3,10,5,0,663,669,3,12,6,0,664,669,3,8,4,0,665,669,3,16,
+        8,0,666,669,3,18,9,0,667,669,3,20,10,0,668,662,1,0,0,0,668,663,1,
+        0,0,0,668,664,1,0,0,0,668,665,1,0,0,0,668,666,1,0,0,0,668,667,1,
+        0,0,0,669,7,1,0,0,0,670,671,5,149,0,0,671,672,3,546,273,0,672,673,
+        5,17,0,0,673,674,3,92,46,0,674,9,1,0,0,0,675,676,5,149,0,0,676,677,
+        3,546,273,0,677,678,5,17,0,0,678,680,5,31,0,0,679,681,3,22,11,0,
+        680,679,1,0,0,0,680,681,1,0,0,0,681,682,1,0,0,0,682,683,5,8,0,0,
+        683,684,3,54,27,0,684,11,1,0,0,0,685,686,5,149,0,0,686,687,3,546,
+        273,0,687,688,5,17,0,0,688,689,5,262,0,0,689,691,5,31,0,0,690,692,
+        3,14,7,0,691,690,1,0,0,0,691,692,1,0,0,0,692,693,1,0,0,0,693,694,
+        5,8,0,0,694,695,3,54,27,0,695,13,1,0,0,0,696,701,3,42,21,0,697,698,
+        5,9,0,0,698,700,3,42,21,0,699,697,1,0,0,0,700,703,1,0,0,0,701,699,
+        1,0,0,0,701,702,1,0,0,0,702,15,1,0,0,0,703,701,1,0,0,0,704,705,5,
+        149,0,0,705,706,3,546,273,0,706,707,5,17,0,0,707,708,5,162,0,0,708,
+        709,5,31,0,0,709,710,3,94,47,0,710,711,5,8,0,0,711,17,1,0,0,0,712,
+        713,5,149,0,0,713,714,3,546,273,0,714,715,5,17,0,0,715,716,3,222,
+        111,0,716,19,1,0,0,0,717,718,5,149,0,0,718,719,3,546,273,0,719,720,
+        5,17,0,0,720,721,3,412,206,0,721,21,1,0,0,0,722,723,3,46,23,0,723,
+        724,5,9,0,0,724,725,3,46,23,0,725,726,1,0,0,0,726,727,5,9,0,0,727,
+        728,3,42,21,0,728,734,1,0,0,0,729,730,3,42,21,0,730,731,5,9,0,0,
+        731,732,3,42,21,0,732,734,1,0,0,0,733,722,1,0,0,0,733,729,1,0,0,
+        0,734,23,1,0,0,0,735,736,5,156,0,0,736,737,3,546,273,0,737,738,5,
+        17,0,0,738,739,5,29,0,0,739,740,3,96,48,0,740,741,5,4,0,0,741,25,
+        1,0,0,0,742,743,5,59,0,0,743,744,3,546,273,0,744,745,5,17,0,0,745,
+        746,5,29,0,0,746,747,3,2,1,0,747,748,5,4,0,0,748,27,1,0,0,0,749,
+        750,5,160,0,0,750,751,3,546,273,0,751,752,5,17,0,0,752,753,5,29,
+        0,0,753,758,3,30,15,0,754,755,5,9,0,0,755,757,3,30,15,0,756,754,
+        1,0,0,0,757,760,1,0,0,0,758,756,1,0,0,0,758,759,1,0,0,0,759,761,
+        1,0,0,0,760,758,1,0,0,0,761,762,5,4,0,0,762,29,1,0,0,0,763,764,3,
+        556,278,0,764,767,5,10,0,0,765,768,3,32,16,0,766,768,3,34,17,0,767,
+        765,1,0,0,0,767,766,1,0,0,0,768,31,1,0,0,0,769,770,3,556,278,0,770,
+        33,1,0,0,0,771,772,5,31,0,0,772,777,3,32,16,0,773,774,5,9,0,0,774,
+        776,3,32,16,0,775,773,1,0,0,0,776,779,1,0,0,0,777,775,1,0,0,0,777,
+        778,1,0,0,0,778,780,1,0,0,0,779,777,1,0,0,0,780,781,5,8,0,0,781,
+        35,1,0,0,0,782,785,3,38,19,0,783,785,3,40,20,0,784,782,1,0,0,0,784,
+        783,1,0,0,0,785,37,1,0,0,0,786,787,5,137,0,0,787,788,3,556,278,0,
+        788,39,1,0,0,0,789,790,5,99,0,0,790,791,3,556,278,0,791,792,3,38,
+        19,0,792,41,1,0,0,0,793,794,3,544,272,0,794,795,5,10,0,0,795,797,
+        3,540,270,0,796,798,3,44,22,0,797,796,1,0,0,0,797,798,1,0,0,0,798,
+        43,1,0,0,0,799,800,5,17,0,0,800,801,3,576,288,0,801,45,1,0,0,0,802,
+        803,3,544,272,0,803,806,5,10,0,0,804,807,3,48,24,0,805,807,3,50,
+        25,0,806,804,1,0,0,0,806,805,1,0,0,0,807,47,1,0,0,0,808,809,5,31,
+        0,0,809,810,5,1,0,0,810,811,5,8,0,0,811,49,1,0,0,0,812,813,5,31,
+        0,0,813,818,3,52,26,0,814,815,5,9,0,0,815,817,3,52,26,0,816,814,
+        1,0,0,0,817,820,1,0,0,0,818,816,1,0,0,0,818,819,1,0,0,0,819,821,
+        1,0,0,0,820,818,1,0,0,0,821,822,5,8,0,0,822,51,1,0,0,0,823,824,3,
+        544,272,0,824,825,5,10,0,0,825,826,3,540,270,0,826,53,1,0,0,0,827,
+        833,5,29,0,0,828,829,3,56,28,0,829,830,5,34,0,0,830,832,1,0,0,0,
+        831,828,1,0,0,0,832,835,1,0,0,0,833,831,1,0,0,0,833,834,1,0,0,0,
+        834,837,1,0,0,0,835,833,1,0,0,0,836,838,3,92,46,0,837,836,1,0,0,
+        0,837,838,1,0,0,0,838,840,1,0,0,0,839,841,5,34,0,0,840,839,1,0,0,
+        0,840,841,1,0,0,0,841,842,1,0,0,0,842,843,5,4,0,0,843,55,1,0,0,0,
+        844,847,3,6,3,0,845,847,3,86,43,0,846,844,1,0,0,0,846,845,1,0,0,
+        0,847,57,1,0,0,0,848,849,5,76,0,0,849,850,5,203,0,0,850,852,3,546,
+        273,0,851,853,3,60,30,0,852,851,1,0,0,0,852,853,1,0,0,0,853,59,1,
+        0,0,0,854,855,5,17,0,0,855,857,3,62,31,0,856,858,3,66,33,0,857,856,
+        1,0,0,0,857,858,1,0,0,0,858,859,1,0,0,0,859,861,5,29,0,0,860,862,
+        3,68,34,0,861,860,1,0,0,0,862,863,1,0,0,0,863,861,1,0,0,0,863,864,
+        1,0,0,0,864,865,1,0,0,0,865,866,5,4,0,0,866,61,1,0,0,0,867,868,5,
+        31,0,0,868,873,3,64,32,0,869,870,5,9,0,0,870,872,3,64,32,0,871,869,
+        1,0,0,0,872,875,1,0,0,0,873,871,1,0,0,0,873,874,1,0,0,0,874,876,
+        1,0,0,0,875,873,1,0,0,0,876,877,5,8,0,0,877,63,1,0,0,0,878,879,3,
+        544,272,0,879,880,5,10,0,0,880,881,3,540,270,0,881,65,1,0,0,0,882,
+        883,5,30,0,0,883,884,3,64,32,0,884,885,5,5,0,0,885,67,1,0,0,0,886,
+        888,3,70,35,0,887,889,3,72,36,0,888,887,1,0,0,0,888,889,1,0,0,0,
+        889,890,1,0,0,0,890,891,5,17,0,0,891,893,3,76,38,0,892,894,5,34,
+        0,0,893,892,1,0,0,0,893,894,1,0,0,0,894,69,1,0,0,0,895,896,5,31,
+        0,0,896,901,3,74,37,0,897,898,5,9,0,0,898,900,3,74,37,0,899,897,
+        1,0,0,0,900,903,1,0,0,0,901,899,1,0,0,0,901,902,1,0,0,0,902,904,
+        1,0,0,0,903,901,1,0,0,0,904,905,5,8,0,0,905,71,1,0,0,0,906,907,5,
+        15,0,0,907,908,5,30,0,0,908,909,3,74,37,0,909,910,5,5,0,0,910,73,
+        1,0,0,0,911,912,3,608,304,0,912,75,1,0,0,0,913,919,5,29,0,0,914,
+        915,3,56,28,0,915,916,5,34,0,0,916,918,1,0,0,0,917,914,1,0,0,0,918,
+        921,1,0,0,0,919,917,1,0,0,0,919,920,1,0,0,0,920,922,1,0,0,0,921,
+        919,1,0,0,0,922,923,3,92,46,0,923,924,5,4,0,0,924,77,1,0,0,0,925,
+        926,5,224,0,0,926,927,5,38,0,0,927,928,5,250,0,0,928,929,5,31,0,
+        0,929,934,3,80,40,0,930,931,5,9,0,0,931,933,3,80,40,0,932,930,1,
+        0,0,0,933,936,1,0,0,0,934,932,1,0,0,0,934,935,1,0,0,0,935,937,1,
+        0,0,0,936,934,1,0,0,0,937,938,5,8,0,0,938,79,1,0,0,0,939,942,3,546,
+        273,0,940,942,3,512,256,0,941,939,1,0,0,0,941,940,1,0,0,0,942,81,
+        1,0,0,0,943,944,5,232,0,0,944,947,3,546,273,0,945,946,5,17,0,0,946,
+        948,3,84,42,0,947,945,1,0,0,0,947,948,1,0,0,0,948,83,1,0,0,0,949,
+        952,3,546,273,0,950,952,3,576,288,0,951,949,1,0,0,0,951,950,1,0,
+        0,0,952,85,1,0,0,0,953,954,5,76,0,0,954,955,5,217,0,0,955,956,5,
+        31,0,0,956,961,3,88,44,0,957,958,5,9,0,0,958,960,3,88,44,0,959,957,
+        1,0,0,0,960,963,1,0,0,0,961,959,1,0,0,0,961,962,1,0,0,0,962,964,
+        1,0,0,0,963,961,1,0,0,0,964,965,5,8,0,0,965,87,1,0,0,0,966,967,3,
+        544,272,0,967,968,5,10,0,0,968,970,3,540,270,0,969,971,3,44,22,0,
+        970,969,1,0,0,0,970,971,1,0,0,0,971,89,1,0,0,0,972,973,3,92,46,0,
+        973,91,1,0,0,0,974,975,3,94,47,0,975,93,1,0,0,0,976,978,3,102,51,
+        0,977,979,3,96,48,0,978,977,1,0,0,0,978,979,1,0,0,0,979,95,1,0,0,
+        0,980,984,3,98,49,0,981,983,3,98,49,0,982,981,1,0,0,0,983,986,1,
+        0,0,0,984,982,1,0,0,0,984,985,1,0,0,0,985,97,1,0,0,0,986,984,1,0,
+        0,0,987,988,5,3,0,0,988,989,3,104,52,0,989,99,1,0,0,0,990,994,3,
+        104,52,0,991,993,3,98,49,0,992,991,1,0,0,0,993,996,1,0,0,0,994,992,
+        1,0,0,0,994,995,1,0,0,0,995,101,1,0,0,0,996,994,1,0,0,0,997,1004,
+        3,106,53,0,998,1004,3,290,145,0,999,1004,3,218,109,0,1000,1004,3,
+        490,245,0,1001,1004,3,410,205,0,1002,1004,3,412,206,0,1003,997,1,
+        0,0,0,1003,998,1,0,0,0,1003,999,1,0,0,0,1003,1000,1,0,0,0,1003,1001,
+        1,0,0,0,1003,1002,1,0,0,0,1004,103,1,0,0,0,1005,1058,3,110,55,0,
+        1006,1058,3,112,56,0,1007,1058,3,114,57,0,1008,1058,3,116,58,0,1009,
+        1058,3,118,59,0,1010,1058,3,130,65,0,1011,1058,3,128,64,0,1012,1058,
+        3,132,66,0,1013,1058,3,138,69,0,1014,1058,3,166,83,0,1015,1058,3,
+        176,88,0,1016,1058,3,178,89,0,1017,1058,3,180,90,0,1018,1058,3,196,
+        98,0,1019,1058,3,204,102,0,1020,1058,3,198,99,0,1021,1058,3,206,
+        103,0,1022,1058,3,208,104,0,1023,1058,3,216,108,0,1024,1058,3,224,
+        112,0,1025,1058,3,232,116,0,1026,1058,3,310,155,0,1027,1058,3,256,
+        128,0,1028,1058,3,246,123,0,1029,1058,3,124,62,0,1030,1058,3,260,
+        130,0,1031,1058,3,274,137,0,1032,1058,3,272,136,0,1033,1058,3,278,
+        139,0,1034,1058,3,286,143,0,1035,1058,3,296,148,0,1036,1058,3,292,
+        146,0,1037,1058,3,298,149,0,1038,1058,3,300,150,0,1039,1058,3,294,
+        147,0,1040,1058,3,306,153,0,1041,1058,3,312,156,0,1042,1058,3,316,
+        158,0,1043,1058,3,330,165,0,1044,1058,3,328,164,0,1045,1058,3,332,
+        166,0,1046,1058,3,348,174,0,1047,1058,3,354,177,0,1048,1058,3,356,
+        178,0,1049,1058,3,360,180,0,1050,1058,3,366,183,0,1051,1058,3,370,
+        185,0,1052,1058,3,368,184,0,1053,1058,3,374,187,0,1054,1058,3,380,
+        190,0,1055,1058,3,384,192,0,1056,1058,3,386,193,0,1057,1005,1,0,
+        0,0,1057,1006,1,0,0,0,1057,1007,1,0,0,0,1057,1008,1,0,0,0,1057,1009,
+        1,0,0,0,1057,1010,1,0,0,0,1057,1011,1,0,0,0,1057,1012,1,0,0,0,1057,
+        1013,1,0,0,0,1057,1014,1,0,0,0,1057,1015,1,0,0,0,1057,1016,1,0,0,
+        0,1057,1017,1,0,0,0,1057,1018,1,0,0,0,1057,1019,1,0,0,0,1057,1020,
+        1,0,0,0,1057,1021,1,0,0,0,1057,1022,1,0,0,0,1057,1023,1,0,0,0,1057,
+        1024,1,0,0,0,1057,1025,1,0,0,0,1057,1026,1,0,0,0,1057,1027,1,0,0,
+        0,1057,1028,1,0,0,0,1057,1029,1,0,0,0,1057,1030,1,0,0,0,1057,1031,
+        1,0,0,0,1057,1032,1,0,0,0,1057,1033,1,0,0,0,1057,1034,1,0,0,0,1057,
+        1035,1,0,0,0,1057,1036,1,0,0,0,1057,1037,1,0,0,0,1057,1038,1,0,0,
+        0,1057,1039,1,0,0,0,1057,1040,1,0,0,0,1057,1041,1,0,0,0,1057,1042,
+        1,0,0,0,1057,1043,1,0,0,0,1057,1044,1,0,0,0,1057,1045,1,0,0,0,1057,
+        1046,1,0,0,0,1057,1047,1,0,0,0,1057,1048,1,0,0,0,1057,1049,1,0,0,
+        0,1057,1050,1,0,0,0,1057,1051,1,0,0,0,1057,1052,1,0,0,0,1057,1053,
+        1,0,0,0,1057,1054,1,0,0,0,1057,1055,1,0,0,0,1057,1056,1,0,0,0,1058,
+        105,1,0,0,0,1059,1064,3,138,69,0,1060,1064,3,348,174,0,1061,1064,
+        3,380,190,0,1062,1064,3,124,62,0,1063,1059,1,0,0,0,1063,1060,1,0,
+        0,0,1063,1061,1,0,0,0,1063,1062,1,0,0,0,1064,107,1,0,0,0,1065,1091,
+        3,116,58,0,1066,1091,3,128,64,0,1067,1091,3,384,192,0,1068,1091,
+        3,260,130,0,1069,1091,3,272,136,0,1070,1091,3,366,183,0,1071,1091,
+        3,374,187,0,1072,1091,3,296,148,0,1073,1091,3,292,146,0,1074,1091,
+        3,298,149,0,1075,1091,3,300,150,0,1076,1091,3,294,147,0,1077,1091,
+        3,360,180,0,1078,1091,3,118,59,0,1079,1091,3,370,185,0,1080,1091,
+        3,368,184,0,1081,1091,3,356,178,0,1082,1091,3,256,128,0,1083,1091,
+        3,306,153,0,1084,1091,3,330,165,0,1085,1091,3,328,164,0,1086,1091,
+        3,110,55,0,1087,1091,3,206,103,0,1088,1091,3,130,65,0,1089,1091,
+        3,332,166,0,1090,1065,1,0,0,0,1090,1066,1,0,0,0,1090,1067,1,0,0,
+        0,1090,1068,1,0,0,0,1090,1069,1,0,0,0,1090,1070,1,0,0,0,1090,1071,
+        1,0,0,0,1090,1072,1,0,0,0,1090,1073,1,0,0,0,1090,1074,1,0,0,0,1090,
+        1075,1,0,0,0,1090,1076,1,0,0,0,1090,1077,1,0,0,0,1090,1078,1,0,0,
+        0,1090,1079,1,0,0,0,1090,1080,1,0,0,0,1090,1081,1,0,0,0,1090,1082,
+        1,0,0,0,1090,1083,1,0,0,0,1090,1084,1,0,0,0,1090,1085,1,0,0,0,1090,
+        1086,1,0,0,0,1090,1087,1,0,0,0,1090,1088,1,0,0,0,1090,1089,1,0,0,
+        0,1091,109,1,0,0,0,1092,1096,5,47,0,0,1093,1095,3,398,199,0,1094,
+        1093,1,0,0,0,1095,1098,1,0,0,0,1096,1094,1,0,0,0,1096,1097,1,0,0,
+        0,1097,1099,1,0,0,0,1098,1096,1,0,0,0,1099,1100,3,546,273,0,1100,
+        111,1,0,0,0,1101,1102,5,49,0,0,1102,1103,3,522,261,0,1103,113,1,
+        0,0,0,1104,1108,5,62,0,0,1105,1107,3,398,199,0,1106,1105,1,0,0,0,
+        1107,1110,1,0,0,0,1108,1106,1,0,0,0,1108,1109,1,0,0,0,1109,115,1,
+        0,0,0,1110,1108,1,0,0,0,1111,1115,5,70,0,0,1112,1114,3,398,199,0,
+        1113,1112,1,0,0,0,1114,1117,1,0,0,0,1115,1113,1,0,0,0,1115,1116,
+        1,0,0,0,1116,1120,1,0,0,0,1117,1115,1,0,0,0,1118,1119,5,47,0,0,1119,
+        1121,3,558,279,0,1120,1118,1,0,0,0,1120,1121,1,0,0,0,1121,117,1,
+        0,0,0,1122,1126,5,81,0,0,1123,1125,3,398,199,0,1124,1123,1,0,0,0,
+        1125,1128,1,0,0,0,1126,1124,1,0,0,0,1126,1127,1,0,0,0,1127,1131,
+        1,0,0,0,1128,1126,1,0,0,0,1129,1132,3,120,60,0,1130,1132,3,122,61,
+        0,1131,1129,1,0,0,0,1131,1130,1,0,0,0,1132,119,1,0,0,0,1133,1134,
+        5,1,0,0,1134,121,1,0,0,0,1135,1140,3,412,206,0,1136,1137,5,9,0,0,
+        1137,1139,3,412,206,0,1138,1136,1,0,0,0,1139,1142,1,0,0,0,1140,1138,
+        1,0,0,0,1140,1141,1,0,0,0,1141,123,1,0,0,0,1142,1140,1,0,0,0,1143,
+        1147,5,86,0,0,1144,1146,3,398,199,0,1145,1144,1,0,0,0,1146,1149,
+        1,0,0,0,1147,1145,1,0,0,0,1147,1148,1,0,0,0,1148,1150,1,0,0,0,1149,
+        1147,1,0,0,0,1150,1152,3,478,239,0,1151,1153,3,126,63,0,1152,1151,
+        1,0,0,0,1152,1153,1,0,0,0,1153,125,1,0,0,0,1154,1155,5,10,0,0,1155,
+        1156,3,522,261,0,1156,127,1,0,0,0,1157,1158,5,90,0,0,1158,1163,3,
+        402,201,0,1159,1160,5,9,0,0,1160,1162,3,402,201,0,1161,1159,1,0,
+        0,0,1162,1165,1,0,0,0,1163,1161,1,0,0,0,1163,1164,1,0,0,0,1164,129,
+        1,0,0,0,1165,1163,1,0,0,0,1166,1167,5,88,0,0,1167,131,1,0,0,0,1168,
+        1169,5,93,0,0,1169,1170,5,57,0,0,1170,1175,3,492,246,0,1171,1172,
+        5,9,0,0,1172,1174,3,492,246,0,1173,1171,1,0,0,0,1174,1177,1,0,0,
+        0,1175,1173,1,0,0,0,1175,1176,1,0,0,0,1176,1180,1,0,0,0,1177,1175,
+        1,0,0,0,1178,1181,3,134,67,0,1179,1181,3,136,68,0,1180,1178,1,0,
+        0,0,1180,1179,1,0,0,0,1180,1181,1,0,0,0,1181,133,1,0,0,0,1182,1183,
+        5,265,0,0,1183,1184,3,108,54,0,1184,135,1,0,0,0,1185,1186,5,265,
+        0,0,1186,1187,5,31,0,0,1187,1188,3,172,86,0,1188,1189,5,8,0,0,1189,
+        137,1,0,0,0,1190,1192,5,95,0,0,1191,1193,3,140,70,0,1192,1191,1,
+        0,0,0,1192,1193,1,0,0,0,1193,1194,1,0,0,0,1194,1197,3,412,206,0,
+        1195,1198,3,144,72,0,1196,1198,3,154,77,0,1197,1195,1,0,0,0,1197,
+        1196,1,0,0,0,1197,1198,1,0,0,0,1198,1200,1,0,0,0,1199,1201,3,156,
+        78,0,1200,1199,1,0,0,0,1200,1201,1,0,0,0,1201,139,1,0,0,0,1202,1204,
+        3,398,199,0,1203,1202,1,0,0,0,1204,1207,1,0,0,0,1205,1203,1,0,0,
+        0,1205,1206,1,0,0,0,1206,1209,1,0,0,0,1207,1205,1,0,0,0,1208,1210,
+        3,142,71,0,1209,1208,1,0,0,0,1209,1210,1,0,0,0,1210,1211,1,0,0,0,
+        1211,1212,5,264,0,0,1212,141,1,0,0,0,1213,1214,5,138,0,0,1214,1215,
+        5,31,0,0,1215,1220,3,162,81,0,1216,1217,5,9,0,0,1217,1219,3,162,
+        81,0,1218,1216,1,0,0,0,1219,1222,1,0,0,0,1220,1218,1,0,0,0,1220,
+        1221,1,0,0,0,1221,1223,1,0,0,0,1222,1220,1,0,0,0,1223,1224,5,8,0,
+        0,1224,143,1,0,0,0,1225,1226,5,209,0,0,1226,1231,3,146,73,0,1227,
+        1228,5,9,0,0,1228,1230,3,146,73,0,1229,1227,1,0,0,0,1230,1233,1,
+        0,0,0,1231,1229,1,0,0,0,1231,1232,1,0,0,0,1232,145,1,0,0,0,1233,
+        1231,1,0,0,0,1234,1237,3,148,74,0,1235,1237,3,152,76,0,1236,1234,
+        1,0,0,0,1236,1235,1,0,0,0,1237,147,1,0,0,0,1238,1240,3,544,272,0,
+        1239,1241,3,150,75,0,1240,1239,1,0,0,0,1240,1241,1,0,0,0,1241,149,
+        1,0,0,0,1242,1243,5,10,0,0,1243,1244,3,542,271,0,1244,151,1,0,0,
+        0,1245,1246,5,195,0,0,1246,1247,5,31,0,0,1247,1248,5,1,0,0,1248,
+        1249,5,8,0,0,1249,153,1,0,0,0,1250,1251,5,215,0,0,1251,155,1,0,0,
+        0,1252,1255,5,211,0,0,1253,1256,3,158,79,0,1254,1256,3,160,80,0,
+        1255,1253,1,0,0,0,1255,1254,1,0,0,0,1256,157,1,0,0,0,1257,1258,5,
+        1,0,0,1258,159,1,0,0,0,1259,1264,3,148,74,0,1260,1261,5,9,0,0,1261,
+        1263,3,148,74,0,1262,1260,1,0,0,0,1263,1266,1,0,0,0,1264,1262,1,
+        0,0,0,1264,1265,1,0,0,0,1265,161,1,0,0,0,1266,1264,1,0,0,0,1267,
+        1270,3,164,82,0,1268,1270,3,512,256,0,1269,1267,1,0,0,0,1269,1268,
+        1,0,0,0,1270,163,1,0,0,0,1271,1276,3,506,253,0,1272,1273,5,3,0,0,
+        1273,1275,3,110,55,0,1274,1272,1,0,0,0,1275,1278,1,0,0,0,1276,1274,
+        1,0,0,0,1276,1277,1,0,0,0,1277,165,1,0,0,0,1278,1276,1,0,0,0,1279,
+        1281,5,98,0,0,1280,1282,3,168,84,0,1281,1280,1,0,0,0,1282,1283,1,
+        0,0,0,1283,1281,1,0,0,0,1283,1284,1,0,0,0,1284,167,1,0,0,0,1285,
+        1287,3,170,85,0,1286,1285,1,0,0,0,1286,1287,1,0,0,0,1287,1288,1,
+        0,0,0,1288,1289,5,31,0,0,1289,1290,3,172,86,0,1290,1291,5,8,0,0,
+        1291,169,1,0,0,0,1292,1293,3,546,273,0,1293,1294,5,17,0,0,1294,171,
+        1,0,0,0,1295,1299,3,108,54,0,1296,1298,3,174,87,0,1297,1296,1,0,
+        0,0,1298,1301,1,0,0,0,1299,1297,1,0,0,0,1299,1300,1,0,0,0,1300,173,
+        1,0,0,0,1301,1299,1,0,0,0,1302,1303,5,3,0,0,1303,1304,3,108,54,0,
+        1304,175,1,0,0,0,1305,1306,5,100,0,0,1306,177,1,0,0,0,1307,1311,
+        5,104,0,0,1308,1310,3,398,199,0,1309,1308,1,0,0,0,1310,1313,1,0,
+        0,0,1311,1309,1,0,0,0,1311,1312,1,0,0,0,1312,179,1,0,0,0,1313,1311,
+        1,0,0,0,1314,1318,5,105,0,0,1315,1317,3,398,199,0,1316,1315,1,0,
+        0,0,1317,1320,1,0,0,0,1318,1316,1,0,0,0,1318,1319,1,0,0,0,1319,1321,
+        1,0,0,0,1320,1318,1,0,0,0,1321,1326,3,182,91,0,1322,1323,5,9,0,0,
+        1323,1325,3,182,91,0,1324,1322,1,0,0,0,1325,1328,1,0,0,0,1326,1324,
+        1,0,0,0,1326,1327,1,0,0,0,1327,1330,1,0,0,0,1328,1326,1,0,0,0,1329,
+        1331,3,192,96,0,1330,1329,1,0,0,0,1330,1331,1,0,0,0,1331,1333,1,
+        0,0,0,1332,1334,3,194,97,0,1333,1332,1,0,0,0,1333,1334,1,0,0,0,1334,
+        181,1,0,0,0,1335,1339,3,184,92,0,1336,1339,3,186,93,0,1337,1339,
+        3,188,94,0,1338,1335,1,0,0,0,1338,1336,1,0,0,0,1338,1337,1,0,0,0,
+        1339,183,1,0,0,0,1340,1341,5,31,0,0,1341,1342,3,546,273,0,1342,1343,
+        5,8,0,0,1343,185,1,0,0,0,1344,1345,7,0,0,0,1345,187,1,0,0,0,1346,
+        1347,7,1,0,0,1347,1349,3,546,273,0,1348,1350,3,190,95,0,1349,1348,
+        1,0,0,0,1349,1350,1,0,0,0,1350,1351,1,0,0,0,1351,1352,7,2,0,0,1352,
+        189,1,0,0,0,1353,1354,5,1,0,0,1354,1355,3,450,225,0,1355,1356,5,
+        16,0,0,1356,1357,3,450,225,0,1357,191,1,0,0,0,1358,1359,5,264,0,
+        0,1359,1360,3,92,46,0,1360,193,1,0,0,0,1361,1362,5,209,0,0,1362,
+        1367,3,402,201,0,1363,1364,5,9,0,0,1364,1366,3,402,201,0,1365,1363,
+        1,0,0,0,1366,1369,1,0,0,0,1367,1365,1,0,0,0,1367,1368,1,0,0,0,1368,
+        195,1,0,0,0,1369,1367,1,0,0,0,1370,1371,5,106,0,0,1371,1373,3,450,
+        225,0,1372,1374,3,212,106,0,1373,1372,1,0,0,0,1373,1374,1,0,0,0,
+        1374,197,1,0,0,0,1375,1376,5,108,0,0,1376,1381,3,200,100,0,1377,
+        1378,5,9,0,0,1378,1380,3,200,100,0,1379,1377,1,0,0,0,1380,1383,1,
+        0,0,0,1381,1379,1,0,0,0,1381,1382,1,0,0,0,1382,199,1,0,0,0,1383,
+        1381,1,0,0,0,1384,1386,7,3,0,0,1385,1387,3,202,101,0,1386,1385,1,
+        0,0,0,1386,1387,1,0,0,0,1387,1391,1,0,0,0,1388,1390,3,398,199,0,
+        1389,1388,1,0,0,0,1390,1393,1,0,0,0,1391,1389,1,0,0,0,1391,1392,
+        1,0,0,0,1392,201,1,0,0,0,1393,1391,1,0,0,0,1394,1395,5,47,0,0,1395,
+        1396,3,546,273,0,1396,203,1,0,0,0,1397,1401,5,107,0,0,1398,1400,
+        3,398,199,0,1399,1398,1,0,0,0,1400,1403,1,0,0,0,1401,1399,1,0,0,
+        0,1401,1402,1,0,0,0,1402,1404,1,0,0,0,1403,1401,1,0,0,0,1404,1409,
+        3,182,91,0,1405,1406,5,9,0,0,1406,1408,3,182,91,0,1407,1405,1,0,
+        0,0,1408,1411,1,0,0,0,1409,1407,1,0,0,0,1409,1410,1,0,0,0,1410,1413,
+        1,0,0,0,1411,1409,1,0,0,0,1412,1414,3,192,96,0,1413,1412,1,0,0,0,
+        1413,1414,1,0,0,0,1414,1416,1,0,0,0,1415,1417,3,194,97,0,1416,1415,
+        1,0,0,0,1416,1417,1,0,0,0,1417,205,1,0,0,0,1418,1419,5,141,0,0,1419,
+        1420,3,474,237,0,1420,207,1,0,0,0,1421,1425,5,144,0,0,1422,1424,
+        3,398,199,0,1423,1422,1,0,0,0,1424,1427,1,0,0,0,1425,1423,1,0,0,
+        0,1425,1426,1,0,0,0,1426,1428,1,0,0,0,1427,1425,1,0,0,0,1428,1431,
+        3,210,105,0,1429,1432,3,212,106,0,1430,1432,3,214,107,0,1431,1429,
+        1,0,0,0,1431,1430,1,0,0,0,1431,1432,1,0,0,0,1432,209,1,0,0,0,1433,
+        1436,3,488,244,0,1434,1436,3,412,206,0,1435,1433,1,0,0,0,1435,1434,
+        1,0,0,0,1436,211,1,0,0,0,1437,1438,5,189,0,0,1438,1443,3,412,206,
+        0,1439,1440,5,9,0,0,1440,1442,3,412,206,0,1441,1439,1,0,0,0,1442,
+        1445,1,0,0,0,1443,1441,1,0,0,0,1443,1444,1,0,0,0,1444,213,1,0,0,
+        0,1445,1443,1,0,0,0,1446,1447,5,264,0,0,1447,1448,3,412,206,0,1448,
+        215,1,0,0,0,1449,1453,5,154,0,0,1450,1452,3,398,199,0,1451,1450,
+        1,0,0,0,1452,1455,1,0,0,0,1453,1451,1,0,0,0,1453,1454,1,0,0,0,1454,
+        1456,1,0,0,0,1455,1453,1,0,0,0,1456,1457,3,412,206,0,1457,1458,3,
+        212,106,0,1458,217,1,0,0,0,1459,1463,5,157,0,0,1460,1462,3,398,199,
+        0,1461,1460,1,0,0,0,1462,1465,1,0,0,0,1463,1461,1,0,0,0,1463,1464,
+        1,0,0,0,1464,1466,1,0,0,0,1465,1463,1,0,0,0,1466,1467,3,220,110,
+        0,1467,1468,5,47,0,0,1468,1469,3,546,273,0,1469,1470,5,31,0,0,1470,
+        1475,3,4,2,0,1471,1472,5,34,0,0,1472,1474,3,4,2,0,1473,1471,1,0,
+        0,0,1474,1477,1,0,0,0,1475,1473,1,0,0,0,1475,1476,1,0,0,0,1476,1479,
+        1,0,0,0,1477,1475,1,0,0,0,1478,1480,5,34,0,0,1479,1478,1,0,0,0,1479,
+        1480,1,0,0,0,1480,1481,1,0,0,0,1481,1482,5,8,0,0,1482,219,1,0,0,
+        0,1483,1487,3,222,111,0,1484,1487,3,546,273,0,1485,1487,3,492,246,
+        0,1486,1483,1,0,0,0,1486,1484,1,0,0,0,1486,1485,1,0,0,0,1487,221,
+        1,0,0,0,1488,1489,5,85,0,0,1489,1490,5,30,0,0,1490,1495,3,412,206,
+        0,1491,1492,5,9,0,0,1492,1494,3,412,206,0,1493,1491,1,0,0,0,1494,
+        1497,1,0,0,0,1495,1493,1,0,0,0,1495,1496,1,0,0,0,1496,1498,1,0,0,
+        0,1497,1495,1,0,0,0,1498,1499,5,5,0,0,1499,223,1,0,0,0,1500,1504,
+        5,158,0,0,1501,1503,3,398,199,0,1502,1501,1,0,0,0,1503,1506,1,0,
+        0,0,1504,1502,1,0,0,0,1504,1505,1,0,0,0,1505,1507,1,0,0,0,1506,1504,
+        1,0,0,0,1507,1508,3,546,273,0,1508,1509,7,4,0,0,1509,1512,3,546,
+        273,0,1510,1513,3,226,113,0,1511,1513,3,228,114,0,1512,1510,1,0,
+        0,0,1512,1511,1,0,0,0,1512,1513,1,0,0,0,1513,1515,1,0,0,0,1514,1516,
+        3,230,115,0,1515,1514,1,0,0,0,1515,1516,1,0,0,0,1516,225,1,0,0,0,
+        1517,1518,5,270,0,0,1518,1519,5,17,0,0,1519,1520,3,546,273,0,1520,
+        227,1,0,0,0,1521,1522,5,265,0,0,1522,1523,3,450,225,0,1523,1524,
+        5,189,0,0,1524,1525,3,546,273,0,1525,229,1,0,0,0,1526,1527,5,202,
+        0,0,1527,1528,3,494,247,0,1528,1529,5,31,0,0,1529,1530,3,390,195,
+        0,1530,1531,5,8,0,0,1531,231,1,0,0,0,1532,1536,5,159,0,0,1533,1535,
+        3,398,199,0,1534,1533,1,0,0,0,1535,1538,1,0,0,0,1536,1534,1,0,0,
+        0,1536,1537,1,0,0,0,1537,1539,1,0,0,0,1538,1536,1,0,0,0,1539,1544,
+        3,236,118,0,1540,1541,5,9,0,0,1541,1543,3,236,118,0,1542,1540,1,
+        0,0,0,1543,1546,1,0,0,0,1544,1542,1,0,0,0,1544,1545,1,0,0,0,1545,
+        1547,1,0,0,0,1546,1544,1,0,0,0,1547,1550,3,234,117,0,1548,1551,3,
+        240,120,0,1549,1551,3,242,121,0,1550,1548,1,0,0,0,1550,1549,1,0,
+        0,0,1551,1553,1,0,0,0,1552,1554,3,244,122,0,1553,1552,1,0,0,0,1553,
+        1554,1,0,0,0,1554,233,1,0,0,0,1555,1556,5,189,0,0,1556,1557,3,402,
+        201,0,1557,235,1,0,0,0,1558,1560,3,402,201,0,1559,1561,3,238,119,
+        0,1560,1559,1,0,0,0,1560,1561,1,0,0,0,1561,237,1,0,0,0,1562,1563,
+        5,78,0,0,1563,1564,5,17,0,0,1564,1565,3,402,201,0,1565,239,1,0,0,
+        0,1566,1567,5,138,0,0,1567,1568,5,218,0,0,1568,1569,5,31,0,0,1569,
+        1570,3,402,201,0,1570,1571,5,9,0,0,1571,1572,3,402,201,0,1572,1573,
+        5,9,0,0,1573,1574,3,402,201,0,1574,1575,5,8,0,0,1575,241,1,0,0,0,
+        1576,1577,5,99,0,0,1577,1579,3,402,201,0,1578,1576,1,0,0,0,1578,
+        1579,1,0,0,0,1579,1582,1,0,0,0,1580,1581,5,250,0,0,1581,1583,3,402,
+        201,0,1582,1580,1,0,0,0,1582,1583,1,0,0,0,1583,1584,1,0,0,0,1584,
+        1585,5,241,0,0,1585,1586,3,402,201,0,1586,243,1,0,0,0,1587,1588,
+        5,57,0,0,1588,1593,3,402,201,0,1589,1590,5,9,0,0,1590,1592,3,402,
+        201,0,1591,1589,1,0,0,0,1592,1595,1,0,0,0,1593,1591,1,0,0,0,1593,
+        1594,1,0,0,0,1594,245,1,0,0,0,1595,1593,1,0,0,0,1596,1600,7,5,0,
+        0,1597,1599,3,396,198,0,1598,1597,1,0,0,0,1599,1602,1,0,0,0,1600,
+        1598,1,0,0,0,1600,1601,1,0,0,0,1601,1603,1,0,0,0,1602,1600,1,0,0,
+        0,1603,1608,3,252,126,0,1604,1605,5,9,0,0,1605,1607,3,252,126,0,
+        1606,1604,1,0,0,0,1607,1610,1,0,0,0,1608,1606,1,0,0,0,1608,1609,
+        1,0,0,0,1609,1612,1,0,0,0,1610,1608,1,0,0,0,1611,1613,3,248,124,
+        0,1612,1611,1,0,0,0,1612,1613,1,0,0,0,1613,1615,1,0,0,0,1614,1616,
+        3,250,125,0,1615,1614,1,0,0,0,1615,1616,1,0,0,0,1616,1617,1,0,0,
+        0,1617,1618,5,189,0,0,1618,1619,5,31,0,0,1619,1620,3,390,195,0,1620,
+        1621,5,8,0,0,1621,247,1,0,0,0,1622,1623,5,150,0,0,1623,1624,3,586,
+        293,0,1624,249,1,0,0,0,1625,1626,5,135,0,0,1626,1627,5,323,0,0,1627,
+        251,1,0,0,0,1628,1630,3,402,201,0,1629,1631,3,254,127,0,1630,1629,
+        1,0,0,0,1630,1631,1,0,0,0,1631,253,1,0,0,0,1632,1633,5,250,0,0,1633,
+        1634,3,540,270,0,1634,255,1,0,0,0,1635,1639,7,6,0,0,1636,1638,3,
+        396,198,0,1637,1636,1,0,0,0,1638,1641,1,0,0,0,1639,1637,1,0,0,0,
+        1639,1640,1,0,0,0,1640,1642,1,0,0,0,1641,1639,1,0,0,0,1642,1647,
+        3,258,129,0,1643,1644,5,9,0,0,1644,1646,3,258,129,0,1645,1643,1,
+        0,0,0,1646,1649,1,0,0,0,1647,1645,1,0,0,0,1647,1648,1,0,0,0,1648,
+        1651,1,0,0,0,1649,1647,1,0,0,0,1650,1652,3,248,124,0,1651,1650,1,
+        0,0,0,1651,1652,1,0,0,0,1652,257,1,0,0,0,1653,1655,3,402,201,0,1654,
+        1656,3,254,127,0,1655,1654,1,0,0,0,1655,1656,1,0,0,0,1656,259,1,
+        0,0,0,1657,1659,5,197,0,0,1658,1660,3,262,131,0,1659,1658,1,0,0,
+        0,1659,1660,1,0,0,0,1660,1661,1,0,0,0,1661,1662,3,412,206,0,1662,
+        1663,5,265,0,0,1663,1664,3,268,134,0,1664,261,1,0,0,0,1665,1666,
+        5,145,0,0,1666,1667,5,17,0,0,1667,1669,7,7,0,0,1668,1670,3,264,132,
+        0,1669,1668,1,0,0,0,1669,1670,1,0,0,0,1670,263,1,0,0,0,1671,1672,
+        5,97,0,0,1672,1673,5,17,0,0,1673,1674,5,324,0,0,1674,265,1,0,0,0,
+        1675,1678,3,546,273,0,1676,1677,5,10,0,0,1677,1679,3,540,270,0,1678,
+        1676,1,0,0,0,1678,1679,1,0,0,0,1679,267,1,0,0,0,1680,1682,3,266,
+        133,0,1681,1680,1,0,0,0,1681,1682,1,0,0,0,1682,1686,1,0,0,0,1683,
+        1685,3,270,135,0,1684,1683,1,0,0,0,1685,1688,1,0,0,0,1686,1684,1,
+        0,0,0,1686,1687,1,0,0,0,1687,1690,1,0,0,0,1688,1686,1,0,0,0,1689,
+        1691,5,1,0,0,1690,1689,1,0,0,0,1690,1691,1,0,0,0,1691,269,1,0,0,
+        0,1692,1694,5,1,0,0,1693,1692,1,0,0,0,1693,1694,1,0,0,0,1694,1695,
+        1,0,0,0,1695,1697,3,608,304,0,1696,1698,3,266,133,0,1697,1696,1,
+        0,0,0,1697,1698,1,0,0,0,1698,271,1,0,0,0,1699,1701,5,199,0,0,1700,
+        1702,3,262,131,0,1701,1700,1,0,0,0,1701,1702,1,0,0,0,1702,1703,1,
+        0,0,0,1703,1704,3,412,206,0,1704,1705,5,265,0,0,1705,1706,3,268,
+        134,0,1706,273,1,0,0,0,1707,1708,5,198,0,0,1708,1709,3,412,206,0,
+        1709,1710,5,47,0,0,1710,1712,3,522,261,0,1711,1713,3,276,138,0,1712,
+        1711,1,0,0,0,1712,1713,1,0,0,0,1713,275,1,0,0,0,1714,1715,5,265,
+        0,0,1715,1716,5,31,0,0,1716,1721,3,400,200,0,1717,1718,5,9,0,0,1718,
+        1720,3,400,200,0,1719,1717,1,0,0,0,1720,1723,1,0,0,0,1721,1719,1,
+        0,0,0,1721,1722,1,0,0,0,1722,1724,1,0,0,0,1723,1721,1,0,0,0,1724,
+        1725,5,8,0,0,1725,277,1,0,0,0,1726,1730,5,200,0,0,1727,1729,3,398,
+        199,0,1728,1727,1,0,0,0,1729,1732,1,0,0,0,1730,1728,1,0,0,0,1730,
+        1731,1,0,0,0,1731,1733,1,0,0,0,1732,1730,1,0,0,0,1733,1734,5,57,
+        0,0,1734,1736,3,492,246,0,1735,1737,3,280,140,0,1736,1735,1,0,0,
+        0,1736,1737,1,0,0,0,1737,1740,1,0,0,0,1738,1741,3,282,141,0,1739,
+        1741,3,284,142,0,1740,1738,1,0,0,0,1740,1739,1,0,0,0,1741,279,1,
+        0,0,0,1742,1745,5,138,0,0,1743,1746,3,478,239,0,1744,1746,3,610,
+        305,0,1745,1743,1,0,0,0,1745,1744,1,0,0,0,1746,281,1,0,0,0,1747,
+        1748,5,31,0,0,1748,1749,3,100,50,0,1749,1750,5,8,0,0,1750,283,1,
+        0,0,0,1751,1752,5,29,0,0,1752,1753,3,94,47,0,1753,1754,5,4,0,0,1754,
+        285,1,0,0,0,1755,1759,5,201,0,0,1756,1758,3,398,199,0,1757,1756,
+        1,0,0,0,1758,1761,1,0,0,0,1759,1757,1,0,0,0,1759,1760,1,0,0,0,1760,
+        1762,1,0,0,0,1761,1759,1,0,0,0,1762,1764,3,492,246,0,1763,1765,3,
+        288,144,0,1764,1763,1,0,0,0,1764,1765,1,0,0,0,1765,1766,1,0,0,0,
+        1766,1767,5,31,0,0,1767,1768,3,390,195,0,1768,1769,5,8,0,0,1769,
+        287,1,0,0,0,1770,1771,5,135,0,0,1771,1772,5,323,0,0,1772,289,1,0,
+        0,0,1773,1774,5,208,0,0,1774,1779,3,402,201,0,1775,1776,5,9,0,0,
+        1776,1778,3,402,201,0,1777,1775,1,0,0,0,1778,1781,1,0,0,0,1779,1777,
+        1,0,0,0,1779,1780,1,0,0,0,1780,291,1,0,0,0,1781,1779,1,0,0,0,1782,
+        1791,5,210,0,0,1783,1788,3,554,277,0,1784,1785,5,9,0,0,1785,1787,
+        3,554,277,0,1786,1784,1,0,0,0,1787,1790,1,0,0,0,1788,1786,1,0,0,
+        0,1788,1789,1,0,0,0,1789,1792,1,0,0,0,1790,1788,1,0,0,0,1791,1783,
+        1,0,0,0,1791,1792,1,0,0,0,1792,293,1,0,0,0,1793,1794,5,212,0,0,1794,
+        1799,3,554,277,0,1795,1796,5,9,0,0,1796,1798,3,554,277,0,1797,1795,
+        1,0,0,0,1798,1801,1,0,0,0,1799,1797,1,0,0,0,1799,1800,1,0,0,0,1800,
+        295,1,0,0,0,1801,1799,1,0,0,0,1802,1811,5,209,0,0,1803,1808,3,402,
+        201,0,1804,1805,5,9,0,0,1805,1807,3,402,201,0,1806,1804,1,0,0,0,
+        1807,1810,1,0,0,0,1808,1806,1,0,0,0,1808,1809,1,0,0,0,1809,1812,
+        1,0,0,0,1810,1808,1,0,0,0,1811,1803,1,0,0,0,1811,1812,1,0,0,0,1812,
+        297,1,0,0,0,1813,1822,5,213,0,0,1814,1819,3,404,202,0,1815,1816,
+        5,9,0,0,1816,1818,3,404,202,0,1817,1815,1,0,0,0,1818,1821,1,0,0,
+        0,1819,1817,1,0,0,0,1819,1820,1,0,0,0,1820,1823,1,0,0,0,1821,1819,
+        1,0,0,0,1822,1814,1,0,0,0,1822,1823,1,0,0,0,1823,299,1,0,0,0,1824,
+        1833,5,214,0,0,1825,1830,3,302,151,0,1826,1827,5,9,0,0,1827,1829,
+        3,302,151,0,1828,1826,1,0,0,0,1829,1832,1,0,0,0,1830,1828,1,0,0,
+        0,1830,1831,1,0,0,0,1831,1834,1,0,0,0,1832,1830,1,0,0,0,1833,1825,
+        1,0,0,0,1833,1834,1,0,0,0,1834,301,1,0,0,0,1835,1837,3,554,277,0,
+        1836,1838,7,8,0,0,1837,1836,1,0,0,0,1837,1838,1,0,0,0,1838,303,1,
+        0,0,0,1839,1843,5,216,0,0,1840,1842,3,398,199,0,1841,1840,1,0,0,
+        0,1842,1845,1,0,0,0,1843,1841,1,0,0,0,1843,1844,1,0,0,0,1844,1846,
+        1,0,0,0,1845,1843,1,0,0,0,1846,1847,3,412,206,0,1847,1848,5,9,0,
+        0,1848,1849,3,412,206,0,1849,305,1,0,0,0,1850,1854,5,219,0,0,1851,
+        1853,3,396,198,0,1852,1851,1,0,0,0,1853,1856,1,0,0,0,1854,1852,1,
+        0,0,0,1854,1855,1,0,0,0,1855,1857,1,0,0,0,1856,1854,1,0,0,0,1857,
+        1858,5,57,0,0,1858,1860,3,402,201,0,1859,1861,3,308,154,0,1860,1859,
+        1,0,0,0,1860,1861,1,0,0,0,1861,307,1,0,0,0,1862,1863,5,265,0,0,1863,
+        1868,3,402,201,0,1864,1865,5,9,0,0,1865,1867,3,402,201,0,1866,1864,
+        1,0,0,0,1867,1870,1,0,0,0,1868,1866,1,0,0,0,1868,1869,1,0,0,0,1869,
+        309,1,0,0,0,1870,1868,1,0,0,0,1871,1872,5,160,0,0,1872,1877,3,546,
+        273,0,1873,1874,5,9,0,0,1874,1876,3,546,273,0,1875,1873,1,0,0,0,
+        1876,1879,1,0,0,0,1877,1875,1,0,0,0,1877,1878,1,0,0,0,1878,311,1,
+        0,0,0,1879,1877,1,0,0,0,1880,1881,5,284,0,0,1881,1886,3,314,157,
+        0,1882,1883,5,9,0,0,1883,1885,3,314,157,0,1884,1882,1,0,0,0,1885,
+        1888,1,0,0,0,1886,1884,1,0,0,0,1886,1887,1,0,0,0,1887,313,1,0,0,
+        0,1888,1886,1,0,0,0,1889,1890,3,558,279,0,1890,1891,5,250,0,0,1891,
+        1892,3,558,279,0,1892,315,1,0,0,0,1893,1894,5,222,0,0,1894,1897,
+        7,9,0,0,1895,1898,3,318,159,0,1896,1898,3,320,160,0,1897,1895,1,
+        0,0,0,1897,1896,1,0,0,0,1897,1898,1,0,0,0,1898,317,1,0,0,0,1899,
+        1900,5,265,0,0,1900,1909,5,31,0,0,1901,1906,3,322,161,0,1902,1903,
+        5,9,0,0,1903,1905,3,322,161,0,1904,1902,1,0,0,0,1905,1908,1,0,0,
+        0,1906,1904,1,0,0,0,1906,1907,1,0,0,0,1907,1910,1,0,0,0,1908,1906,
+        1,0,0,0,1909,1901,1,0,0,0,1909,1910,1,0,0,0,1910,1911,1,0,0,0,1911,
+        1912,5,8,0,0,1912,319,1,0,0,0,1913,1915,3,326,163,0,1914,1913,1,
+        0,0,0,1915,1916,1,0,0,0,1916,1914,1,0,0,0,1916,1917,1,0,0,0,1917,
+        321,1,0,0,0,1918,1919,5,249,0,0,1919,1920,5,17,0,0,1920,1970,3,452,
+        226,0,1921,1922,5,274,0,0,1922,1923,5,17,0,0,1923,1970,3,546,273,
+        0,1924,1925,5,231,0,0,1925,1926,5,17,0,0,1926,1970,3,324,162,0,1927,
+        1928,5,279,0,0,1928,1929,5,17,0,0,1929,1970,3,324,162,0,1930,1931,
+        5,45,0,0,1931,1932,5,17,0,0,1932,1970,3,324,162,0,1933,1934,5,145,
+        0,0,1934,1935,5,17,0,0,1935,1970,7,10,0,0,1936,1937,5,277,0,0,1937,
+        1938,5,17,0,0,1938,1970,3,452,226,0,1939,1940,5,283,0,0,1940,1941,
+        5,17,0,0,1941,1970,3,452,226,0,1942,1943,5,273,0,0,1943,1944,5,17,
+        0,0,1944,1970,7,11,0,0,1945,1946,5,278,0,0,1946,1947,5,17,0,0,1947,
+        1970,7,11,0,0,1948,1949,5,148,0,0,1949,1950,5,17,0,0,1950,1970,7,
+        12,0,0,1951,1952,5,282,0,0,1952,1953,5,17,0,0,1953,1970,7,13,0,0,
+        1954,1955,5,39,0,0,1955,1956,5,17,0,0,1956,1970,5,318,0,0,1957,1958,
+        5,281,0,0,1958,1959,5,17,0,0,1959,1970,3,582,291,0,1960,1961,5,280,
+        0,0,1961,1962,5,17,0,0,1962,1970,3,582,291,0,1963,1964,5,276,0,0,
+        1964,1965,5,17,0,0,1965,1970,3,576,288,0,1966,1967,5,275,0,0,1967,
+        1968,5,17,0,0,1968,1970,3,576,288,0,1969,1918,1,0,0,0,1969,1921,
+        1,0,0,0,1969,1924,1,0,0,0,1969,1927,1,0,0,0,1969,1930,1,0,0,0,1969,
+        1933,1,0,0,0,1969,1936,1,0,0,0,1969,1939,1,0,0,0,1969,1942,1,0,0,
+        0,1969,1945,1,0,0,0,1969,1948,1,0,0,0,1969,1951,1,0,0,0,1969,1954,
+        1,0,0,0,1969,1957,1,0,0,0,1969,1960,1,0,0,0,1969,1963,1,0,0,0,1969,
+        1966,1,0,0,0,1970,323,1,0,0,0,1971,1976,3,548,274,0,1972,1973,5,
+        9,0,0,1973,1975,3,548,274,0,1974,1972,1,0,0,0,1975,1978,1,0,0,0,
+        1976,1974,1,0,0,0,1976,1977,1,0,0,0,1977,325,1,0,0,0,1978,1976,1,
+        0,0,0,1979,1980,5,249,0,0,1980,1981,5,17,0,0,1981,1993,3,608,304,
+        0,1982,1983,5,145,0,0,1983,1984,5,17,0,0,1984,1993,7,10,0,0,1985,
+        1986,5,265,0,0,1986,1993,3,608,304,0,1987,1988,5,57,0,0,1988,1993,
+        3,324,162,0,1989,1990,5,39,0,0,1990,1991,5,17,0,0,1991,1993,5,318,
+        0,0,1992,1979,1,0,0,0,1992,1982,1,0,0,0,1992,1985,1,0,0,0,1992,1987,
+        1,0,0,0,1992,1989,1,0,0,0,1993,327,1,0,0,0,1994,1998,5,226,0,0,1995,
+        1997,3,396,198,0,1996,1995,1,0,0,0,1997,2000,1,0,0,0,1998,1996,1,
+        0,0,0,1998,1999,1,0,0,0,1999,2001,1,0,0,0,2000,1998,1,0,0,0,2001,
+        2002,3,402,201,0,2002,2003,5,188,0,0,2003,2004,3,402,201,0,2004,
+        329,1,0,0,0,2005,2009,5,225,0,0,2006,2008,3,396,198,0,2007,2006,
+        1,0,0,0,2008,2011,1,0,0,0,2009,2007,1,0,0,0,2009,2010,1,0,0,0,2010,
+        2012,1,0,0,0,2011,2009,1,0,0,0,2012,2013,3,402,201,0,2013,331,1,
+        0,0,0,2014,2018,5,227,0,0,2015,2017,3,398,199,0,2016,2015,1,0,0,
+        0,2017,2020,1,0,0,0,2018,2016,1,0,0,0,2018,2019,1,0,0,0,2019,2022,
+        1,0,0,0,2020,2018,1,0,0,0,2021,2023,3,334,167,0,2022,2021,1,0,0,
+        0,2022,2023,1,0,0,0,2023,2025,1,0,0,0,2024,2026,3,336,168,0,2025,
+        2024,1,0,0,0,2025,2026,1,0,0,0,2026,2028,1,0,0,0,2027,2029,3,338,
+        169,0,2028,2027,1,0,0,0,2028,2029,1,0,0,0,2029,2030,1,0,0,0,2030,
+        2031,5,265,0,0,2031,2033,5,31,0,0,2032,2034,3,340,170,0,2033,2032,
+        1,0,0,0,2034,2035,1,0,0,0,2035,2033,1,0,0,0,2035,2036,1,0,0,0,2036,
+        2037,1,0,0,0,2037,2038,5,8,0,0,2038,333,1,0,0,0,2039,2040,5,192,
+        0,0,2040,2041,5,57,0,0,2041,2042,3,358,179,0,2042,2043,5,9,0,0,2043,
+        2044,3,358,179,0,2044,335,1,0,0,0,2045,2046,5,200,0,0,2046,2047,
+        5,57,0,0,2047,2052,3,412,206,0,2048,2049,5,9,0,0,2049,2051,3,412,
+        206,0,2050,2048,1,0,0,0,2051,2054,1,0,0,0,2052,2050,1,0,0,0,2052,
+        2053,1,0,0,0,2053,337,1,0,0,0,2054,2052,1,0,0,0,2055,2056,5,76,0,
+        0,2056,2057,5,31,0,0,2057,2062,3,42,21,0,2058,2059,5,9,0,0,2059,
+        2061,3,42,21,0,2060,2058,1,0,0,0,2061,2064,1,0,0,0,2062,2060,1,0,
+        0,0,2062,2063,1,0,0,0,2063,2065,1,0,0,0,2064,2062,1,0,0,0,2065,2066,
+        5,8,0,0,2066,339,1,0,0,0,2067,2068,5,241,0,0,2068,2070,3,544,272,
+        0,2069,2071,5,190,0,0,2070,2069,1,0,0,0,2070,2071,1,0,0,0,2071,2073,
+        1,0,0,0,2072,2074,3,342,171,0,2073,2072,1,0,0,0,2073,2074,1,0,0,
+        0,2074,2075,1,0,0,0,2075,2076,5,10,0,0,2076,2078,3,412,206,0,2077,
+        2079,3,344,172,0,2078,2077,1,0,0,0,2078,2079,1,0,0,0,2079,2080,1,
+        0,0,0,2080,2081,5,34,0,0,2081,341,1,0,0,0,2082,2083,5,194,0,0,2083,
+        2084,5,17,0,0,2084,2085,7,14,0,0,2085,343,1,0,0,0,2086,2087,5,36,
+        0,0,2087,2092,3,346,173,0,2088,2089,5,9,0,0,2089,2091,3,346,173,
+        0,2090,2088,1,0,0,0,2091,2094,1,0,0,0,2092,2090,1,0,0,0,2092,2093,
+        1,0,0,0,2093,345,1,0,0,0,2094,2092,1,0,0,0,2095,2096,3,544,272,0,
+        2096,2097,5,17,0,0,2097,2098,3,412,206,0,2098,347,1,0,0,0,2099,2103,
+        5,229,0,0,2100,2102,3,398,199,0,2101,2100,1,0,0,0,2102,2105,1,0,
+        0,0,2103,2101,1,0,0,0,2103,2104,1,0,0,0,2104,2107,1,0,0,0,2105,2103,
+        1,0,0,0,2106,2108,3,352,176,0,2107,2106,1,0,0,0,2107,2108,1,0,0,
+        0,2108,2112,1,0,0,0,2109,2113,3,412,206,0,2110,2113,3,484,242,0,
+        2111,2113,3,350,175,0,2112,2109,1,0,0,0,2112,2110,1,0,0,0,2112,2111,
+        1,0,0,0,2113,349,1,0,0,0,2114,2115,5,1,0,0,2115,2116,5,43,0,0,2116,
+        2117,3,412,206,0,2117,351,1,0,0,0,2118,2119,5,138,0,0,2119,2120,
+        5,31,0,0,2120,2125,3,162,81,0,2121,2122,5,9,0,0,2122,2124,3,162,
+        81,0,2123,2121,1,0,0,0,2124,2127,1,0,0,0,2125,2123,1,0,0,0,2125,
+        2126,1,0,0,0,2126,2128,1,0,0,0,2127,2125,1,0,0,0,2128,2129,5,8,0,
+        0,2129,353,1,0,0,0,2130,2134,5,230,0,0,2131,2133,3,396,198,0,2132,
+        2131,1,0,0,0,2133,2136,1,0,0,0,2134,2132,1,0,0,0,2134,2135,1,0,0,
+        0,2135,2145,1,0,0,0,2136,2134,1,0,0,0,2137,2142,3,402,201,0,2138,
+        2139,5,9,0,0,2139,2141,3,402,201,0,2140,2138,1,0,0,0,2141,2144,1,
+        0,0,0,2142,2140,1,0,0,0,2142,2143,1,0,0,0,2143,2146,1,0,0,0,2144,
+        2142,1,0,0,0,2145,2137,1,0,0,0,2145,2146,1,0,0,0,2146,355,1,0,0,
+        0,2147,2151,7,15,0,0,2148,2150,3,398,199,0,2149,2148,1,0,0,0,2150,
+        2153,1,0,0,0,2151,2149,1,0,0,0,2151,2152,1,0,0,0,2152,2154,1,0,0,
+        0,2153,2151,1,0,0,0,2154,2155,5,57,0,0,2155,2160,3,358,179,0,2156,
+        2157,5,9,0,0,2157,2159,3,358,179,0,2158,2156,1,0,0,0,2159,2162,1,
+        0,0,0,2160,2158,1,0,0,0,2160,2161,1,0,0,0,2161,357,1,0,0,0,2162,
+        2160,1,0,0,0,2163,2165,3,402,201,0,2164,2166,7,16,0,0,2165,2164,
+        1,0,0,0,2165,2166,1,0,0,0,2166,2169,1,0,0,0,2167,2168,5,187,0,0,
+        2168,2170,7,17,0,0,2169,2167,1,0,0,0,2169,2170,1,0,0,0,2170,359,
+        1,0,0,0,2171,2175,5,242,0,0,2172,2174,3,396,198,0,2173,2172,1,0,
+        0,0,2174,2177,1,0,0,0,2175,2173,1,0,0,0,2175,2176,1,0,0,0,2176,2186,
+        1,0,0,0,2177,2175,1,0,0,0,2178,2183,3,402,201,0,2179,2180,5,9,0,
+        0,2180,2182,3,402,201,0,2181,2179,1,0,0,0,2182,2185,1,0,0,0,2183,
+        2181,1,0,0,0,2183,2184,1,0,0,0,2184,2187,1,0,0,0,2185,2183,1,0,0,
+        0,2186,2178,1,0,0,0,2186,2187,1,0,0,0,2187,2189,1,0,0,0,2188,2190,
+        3,362,181,0,2189,2188,1,0,0,0,2189,2190,1,0,0,0,2190,361,1,0,0,0,
+        2191,2192,5,57,0,0,2192,2197,3,402,201,0,2193,2194,5,9,0,0,2194,
+        2196,3,402,201,0,2195,2193,1,0,0,0,2196,2199,1,0,0,0,2197,2195,1,
+        0,0,0,2197,2198,1,0,0,0,2198,2201,1,0,0,0,2199,2197,1,0,0,0,2200,
+        2202,3,364,182,0,2201,2200,1,0,0,0,2201,2202,1,0,0,0,2202,363,1,
+        0,0,0,2203,2204,5,55,0,0,2204,2205,5,17,0,0,2205,2206,3,580,290,
+        0,2206,365,1,0,0,0,2207,2211,7,18,0,0,2208,2210,3,396,198,0,2209,
+        2208,1,0,0,0,2210,2213,1,0,0,0,2211,2209,1,0,0,0,2211,2212,1,0,0,
+        0,2212,2214,1,0,0,0,2213,2211,1,0,0,0,2214,2224,3,412,206,0,2215,
+        2216,5,99,0,0,2216,2221,3,558,279,0,2217,2218,5,9,0,0,2218,2220,
+        3,558,279,0,2219,2217,1,0,0,0,2220,2223,1,0,0,0,2221,2219,1,0,0,
+        0,2221,2222,1,0,0,0,2222,2225,1,0,0,0,2223,2221,1,0,0,0,2224,2215,
+        1,0,0,0,2224,2225,1,0,0,0,2225,367,1,0,0,0,2226,2230,5,251,0,0,2227,
+        2229,3,396,198,0,2228,2227,1,0,0,0,2229,2232,1,0,0,0,2230,2228,1,
+        0,0,0,2230,2231,1,0,0,0,2231,2233,1,0,0,0,2232,2230,1,0,0,0,2233,
+        2234,3,402,201,0,2234,2235,5,57,0,0,2235,2236,3,358,179,0,2236,369,
+        1,0,0,0,2237,2238,5,252,0,0,2238,2239,3,402,201,0,2239,2240,5,188,
+        0,0,2240,2242,3,402,201,0,2241,2243,3,372,186,0,2242,2241,1,0,0,
+        0,2242,2243,1,0,0,0,2243,371,1,0,0,0,2244,2245,5,57,0,0,2245,2246,
+        3,358,179,0,2246,373,1,0,0,0,2247,2252,3,376,188,0,2248,2249,5,9,
+        0,0,2249,2251,3,376,188,0,2250,2248,1,0,0,0,2251,2254,1,0,0,0,2252,
+        2250,1,0,0,0,2252,2253,1,0,0,0,2253,375,1,0,0,0,2254,2252,1,0,0,
+        0,2255,2257,5,253,0,0,2256,2258,3,402,201,0,2257,2256,1,0,0,0,2257,
+        2258,1,0,0,0,2258,2259,1,0,0,0,2259,2260,5,188,0,0,2260,2262,3,402,
+        201,0,2261,2263,3,378,189,0,2262,2261,1,0,0,0,2262,2263,1,0,0,0,
+        2263,2264,1,0,0,0,2264,2265,5,57,0,0,2265,2266,3,358,179,0,2266,
+        377,1,0,0,0,2267,2268,5,265,0,0,2268,2269,5,193,0,0,2269,2270,5,
+        17,0,0,2270,2271,3,402,201,0,2271,379,1,0,0,0,2272,2276,5,258,0,
+        0,2273,2275,3,398,199,0,2274,2273,1,0,0,0,2275,2278,1,0,0,0,2276,
+        2274,1,0,0,0,2276,2277,1,0,0,0,2277,2279,1,0,0,0,2278,2276,1,0,0,
+        0,2279,2284,3,560,280,0,2280,2281,5,9,0,0,2281,2283,3,560,280,0,
+        2282,2280,1,0,0,0,2283,2286,1,0,0,0,2284,2282,1,0,0,0,2284,2285,
+        1,0,0,0,2285,2288,1,0,0,0,2286,2284,1,0,0,0,2287,2289,3,382,191,
+        0,2288,2287,1,0,0,0,2288,2289,1,0,0,0,2289,381,1,0,0,0,2290,2291,
+        5,47,0,0,2291,2292,3,560,280,0,2292,383,1,0,0,0,2293,2297,7,19,0,
+        0,2294,2296,3,396,198,0,2295,2294,1,0,0,0,2296,2299,1,0,0,0,2297,
+        2295,1,0,0,0,2297,2298,1,0,0,0,2298,2300,1,0,0,0,2299,2297,1,0,0,
+        0,2300,2301,3,402,201,0,2301,385,1,0,0,0,2302,2303,5,259,0,0,2303,
+        2305,3,412,206,0,2304,2306,3,388,194,0,2305,2304,1,0,0,0,2305,2306,
+        1,0,0,0,2306,387,1,0,0,0,2307,2316,5,189,0,0,2308,2313,3,558,279,
+        0,2309,2310,5,9,0,0,2310,2312,3,558,279,0,2311,2309,1,0,0,0,2312,
+        2315,1,0,0,0,2313,2311,1,0,0,0,2313,2314,1,0,0,0,2314,2317,1,0,0,
+        0,2315,2313,1,0,0,0,2316,2308,1,0,0,0,2316,2317,1,0,0,0,2317,389,
+        1,0,0,0,2318,2321,3,100,50,0,2319,2321,3,392,196,0,2320,2318,1,0,
+        0,0,2320,2319,1,0,0,0,2321,391,1,0,0,0,2322,2326,3,518,259,0,2323,
+        2325,3,394,197,0,2324,2323,1,0,0,0,2325,2328,1,0,0,0,2326,2324,1,
+        0,0,0,2326,2327,1,0,0,0,2327,393,1,0,0,0,2328,2326,1,0,0,0,2329,
+        2330,5,3,0,0,2330,2331,3,104,52,0,2331,395,1,0,0,0,2332,2333,7,20,
+        0,0,2333,2336,5,17,0,0,2334,2337,3,546,273,0,2335,2337,3,576,288,
+        0,2336,2334,1,0,0,0,2336,2335,1,0,0,0,2337,397,1,0,0,0,2338,2339,
+        7,21,0,0,2339,2342,5,17,0,0,2340,2343,3,546,273,0,2341,2343,3,576,
+        288,0,2342,2340,1,0,0,0,2342,2341,1,0,0,0,2343,399,1,0,0,0,2344,
+        2345,5,324,0,0,2345,2348,5,17,0,0,2346,2349,3,546,273,0,2347,2349,
+        3,576,288,0,2348,2346,1,0,0,0,2348,2347,1,0,0,0,2349,401,1,0,0,0,
+        2350,2352,3,406,203,0,2351,2350,1,0,0,0,2351,2352,1,0,0,0,2352,2353,
+        1,0,0,0,2353,2354,3,412,206,0,2354,403,1,0,0,0,2355,2356,3,554,277,
+        0,2356,2357,5,17,0,0,2357,2358,3,554,277,0,2358,405,1,0,0,0,2359,
+        2362,3,554,277,0,2360,2362,3,408,204,0,2361,2359,1,0,0,0,2361,2360,
+        1,0,0,0,2362,2363,1,0,0,0,2363,2364,5,17,0,0,2364,407,1,0,0,0,2365,
+        2366,5,31,0,0,2366,2371,3,554,277,0,2367,2368,5,9,0,0,2368,2370,
+        3,554,277,0,2369,2367,1,0,0,0,2370,2373,1,0,0,0,2371,2369,1,0,0,
+        0,2371,2372,1,0,0,0,2372,2374,1,0,0,0,2373,2371,1,0,0,0,2374,2375,
+        5,8,0,0,2375,409,1,0,0,0,2376,2377,3,546,273,0,2377,2378,5,15,0,
+        0,2378,2379,3,478,239,0,2379,411,1,0,0,0,2380,2381,3,414,207,0,2381,
+        413,1,0,0,0,2382,2386,3,418,209,0,2383,2385,3,416,208,0,2384,2383,
+        1,0,0,0,2385,2388,1,0,0,0,2386,2384,1,0,0,0,2386,2387,1,0,0,0,2387,
+        415,1,0,0,0,2388,2386,1,0,0,0,2389,2390,5,191,0,0,2390,2391,3,418,
+        209,0,2391,417,1,0,0,0,2392,2396,3,422,211,0,2393,2395,3,420,210,
+        0,2394,2393,1,0,0,0,2395,2398,1,0,0,0,2396,2394,1,0,0,0,2396,2397,
+        1,0,0,0,2397,419,1,0,0,0,2398,2396,1,0,0,0,2399,2400,5,43,0,0,2400,
+        2401,3,422,211,0,2401,421,1,0,0,0,2402,2408,3,432,216,0,2403,2408,
+        3,424,212,0,2404,2408,3,426,213,0,2405,2408,3,428,214,0,2406,2408,
+        3,430,215,0,2407,2402,1,0,0,0,2407,2403,1,0,0,0,2407,2404,1,0,0,
+        0,2407,2405,1,0,0,0,2407,2406,1,0,0,0,2408,423,1,0,0,0,2409,2410,
+        3,432,216,0,2410,2411,7,22,0,0,2411,2412,3,432,216,0,2412,425,1,
+        0,0,0,2413,2414,3,432,216,0,2414,2415,7,23,0,0,2415,2416,5,31,0,
+        0,2416,2421,3,450,225,0,2417,2418,5,9,0,0,2418,2420,3,450,225,0,
+        2419,2417,1,0,0,0,2420,2423,1,0,0,0,2421,2419,1,0,0,0,2421,2422,
+        1,0,0,0,2422,2424,1,0,0,0,2423,2421,1,0,0,0,2424,2425,5,8,0,0,2425,
+        427,1,0,0,0,2426,2427,3,432,216,0,2427,2428,7,24,0,0,2428,2429,5,
+        31,0,0,2429,2430,3,450,225,0,2430,2431,5,16,0,0,2431,2432,3,450,
+        225,0,2432,2433,5,8,0,0,2433,429,1,0,0,0,2434,2435,5,1,0,0,2435,
+        2436,5,18,0,0,2436,2437,3,432,216,0,2437,431,1,0,0,0,2438,2441,3,
+        434,217,0,2439,2440,7,25,0,0,2440,2442,3,434,217,0,2441,2439,1,0,
+        0,0,2441,2442,1,0,0,0,2442,433,1,0,0,0,2443,2447,3,438,219,0,2444,
+        2446,3,436,218,0,2445,2444,1,0,0,0,2446,2449,1,0,0,0,2447,2445,1,
+        0,0,0,2447,2448,1,0,0,0,2448,435,1,0,0,0,2449,2447,1,0,0,0,2450,
+        2451,7,26,0,0,2451,2452,3,438,219,0,2452,437,1,0,0,0,2453,2457,3,
+        442,221,0,2454,2456,3,440,220,0,2455,2454,1,0,0,0,2456,2459,1,0,
+        0,0,2457,2455,1,0,0,0,2457,2458,1,0,0,0,2458,439,1,0,0,0,2459,2457,
+        1,0,0,0,2460,2461,7,27,0,0,2461,2462,3,442,221,0,2462,441,1,0,0,
+        0,2463,2466,3,444,222,0,2464,2466,3,448,224,0,2465,2463,1,0,0,0,
+        2465,2464,1,0,0,0,2466,443,1,0,0,0,2467,2473,3,450,225,0,2468,2471,
+        3,446,223,0,2469,2471,5,10,0,0,2470,2468,1,0,0,0,2470,2469,1,0,0,
+        0,2471,2472,1,0,0,0,2472,2474,3,450,225,0,2473,2470,1,0,0,0,2473,
+        2474,1,0,0,0,2474,445,1,0,0,0,2475,2476,7,28,0,0,2476,447,1,0,0,
+        0,2477,2478,5,1,0,0,2478,2479,3,446,223,0,2479,2480,3,450,225,0,
+        2480,449,1,0,0,0,2481,2483,7,26,0,0,2482,2481,1,0,0,0,2482,2483,
+        1,0,0,0,2483,2484,1,0,0,0,2484,2485,3,452,226,0,2485,451,1,0,0,0,
+        2486,2490,3,454,227,0,2487,2490,3,456,228,0,2488,2490,3,470,235,
+        0,2489,2486,1,0,0,0,2489,2487,1,0,0,0,2489,2488,1,0,0,0,2490,453,
+        1,0,0,0,2491,2495,3,474,237,0,2492,2495,3,486,243,0,2493,2495,3,
+        468,234,0,2494,2491,1,0,0,0,2494,2492,1,0,0,0,2494,2493,1,0,0,0,
+        2495,455,1,0,0,0,2496,2498,3,454,227,0,2497,2499,3,458,229,0,2498,
+        2497,1,0,0,0,2499,2500,1,0,0,0,2500,2498,1,0,0,0,2500,2501,1,0,0,
+        0,2501,457,1,0,0,0,2502,2507,3,460,230,0,2503,2507,3,462,231,0,2504,
+        2507,3,464,232,0,2505,2507,3,466,233,0,2506,2502,1,0,0,0,2506,2503,
+        1,0,0,0,2506,2504,1,0,0,0,2506,2505,1,0,0,0,2507,459,1,0,0,0,2508,
+        2509,5,15,0,0,2509,2510,3,478,239,0,2510,461,1,0,0,0,2511,2512,5,
+        15,0,0,2512,2513,3,546,273,0,2513,463,1,0,0,0,2514,2515,5,30,0,0,
+        2515,2516,3,412,206,0,2516,2517,5,5,0,0,2517,465,1,0,0,0,2518,2519,
+        5,15,0,0,2519,2520,5,30,0,0,2520,2521,3,412,206,0,2521,2522,5,5,
+        0,0,2522,467,1,0,0,0,2523,2525,5,254,0,0,2524,2526,3,472,236,0,2525,
+        2524,1,0,0,0,2525,2526,1,0,0,0,2526,2527,1,0,0,0,2527,2528,5,31,
+        0,0,2528,2529,3,94,47,0,2529,2530,5,8,0,0,2530,469,1,0,0,0,2531,
+        2533,5,255,0,0,2532,2534,3,472,236,0,2533,2532,1,0,0,0,2533,2534,
+        1,0,0,0,2534,2535,1,0,0,0,2535,2536,5,31,0,0,2536,2537,3,94,47,0,
+        2537,2538,5,8,0,0,2538,471,1,0,0,0,2539,2540,5,145,0,0,2540,2541,
+        5,17,0,0,2541,2542,5,170,0,0,2542,473,1,0,0,0,2543,2547,3,478,239,
+        0,2544,2546,3,476,238,0,2545,2544,1,0,0,0,2546,2549,1,0,0,0,2547,
+        2545,1,0,0,0,2547,2548,1,0,0,0,2548,475,1,0,0,0,2549,2547,1,0,0,
+        0,2550,2551,5,15,0,0,2551,2552,3,478,239,0,2552,477,1,0,0,0,2553,
+        2554,3,480,240,0,2554,2563,5,31,0,0,2555,2560,3,482,241,0,2556,2557,
+        5,9,0,0,2557,2559,3,482,241,0,2558,2556,1,0,0,0,2559,2562,1,0,0,
+        0,2560,2558,1,0,0,0,2560,2561,1,0,0,0,2561,2564,1,0,0,0,2562,2560,
+        1,0,0,0,2563,2555,1,0,0,0,2563,2564,1,0,0,0,2564,2565,1,0,0,0,2565,
+        2566,5,8,0,0,2566,479,1,0,0,0,2567,2570,3,546,273,0,2568,2570,3,
+        566,283,0,2569,2567,1,0,0,0,2569,2568,1,0,0,0,2570,481,1,0,0,0,2571,
+        2574,3,402,201,0,2572,2574,3,484,242,0,2573,2571,1,0,0,0,2573,2572,
+        1,0,0,0,2574,483,1,0,0,0,2575,2576,5,1,0,0,2576,485,1,0,0,0,2577,
+        2585,3,578,289,0,2578,2585,3,546,273,0,2579,2585,3,520,260,0,2580,
+        2585,3,526,263,0,2581,2585,3,518,259,0,2582,2585,3,532,266,0,2583,
+        2585,3,488,244,0,2584,2577,1,0,0,0,2584,2578,1,0,0,0,2584,2579,1,
+        0,0,0,2584,2580,1,0,0,0,2584,2581,1,0,0,0,2584,2582,1,0,0,0,2584,
+        2583,1,0,0,0,2585,487,1,0,0,0,2586,2587,5,31,0,0,2587,2588,3,92,
+        46,0,2588,2589,5,8,0,0,2589,489,1,0,0,0,2590,2591,5,218,0,0,2591,
+        2592,3,546,273,0,2592,2593,5,99,0,0,2593,2594,3,412,206,0,2594,2595,
+        5,250,0,0,2595,2596,3,412,206,0,2596,2597,5,241,0,0,2597,2598,3,
+        412,206,0,2598,491,1,0,0,0,2599,2602,3,506,253,0,2600,2602,3,494,
+        247,0,2601,2599,1,0,0,0,2601,2600,1,0,0,0,2602,493,1,0,0,0,2603,
+        2605,3,506,253,0,2604,2606,3,496,248,0,2605,2604,1,0,0,0,2606,2607,
+        1,0,0,0,2607,2605,1,0,0,0,2607,2608,1,0,0,0,2608,495,1,0,0,0,2609,
+        2613,3,498,249,0,2610,2613,3,500,250,0,2611,2613,3,502,251,0,2612,
+        2609,1,0,0,0,2612,2610,1,0,0,0,2612,2611,1,0,0,0,2613,497,1,0,0,
+        0,2614,2615,5,15,0,0,2615,2616,3,504,252,0,2616,499,1,0,0,0,2617,
+        2618,5,30,0,0,2618,2619,3,412,206,0,2619,2620,5,5,0,0,2620,501,1,
+        0,0,0,2621,2622,5,15,0,0,2622,2623,5,30,0,0,2623,2624,3,412,206,
+        0,2624,2625,5,5,0,0,2625,503,1,0,0,0,2626,2630,3,508,254,0,2627,
+        2630,3,546,273,0,2628,2630,3,510,255,0,2629,2626,1,0,0,0,2629,2627,
+        1,0,0,0,2629,2628,1,0,0,0,2630,505,1,0,0,0,2631,2632,3,504,252,0,
+        2632,507,1,0,0,0,2633,2634,5,2,0,0,2634,509,1,0,0,0,2635,2636,7,
+        29,0,0,2636,511,1,0,0,0,2637,2641,3,550,275,0,2638,2641,3,474,237,
+        0,2639,2641,3,514,257,0,2640,2637,1,0,0,0,2640,2638,1,0,0,0,2640,
+        2639,1,0,0,0,2641,513,1,0,0,0,2642,2643,3,474,237,0,2643,2644,5,
+        15,0,0,2644,2645,3,516,258,0,2645,515,1,0,0,0,2646,2649,3,574,287,
+        0,2647,2649,3,504,252,0,2648,2646,1,0,0,0,2648,2647,1,0,0,0,2649,
+        517,1,0,0,0,2650,2651,5,69,0,0,2651,2652,5,323,0,0,2652,2653,3,522,
+        261,0,2653,519,1,0,0,0,2654,2658,5,75,0,0,2655,2657,3,398,199,0,
+        2656,2655,1,0,0,0,2657,2660,1,0,0,0,2658,2656,1,0,0,0,2658,2659,
+        1,0,0,0,2659,2661,1,0,0,0,2660,2658,1,0,0,0,2661,2662,3,522,261,
+        0,2662,2664,5,30,0,0,2663,2665,3,576,288,0,2664,2663,1,0,0,0,2664,
+        2665,1,0,0,0,2665,2670,1,0,0,0,2666,2667,5,9,0,0,2667,2669,3,576,
+        288,0,2668,2666,1,0,0,0,2669,2672,1,0,0,0,2670,2668,1,0,0,0,2670,
+        2671,1,0,0,0,2671,2674,1,0,0,0,2672,2670,1,0,0,0,2673,2675,5,9,0,
+        0,2674,2673,1,0,0,0,2674,2675,1,0,0,0,2675,2676,1,0,0,0,2676,2679,
+        5,5,0,0,2677,2678,5,47,0,0,2678,2680,3,558,279,0,2679,2677,1,0,0,
+        0,2679,2680,1,0,0,0,2680,521,1,0,0,0,2681,2683,5,31,0,0,2682,2684,
+        3,524,262,0,2683,2682,1,0,0,0,2683,2684,1,0,0,0,2684,2689,1,0,0,
+        0,2685,2686,5,9,0,0,2686,2688,3,524,262,0,2687,2685,1,0,0,0,2688,
+        2691,1,0,0,0,2689,2687,1,0,0,0,2689,2690,1,0,0,0,2690,2693,1,0,0,
+        0,2691,2689,1,0,0,0,2692,2694,5,9,0,0,2693,2692,1,0,0,0,2693,2694,
+        1,0,0,0,2694,2695,1,0,0,0,2695,2696,5,8,0,0,2696,523,1,0,0,0,2697,
+        2698,3,544,272,0,2698,2699,5,10,0,0,2699,2700,3,540,270,0,2700,525,
+        1,0,0,0,2701,2705,7,30,0,0,2702,2704,3,398,199,0,2703,2702,1,0,0,
+        0,2704,2707,1,0,0,0,2705,2703,1,0,0,0,2705,2706,1,0,0,0,2706,2708,
+        1,0,0,0,2707,2705,1,0,0,0,2708,2709,3,522,261,0,2709,2710,5,30,0,
+        0,2710,2715,3,608,304,0,2711,2712,5,9,0,0,2712,2714,3,608,304,0,
+        2713,2711,1,0,0,0,2714,2717,1,0,0,0,2715,2713,1,0,0,0,2715,2716,
+        1,0,0,0,2716,2718,1,0,0,0,2717,2715,1,0,0,0,2718,2720,5,5,0,0,2719,
+        2721,3,528,264,0,2720,2719,1,0,0,0,2720,2721,1,0,0,0,2721,527,1,
+        0,0,0,2722,2723,5,265,0,0,2723,2735,5,31,0,0,2724,2729,3,530,265,
+        0,2725,2726,5,9,0,0,2726,2728,3,530,265,0,2727,2725,1,0,0,0,2728,
+        2731,1,0,0,0,2729,2727,1,0,0,0,2729,2730,1,0,0,0,2730,2733,1,0,0,
+        0,2731,2729,1,0,0,0,2732,2734,5,9,0,0,2733,2732,1,0,0,0,2733,2734,
+        1,0,0,0,2734,2736,1,0,0,0,2735,2724,1,0,0,0,2735,2736,1,0,0,0,2736,
+        2737,1,0,0,0,2737,2738,5,8,0,0,2738,529,1,0,0,0,2739,2740,3,544,
+        272,0,2740,2744,5,17,0,0,2741,2745,3,608,304,0,2742,2745,7,31,0,
+        0,2743,2745,3,544,272,0,2744,2741,1,0,0,0,2744,2742,1,0,0,0,2744,
+        2743,1,0,0,0,2745,531,1,0,0,0,2746,2747,5,163,0,0,2747,2748,5,31,
+        0,0,2748,2749,3,608,304,0,2749,2750,5,8,0,0,2750,2751,3,534,267,
+        0,2751,2752,3,536,268,0,2752,2753,3,538,269,0,2753,533,1,0,0,0,2754,
+        2755,5,53,0,0,2755,2756,5,31,0,0,2756,2757,3,92,46,0,2757,2758,5,
+        8,0,0,2758,535,1,0,0,0,2759,2760,5,79,0,0,2760,2761,5,31,0,0,2761,
+        2762,3,92,46,0,2762,2763,5,8,0,0,2763,537,1,0,0,0,2764,2765,5,40,
+        0,0,2765,2766,5,31,0,0,2766,2767,3,360,180,0,2767,2768,5,8,0,0,2768,
+        539,1,0,0,0,2769,2770,7,32,0,0,2770,541,1,0,0,0,2771,2772,7,33,0,
+        0,2772,543,1,0,0,0,2773,2774,3,548,274,0,2774,545,1,0,0,0,2775,2779,
+        3,562,281,0,2776,2779,3,564,282,0,2777,2779,3,568,284,0,2778,2775,
+        1,0,0,0,2778,2776,1,0,0,0,2778,2777,1,0,0,0,2779,547,1,0,0,0,2780,
+        2783,3,566,283,0,2781,2783,3,546,273,0,2782,2780,1,0,0,0,2782,2781,
+        1,0,0,0,2783,549,1,0,0,0,2784,2785,3,574,287,0,2785,551,1,0,0,0,
+        2786,2789,3,546,273,0,2787,2789,3,550,275,0,2788,2786,1,0,0,0,2788,
+        2787,1,0,0,0,2789,553,1,0,0,0,2790,2795,3,546,273,0,2791,2792,5,
+        15,0,0,2792,2794,3,546,273,0,2793,2791,1,0,0,0,2794,2797,1,0,0,0,
+        2795,2793,1,0,0,0,2795,2796,1,0,0,0,2796,555,1,0,0,0,2797,2795,1,
+        0,0,0,2798,2801,3,546,273,0,2799,2801,3,554,277,0,2800,2798,1,0,
+        0,0,2800,2799,1,0,0,0,2801,557,1,0,0,0,2802,2806,3,574,287,0,2803,
+        2806,3,562,281,0,2804,2806,3,568,284,0,2805,2802,1,0,0,0,2805,2803,
+        1,0,0,0,2805,2804,1,0,0,0,2806,559,1,0,0,0,2807,2810,3,558,279,0,
+        2808,2810,3,474,237,0,2809,2807,1,0,0,0,2809,2808,1,0,0,0,2810,561,
+        1,0,0,0,2811,2812,5,324,0,0,2812,563,1,0,0,0,2813,2814,7,34,0,0,
+        2814,565,1,0,0,0,2815,2816,7,35,0,0,2816,567,1,0,0,0,2817,2818,5,
+        30,0,0,2818,2819,3,608,304,0,2819,2820,5,5,0,0,2820,569,1,0,0,0,
+        2821,2824,3,554,277,0,2822,2824,3,564,282,0,2823,2821,1,0,0,0,2823,
+        2822,1,0,0,0,2824,571,1,0,0,0,2825,2829,3,554,277,0,2826,2829,3,
+        564,282,0,2827,2829,3,566,283,0,2828,2825,1,0,0,0,2828,2826,1,0,
+        0,0,2828,2827,1,0,0,0,2829,573,1,0,0,0,2830,2833,5,325,0,0,2831,
+        2833,3,484,242,0,2832,2830,1,0,0,0,2832,2831,1,0,0,0,2833,575,1,
+        0,0,0,2834,2837,3,584,292,0,2835,2837,3,578,289,0,2836,2834,1,0,
+        0,0,2836,2835,1,0,0,0,2837,577,1,0,0,0,2838,2850,3,586,293,0,2839,
+        2850,3,588,294,0,2840,2850,3,590,295,0,2841,2850,3,592,296,0,2842,
+        2850,3,594,297,0,2843,2850,3,596,298,0,2844,2850,3,598,299,0,2845,
+        2850,3,600,300,0,2846,2850,3,602,301,0,2847,2850,3,608,304,0,2848,
+        2850,3,610,305,0,2849,2838,1,0,0,0,2849,2839,1,0,0,0,2849,2840,1,
+        0,0,0,2849,2841,1,0,0,0,2849,2842,1,0,0,0,2849,2843,1,0,0,0,2849,
+        2844,1,0,0,0,2849,2845,1,0,0,0,2849,2846,1,0,0,0,2849,2847,1,0,0,
+        0,2849,2848,1,0,0,0,2850,579,1,0,0,0,2851,2859,3,586,293,0,2852,
+        2859,3,588,294,0,2853,2859,3,590,295,0,2854,2859,3,592,296,0,2855,
+        2859,3,584,292,0,2856,2859,3,594,297,0,2857,2859,3,596,298,0,2858,
+        2851,1,0,0,0,2858,2852,1,0,0,0,2858,2853,1,0,0,0,2858,2854,1,0,0,
+        0,2858,2855,1,0,0,0,2858,2856,1,0,0,0,2858,2857,1,0,0,0,2859,581,
+        1,0,0,0,2860,2866,3,586,293,0,2861,2866,3,588,294,0,2862,2866,3,
+        590,295,0,2863,2866,3,592,296,0,2864,2866,3,584,292,0,2865,2860,
+        1,0,0,0,2865,2861,1,0,0,0,2865,2862,1,0,0,0,2865,2863,1,0,0,0,2865,
+        2864,1,0,0,0,2866,583,1,0,0,0,2867,2870,3,604,302,0,2868,2870,3,
+        606,303,0,2869,2867,1,0,0,0,2869,2868,1,0,0,0,2870,585,1,0,0,0,2871,
+        2872,5,313,0,0,2872,587,1,0,0,0,2873,2874,5,314,0,0,2874,589,1,0,
+        0,0,2875,2876,5,315,0,0,2876,591,1,0,0,0,2877,2878,5,316,0,0,2878,
+        593,1,0,0,0,2879,2880,5,319,0,0,2880,595,1,0,0,0,2881,2882,5,320,
+        0,0,2882,597,1,0,0,0,2883,2884,5,318,0,0,2884,599,1,0,0,0,2885,2886,
+        5,323,0,0,2886,601,1,0,0,0,2887,2888,5,321,0,0,2888,603,1,0,0,0,
+        2889,2890,7,26,0,0,2890,2891,5,313,0,0,2891,605,1,0,0,0,2892,2893,
+        7,26,0,0,2893,2894,5,315,0,0,2894,607,1,0,0,0,2895,2899,5,317,0,
+        0,2896,2898,5,317,0,0,2897,2896,1,0,0,0,2898,2901,1,0,0,0,2899,2897,
+        1,0,0,0,2899,2900,1,0,0,0,2900,609,1,0,0,0,2901,2899,1,0,0,0,2902,
+        2903,5,291,0,0,2903,2904,5,31,0,0,2904,2905,3,612,306,0,2905,2906,
+        5,8,0,0,2906,611,1,0,0,0,2907,2919,3,618,309,0,2908,2919,3,620,310,
+        0,2909,2919,3,622,311,0,2910,2919,3,624,312,0,2911,2919,3,632,316,
+        0,2912,2919,3,626,313,0,2913,2919,3,614,307,0,2914,2919,3,634,317,
+        0,2915,2919,3,628,314,0,2916,2919,3,630,315,0,2917,2919,3,610,305,
+        0,2918,2907,1,0,0,0,2918,2908,1,0,0,0,2918,2909,1,0,0,0,2918,2910,
+        1,0,0,0,2918,2911,1,0,0,0,2918,2912,1,0,0,0,2918,2913,1,0,0,0,2918,
+        2914,1,0,0,0,2918,2915,1,0,0,0,2918,2916,1,0,0,0,2918,2917,1,0,0,
+        0,2919,613,1,0,0,0,2920,2929,5,29,0,0,2921,2926,3,616,308,0,2922,
+        2923,5,9,0,0,2923,2925,3,616,308,0,2924,2922,1,0,0,0,2925,2928,1,
+        0,0,0,2926,2924,1,0,0,0,2926,2927,1,0,0,0,2927,2930,1,0,0,0,2928,
+        2926,1,0,0,0,2929,2921,1,0,0,0,2929,2930,1,0,0,0,2930,2931,1,0,0,
+        0,2931,2932,5,4,0,0,2932,615,1,0,0,0,2933,2934,5,317,0,0,2934,2935,
+        5,10,0,0,2935,2936,3,612,306,0,2936,617,1,0,0,0,2937,2946,5,30,0,
+        0,2938,2943,3,612,306,0,2939,2940,5,9,0,0,2940,2942,3,612,306,0,
+        2941,2939,1,0,0,0,2942,2945,1,0,0,0,2943,2941,1,0,0,0,2943,2944,
+        1,0,0,0,2944,2947,1,0,0,0,2945,2943,1,0,0,0,2946,2938,1,0,0,0,2946,
+        2947,1,0,0,0,2947,2948,1,0,0,0,2948,2949,5,5,0,0,2949,619,1,0,0,
+        0,2950,2951,5,318,0,0,2951,621,1,0,0,0,2952,2953,5,319,0,0,2953,
+        623,1,0,0,0,2954,2955,5,323,0,0,2955,625,1,0,0,0,2956,2957,5,186,
+        0,0,2957,627,1,0,0,0,2958,2962,5,317,0,0,2959,2961,5,317,0,0,2960,
+        2959,1,0,0,0,2961,2964,1,0,0,0,2962,2960,1,0,0,0,2962,2963,1,0,0,
+        0,2963,629,1,0,0,0,2964,2962,1,0,0,0,2965,2966,5,320,0,0,2966,631,
+        1,0,0,0,2967,2969,5,11,0,0,2968,2967,1,0,0,0,2968,2969,1,0,0,0,2969,
+        2970,1,0,0,0,2970,2971,5,313,0,0,2971,633,1,0,0,0,2972,2974,5,11,
+        0,0,2973,2972,1,0,0,0,2973,2974,1,0,0,0,2974,2975,1,0,0,0,2975,2976,
+        5,315,0,0,2976,635,1,0,0,0,276,644,648,660,668,680,691,701,733,758,
+        767,777,784,797,806,818,833,837,840,846,852,857,863,873,888,893,
+        901,919,934,941,947,951,961,970,978,984,994,1003,1057,1063,1090,
+        1096,1108,1115,1120,1126,1131,1140,1147,1152,1163,1175,1180,1192,
+        1197,1200,1205,1209,1220,1231,1236,1240,1255,1264,1269,1276,1283,
+        1286,1299,1311,1318,1326,1330,1333,1338,1349,1367,1373,1381,1386,
+        1391,1401,1409,1413,1416,1425,1431,1435,1443,1453,1463,1475,1479,
+        1486,1495,1504,1512,1515,1536,1544,1550,1553,1560,1578,1582,1593,
+        1600,1608,1612,1615,1630,1639,1647,1651,1655,1659,1669,1678,1681,
+        1686,1690,1693,1697,1701,1712,1721,1730,1736,1740,1745,1759,1764,
+        1779,1788,1791,1799,1808,1811,1819,1822,1830,1833,1837,1843,1854,
+        1860,1868,1877,1886,1897,1906,1909,1916,1969,1976,1992,1998,2009,
+        2018,2022,2025,2028,2035,2052,2062,2070,2073,2078,2092,2103,2107,
+        2112,2125,2134,2142,2145,2151,2160,2165,2169,2175,2183,2186,2189,
+        2197,2201,2211,2221,2224,2230,2242,2252,2257,2262,2276,2284,2288,
+        2297,2305,2313,2316,2320,2326,2336,2342,2348,2351,2361,2371,2386,
+        2396,2407,2421,2441,2447,2457,2465,2470,2473,2482,2489,2494,2500,
+        2506,2525,2533,2547,2560,2563,2569,2573,2584,2601,2607,2612,2629,
+        2640,2648,2658,2664,2670,2674,2679,2683,2689,2693,2705,2715,2720,
+        2729,2733,2735,2744,2778,2782,2788,2795,2800,2805,2809,2823,2828,
+        2832,2836,2849,2858,2865,2869,2899,2918,2926,2929,2943,2946,2962,
+        2968,2973
     ];
 
     private static __ATN: antlr.ATN;
@@ -17054,6 +17621,9 @@ export class TopContext extends antlr.ParserRuleContext {
     public query(): QueryContext {
         return this.getRuleContext(0, QueryContext)!;
     }
+    public EOF(): antlr.TerminalNode {
+        return this.getToken(HqlParser.EOF, 0)!;
+    }
     public override get ruleIndex(): number {
         return HqlParser.RULE_top;
     }
@@ -17065,9 +17635,6 @@ export class QueryContext extends antlr.ParserRuleContext {
     public _Statements: StatementContext[] = [];
     public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
         super(parent, invokingState);
-    }
-    public EOF(): antlr.TerminalNode {
-        return this.getToken(HqlParser.EOF, 0)!;
     }
     public statement(): StatementContext[];
     public statement(i: number): StatementContext | null;
@@ -17097,6 +17664,10 @@ export class StatementContext extends antlr.ParserRuleContext {
     public _DeclarePattern?: DeclarePatternStatementContext;
     public _DeclareQueryParameters?: DeclareQueryParametersStatementContext;
     public _Let?: LetStatementContext;
+    public _Macro?: MacroStatementContext;
+    public _Class?: ClassStatementContext;
+    public _Map?: MapStatementContext;
+    public _Import?: ImportStatementContext;
     public _Query?: QueryStatementContext;
     public _RestrictAccess?: RestrictAccessStatementContext;
     public _Set?: SetStatementContext;
@@ -17111,6 +17682,18 @@ export class StatementContext extends antlr.ParserRuleContext {
     }
     public letStatement(): LetStatementContext | null {
         return this.getRuleContext(0, LetStatementContext);
+    }
+    public macroStatement(): MacroStatementContext | null {
+        return this.getRuleContext(0, MacroStatementContext);
+    }
+    public classStatement(): ClassStatementContext | null {
+        return this.getRuleContext(0, ClassStatementContext);
+    }
+    public mapStatement(): MapStatementContext | null {
+        return this.getRuleContext(0, MapStatementContext);
+    }
+    public importStatement(): ImportStatementContext | null {
+        return this.getRuleContext(0, ImportStatementContext);
     }
     public queryStatement(): QueryStatementContext | null {
         return this.getRuleContext(0, QueryStatementContext);
@@ -17133,7 +17716,6 @@ export class LetStatementContext extends antlr.ParserRuleContext {
     public _Variable?: LetVariableDeclarationContext;
     public _Materialized?: LetMaterializeDeclarationContext;
     public _EntityGroup?: LetEntityGroupDeclarationContext;
-    public _Macro?: LetMacroDeclarationContext;
     public _Logic?: LetLogicDeclarationContext;
     public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
         super(parent, invokingState);
@@ -17152,9 +17734,6 @@ export class LetStatementContext extends antlr.ParserRuleContext {
     }
     public letEntityGroupDeclaration(): LetEntityGroupDeclarationContext | null {
         return this.getRuleContext(0, LetEntityGroupDeclarationContext);
-    }
-    public letMacroDeclaration(): LetMacroDeclarationContext | null {
-        return this.getRuleContext(0, LetMacroDeclarationContext);
     }
     public letLogicDeclaration(): LetLogicDeclarationContext | null {
         return this.getRuleContext(0, LetLogicDeclarationContext);
@@ -17346,30 +17925,6 @@ export class LetEntityGroupDeclarationContext extends antlr.ParserRuleContext {
 }
 
 
-export class LetMacroDeclarationContext extends antlr.ParserRuleContext {
-    public _Name?: SimpleNameReferenceContext;
-    public _Pipes?: EmptyPipedExpressionContext;
-    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
-        super(parent, invokingState);
-    }
-    public LET(): antlr.TerminalNode {
-        return this.getToken(HqlParser.LET, 0)!;
-    }
-    public EQUAL(): antlr.TerminalNode {
-        return this.getToken(HqlParser.EQUAL, 0)!;
-    }
-    public simpleNameReference(): SimpleNameReferenceContext {
-        return this.getRuleContext(0, SimpleNameReferenceContext)!;
-    }
-    public emptyPipedExpression(): EmptyPipedExpressionContext {
-        return this.getRuleContext(0, EmptyPipedExpressionContext)!;
-    }
-    public override get ruleIndex(): number {
-        return HqlParser.RULE_letMacroDeclaration;
-    }
-}
-
-
 export class LetLogicDeclarationContext extends antlr.ParserRuleContext {
     public _Name?: SimpleNameReferenceContext;
     public _Logic?: UnnamedExpressionContext;
@@ -17431,6 +17986,243 @@ export class LetFunctionParameterListContext extends antlr.ParserRuleContext {
     }
     public override get ruleIndex(): number {
         return HqlParser.RULE_letFunctionParameterList;
+    }
+}
+
+
+export class MacroStatementContext extends antlr.ParserRuleContext {
+    public _Name?: SimpleNameReferenceContext;
+    public _Pipes?: EmptyPipedExpressionContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public MACRO(): antlr.TerminalNode {
+        return this.getToken(HqlParser.MACRO, 0)!;
+    }
+    public EQUAL(): antlr.TerminalNode {
+        return this.getToken(HqlParser.EQUAL, 0)!;
+    }
+    public OPENBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.OPENBRACE, 0)!;
+    }
+    public CLOSEBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.CLOSEBRACE, 0)!;
+    }
+    public simpleNameReference(): SimpleNameReferenceContext {
+        return this.getRuleContext(0, SimpleNameReferenceContext)!;
+    }
+    public emptyPipedExpression(): EmptyPipedExpressionContext {
+        return this.getRuleContext(0, EmptyPipedExpressionContext)!;
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_macroStatement;
+    }
+}
+
+
+export class ClassStatementContext extends antlr.ParserRuleContext {
+    public _Name?: SimpleNameReferenceContext;
+    public _Query?: QueryContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public CLASS(): antlr.TerminalNode {
+        return this.getToken(HqlParser.CLASS, 0)!;
+    }
+    public EQUAL(): antlr.TerminalNode {
+        return this.getToken(HqlParser.EQUAL, 0)!;
+    }
+    public OPENBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.OPENBRACE, 0)!;
+    }
+    public CLOSEBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.CLOSEBRACE, 0)!;
+    }
+    public simpleNameReference(): SimpleNameReferenceContext {
+        return this.getRuleContext(0, SimpleNameReferenceContext)!;
+    }
+    public query(): QueryContext {
+        return this.getRuleContext(0, QueryContext)!;
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_classStatement;
+    }
+}
+
+
+export class MapStatementContext extends antlr.ParserRuleContext {
+    public _Name?: SimpleNameReferenceContext;
+    public _mapEntry?: MapEntryContext;
+    public _Maps: MapEntryContext[] = [];
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public MAP(): antlr.TerminalNode {
+        return this.getToken(HqlParser.MAP, 0)!;
+    }
+    public EQUAL(): antlr.TerminalNode {
+        return this.getToken(HqlParser.EQUAL, 0)!;
+    }
+    public OPENBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.OPENBRACE, 0)!;
+    }
+    public CLOSEBRACE(): antlr.TerminalNode {
+        return this.getToken(HqlParser.CLOSEBRACE, 0)!;
+    }
+    public simpleNameReference(): SimpleNameReferenceContext {
+        return this.getRuleContext(0, SimpleNameReferenceContext)!;
+    }
+    public mapEntry(): MapEntryContext[];
+    public mapEntry(i: number): MapEntryContext | null;
+    public mapEntry(i?: number): MapEntryContext[] | MapEntryContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(MapEntryContext);
+        }
+
+        return this.getRuleContext(i, MapEntryContext);
+    }
+    public COMMA(): antlr.TerminalNode[];
+    public COMMA(i: number): antlr.TerminalNode | null;
+    public COMMA(i?: number): antlr.TerminalNode | null | antlr.TerminalNode[] {
+    	if (i === undefined) {
+    		return this.getTokens(HqlParser.COMMA);
+    	} else {
+    		return this.getToken(HqlParser.COMMA, i);
+    	}
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_mapStatement;
+    }
+}
+
+
+export class MapEntryContext extends antlr.ParserRuleContext {
+    public _Source?: SimpleOrPathNameReferenceContext;
+    public _Dest?: SingleMapValueContext;
+    public _MultiDest?: MultiMapValueContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public COLON(): antlr.TerminalNode {
+        return this.getToken(HqlParser.COLON, 0)!;
+    }
+    public simpleOrPathNameReference(): SimpleOrPathNameReferenceContext {
+        return this.getRuleContext(0, SimpleOrPathNameReferenceContext)!;
+    }
+    public singleMapValue(): SingleMapValueContext | null {
+        return this.getRuleContext(0, SingleMapValueContext);
+    }
+    public multiMapValue(): MultiMapValueContext | null {
+        return this.getRuleContext(0, MultiMapValueContext);
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_mapEntry;
+    }
+}
+
+
+export class SingleMapValueContext extends antlr.ParserRuleContext {
+    public _Value?: SimpleOrPathNameReferenceContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public simpleOrPathNameReference(): SimpleOrPathNameReferenceContext {
+        return this.getRuleContext(0, SimpleOrPathNameReferenceContext)!;
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_singleMapValue;
+    }
+}
+
+
+export class MultiMapValueContext extends antlr.ParserRuleContext {
+    public _singleMapValue?: SingleMapValueContext;
+    public _MapValues: SingleMapValueContext[] = [];
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public OPENPAREN(): antlr.TerminalNode {
+        return this.getToken(HqlParser.OPENPAREN, 0)!;
+    }
+    public CLOSEPAREN(): antlr.TerminalNode {
+        return this.getToken(HqlParser.CLOSEPAREN, 0)!;
+    }
+    public singleMapValue(): SingleMapValueContext[];
+    public singleMapValue(i: number): SingleMapValueContext | null;
+    public singleMapValue(i?: number): SingleMapValueContext[] | SingleMapValueContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(SingleMapValueContext);
+        }
+
+        return this.getRuleContext(i, SingleMapValueContext);
+    }
+    public COMMA(): antlr.TerminalNode[];
+    public COMMA(i: number): antlr.TerminalNode | null;
+    public COMMA(i?: number): antlr.TerminalNode | null | antlr.TerminalNode[] {
+    	if (i === undefined) {
+    		return this.getTokens(HqlParser.COMMA);
+    	} else {
+    		return this.getToken(HqlParser.COMMA, i);
+    	}
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_multiMapValue;
+    }
+}
+
+
+export class ImportStatementContext extends antlr.ParserRuleContext {
+    public _Simple?: SimpleImportStatementContext;
+    public _From?: FromImportStatementContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public simpleImportStatement(): SimpleImportStatementContext | null {
+        return this.getRuleContext(0, SimpleImportStatementContext);
+    }
+    public fromImportStatement(): FromImportStatementContext | null {
+        return this.getRuleContext(0, FromImportStatementContext);
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_importStatement;
+    }
+}
+
+
+export class SimpleImportStatementContext extends antlr.ParserRuleContext {
+    public _Name?: SimpleOrPathNameReferenceContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public IMPORT(): antlr.TerminalNode {
+        return this.getToken(HqlParser.IMPORT, 0)!;
+    }
+    public simpleOrPathNameReference(): SimpleOrPathNameReferenceContext {
+        return this.getRuleContext(0, SimpleOrPathNameReferenceContext)!;
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_simpleImportStatement;
+    }
+}
+
+
+export class FromImportStatementContext extends antlr.ParserRuleContext {
+    public _Src?: SimpleOrPathNameReferenceContext;
+    public _Import?: SimpleImportStatementContext;
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public FROM(): antlr.TerminalNode {
+        return this.getToken(HqlParser.FROM, 0)!;
+    }
+    public simpleOrPathNameReference(): SimpleOrPathNameReferenceContext {
+        return this.getRuleContext(0, SimpleOrPathNameReferenceContext)!;
+    }
+    public simpleImportStatement(): SimpleImportStatementContext {
+        return this.getRuleContext(0, SimpleImportStatementContext)!;
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_fromImportStatement;
     }
 }
 
@@ -18290,6 +19082,9 @@ export class AfterPipeOperatorContext extends antlr.ParserRuleContext {
     }
     public makeSeriesOperator(): MakeSeriesOperatorContext | null {
         return this.getRuleContext(0, MakeSeriesOperatorContext);
+    }
+    public mapOperator(): MapOperatorContext | null {
+        return this.getRuleContext(0, MapOperatorContext);
     }
     public mvexpandOperator(): MvexpandOperatorContext | null {
         return this.getRuleContext(0, MvexpandOperatorContext);
@@ -21167,6 +21962,44 @@ export class ProjectReorderExpressionContext extends antlr.ParserRuleContext {
 }
 
 
+export class PushOperatorContext extends antlr.ParserRuleContext {
+    public _relaxedQueryOperatorParameter?: RelaxedQueryOperatorParameterContext;
+    public _Parameters: RelaxedQueryOperatorParameterContext[] = [];
+    public _unnamedExpression?: UnnamedExpressionContext;
+    public _Destinations: UnnamedExpressionContext[] = [];
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public PUSH(): antlr.TerminalNode {
+        return this.getToken(HqlParser.PUSH, 0)!;
+    }
+    public unnamedExpression(): UnnamedExpressionContext[];
+    public unnamedExpression(i: number): UnnamedExpressionContext | null;
+    public unnamedExpression(i?: number): UnnamedExpressionContext[] | UnnamedExpressionContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(UnnamedExpressionContext);
+        }
+
+        return this.getRuleContext(i, UnnamedExpressionContext);
+    }
+    public COMMA(): antlr.TerminalNode | null {
+        return this.getToken(HqlParser.COMMA, 0);
+    }
+    public relaxedQueryOperatorParameter(): RelaxedQueryOperatorParameterContext[];
+    public relaxedQueryOperatorParameter(i: number): RelaxedQueryOperatorParameterContext | null;
+    public relaxedQueryOperatorParameter(i?: number): RelaxedQueryOperatorParameterContext[] | RelaxedQueryOperatorParameterContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(RelaxedQueryOperatorParameterContext);
+        }
+
+        return this.getRuleContext(i, RelaxedQueryOperatorParameterContext);
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_pushOperator;
+    }
+}
+
+
 export class ReduceByOperatorContext extends antlr.ParserRuleContext {
     public _strictQueryOperatorParameter?: StrictQueryOperatorParameterContext;
     public _Parameters: StrictQueryOperatorParameterContext[] = [];
@@ -21231,6 +22064,39 @@ export class ReduceByWithClauseContext extends antlr.ParserRuleContext {
     }
     public override get ruleIndex(): number {
         return HqlParser.RULE_reduceByWithClause;
+    }
+}
+
+
+export class MapOperatorContext extends antlr.ParserRuleContext {
+    public _simpleNameReference?: SimpleNameReferenceContext;
+    public _Names: SimpleNameReferenceContext[] = [];
+    public constructor(parent: antlr.ParserRuleContext | null, invokingState: number) {
+        super(parent, invokingState);
+    }
+    public MAP(): antlr.TerminalNode {
+        return this.getToken(HqlParser.MAP, 0)!;
+    }
+    public simpleNameReference(): SimpleNameReferenceContext[];
+    public simpleNameReference(i: number): SimpleNameReferenceContext | null;
+    public simpleNameReference(i?: number): SimpleNameReferenceContext[] | SimpleNameReferenceContext | null {
+        if (i === undefined) {
+            return this.getRuleContexts(SimpleNameReferenceContext);
+        }
+
+        return this.getRuleContext(i, SimpleNameReferenceContext);
+    }
+    public COMMA(): antlr.TerminalNode[];
+    public COMMA(i: number): antlr.TerminalNode | null;
+    public COMMA(i?: number): antlr.TerminalNode | null | antlr.TerminalNode[] {
+    	if (i === undefined) {
+    		return this.getTokens(HqlParser.COMMA);
+    	} else {
+    		return this.getToken(HqlParser.COMMA, i);
+    	}
+    }
+    public override get ruleIndex(): number {
+        return HqlParser.RULE_mapOperator;
     }
 }
 
@@ -25269,6 +26135,9 @@ export class KeywordNameContext extends antlr.ParserRuleContext {
     }
     public LIST(): antlr.TerminalNode | null {
         return this.getToken(HqlParser.LIST, 0);
+    }
+    public MACRO(): antlr.TerminalNode | null {
+        return this.getToken(HqlParser.MACRO, 0);
     }
     public MAP(): antlr.TerminalNode | null {
         return this.getToken(HqlParser.MAP, 0);

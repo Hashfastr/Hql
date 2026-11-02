@@ -332,3 +332,58 @@ class TestImport:
 
         out = run_query('import maps.src; src | count', config, name='api')
         assert out['t.json'].to_dicts() == [{'Count': 4}]
+
+
+class TestClass:
+    def test_tabular_member(self, conf):
+        text = f"class c = {{ let flows = {T} | where a > 1; }}; c.flows | count"
+        assert rows(conf, text) == [{'Count': 2}]
+
+    def test_scalar_member(self, conf):
+        assert rows(conf, f"class c = {{ let min = 2 }}; {T} | where a >= c.min | count") == [{'Count': 2}]
+
+    def test_members_reference_each_other(self, conf):
+        text = f"class c = {{ let all = {T}; let some = all | take 1 }}; c.some | count"
+        assert rows(conf, text) == [{'Count': 1}]
+
+    def test_members_see_outer_names(self, conf):
+        text = f"let min = 3; class c = {{ let flows = {T} | where a >= min }}; c.flows | count"
+        assert rows(conf, text) == [{'Count': 1}]
+
+    def test_nested_class(self, conf):
+        assert rows(conf, f"class a = {{ class b = {{ let t = {T} }} }}; a.b.t | count") == [{'Count': 4}]
+
+    def test_members_do_not_leak(self, conf):
+        with pytest.raises(KeyError):
+            query(conf, f"class c = {{ let flows = {T} }}; flows | count")
+
+    def test_missing_member_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            query(conf, "class c = { let a = 1 }; c.missing | count")
+
+    def test_query_statement_in_class_raises(self, conf):
+        from Hql.Exceptions import HqlExceptions as hqle
+        with pytest.raises(hqle.CompilerException):
+            query(conf, f"class c = {{ {T} }}; c | count")
+
+    def test_field_path_named_like_a_class(self, conf, tmp_path):
+        (tmp_path / 'o.json').write_text(json.dumps([{'c': {'x': 1}}, {'c': {'x': 2}}]))
+        text = "class c = { let y = 1 }; database('json').file('o.json') | where c.x == 2 | count"
+        assert rows(conf, text, 'o.json') == [{'Count': 1}]
+
+
+class TestYamlLikeHql:
+    # A single ': ' makes this a valid yaml mapping, it still has to run as Hql
+    TEXT = f'map m = {{ x: a }}; {T} | count'
+
+    def test_run_query_falls_back_to_hql(self, conf):
+        assert rows(conf, self.TEXT) == [{'Count': 4}]
+
+    def test_detection_falls_back_to_hql(self, conf):
+        from Hql.Hac.Engine import Detection
+        from Hql.Parser import Parser
+
+        detection = Detection(self.TEXT, 'api', conf, no_hac=True)
+        assert isinstance(detection.parser, Parser)
+        assert not detection.sigma

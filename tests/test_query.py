@@ -1,6 +1,6 @@
 from Hql.Expressions import PipeExpression
 from Hql.Expressions.References import NamedReference, Path
-from Hql.Query import ImportStatement, LetStatement, Mapping, Query, QueryStatement, Statement
+from Hql.Query import ClassStatement, ImportStatement, LetStatement, Mapping, Query, QueryStatement, Statement
 
 
 class TestStatement:
@@ -139,3 +139,16 @@ class TestImportStatement:
         assert d["path"] == "/lib/common.hql"
         assert d["src"] is None
         assert len(d["statements"]) == 1
+
+
+class TestClassStatement:
+    def test_to_dict_includes_body(self):
+        body = Query([LetStatement(NamedReference("x"), PipeExpression([]))])
+        d = ClassStatement(NamedReference("c"), body).to_dict()
+        assert d["type"] == "ClassStatement"
+        assert d["name"] == {"type": "NamedReference", "name": "c"}
+        assert len(d["value"]["statements"]) == 1
+
+    def test_deparse(self):
+        body = Query([LetStatement(NamedReference("x"), PipeExpression([]))])
+        assert ClassStatement(NamedReference("c"), body).deparse() == "class c = {\nlet x = \n}"

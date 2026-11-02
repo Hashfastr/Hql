@@ -143,7 +143,7 @@ class Product():
         
         parser = Parser(self.conf['hql'])
         try:
-            parser.assemble(target='query')
+            parser.assemble(target='top')
         except:
             logging.critical(f'Failed to parse Hql for product {name}')
 
@@ -162,7 +162,7 @@ class Product():
     def parse_service(self, name:str, text:str):
         parser = Parser(text)
         try:
-            parser.assemble(targets=['query', 'emptyPipedExpression'])
+            parser.assemble(targets=['top', 'emptyPipedExpression'])
         except:
             logging.critical(f'Failed to parse Hql in service {name}')
 
@@ -174,7 +174,7 @@ class Product():
     def parse_category(self, name:str, text:str):
         parser = Parser(text)
         try:
-            parser.assemble(targets=['query', 'emptyPipedExpression'])
+            parser.assemble(targets=['top', 'emptyPipedExpression'])
         except:
             logging.critical(f'Failed to parse Hql in category {name}')
 
