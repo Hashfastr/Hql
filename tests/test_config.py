@@ -118,3 +118,16 @@ class TestGetProduct:
 class TestGetEngine:
     def test_default_empty(self):
         assert Config().get_engine() == {}
+
+
+class TestGetImportPaths:
+    def test_empty_without_path(self):
+        assert Config().get_import_paths() == []
+
+    def test_directory(self, tmp_path):
+        assert Config(tmp_path).get_import_paths() == [tmp_path]
+
+    def test_file_uses_its_directory(self, tmp_path):
+        conf = tmp_path / "general.yml"
+        conf.write_text("type: general\n")
+        assert Config(conf).get_import_paths() == [tmp_path]

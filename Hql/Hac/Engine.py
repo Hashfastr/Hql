@@ -233,7 +233,7 @@ class Detection():
         if parser:
             self.parser = parser
         else:
-            self.parser = Parser(self.txt, self.src)
+            self.parser = Parser(self.txt, self.src, paths=self.config.get_import_paths())
 
     def compile(self, query_now:Optional[datetime.datetime]=None) -> HqlCompiler:
         from Hql.Query import Query

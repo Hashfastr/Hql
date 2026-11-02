@@ -351,3 +351,39 @@ class Mapping(LetStatement):
             [self.add(i, x) for x in mapping[i]]
         return self
 
+'''
+Inlines the statements of another Hql file
+
+import detections.common
+from detections import common
+
+Both resolve to detections/common.hql, looked up relative to the importing
+file and then the working directory. The parser replaces this statement with
+the statements of the imported file, in place.
+'''
+class ImportStatement(Statement):
+    def __init__(self, name:Reference, src:Reference|None=None, statements:list[Statement]|None=None, path:str=''):
+        Statement.__init__(self)
+        self.name = name
+        self.src = src
+        self.statements:list[Statement] = statements if statements else []
+        self.path = path
+
+    @property
+    def parts(self) -> list[str]:
+        parts = self.src.list() if self.src else []
+        return parts + self.name.list()
+
+    def to_dict(self) -> dict:
+        return {
+            'type': self.type,
+            'name': self.name.to_dict(),
+            'src': self.src.to_dict() if self.src else None,
+            'path': self.path,
+            'statements': [x.to_dict() for x in self.statements]
+        }
+
+    def deparse(self) -> str:
+        if self.src:
+            return f'from {self.src.deparse()} import {self.name.deparse()}'
+        return f'import {self.name.deparse()}'

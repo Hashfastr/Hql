@@ -14,7 +14,8 @@ from Hql.Parser.Operators import Operators as ParseOperators
 from Hql.Parser.Logic import Logic as ParseLogic
 
 import logging
-from typing import Union, TYPE_CHECKING
+from pathlib import Path
+from typing import Sequence, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from Hql.Expressions import Expression
@@ -32,8 +33,12 @@ class HqlErrorListener(ErrorListener):
         Parser.handleException(recognizer, e)
         
 class Parser():
-    def __init__(self, text:str, filename:str=''):
+    def __init__(self, text:str, filename:str='', imports:tuple[Path, ...]=(), paths:Sequence[Path]=()):
         self.filename = filename
+        # Files currently being imported, used to catch circular imports
+        self.imports = imports
+        # Extra directories to resolve imports against, such as the config
+        self.paths = list(paths)
         self.text = text
         self.tree = None
         self.assembly:Union[None, Query, Statement, Operator, Expression] = None
@@ -62,7 +67,7 @@ class Parser():
         for i in targets:
             try:
                 self.tree = self.parse_text()
-                visitor = Visitor(self.filename)
+                visitor = Visitor(self.filename, self.imports, self.paths)
                 target = getattr(self.tree, i)()
                 self.assembly = visitor.visit(target)
             except:
@@ -102,15 +107,23 @@ class Parser():
 # Overrides the HqlVisitor templates
 # If not defined here, each node only returns its children.
 class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, HqlVisitor):
-    def __init__(self, filename:str):
+    def __init__(self, filename:str, imports:tuple[Path, ...]=(), paths:Sequence[Path]=()):
         self.filename = filename
+        self.imports = imports
+        self.paths = list(paths)
     
     def visitQuery(self, ctx: HqlParser.QueryContext):
-        from Hql.Query import Query
+        from Hql.Query import Query, ImportStatement
 
         statements = []
         for i in ctx.Statements:
-            statements.append(self.visit(i))
+            statement = self.visit(i)
+
+            # Imports are inlined in place
+            if isinstance(statement, ImportStatement):
+                statements += statement.statements
+            else:
+                statements.append(statement)
                 
         return Query(statements)
     
@@ -177,3 +190,62 @@ class Visitor(ParseOperators, ParseFunctions, ParseLogic, ParseBaseExpressions, 
             mapping.merge(self.visit(i)) 
 
         return mapping
+
+    def visitImportStatement(self, ctx: HqlParser.ImportStatementContext):
+        if ctx.From:
+            return self.visit(ctx.From)
+        return self.visit(ctx.Simple)
+
+    def visitFromImportStatement(self, ctx: HqlParser.FromImportStatementContext):
+        src = self.visit(ctx.Src)
+        name = self.visit(ctx.Import.Name)
+        return self.import_file(ctx, name, src)
+
+    def visitSimpleImportStatement(self, ctx: HqlParser.SimpleImportStatementContext):
+        name = self.visit(ctx.Name)
+        return self.import_file(ctx, name)
+
+    '''
+    Parses the imported file, a.b resolves to a/b.hql
+    Looks relative to the importing file, then the given paths (the config
+    directory), then the working directory.
+    '''
+    def import_file(self, ctx, name, src=None):
+        from Hql.Query import ImportStatement, Query, QueryStatement
+
+        statement = ImportStatement(name, src)
+        rel = Path(*statement.parts).with_suffix('.hql')
+
+        bases = []
+        if self.filename and Path(self.filename).parent.is_dir():
+            bases.append(Path(self.filename).parent)
+        bases += self.paths
+        bases.append(Path.cwd())
+
+        path = None
+        for base in bases:
+            if (base / rel).is_file():
+                path = (base / rel).resolve()
+                break
+
+        if path is None:
+            raise hqle.ParseException(f'Could not find {rel} to import, looked in {", ".join(str(x) for x in bases)}', ctx, self.filename)
+
+        importing = self.imports
+        if self.filename:
+            importing += (Path(self.filename).resolve(),)
+
+        if path in importing:
+            raise hqle.ParseException(f'Circular import of {path}', ctx, self.filename)
+
+        parser = Parser(path.read_text(), filename=str(path), imports=importing, paths=self.paths)
+        parser.assemble()
+        assert isinstance(parser.assembly, Query)
+
+        for i in parser.assembly.statements:
+            if isinstance(i, QueryStatement):
+                raise hqle.ParseException(f'Imported file {path} has a query statement, only declarations can be imported', ctx, self.filename)
+
+        statement.statements = parser.assembly.statements
+        statement.path = str(path)
+        return statement

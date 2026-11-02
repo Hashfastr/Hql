@@ -308,3 +308,27 @@ class TestMapping:
 
         assert [x.deparse() for x in db.compiler.ops] == ['where event.id == 4624']
         assert [x.deparse() for x in compiler.root.ops] == ['project-rename EventID=event.id, Action=event.action']
+
+
+class TestImport:
+    def test_imported_let_used_in_query(self, conf, tmp_path):
+        (tmp_path / 'lib.hql').write_text("let src = database('json').file('t.json');\nlet big = 2")
+        text = 'import lib; src | where a >= big | count'
+
+        out = run_query(text, conf, name=str(tmp_path / 'main.hql'))
+        assert out['t.json'].to_dicts() == [{'Count': 2}]
+
+    def test_import_resolves_against_config_directory(self, tmp_path):
+        from Hql.Config import Config
+
+        (tmp_path / 'data').mkdir()
+        (tmp_path / 'data' / 't.json').write_text(json.dumps(ROWS))
+        conf_dir = tmp_path / 'conf'
+        (conf_dir / 'maps').mkdir(parents=True)
+        (conf_dir / 'maps' / 'src.hql').write_text("let src = database('json').file('t.json')")
+
+        config = Config(conf_dir)
+        config.add_database('test', {'name': 'json', 'type': 'JSON', 'conf': {'local-base': str(tmp_path / 'data')}})
+
+        out = run_query('import maps.src; src | count', config, name='api')
+        assert out['t.json'].to_dicts() == [{'Count': 4}]

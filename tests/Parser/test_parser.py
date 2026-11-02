@@ -208,3 +208,98 @@ class TestMapping:
         assert isinstance(op, Map)
         assert op.names == [NamedReference("ecs"), NamedReference("other")]
         assert op.deparse() == "map ecs, other"
+
+
+
+# ---------------------------------------------------------------------------
+# Imports, inline the statements of another file in place
+# ---------------------------------------------------------------------------
+
+class TestImport:
+    @pytest.fixture
+    def lib(self, tmp_path):
+        (tmp_path / "lib").mkdir()
+        (tmp_path / "lib" / "common.hql").write_text("let f = 't.json';\nmap ecs = { EventID: event.id }")
+        (tmp_path / "outer.hql").write_text("import lib.common;\nlet n = 2")
+        return tmp_path
+
+    def parse_in(self, directory, text):
+        parser = Parser(text, filename=str(directory / "main.hql"))
+        parser.assemble()
+        return parser.assembly
+
+    def test_statements_inlined_in_place(self, lib):
+        from Hql.Query import LetStatement, Mapping, QueryStatement
+
+        statements = self.parse_in(lib, "let a = 1; import lib.common; t").statements
+
+        assert [type(x) for x in statements] == [LetStatement, LetStatement, Mapping, QueryStatement]
+        assert statements[1].name == NamedReference("f")
+        assert statements[2].name == NamedReference("ecs")
+
+    def test_from_import(self, lib):
+        statements = self.parse_in(lib, "from lib import common; t").statements
+        assert [x.name for x in statements[:-1]] == [NamedReference("f"), NamedReference("ecs")]
+
+    def test_nested_imports_resolve_from_the_imported_file(self, lib):
+        statements = self.parse_in(lib, "import outer; t").statements
+        assert [x.name for x in statements[:-1]] == [NamedReference("f"), NamedReference("ecs"), NamedReference("n")]
+
+    def test_deparse_has_imported_statements(self, lib):
+        assert self.parse_in(lib, "import lib.common; t").deparse() == (
+            "let f = 't.json';\nmap ecs = { EventID: event.id };\nt"
+        )
+
+    def test_falls_back_to_working_directory(self, lib, monkeypatch):
+        monkeypatch.chdir(lib)
+        statements = parse("import lib.common; t").statements
+        assert len(statements) == 3
+
+    def test_resolves_against_given_paths(self, lib, tmp_path_factory):
+        # As with the api, the query has no file to resolve relative to
+        parser = Parser("import lib.common; t", filename="api", paths=[lib])
+        parser.assemble()
+        assert [x.name for x in parser.assembly.statements[:-1]] == [NamedReference("f"), NamedReference("ecs")]
+
+    def test_nested_imports_keep_given_paths(self, lib, tmp_path_factory):
+        other = tmp_path_factory.mktemp("other")
+        (other / "outer.hql").write_text("import lib.common")
+
+        parser = Parser("import outer; t", filename="api", paths=[other, lib])
+        parser.assemble()
+        assert len(parser.assembly.statements) == 3
+
+    def test_importing_file_directory_wins_over_paths(self, lib, tmp_path_factory):
+        other = tmp_path_factory.mktemp("other")
+        (other / "lib").mkdir()
+        (other / "lib" / "common.hql").write_text("let g = 1")
+
+        parser = Parser("import lib.common; t", filename=str(lib / "main.hql"), paths=[other])
+        parser.assemble()
+        assert parser.assembly.statements[0].name == NamedReference("f")
+
+    def test_missing_file_raises(self, lib, caplog):
+        from Hql.Exceptions import HqlExceptions as hqle
+
+        with pytest.raises(hqle.CompilerException):
+            self.parse_in(lib, "import missing; t")
+        assert "Could not find missing.hql" in caplog.text
+
+    def test_circular_import_raises(self, tmp_path, caplog):
+        from Hql.Exceptions import HqlExceptions as hqle
+
+        (tmp_path / "a.hql").write_text("import b")
+        (tmp_path / "b.hql").write_text("import a")
+
+        with pytest.raises(hqle.CompilerException):
+            self.parse_in(tmp_path, "import a; t")
+        assert "Circular import" in caplog.text
+
+    def test_query_statement_in_import_raises(self, tmp_path, caplog):
+        from Hql.Exceptions import HqlExceptions as hqle
+
+        (tmp_path / "q.hql").write_text("t | take 1")
+
+        with pytest.raises(hqle.CompilerException):
+            self.parse_in(tmp_path, "import q; t")
+        assert "has a query statement" in caplog.text

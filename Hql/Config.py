@@ -22,10 +22,14 @@ class Config():
             }
         }
 
+        # Directory the config was loaded from, imports are resolved against it
+        self.path:Optional[Path] = None
+
         if path:
             self.load(path)
 
     def load(self, path:Path):
+        self.path = path if path.is_dir() else path.parent
         files = []
 
         # If this triggers, the below loop won't run
@@ -42,6 +46,9 @@ class Config():
             except Exception as e:
                 logging.error(f'{type(e)} {e}')
                 logging.error(f'Failure to load conf in {i}')
+
+    def get_import_paths(self) -> list[Path]:
+        return [self.path] if self.path else []
 
     def load_file(self, path:Path):
         with path.open(mode='r') as f:

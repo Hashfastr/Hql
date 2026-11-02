@@ -1,6 +1,6 @@
 from Hql.Expressions import PipeExpression
 from Hql.Expressions.References import NamedReference, Path
-from Hql.Query import LetStatement, Mapping, Query, QueryStatement, Statement
+from Hql.Query import ImportStatement, LetStatement, Mapping, Query, QueryStatement, Statement
 
 
 class TestStatement:
@@ -110,3 +110,32 @@ class TestMapping:
     def test_query_deparse_includes_mapping(self):
         q = Query([ecs(), QueryStatement(PipeExpression([]))])
         assert q.deparse().startswith("map ecs = {")
+
+
+class TestImportStatement:
+    def test_type_marker(self):
+        assert ImportStatement(NamedReference("common")).type == "ImportStatement"
+
+    def test_parts_simple(self):
+        name = Path([NamedReference("lib"), NamedReference("common")])
+        assert ImportStatement(name).parts == ["lib", "common"]
+
+    def test_parts_from(self):
+        statement = ImportStatement(NamedReference("common"), src=Path([NamedReference("a"), NamedReference("lib")]))
+        assert statement.parts == ["a", "lib", "common"]
+
+    def test_deparse_simple(self):
+        name = Path([NamedReference("lib"), NamedReference("common")])
+        assert ImportStatement(name).deparse() == "import lib.common"
+
+    def test_deparse_from(self):
+        statement = ImportStatement(NamedReference("common"), src=NamedReference("lib"))
+        assert statement.deparse() == "from lib import common"
+
+    def test_to_dict_includes_statements(self):
+        let = LetStatement(NamedReference("x"), PipeExpression([]))
+        d = ImportStatement(NamedReference("common"), statements=[let], path="/lib/common.hql").to_dict()
+        assert d["type"] == "ImportStatement"
+        assert d["path"] == "/lib/common.hql"
+        assert d["src"] is None
+        assert len(d["statements"]) == 1

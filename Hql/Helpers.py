@@ -59,7 +59,7 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
     start = time.perf_counter()
 
     if not parser:
-        parser = Parser(text)
+        parser = Parser(text, filename=name, paths=conf.get_import_paths())
     parser.assemble()
     
     logging.debug('Done.')
