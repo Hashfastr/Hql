@@ -1,9 +1,0 @@
-# Placeholder: fill in your Discord bot token here. Don't commit a real token.
-# The bot needs View Channel and Send Messages in the alert channel.
-function:
-  name: discord
-  conf:
-    token: ''              # empty: discord() skips posting and says so
-    default_server: DEATHCon
-    default_channel: alerts
-    row_limit: 10          # rows shown per alert

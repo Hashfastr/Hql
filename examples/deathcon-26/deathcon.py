@@ -197,7 +197,7 @@ def _(mo):
 def _(CONFIG, code, mo):
     mo.ui.tabs({
         _f: code((CONFIG / _f).read_text(), "yaml" if _f.endswith(".yml") else "sql")
-        for _f in ("sigma.yml", "maps/fields.hql", "maps/live.hql", "elastic.yml", "splunk.yml", "discord.yml")
+        for _f in ("sigma.yml", "maps/fields.hql", "maps/live.hql", "elastic.yml", "splunk.yml")
     })
     return
 
@@ -288,8 +288,6 @@ def _(mo):
     - `kerberoasting.hql`: the straight conversion.
     - `kerberoasting_threshold.hql`: adds the threshold the Sigma rule's own description asks for, using `summarize`.
     - `powershell_then_kerberoast.hql`: joins Elastic process events with Splunk Kerberos events from the same host.
-    - `kerberoasting_discord.hql`: the threshold rule, posting its hits to Discord as a table alert with `discord()`.
-      Until `config/discord.yml` has a bot token it skips posting and says so.
     """)
     return
 
