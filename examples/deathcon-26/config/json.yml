@@ -1,0 +1,10 @@
+database:
+  name: 'json'
+  type: 'JSON'
+  conf:
+    local-base: './local-data'
+    http-base:  'https://hql.dev/datasets/'
+  macro:
+    network:
+      hql: |
+        database('json').http('tf11-so-network.json')

@@ -4,6 +4,7 @@ from . import Database
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Data import Data, Table, Schema
 from Hql.Context import register_database
+from Hql.Cache import Session, Cache
 
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -22,8 +23,8 @@ from io import StringIO
 # Index in a database to grab data from, extremely simple.
 @register_database('CSV')
 class CSV(Database):
-    def __init__(self, config:dict, name:str='csv'):
-        Database.__init__(self, config, name=name)
+    def __init__(self, config:dict, name:str='csv', *, session:Session|None=None, cache:Cache|None=None):
+        Database.__init__(self, config, name=name, cache=cache)
         config = config.get('conf', dict())
         
         self.files = []
@@ -38,6 +39,9 @@ class CSV(Database):
         ]
         
         self.limits:dict[str, int] = dict()
+
+        # http requests go through the query cache
+        self._session = session if session is not None else Session(cache=self.cache, session=requests.Session())
 
     def from_file(self, filename:str, limit:Optional[int]=None) -> Table:
         try:
@@ -56,7 +60,7 @@ class CSV(Database):
         try:
             url = f'{self.http_base}/{url}' if self.http_base else url
             
-            res = requests.get(url)
+            res = self._session.get(url)
             if res.status_code != 200:
                 raise hqle.QueryException(f'Could not query remote url {url}')
             
@@ -113,6 +117,10 @@ class CSV(Database):
         return None, op
                 
     def eval(self, ctx:Context) -> Context:
+        self.cache = ctx.cache
+        if isinstance(self._session, Session):
+            self._session.cache = ctx.cache
+
         # just check file, base_path is check upon instanciation
         if not self.files and not self.urls:
             logging.critical('No file or http provided to CSV database')

@@ -3,6 +3,7 @@ from . import Database
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Data import Data, Table
 from Hql.Context import Context, register_database 
+from Hql.Cache import Session, Cache
 
 import os
 import requests
@@ -18,8 +19,8 @@ if TYPE_CHECKING:
 # Index in a database to grab data from, extremely simple.
 @register_database('JSON')
 class JSON(Database):
-    def __init__(self, config:dict, name:str='unnamed-json'):
-        Database.__init__(self, config, name=name)
+    def __init__(self, config:dict, name:str='unnamed-json', *, session:Session|None=None, cache:Cache|None=None):
+        Database.__init__(self, config, name=name, cache=cache)
         
         self.name = name
         self.files:list[str] = []
@@ -38,6 +39,9 @@ class JSON(Database):
         ]
 
         self.limits:dict[str, int] = dict()
+
+        # http requests go through the query cache
+        self._session = session if session is not None else Session(cache=self.cache, session=requests.Session())
 
     # def to_dict(self):
     #     return {
@@ -79,7 +83,7 @@ class JSON(Database):
             if not url.startswith('http'):
                 raise hqle.ConfigException(f'Url is not a valid HTTP url: {url}')
 
-        res = requests.get(url)
+        res = self._session.get(url)
         if res.status_code != 200:
             raise hqle.QueryException(f'Could not query remote url {url}')
         
@@ -135,6 +139,10 @@ class JSON(Database):
             self.limits[name] = limit if limit < cur else cur
     
     def eval(self, ctx:Context) -> Context:
+        self.cache = ctx.cache
+        if isinstance(self._session, Session):
+            self._session.cache = ctx.cache
+
         # just check file, base_path is check upon instanciation
         if not self.files and not self.urls:
             logging.critical('No file or http provided to JSON database')

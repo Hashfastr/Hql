@@ -132,7 +132,7 @@ def _(mo):
     ## 1. Sigma in, four languages out
 
     A SigmaHQ rule, compiled straight to each backend's language.
-    There's no config and no database here, so field names stay as Sigma wrote them.
+    There's no config and no database here, so field names stay as Nextron wrote them.
 
     Anything a language can't express is *left for Hql*: it runs on the results instead.
     KQL has no regex, for example, so the `|re` part of this rule stays in Hql.
