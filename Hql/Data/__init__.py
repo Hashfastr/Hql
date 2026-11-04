@@ -59,6 +59,12 @@ class Data():
             
         return iter(tables)
 
+    # Shallow copy, tables share frames but get their own schema
+    def copy(self) -> Data:
+        new = Data()
+        new.tables = {name: table.copy() for name, table in self.tables.items()}
+        return new
+
     def __bool__(self):
         for i in self.tables:
             if len(self.tables[i]):

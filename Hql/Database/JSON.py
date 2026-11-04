@@ -3,7 +3,7 @@ from . import Database
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Data import Data, Table
 from Hql.Context import Context, register_database 
-from Hql.Cache import Session, Cache
+from Hql.Cache import Cache
 
 import os
 import requests
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 # Index in a database to grab data from, extremely simple.
 @register_database('JSON')
 class JSON(Database):
-    def __init__(self, config:dict, name:str='unnamed-json', *, session:Session|None=None, cache:Cache|None=None):
+    def __init__(self, config:dict, name:str='unnamed-json', *, session:requests.Session|None=None, cache:Cache|None=None):
         Database.__init__(self, config, name=name, cache=cache)
         
         self.name = name
@@ -40,8 +40,7 @@ class JSON(Database):
 
         self.limits:dict[str, int] = dict()
 
-        # http requests go through the query cache
-        self._session = session if session is not None else Session(cache=self.cache, session=requests.Session())
+        self._session = session if session is not None else requests.Session()
 
     # def to_dict(self):
     #     return {
@@ -139,10 +138,6 @@ class JSON(Database):
             self.limits[name] = limit if limit < cur else cur
     
     def eval(self, ctx:Context) -> Context:
-        self.cache = ctx.cache
-        if isinstance(self._session, Session):
-            self._session.cache = ctx.cache
-
         # just check file, base_path is check upon instanciation
         if not self.files and not self.urls:
             logging.critical('No file or http provided to JSON database')
@@ -154,6 +149,14 @@ class JSON(Database):
             logging.critical('If basepath is not specified it is taken as literal for http, or current dir for file.')
             raise hqle.QueryException('No file provided to JSON database')
 
+        ctx.data = self.cached_data(ctx, self.cache_key(), self.load)
+        return ctx
+
+    # Everything that changes what load() returns
+    def cache_key(self) -> str:
+        return repr((self.type, str(self.local_base.resolve()), self.http_base, self.files, self.urls, sorted(self.limits.items())))
+
+    def load(self) -> Data:
         def file_2_table(path:Path, name:str) -> Table:
             with open(path) as f:
                 data = self.load_data(f, name)
@@ -176,5 +179,4 @@ class JSON(Database):
             table = Table(init_data=data, name=url)
             tables.append(table)
                 
-        ctx.data = Data(tables=tables)
-        return ctx
+        return Data(tables=tables)

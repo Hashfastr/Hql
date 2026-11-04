@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Callable, Optional, Union
 from Hql.Operators.Operator import Operator
 from Hql.Exceptions import HqlExceptions as hqle
 import datetime
@@ -101,6 +101,14 @@ class Database(Operator):
 
     def eval(self, ctx:Context) -> Context:
         return NotImplemented
+
+    # Load data once per context cache, callers get a copy so they can't mutate the cached tables
+    def cached_data(self, ctx:Context, key:str, load:Callable[[], Data]) -> Data:
+        data = ctx.cache.get(key)
+        if data is None:
+            data = load()
+            ctx.cache.set(key, None, data)
+        return data.copy()
     
     def get_variable(self, name:NamedReference) -> object:
         raise hqle.QueryException(f'{self.type} database has no variables')
