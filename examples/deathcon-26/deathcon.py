@@ -99,8 +99,8 @@ def _(CONFIG, Config, DATA, HqlCompiler, RULES, SigmaParser, mo):
         # local-base is relative to the working directory, pin it to this folder
         for _name in ("fake-elastic", "fake-splunk"):
             conf.get_database(_name)["conf"]["local-base"] = str(DATA)
-        if header:
-            conf.conf["sigma"]["header"] = header
+        # config/sigma.yml points raw Sigma at TF11, this notebook stays offline
+        conf.conf["sigma"]["header"] = header or "import maps.sources"
         return conf
 
     # Sigma -> one backend language. No config, no database, no field mapping.

@@ -1,6 +1,8 @@
 database:
   name: 'json'
   type: 'JSON'
+  # Static 2022 datasets, HaC's time window would filter out every row
+  timeseries: false
   conf:
     local-base: './local-data'
     http-base:  'https://hql.dev/datasets/'

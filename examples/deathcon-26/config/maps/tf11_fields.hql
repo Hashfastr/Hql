@@ -1,0 +1,200 @@
+// TF11 Security Onion field maps. Sigma field names on the left, the names in
+// the data on the right. Importable on their own:
+//
+//   import maps.tf11_fields;
+//   database('json').http('tf11-so-beats-large.json')
+//   | map tf11_sysmon
+//   | where SourceImage endswith 'rundll32.exe'
+//
+// Security Onion's pipeline moved some Sysmon fields out of winlog.event_data
+// into ECS paths, so Image is process.executable rather than event_data.Image.
+
+// Sysmon, winlogbeat
+map tf11_sysmon = {
+    EventID: winlog.event_id,
+    Channel: winlog.channel,
+    Computer: winlog.computer_name,
+    Provider_Name: winlog.provider_name,
+
+    // Moved to ECS by the pipeline
+    Image: process.executable,
+    CommandLine: process.command_line,
+    OriginalFileName: process.pe.original_file_name,
+    Company: process.pe.company,
+    Product: process.pe.product,
+    Description: process.pe.description,
+    FileVersion: process.pe.file_version,
+    ProcessId: process.pid,
+    ProcessGuid: process.entity_id,
+    CurrentDirectory: process.working_directory,
+    ParentImage: process.parent.executable,
+    ParentCommandLine: process.parent.command_line,
+    ParentProcessId: process.ppid,
+    ParentProcessGuid: process.parent.entity_id,
+    User: user.name,
+    TargetFilename: file.target,
+    SourceIp: source.ip,
+    SourcePort: source.port,
+    SourceHostname: source.hostname,
+    DestinationIp: destination.ip,
+    DestinationPort: destination.port,
+    DestinationHostname: destination.hostname,
+    Protocol: network.transport,
+
+    // Left in event_data
+    IntegrityLevel: winlog.event_data.IntegrityLevel,
+    Hashes: winlog.event_data.Hashes,
+    LogonId: winlog.event_data.LogonId,
+    LogonGuid: winlog.event_data.LogonGuid,
+    ParentUser: winlog.event_data.ParentUser,
+    TerminalSessionId: winlog.event_data.TerminalSessionId,
+    UtcTime: winlog.event_data.UtcTime,
+    RuleName: winlog.event_data.RuleName,
+    SourceImage: winlog.event_data.SourceImage,
+    TargetImage: winlog.event_data.TargetImage,
+    GrantedAccess: winlog.event_data.GrantedAccess,
+    CallTrace: winlog.event_data.CallTrace,
+    SourceUser: winlog.event_data.SourceUser,
+    TargetUser: winlog.event_data.TargetUser,
+    SourceProcessGUID: winlog.event_data.SourceProcessGUID,
+    TargetProcessGUID: winlog.event_data.TargetProcessGUID,
+    NewName: winlog.event_data.NewName,
+    SourceProcessId: winlog.event_data.SourceProcessId,
+    TargetProcessId: winlog.event_data.TargetProcessId,
+    SourceThreadId: winlog.event_data.SourceThreadId,
+    TargetObject: winlog.event_data.TargetObject,
+    Details: winlog.event_data.Details,
+    EventType: winlog.event_data.EventType,
+    ImageLoaded: winlog.event_data.ImageLoaded,
+    Signed: winlog.event_data.Signed,
+    Signature: winlog.event_data.Signature,
+    SignatureStatus: winlog.event_data.SignatureStatus,
+    Initiated: winlog.event_data.Initiated,
+    SourceIsIpv6: winlog.event_data.SourceIsIpv6,
+    DestinationIsIpv6: winlog.event_data.DestinationIsIpv6,
+    PipeName: winlog.event_data.PipeName,
+    QueryName: winlog.event_data.QueryName,
+    QueryResults: winlog.event_data.QueryResults,
+    QueryStatus: winlog.event_data.QueryStatus,
+    CreationUtcTime: winlog.event_data.CreationUtcTime,
+    PreviousCreationUtcTime: winlog.event_data.PreviousCreationUtcTime,
+    Device: winlog.event_data.Device,
+    IsExecutable: winlog.event_data.IsExecutable,
+    Archived: winlog.event_data.Archived
+};
+
+// Windows Security log, winlogbeat. The pipeline moved SubjectUserName to user.name.
+map tf11_security = {
+    EventID: winlog.event_id,
+    Channel: winlog.channel,
+    Computer: winlog.computer_name,
+    Provider_Name: winlog.provider_name,
+    SubjectUserName: user.name,
+    SubjectDomainName: winlog.event_data.SubjectDomainName,
+    SubjectUserSid: winlog.event_data.SubjectUserSid,
+    SubjectLogonId: winlog.event_data.SubjectLogonId,
+    TargetUserName: winlog.event_data.TargetUserName,
+    TargetDomainName: winlog.event_data.TargetDomainName,
+    TargetUserSid: winlog.event_data.TargetUserSid,
+    TargetLogonId: winlog.event_data.TargetLogonId,
+    TargetServerName: winlog.event_data.TargetServerName,
+    TargetInfo: winlog.event_data.TargetInfo,
+    TargetSid: winlog.event_data.TargetSid,
+    ProcessName: winlog.event_data.ProcessName,
+    ProcessId: winlog.event_data.ProcessId,
+    NewProcessName: winlog.event_data.NewProcessName,
+    NewProcessId: winlog.event_data.NewProcessId,
+    ParentProcessName: winlog.event_data.ParentProcessName,
+    MandatoryLabel: winlog.event_data.MandatoryLabel,
+    TokenElevationType: winlog.event_data.TokenElevationType,
+    ObjectName: winlog.event_data.ObjectName,
+    ObjectType: winlog.event_data.ObjectType,
+    ObjectServer: winlog.event_data.ObjectServer,
+    OperationType: winlog.event_data.OperationType,
+    Properties: winlog.event_data.Properties,
+    AccessList: winlog.event_data.AccessList,
+    AccessMask: winlog.event_data.AccessMask,
+    AccessReason: winlog.event_data.AccessReason,
+    PrivilegeList: winlog.event_data.PrivilegeList,
+    EnabledPrivilegeList: winlog.event_data.EnabledPrivilegeList,
+    DisabledPrivilegeList: winlog.event_data.DisabledPrivilegeList,
+    Service: winlog.event_data.Service,
+    ServiceName: winlog.event_data.ServiceName,
+    ServiceSid: winlog.event_data.ServiceSid,
+    TicketEncryptionType: winlog.event_data.TicketEncryptionType,
+    TicketOptions: winlog.event_data.TicketOptions,
+    PreAuthType: winlog.event_data.PreAuthType,
+    Status: winlog.event_data.Status,
+    IpAddress: winlog.event_data.IpAddress,
+    IpPort: winlog.event_data.IpPort,
+    LogonType: winlog.event_data.LogonType,
+    LogonProcessName: winlog.event_data.LogonProcessName,
+    AuthenticationPackageName: winlog.event_data.AuthenticationPackageName,
+    LmPackageName: winlog.event_data.LmPackageName,
+    KeyLength: winlog.event_data.KeyLength,
+    ElevatedToken: winlog.event_data.ElevatedToken,
+    RestrictedAdminMode: winlog.event_data.RestrictedAdminMode,
+    WorkstationName: winlog.event_data.WorkstationName,
+    Workstation: winlog.event_data.Workstation,
+    PackageName: winlog.event_data.PackageName,
+    ShareName: winlog.event_data.ShareName,
+    ShareLocalPath: winlog.event_data.ShareLocalPath,
+    RelativeTargetName: winlog.event_data.RelativeTargetName,
+    TaskName: winlog.event_data.TaskName,
+    TaskContentNew: winlog.event_data.TaskContentNew,
+    Application: winlog.event_data.Application,
+    Direction: winlog.event_data.Direction,
+    SourceAddress: winlog.event_data.SourceAddress,
+    SourcePort: winlog.event_data.SourcePort,
+    DestAddress: winlog.event_data.DestAddress,
+    DestPort: winlog.event_data.DestPort,
+    Protocol: winlog.event_data.Protocol,
+    LayerName: winlog.event_data.LayerName,
+    OldSd: winlog.event_data.OldSd,
+    NewSd: winlog.event_data.NewSd,
+    ImpersonationLevel: winlog.event_data.ImpersonationLevel,
+    TargetOutboundUserName: winlog.event_data.TargetOutboundUserName,
+    AdditionalInfo: winlog.event_data.AdditionalInfo,
+    AdditionalInfo2: winlog.event_data.AdditionalInfo2,
+    param1: winlog.event_data.param1,
+    param2: winlog.event_data.param2,
+    param3: winlog.event_data.param3,
+    param4: winlog.event_data.param4
+};
+
+// Zeek logs in the network dataset. It's an Elasticsearch dump, so everything
+// sits under _source. Sigma's dotted Zeek names are single fields, so they need
+// the bracket form: id.orig_h on the left would make a nested struct no rule can see.
+map tf11_zeek = {
+    dataset: _source.event.dataset,
+
+    ['id.orig_h']: _source.source.ip,
+    ['id.orig_p']: _source.source.port,
+    ['id.resp_h']: _source.destination.ip,
+    ['id.resp_p']: _source.destination.port,
+
+    // dns
+    query: _source.dns.query.name,
+    qtype_name: _source.dns.query.type_name,
+    rejected: _source.dns.query.rejected,
+    answers: _source.dns.answers.name,
+    rcode_name: _source.dns.response.code_name,
+    Z: _source.dns.reserved,
+    record_type: _source.dns.query.type_name,
+    answer: _source.dns.answers.name,
+
+    // http
+    method: _source.http.method,
+    host: _source.http.virtual_host,
+    uri: _source.http.uri,
+    user_agent: _source.http.useragent,
+    status_code: _source.http.status_code,
+    resp_mime_types: _source.file.resp_mime_types,
+    request_body_len: _source.http.request.body.length,
+
+    ['c-uri']: _source.http.uri,
+    ['c-useragent']: _source.http.useragent,
+
+    // x509
+    ['certificate.serial']: _source.x509.certificate.serial
+};

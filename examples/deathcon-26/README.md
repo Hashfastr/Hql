@@ -26,11 +26,14 @@ deathcon-26/
 │   ├── windows-process.ndjson   # ECS process events (Elastic stand-in)
 │   └── windows-security.ndjson  # 4769 events (Splunk stand-in)
 ├── rules/                   # unmodified SigmaHQ rules
-└── hac/
-    ├── kerberoasting.hql               # straight Sigma conversion
-    ├── kerberoasting_threshold.hql     # adds the threshold the Sigma rule asks for
-    └── powershell_then_kerberoast.hql  # Elastic + Splunk join on client IP
+├── hac/
+│   ├── kerberoasting.hql               # straight Sigma conversion
+│   ├── kerberoasting_threshold.hql     # adds the threshold the Sigma rule asks for
+│   └── powershell_then_kerberoast.hql  # Elastic + Splunk join on client IP
+└── ctf/                     # Sigma hunting CTF on the TF11 datasets, see ctf/README.md
 ```
+
+`config/sigma.yml` points raw Sigma at the TF11 datasets (`maps/tf11.hql`, field maps in `maps/tf11_fields.hql`). The notebook sets its own header, so it stays on the offline fake data.
 
 ## Running
 
@@ -45,8 +48,9 @@ CLI, from the repo root (`local-base` in `config/fake.yml` is relative to the CW
 
 ```bash
 uv run python -m Hql -c examples/deathcon-26/config -f examples/deathcon-26/hac/kerberoasting_threshold.hql
-uv run python -m Hql -c examples/deathcon-26/config -f examples/deathcon-26/rules/win_security_kerberoasting_activity.yml
 ```
+
+A raw Sigma rule on the CLI now runs against TF11, and integer values such as `EventID: 4769` fail against its string fields. To run the workshop's rules against the fake data, use the notebook.
 
 Add `-nx` to compile only, or `-dpar` to print the deparsed Hql.
 

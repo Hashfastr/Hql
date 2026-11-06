@@ -2,3 +2,7 @@ __marimo__
 
 # run logs the HaC engine writes next to its detections
 hac/*.log
+
+# CTF answer key and hunt notes, players must not get these from the repo
+ctf/answers/
+ctf

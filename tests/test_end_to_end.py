@@ -403,6 +403,23 @@ class TestNestedPath:
         assert self.names(conf, pred) == expected
 
     @pytest.mark.parametrize('pred, expected', [
+        ('name == "A"', ['A']),
+        ('name contains "o"', ['Bob']),
+        ('name endswith "ob"', ['Bob']),
+    ])
+    def test_map_name_matches_path_part(self, conf, pred, expected):
+        out = rows(conf, f"map m = {{ name: host.name }}; database('json').file('n.json') | map m | where {pred}", 'n.json')
+        assert [x['name'] for x in out] == expected
+
+    @pytest.mark.parametrize('pred, expected', [
+        ('name == "A"', ['A']),
+        ('name contains "o"', ['Bob']),
+    ])
+    def test_extend_alias_matches_path_part(self, conf, pred, expected):
+        out = rows(conf, f"database('json').file('n.json') | extend name = host.name | where {pred}", 'n.json')
+        assert [x['name'] for x in out] == expected
+
+    @pytest.mark.parametrize('pred, expected', [
         ('b contains_any ("World")', ['A']),
         ('b contains_any ("World", "bye")', ['A', 'Bob']),
         ('b contains_all ("World", "Hello")', ['A']),

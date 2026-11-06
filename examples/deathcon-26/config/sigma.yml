@@ -1,4 +1,5 @@
 # Prepended to every Sigma rule. logsource product/service/category resolve
-# against the classes this brings into scope (see maps/).
+# against the classes this brings into scope (see maps/). Raw Sigma runs against
+# the TF11 datasets; the notebook overrides this to use its offline sources.
 sigma:
-  header: import maps.sources
+  header: import maps.tf11

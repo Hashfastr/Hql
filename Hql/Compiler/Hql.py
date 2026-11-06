@@ -650,7 +650,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(op.field)
         desc.merge(acc)
         field = acc.get_expr()
-        assert isinstance(field, Expression)
+        assert isinstance(field, References.Reference)
 
         tables = []
         for i in op.tables:
@@ -1333,10 +1333,15 @@ class HqlCompiler(Compiler):
         
         desc.set_attr('nested_objects')
         
+        # Parts name fields inside the nested object, they aren't symbols.
+        # Resolving them recurses forever when a map's name is also a part of
+        # its destination, Image: event_data.Image
         path = []
         for i in expr.path:
-            acc, _ = self.compile(i)
-            desc.merge(acc)
+            if isinstance(i, References.Wildcard):
+                desc.set_attr('wildcards')
+            elif isinstance(i, References.EscapedNamedReference):
+                desc.set_attr('complex_names')
             path.append(i)
 
         desc.expr = References.Path(path)
