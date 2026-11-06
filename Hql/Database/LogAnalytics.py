@@ -43,7 +43,7 @@ TIMESPAN = re.compile(r'^(-)?(?:(\d+)\.)?(\d+):(\d{2}):(\d{2})(?:\.(\d+))?$')
 
 @register_database('LogAnalytics')
 class LogAnalytics(Kusto):
-    """Execute native KQL against a Log Analytics workspace, pushing supported where predicates onto it."""
+    """Execute native KQL against a Log Analytics workspace, pushing supported where predicates and takes onto it."""
 
     REQUIRED_CONFIG = ('workspace_id', 'client_id', 'client_secret', 'tenant_id')
 
@@ -61,7 +61,7 @@ class LogAnalytics(Kusto):
         self._timespan:Optional[tuple[datetime.datetime, datetime.datetime]] = None
         self.compiler = KustoCompiler()
 
-        self.methods = ['raw']
+        self.methods = ['raw', 'index']
         # Writing to a workspace goes through data collection rules, not this API
         self.can_push = False
 

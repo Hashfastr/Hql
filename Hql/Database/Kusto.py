@@ -36,7 +36,7 @@ Inject client_secret from a secret manager; never commit a usable secret.
 '''
 @register_database('Kusto')
 class Kusto(Database):
-    """Execute native KQL, pushing supported where predicates onto the end of it."""
+    """Execute native KQL, pushing supported where predicates and takes onto the end of it."""
 
     REQUIRED_CONFIG = ('database', 'cluster', 'client_id', 'client_secret', 'tenant_id')
 
@@ -57,7 +57,7 @@ class Kusto(Database):
         self._raw_query:Optional[str] = None
         self.compiler = KustoCompiler()
 
-        self.methods = ['raw']
+        self.methods = ['raw', 'index']
         self.can_push = True
 
         if query_client is not None:
@@ -107,30 +107,37 @@ class Kusto(Database):
         return copied
 
     def add_op(self, op:Union[Operator, BranchDescriptor]) -> tuple[Optional[Operator], Optional[Operator]]:
-        """Push where predicates onto the native query, everything else executes locally."""
+        """Push where and take onto the native query, everything else executes locally."""
+        from Hql.Operators.Take import Take
         from Hql.Operators.Where import Where
 
         if not isinstance(op, Operator):
             op = op.get_op()
 
-        # Nothing to append a predicate to
-        if self._raw_query is None or not isinstance(op, Where):
+        # Nothing to append to
+        if self._raw_query is None or not isinstance(op, (Where, Take)):
             return None, op
 
         return self.compiler.add_op(op)
 
     def compile(self) -> str:
         if self._raw_query is None:
-            raise hqle.QueryException(f'{self.type} database requires a raw query')
+            raise hqle.QueryException(f'{self.type} database requires a raw query or an index')
 
-        if self.compiler.expr is None:
-            return self._raw_query
-        return f'{self._raw_query}\n| where {self.compiler.simple_compile()}'
+        query, _ = self.compiler.compile(None, prep=False)
+        assert isinstance(query, str)
+        return query
 
     def set_raw_query(self, query:str) -> None:
         if not query.strip():
             raise hqle.QueryException('Kusto raw query cannot be empty')
         self._raw_query = query
+
+    def add_index(self, index:str) -> None:
+        # An index is a table, queried whole as if given as raw KQL
+        if not index.strip():
+            raise hqle.QueryException('Kusto index cannot be empty')
+        self.compiler.index = index
 
     def add_timebound(self, start: datetime.datetime, end: datetime.datetime) -> tuple[Database, Union[None, Operator]]:
         if self._raw_query:

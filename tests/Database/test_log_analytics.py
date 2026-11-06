@@ -10,8 +10,7 @@ from Hql.Context import Context, database_registry, get_database
 from Hql.Data import Data
 from Hql.Database import LogAnalytics
 from Hql.Exceptions import HqlExceptions as hqle
-from Hql.Expressions.Literals import Integer
-from Hql.Operators.Take import Take
+from Hql.Operators.Count import Count
 from Hql.Parser import Parser
 from Hql.Types.Hql import HqlTypes as hqlt
 
@@ -62,10 +61,10 @@ def test_missing_config_is_reported():
         LogAnalytics(config, query_client=FakeClient(None))
 
 
-def test_rejects_non_where_operators():
+def test_rejects_unsupported_operators():
     adapter = LogAnalytics(la_config(), query_client=FakeClient(None))
     adapter.set_raw_query('Events')
-    operator = Take(Integer(5), [])
+    operator = Count()
 
     accepted, rejected = adapter.add_op(operator)
 
@@ -212,3 +211,22 @@ def test_where_is_pushed_onto_the_raw_query(monkeypatch):
 
     assert client.calls == [('workspace-id', 'Events\n| where id == 2', None)]
     assert out['la'].to_dicts() == [{'id': 2, 'd': {'a': {'b': 'y'}}}]
+
+
+def test_index_queries_the_table_and_pushes_take(monkeypatch):
+    client = FakeClient(result([[1]], [('id', 'long')]))
+
+    class TestLogAnalytics(LogAnalytics):
+        def __init__(self, config, name='Log Analytics Database'):
+            super().__init__(config, name=name, query_client=client)
+
+    monkeypatch.setitem(database_registry, 'LogAnalytics', TestLogAnalytics)
+    config = Config()
+    config.set_database('la', la_config())
+    parser = Parser("database('la').index('SigninLogs')\n| take 1")
+    parser.assemble()
+
+    out = HqlCompiler(config, parser.assembly).run().data
+
+    assert client.calls == [('workspace-id', 'SigninLogs\n| take 1', None)]
+    assert out['la'].to_dicts() == [{'id': 1}]

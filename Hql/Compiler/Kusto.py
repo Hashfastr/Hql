@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from Hql.Expressions import Literals
     from Hql.Functions import Function
 
-KUSTO_IDENTIFIER = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
-KUSTO_ESCAPES = {'\\': '\\\\', "'": "\\'", '\n': '\\n', '\r': '\\r', '\t': '\\t'}
+# KUSTO_IDENTIFIER = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
+# KUSTO_ESCAPES = {'\\': '\\\\', "'": "\\'", '\n': '\\n', '\r': '\\r', '\t': '\\t'}
 
 class KustoCompiler(Compiler):
     """Compile supported HQL predicates into a Kusto where predicate."""
@@ -36,44 +36,31 @@ class KustoCompiler(Compiler):
             'regex_dotall': True,
             'regex_global': False
         }
-        self.expr:Union[Logic.Logic, None] = None
 
-    @staticmethod
-    def quote(value:str) -> str:
-        return "'" + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + "'"
+        self.index:str = ''
+        self.ops:list[Operators.Operator] = []
 
-    @staticmethod
-    def name(value:str, escape:bool=False) -> str:
-        if not escape and KUSTO_IDENTIFIER.match(value):
-            return value
-        return f'[{KustoCompiler.quote(value)}]'
+    # @staticmethod
+    # def quote(value:str) -> str:
+    #     return "'" + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + "'"
+
+    # @staticmethod
+    # def name(value:str, escape:bool=False) -> str:
+    #     if not escape and KUSTO_IDENTIFIER.match(value):
+    #         return value
+    #     return f'[{KustoCompiler.quote(value)}]'
 
     def compile(self, src: Union[Expression, Operators.Operator, Statement, Function, None], prep: bool = True) -> tuple[Optional[object], Optional[object]]:
-        from Hql.Functions import Function
-        from Hql.Expressions.Literals import Bool
+        # root compile case
+        if not prep and src is None:
+            assert self.index != ''
 
-        if src is None:
-            src = self.expr
+            ops = []
+            for i in self.ops:
+                ops.append(self.compile(i, prep=prep))
+            return self.index + '\n' + '|\n'.join(ops), None
 
-        # still missing a root
-        if src is None:
-            return self.compile(Bool(True), prep=prep)
-
-        if isinstance(src, Function):
-            return self.Function(src, prep=prep)
-
-        return super().compile(src, prep=prep)
-
-    def add_op(self, op:Union[Operators.Operator, BranchDescriptor]) -> tuple[Optional[Operators.Operator], Optional[Operators.Operator]]:
-        from Hql.Compiler import BranchDescriptor
-        from Hql.Operators.Operator import Operator
-
-        if isinstance(op, BranchDescriptor):
-            op = op.get_op()
-        acc, rej = super().compile_op(op)
-
-        assert isinstance(acc, (type(None), Operator))
-        return acc, rej
+        return self.compile(src, prep=prep)
 
     def simple_compile(self) -> str:
         acc, _ = self.compile(None, prep=False)
@@ -86,20 +73,35 @@ class KustoCompiler(Compiler):
 
     def Where(self, op:Operators.Where, prep:bool=True) -> tuple[Optional[Operators.Where], Optional[Operators.Where]]:
         from Hql.Operators.Where import Where
-        from Hql.Expressions.Logic import BinaryLogic, Logic
+        from Hql.Expressions.Logic import Logic
 
-        acc, rej = self.compile(op.expr)
+        acc, rej = self.compile(op.expr, prep=prep)
+
+        if not prep:
+            assert isinstance(acc, str)
+            acc = 'where ' + acc
 
         if acc is not None:
             assert isinstance(acc, Logic)
-            self.expr = acc if self.expr is None else BinaryLogic([self.expr, acc])
-            acc = None
+            acc = Where(acc)
+            self.ops.append(acc)
 
         if rej is not None:
             assert isinstance(rej, Logic)
             rej = Where(rej, op.parameters)
 
         return acc, rej
+
+    def Take(self, op:Operators.Take, prep:bool=True) -> tuple[object, object]:
+        if not prep:
+            limit = self.compile(op.expr, prep=prep)
+            return f'take {limit}', None
+
+        if op.tables:
+            return None, op
+
+        self.ops.append(op)
+        return op, None
 
     '''
     Logic

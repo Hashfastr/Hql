@@ -11,7 +11,9 @@ from Hql.Data import Data, Schema
 from Hql.Database import Kusto
 from Hql.Exceptions import HqlExceptions as hqle
 from Hql.Expressions.Literals import Integer, StringLiteral
+from Hql.Expressions.References import NamedReference
 from Hql.Functions.raw import raw
+from Hql.Operators.Count import Count
 from Hql.Operators.Take import Take
 from Hql.Parser import Parser
 from Hql.Types.Hql import HqlTypes as hqlt
@@ -52,10 +54,10 @@ def test_kusto_is_registered_for_database_resolution():
     assert get_database('Kusto') is Kusto
 
 
-def test_kusto_rejects_non_where_operators():
+def test_kusto_rejects_unsupported_operators():
     adapter = Kusto(kusto_config(), query_client=FakeClient(None))
     adapter.set_raw_query('Events')
-    operator = Take(Integer(5), [])
+    operator = Count()
 
     accepted, rejected = adapter.add_op(operator)
 
@@ -97,17 +99,48 @@ def run_kusto(monkeypatch, query, rows):
     return client.calls, result['kusto'].to_dicts()
 
 
-def test_where_is_pushed_and_later_operators_run_locally(monkeypatch):
+def test_where_and_take_are_pushed(monkeypatch):
     calls, rows = run_kusto(
         monkeypatch,
         "database('kusto').raw('Events')\n| where id == 2 and name contains 'a'\n| take 1",
-        [[2, 'ab'], [2, 'ac']],
+        [[2, 'ab']],
     )
 
-    query = calls[0][1]
+    query, take = calls[0][1].rsplit('\n', 1)
     assert query.startswith('Events\n| where ')
     assert sorted(query.split('| where ')[1].split(' and ')) == ["id == 2", "name contains 'a'"]
+    assert take == '| take 1'
     assert rows == [{'id': 2, 'name': 'ab'}]
+
+
+def test_where_after_a_take_is_not_pushed(monkeypatch):
+    calls, rows = run_kusto(
+        monkeypatch,
+        "database('kusto').raw('Events')\n| take 2\n| where id == 2",
+        [[1, 'a'], [2, 'b']],
+    )
+
+    assert calls == [('test-database', 'Events\n| take 2')]
+    assert rows == [{'id': 2, 'name': 'b'}]
+
+
+def test_consecutive_takes_push_the_smallest(monkeypatch):
+    calls, _ = run_kusto(
+        monkeypatch,
+        "database('kusto').raw('Events')\n| take 5\n| take 3\n| take 4",
+        [],
+    )
+
+    assert calls == [('test-database', 'Events\n| take 3')]
+
+
+def test_take_from_tables_is_not_pushed():
+    adapter = Kusto(kusto_config(), query_client=FakeClient(None))
+    adapter.set_raw_query('Events')
+    operator = Take(Integer(5), [NamedReference('other')])
+
+    assert adapter.add_op(operator) == (None, operator)
+    assert adapter.compile() == 'Events'
 
 
 def test_unsupported_predicates_stay_local(monkeypatch):
@@ -125,12 +158,12 @@ def test_unsupported_predicates_stay_local(monkeypatch):
 def test_where_after_a_local_operator_is_not_pushed(monkeypatch):
     calls, rows = run_kusto(
         monkeypatch,
-        "database('kusto').raw('Events')\n| take 1\n| where id == 2",
+        "database('kusto').raw('Events')\n| count\n| where Count == 2",
         [[1, 'a'], [2, 'b']],
     )
 
     assert calls == [('test-database', 'Events')]
-    assert rows == []
+    assert rows == [{'Count': 2}]
 
 
 def test_table_creation_uses_kusto_type_system():
@@ -181,9 +214,9 @@ def test_raw_query_executes_and_converts_kusto_rows():
     ]
 
 
-def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch):
+def test_take_is_pushed_onto_a_raw_query_ending_in_take(monkeypatch):
     response = SimpleNamespace(
-        primary_results=[FakeResult([[1], [2]], [('id', 'long')])]
+        primary_results=[FakeResult([[1]], [('id', 'long')])]
     )
     client = FakeClient(response)
 
@@ -199,7 +232,7 @@ def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch)
 
     result = HqlCompiler(config, parser.assembly).run().data
 
-    assert client.calls == [('test-database', 'Events | take 2')]
+    assert client.calls == [('test-database', 'Events | take 2\n| take 1')]
     assert result['kusto'].to_dicts() == [{'id': 1}]
 
 
@@ -299,3 +332,28 @@ def test_raw_is_rejected_by_unsupported_databases():
 def test_raw_requires_a_string_expression():
     with pytest.raises(hqle.ArgumentException, match='Bad raw query argument'):
         raw([Integer(1)])
+
+
+def test_index_queries_the_table_and_pushes_where(monkeypatch):
+    calls, rows = run_kusto(
+        monkeypatch,
+        "database('kusto').index('Events')\n| where id == 2",
+        [[2, 'b']],
+    )
+
+    assert calls == [('test-database', 'Events\n| where id == 2')]
+    assert rows == [{'id': 2, 'name': 'b'}]
+
+
+def test_index_quotes_table_names_that_are_not_identifiers():
+    adapter = Kusto(kusto_config(), query_client=FakeClient(None))
+    adapter.add_index("My Table's")
+
+    assert adapter.compile() == "['My Table\\'s']"
+
+
+def test_empty_index_is_rejected():
+    adapter = Kusto(kusto_config(), query_client=FakeClient(None))
+
+    with pytest.raises(hqle.QueryException, match='index cannot be empty'):
+        adapter.add_index('  ')
