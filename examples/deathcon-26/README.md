@@ -17,6 +17,7 @@ deathcon-26/
 │   ├── fake.yml             # fake-elastic, fake-splunk (JSON databases over data/)
 │   ├── elastic.yml          # live Elasticsearch placeholder
 │   ├── splunk.yml           # live Splunk placeholder
+│   ├── kusto.yml            # live Azure Monitor / Sentinel placeholder
 │   └── maps/
 │       ├── fields.hql       # Sigma field names -> ECS / Splunk TA fields
 │       ├── fake.hql         # class windows -> fake databases
@@ -34,6 +35,8 @@ deathcon-26/
 ```
 
 `config/sigma.yml` points raw Sigma at the TF11 datasets (`maps/tf11.hql`, field maps in `maps/tf11_fields.hql`). The notebook sets its own header, so it stays on the offline fake data.
+
+`maps/azure.hql` does the same for Azure Monitor and Sentinel tables, field maps in `maps/azure_fields.hql`. To use it, fill in `config/kusto.yml` and set the header in `config/sigma.yml` to `import maps.azure`.
 
 ## Running
 

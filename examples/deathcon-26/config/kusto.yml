@@ -1,0 +1,11 @@
+# Placeholder: fill in your Azure Monitor / Sentinel cluster here. Don't commit a
+# real secret. Used by maps/azure.hql.
+database:
+  name: kusto
+  type: Kusto
+  conf:
+    database: '<DATABASE_NAME>'
+    cluster: 'https://<CLUSTER>.<REGION>.kusto.windows.net'
+    client_id: '<APPLICATION_CLIENT_ID>'
+    client_secret: '<INJECT_CLIENT_SECRET>'
+    tenant_id: '<AZURE_TENANT_ID>'
