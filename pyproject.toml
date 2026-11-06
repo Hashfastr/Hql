@@ -39,12 +39,13 @@ dependencies = [
     "uvicorn",
     # "dfir_iris_client",
     "azure-kusto-data",
+    "azure-monitor-query",
     "sqlalchemy"
 ]
 
 [project.urls]
-Homepage = "https://github.com/Hashfastr/Hql"
-Issues = "https://github.com/Hashfastr/Hql/issues"
+Homepage = "https://github.com/sandialabs/Hql"
+Issues = "https://github.com/sandialabs/Hql/issues"
 
 [dependency-groups]
 notebooks = ["marimo"]

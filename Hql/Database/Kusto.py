@@ -47,20 +47,7 @@ class Kusto(Database):
     ):
         Database.__init__(self, config, name=name)
 
-        conf = self.config.get('conf', {})
-        if not conf:
-            raise hqle.ConfigException('Kusto database given no config')
-
-        missing = [
-            key
-            for key in self.REQUIRED_CONFIG
-            if not isinstance(conf.get(key), str) or not conf[key].strip()
-        ]
-        if missing:
-            raise hqle.ConfigException(
-                f"Kusto database missing required config: {', '.join(missing)}"
-            )
-
+        conf = self._require_conf(self.config, self.REQUIRED_CONFIG, 'Kusto')
         self.database = conf['database']
         self.cluster = conf['cluster']
         self.client_id = conf['client_id']
@@ -85,6 +72,23 @@ class Kusto(Database):
                 self.cluster, self.client_id, self.client_secret, self.tenant_id
             )
             self.query_client = KustoClient(kcsb_data)
+
+    @staticmethod
+    def _require_conf(config:dict, required:tuple[str, ...], label:str) -> dict:
+        conf = config.get('conf', {})
+        if not conf:
+            raise hqle.ConfigException(f'{label} database given no config')
+
+        missing = [
+            key
+            for key in required
+            if not isinstance(conf.get(key), str) or not conf[key].strip()
+        ]
+        if missing:
+            raise hqle.ConfigException(
+                f"{label} database missing required config: {', '.join(missing)}"
+            )
+        return conf
 
     def __deepcopy__(self, memo:dict[int, Any]) -> Kusto:
         """Copy query state while sharing the SDK client and its internal locks."""
@@ -168,17 +172,20 @@ class Kusto(Database):
             kusto_name = getattr(column, 'column_type', None)
             if not isinstance(name, str) or not isinstance(kusto_name, str):
                 raise hqle.QueryException('Kusto returned invalid column metadata')
-
-            try:
-                kusto_type = KustoTypes.from_name(kusto_name.lower())()
-            except hqle.CompilerException:
-                logging.warning(
-                    f'Unknown Kusto result type {kusto_name}; treating {name} as string'
-                )
-                kusto_type = KustoTypes.string()
-            fields[name] = kusto_type.hql_schema()
+            fields[name] = cls._column_schema(name, kusto_name)
 
         return Schema(schema=fields)
+
+    @staticmethod
+    def _column_schema(name:str, kusto_name:str) -> Any:
+        try:
+            kusto_type = KustoTypes.from_name(kusto_name.lower())()
+        except hqle.CompilerException:
+            logging.warning(
+                f'Unknown Kusto result type {kusto_name}; treating {name} as string'
+            )
+            kusto_type = KustoTypes.string()
+        return kusto_type.hql_schema()
 
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Table

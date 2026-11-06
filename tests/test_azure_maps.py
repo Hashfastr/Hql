@@ -1,5 +1,6 @@
 import json
 import logging
+import shutil
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -8,7 +9,7 @@ import pytest
 from Hql.Compiler import HqlCompiler
 from Hql.Config import Config
 from Hql.Context import database_registry
-from Hql.Database import Kusto
+from Hql.Database import Kusto, LogAnalytics
 from Hql.Helpers import run_query
 from Hql.Parser.Sigma import SigmaParser
 
@@ -281,3 +282,64 @@ class TestSigmaOverKusto:
         out, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
         assert [x['CommandLine'] for x in out] == ['rundll32 a']
         assert "ActionType == 'ProcessCreated'" in calls[0]
+
+
+class FakeLogsTable:
+    def __init__(self, rows, columns):
+        self.columns = [name for name, _ in columns]
+        self.columns_types = [kind for _, kind in columns]
+        self.rows = rows
+
+
+class TestSigmaOverLogAnalytics:
+    '''The same rules with azure_db switched to the loganalytics workspace config.'''
+
+    @pytest.fixture
+    def run(self, monkeypatch, tmp_path):
+        calls = []
+        tables = TestSigmaOverKusto.TABLES
+
+        class Client:
+            def query_workspace(self, workspace_id, query, *, timespan):
+                calls.append((workspace_id, query))
+                columns, rows = tables[query.split()[0]]
+                return SimpleNamespace(tables=[FakeLogsTable(rows, columns)])
+
+        class TestLogAnalytics(LogAnalytics):
+            def __init__(self, config, name='Log Analytics Database'):
+                super().__init__(config, name=name, query_client=Client())
+
+        monkeypatch.setitem(database_registry, 'LogAnalytics', TestLogAnalytics)
+
+        config_dir = tmp_path / 'config'
+        shutil.copytree(CONFIG, config_dir)
+        azure = config_dir / 'maps' / 'azure.hql'
+        text = azure.read_text()
+        assert "let azure_db = 'kusto';" in text
+        azure.write_text(text.replace("let azure_db = 'kusto';", "let azure_db = 'loganalytics';"))
+
+        def inner(text):
+            # The placeholder loganalytics.yml from the workshop config, as is
+            config = Config(config_dir)
+            config.conf['sigma']['header'] = 'import maps.azure'
+            parser = SigmaParser(text, config)
+            parser.assemble()
+            return HqlCompiler(config, parser.assembly).run().data['loganalytics'].to_dicts(), calls
+
+        return inner
+
+    def test_signin_user_agent(self, run):
+        out, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
+        assert [x['Username'] for x in out] == ['a@x']
+        assert calls[0][0] == '<WORKSPACE_ID>'
+        assert calls[0][1].startswith('SigninLogs | where TimeGenerated > ago(1d)')
+
+    def test_audit_contains_on_dynamic_column(self, run):
+        out, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))
+        assert [x['properties.message'] for x in out] == ['Add member to role']
+        assert 'tostring(TargetResources)' in calls[0][1]
+
+    def test_process_creation(self, run):
+        out, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
+        assert [x['CommandLine'] for x in out] == ['rundll32 a']
+        assert "ActionType == 'ProcessCreated'" in calls[0][1]
