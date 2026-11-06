@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 import logging
 import json
 
+from Hql.Compiler import KustoCompiler
 from Hql.Context import register_database
 from Hql.Database.Database import Database
 from Hql.Exceptions import HqlExceptions as hqle
@@ -35,7 +36,7 @@ Inject client_secret from a secret manager; never commit a usable secret.
 '''
 @register_database('Kusto')
 class Kusto(Database):
-    """Execute native KQL while leaving every HQL operator for local evaluation."""
+    """Execute native KQL, pushing supported where predicates onto the end of it."""
 
     REQUIRED_CONFIG = ('database', 'cluster', 'client_id', 'client_secret', 'tenant_id')
 
@@ -54,6 +55,7 @@ class Kusto(Database):
         self.client_secret = conf['client_secret']
         self.tenant_id = conf['tenant_id']
         self._raw_query:Optional[str] = None
+        self.compiler = KustoCompiler()
 
         self.methods = ['raw']
         self.can_push = True
@@ -104,11 +106,26 @@ class Kusto(Database):
             )
         return copied
 
-    def add_op(self, op:Union[Operator, BranchDescriptor]) -> tuple[None, Operator]:
-        """Reject every HQL operator so it executes after the native query."""
+    def add_op(self, op:Union[Operator, BranchDescriptor]) -> tuple[Optional[Operator], Optional[Operator]]:
+        """Push where predicates onto the native query, everything else executes locally."""
+        from Hql.Operators.Where import Where
+
         if not isinstance(op, Operator):
             op = op.get_op()
-        return None, op
+
+        # Nothing to append a predicate to
+        if self._raw_query is None or not isinstance(op, Where):
+            return None, op
+
+        return self.compiler.add_op(op)
+
+    def compile(self) -> str:
+        if self._raw_query is None:
+            raise hqle.QueryException(f'{self.type} database requires a raw query')
+
+        if self.compiler.expr is None:
+            return self._raw_query
+        return f'{self._raw_query}\n| where {self.compiler.simple_compile()}'
 
     def set_raw_query(self, query:str) -> None:
         if not query.strip():
@@ -190,10 +207,7 @@ class Kusto(Database):
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Table
 
-        if self._raw_query is None:
-            raise hqle.QueryException('Kusto database requires a raw query')
-
-        response = self.query_client.execute(self.database, self._raw_query)
+        response = self.query_client.execute(self.database, self.compile())
         rows = self._response_rows(response)
         schema = self._response_schema(response)
         ctx.data = Data([Table(init_data=rows, schema=schema, name=self.name)])
@@ -204,7 +218,7 @@ class Kusto(Database):
             **super().to_dict(),
             'name': self.name,
             'database': self.database,
-            'query': self._raw_query,
+            'query': self.compile() if self._raw_query is not None else None,
         }
 
     def _table_exists(self, table: str) -> bool:

@@ -6,6 +6,7 @@ import json
 import logging
 import re
 
+from Hql.Compiler import KustoCompiler
 from Hql.Context import register_database
 from Hql.Database.Database import Database
 from Hql.Database.Kusto import Kusto
@@ -42,7 +43,7 @@ TIMESPAN = re.compile(r'^(-)?(?:(\d+)\.)?(\d+):(\d{2}):(\d{2})(?:\.(\d+))?$')
 
 @register_database('LogAnalytics')
 class LogAnalytics(Kusto):
-    """Execute native KQL against a Log Analytics workspace, every HQL operator runs locally."""
+    """Execute native KQL against a Log Analytics workspace, pushing supported where predicates onto it."""
 
     REQUIRED_CONFIG = ('workspace_id', 'client_id', 'client_secret', 'tenant_id')
 
@@ -58,6 +59,7 @@ class LogAnalytics(Kusto):
         self.workspace_id = conf['workspace_id']
         self._raw_query:Optional[str] = None
         self._timespan:Optional[tuple[datetime.datetime, datetime.datetime]] = None
+        self.compiler = KustoCompiler()
 
         self.methods = ['raw']
         # Writing to a workspace goes through data collection rules, not this API
@@ -159,11 +161,8 @@ class LogAnalytics(Kusto):
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Schema, Table
 
-        if self._raw_query is None:
-            raise hqle.QueryException('Log Analytics database requires a raw query')
-
         response = self.query_client.query_workspace(
-            self.workspace_id, self._raw_query, timespan=self._timespan
+            self.workspace_id, self.compile(), timespan=self._timespan
         )
 
         # Partial results come back when the query hits a limit, keep what was returned
@@ -190,5 +189,5 @@ class LogAnalytics(Kusto):
             **Database.to_dict(self),
             'name': self.name,
             'workspace_id': self.workspace_id,
-            'query': self._raw_query,
+            'query': self.compile() if self._raw_query is not None else None,
         }

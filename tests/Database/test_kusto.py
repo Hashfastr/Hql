@@ -52,14 +52,85 @@ def test_kusto_is_registered_for_database_resolution():
     assert get_database('Kusto') is Kusto
 
 
-def test_kusto_rejects_every_hql_operator():
+def test_kusto_rejects_non_where_operators():
     adapter = Kusto(kusto_config(), query_client=FakeClient(None))
+    adapter.set_raw_query('Events')
     operator = Take(Integer(5), [])
 
     accepted, rejected = adapter.add_op(operator)
 
     assert accepted is None
     assert rejected is operator
+
+
+def test_kusto_rejects_where_without_a_raw_query():
+    from Hql.Expressions.Logic import Equality
+    from Hql.Expressions.References import NamedReference
+    from Hql.Operators.Where import Where
+
+    adapter = Kusto(kusto_config(), query_client=FakeClient(None))
+    operator = Where(Equality(NamedReference('id'), [Integer(2)]))
+
+    accepted, rejected = adapter.add_op(operator)
+
+    assert accepted is None
+    assert rejected is operator
+
+
+def run_kusto(monkeypatch, query, rows):
+    response = SimpleNamespace(
+        primary_results=[FakeResult(rows, [('id', 'long'), ('name', 'string')])]
+    )
+    client = FakeClient(response)
+
+    class TestKusto(Kusto):
+        def __init__(self, config, name='Kusto Database'):
+            super().__init__(config, name=name, query_client=client)
+
+    monkeypatch.setitem(database_registry, 'Kusto', TestKusto)
+    config = Config()
+    config.set_database('kusto', kusto_config())
+    parser = Parser(query)
+    parser.assemble()
+
+    result = HqlCompiler(config, parser.assembly).run().data
+    return client.calls, result['kusto'].to_dicts()
+
+
+def test_where_is_pushed_and_later_operators_run_locally(monkeypatch):
+    calls, rows = run_kusto(
+        monkeypatch,
+        "database('kusto').raw('Events')\n| where id == 2 and name contains 'a'\n| take 1",
+        [[2, 'ab'], [2, 'ac']],
+    )
+
+    query = calls[0][1]
+    assert query.startswith('Events\n| where ')
+    assert sorted(query.split('| where ')[1].split(' and ')) == ["id == 2", "name contains 'a'"]
+    assert rows == [{'id': 2, 'name': 'ab'}]
+
+
+def test_unsupported_predicates_stay_local(monkeypatch):
+    # Only isnull is compiled, other functions are filtered locally
+    calls, rows = run_kusto(
+        monkeypatch,
+        "database('kusto').raw('Events')\n| where id == 2 and isnotempty(name)",
+        [[2, 'ab'], [2, '']],
+    )
+
+    assert calls == [('test-database', 'Events\n| where id == 2')]
+    assert rows == [{'id': 2, 'name': 'ab'}]
+
+
+def test_where_after_a_local_operator_is_not_pushed(monkeypatch):
+    calls, rows = run_kusto(
+        monkeypatch,
+        "database('kusto').raw('Events')\n| take 1\n| where id == 2",
+        [[1, 'a'], [2, 'b']],
+    )
+
+    assert calls == [('test-database', 'Events')]
+    assert rows == []
 
 
 def test_table_creation_uses_kusto_type_system():

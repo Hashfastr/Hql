@@ -62,8 +62,9 @@ def test_missing_config_is_reported():
         LogAnalytics(config, query_client=FakeClient(None))
 
 
-def test_rejects_every_hql_operator():
+def test_rejects_non_where_operators():
     adapter = LogAnalytics(la_config(), query_client=FakeClient(None))
+    adapter.set_raw_query('Events')
     operator = Take(Integer(5), [])
 
     accepted, rejected = adapter.add_op(operator)
@@ -194,8 +195,8 @@ def test_copy_preserves_query_and_shares_sdk_client():
     assert copied.to_dict()['workspace_id'] == 'workspace-id'
 
 
-def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch):
-    client = FakeClient(result([[1, '{"a":{"b":"x"}}'], [2, '{"a":{"b":"y"}}']], [('id', 'long'), ('d', 'dynamic')]))
+def test_where_is_pushed_onto_the_raw_query(monkeypatch):
+    client = FakeClient(result([[2, '{"a":{"b":"y"}}']], [('id', 'long'), ('d', 'dynamic')]))
 
     class TestLogAnalytics(LogAnalytics):
         def __init__(self, config, name='Log Analytics Database'):
@@ -209,5 +210,5 @@ def test_raw_query_compiles_and_following_hql_operators_run_locally(monkeypatch)
 
     out = HqlCompiler(config, parser.assembly).run().data
 
-    assert client.calls == [('workspace-id', 'Events', None)]
+    assert client.calls == [('workspace-id', 'Events\n| where id == 2', None)]
     assert out['la'].to_dicts() == [{'id': 2, 'd': {'a': {'b': 'y'}}}]

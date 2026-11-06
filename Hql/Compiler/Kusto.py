@@ -1,359 +1,388 @@
 from __future__ import annotations
 
-from typing import Optional, Union, TYPE_CHECKING
-
 from Hql.Exceptions import HqlExceptions as hqle
-import logging
+from typing import Union, Optional, TYPE_CHECKING
+import re
 
-from . import Compiler, register_target
+from . import Compiler
 
 if TYPE_CHECKING:
-    from Hql.Compiler import BranchDescriptor, InstructionSet
+    import Hql.Operators as Operators
     from Hql.Expressions import Expression
-    from Hql.Expressions.Logic import Logic
     from Hql.Query import Statement
-    import Hql.Operators as Ops
+    from Hql.Compiler import BranchDescriptor
+    import Hql.Expressions.Logic as Logic
+    import Hql.Expressions.References as References
+    from Hql.Expressions import Literals
+    from Hql.Functions import Function
 
-@register_target('kusto')
+KUSTO_IDENTIFIER = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
+KUSTO_ESCAPES = {'\\': '\\\\', "'": "\\'", '\n': '\\n', '\r': '\\r', '\t': '\\t'}
+
 class KustoCompiler(Compiler):
-    """Compile supported HQL nodes into Kusto Query Language."""
+    """Compile supported HQL predicates into a Kusto where predicate."""
 
-    def __init__(self):
-        from Hql.Context import Context
-        from Hql.Data import Data
-        self.type = self.__class__.__name__
-        self.ctx = Context(Data())
+    def __init__(self) -> None:
+        Compiler.__init__(self)
+        self.attrs = {
+            'nested_objects': True,
+            'wildcards': False,
+            'wildcard_names': False,
+            'complex_names': True,
+            'row_reducing': True,
+            'regex_matching': True,
+            'regex_insensitive': True,
+            'regex_multiline': True,
+            'regex_dotall': True,
+            'regex_global': False
+        }
+        self.expr:Union[Logic.Logic, None] = None
 
-        self.stmts:list['Statement'] = []
+    @staticmethod
+    def quote(value:str) -> str:
+        return "'" + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + "'"
 
-    def optimize(self, ops: list['BranchDescriptor']) -> list['BranchDescriptor']:
-        return ops
+    @staticmethod
+    def name(value:str, escape:bool=False) -> str:
+        if not escape and KUSTO_IDENTIFIER.match(value):
+            return value
+        return f'[{KustoCompiler.quote(value)}]'
 
-    def compile(self, prep:bool=True) -> tuple[Union[str, list['Statement']], None]:
-        stmts = []
-        for i in self.stmts:
-            acc, _ = self.compile_stmt(i, prep=prep)
-            stmts.append(acc)
+    def compile(self, src: Union[Expression, Operators.Operator, Statement, Function, None], prep: bool = True) -> tuple[Optional[object], Optional[object]]:
+        from Hql.Functions import Function
+        from Hql.Expressions.Literals import Bool
 
-        if prep:
-            return stmts, None
-        return '\n;\n'.join(stmts), None
+        if src is None:
+            src = self.expr
 
-    def compile_op(self, src:'Ops.Operator', prep:bool=True) -> tuple[Union['Ops.Operator', str, None], Optional['Ops.Operator']]:
-        return self.from_name(src.type)(src, prep=prep)
+        # still missing a root
+        if src is None:
+            return self.compile(Bool(True), prep=prep)
 
-    def compile_expr(self, src:'Expression', prep:bool=True) -> tuple[Union['Expression', str, None], Optional['Expression']]:
-        return self.from_name(src.type)(src, prep=prep)
+        if isinstance(src, Function):
+            return self.Function(src, prep=prep)
 
-    def compile_logic(self, src:'Logic', prep:bool=True) -> tuple[Union['Logic', str, None], Optional['Logic']]:
-        return self.from_name(src.type)(src, prep=prep)
+        return super().compile(src, prep=prep)
 
-    def compile_stmt(self, src:'Statement', prep:bool=True) -> tuple[Union['Statement', str, None], Optional['Statement']]:
-        from Hql.Query import QueryStatement
-        from Hql.Expressions import Expression, PipeExpression
+    def add_op(self, op:Union[Operators.Operator, BranchDescriptor]) -> tuple[Optional[Operators.Operator], Optional[Operators.Operator]]:
+        from Hql.Compiler import BranchDescriptor
+        from Hql.Operators.Operator import Operator
 
-        if isinstance(src, QueryStatement):
-            acc, rej = self.compile_expr(src.root, prep=prep)
-        else:
-            return None, src
+        if isinstance(op, BranchDescriptor):
+            op = op.get_op()
+        acc, rej = super().compile_op(op)
 
-        if rej:
-            return None, src
+        assert isinstance(acc, (type(None), Operator))
+        return acc, rej
 
-        if isinstance(acc, Expression):
-            assert isinstance(acc, PipeExpression)
-            return QueryStatement(acc), None
-        
-        return acc, None
-
-    '''
-    By default, all of these return themselves as they are being
-    'rejected' back to the compiler
-    '''
-
-    def Tabular(self, expr:'Hql.Expressions.Expression') -> tuple[Optional['InstructionSet'], Optional['Hql.Expressions.Expression']]:
-        return None, expr
-
-    def PipeExpression(self, expr:'Hql.Expressions.PipeExpression', prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions import Expression, PipeExpression
-
-        def preprocess(prepipe:Optional[Expression], pipes:list[Ops.Operator]) -> tuple[object, object]:
-            processed = []
-            for j, i in enumerate(pipes):
-                acc, rej = self.compile_op(i)
-
-                if acc:
-                    assert not isinstance(acc, str)
-                    pipes.append(acc)
-
-                if rej:
-                    return PipeExpression(processed, prepipe=prepipe), PipeExpression([rej] + expr.pipes[j+1:])
-
-            return PipeExpression(processed, prepipe=prepipe), None
-
-        def compile(prepipe:Optional[str], pipes:list[Ops.Operator]) -> tuple[object, object]:
-            cpipes:list[str] = []
-            for i in pipes:
-                acc, rej = self.compile_op(i, prep=False)
-                if rej or not isinstance(acc, str):
-                    logging.error(acc)
-                    logging.error(rej)
-                    raise hqle.CompilerException('Attempt to compile without proper preprocess!')
-                cpipes.append(acc)
-
-            out = prepipe if prepipe else ''
-            out += '\n' + '\n| '.join(cpipes)
-
-            return out, None
-
-        if isinstance(expr.prepipe, Expression):
-            acc, rej = self.compile_expr(expr.prepipe, prep=prep)
-            if rej:
-                return None, expr
-            prepipe = acc
-        else:
-            prepipe = None
-
-        if prep:
-            assert not isinstance(prepipe, str)
-            return preprocess(prepipe, expr.pipes)
-        else:
-            assert not isinstance(prepipe, Expression)
-            return compile(prepipe, expr.pipes)
+    def simple_compile(self) -> str:
+        acc, _ = self.compile(None, prep=False)
+        assert isinstance(acc, str)
+        return acc
 
     '''
     Operators
     '''
 
-    def Where(self, op:'Ops.Where', prep:bool=True) -> tuple[object, object]:
-        from Hql.Operators import Where
-        from Hql.Expressions.Logic import Logic
+    def Where(self, op:Operators.Where, prep:bool=True) -> tuple[Optional[Operators.Where], Optional[Operators.Where]]:
+        from Hql.Operators.Where import Where
+        from Hql.Expressions.Logic import BinaryLogic, Logic
 
-        if prep:
-            acc, rej = self.compile_logic(op.expr)
-            
-            if rej:
-                rej = Where(rej)
+        acc, rej = self.compile(op.expr)
 
+        if acc is not None:
             assert isinstance(acc, Logic)
-            return Where(acc), rej
+            self.expr = acc if self.expr is None else BinaryLogic([self.expr, acc])
+            acc = None
 
-        out = 'where '
-        expr, _ = self.compile_logic(op.expr, prep=False)
-        assert isinstance(expr, str)
-        return out + expr, None
+        if rej is not None:
+            assert isinstance(rej, Logic)
+            rej = Where(rej, op.parameters)
 
-    def Project(self, op:'Ops.Project', prep:bool=True) -> tuple[object, object]:
-        if prep:
-            exprs = []
-            for i in op.exprs:
-                expr, rej = self.compile_expr(i)
-                if rej:
-                    return None, op
-                assert isinstance(expr, 'Expression')
-                exprs.append(expr)
-            op.exprs = exprs
-            return op, None
-
-        out = f'{op.optok} '
-        exprs = []
-        for i in op.exprs:
-            expr, _ = self.compile_expr(i, prep=False)
-            exprs.append(expr)
-        out += ', '.join(exprs)
-        return out, None
-
-    def ProjectAway(self, op:'Ops.ProjectAway', prep:bool=True) -> tuple[object, object]:
-        return self.Project(op, prep=prep)
-
-    def ProjectKeep(self, op:'Ops.ProjectKeep', prep:bool=True) -> tuple[object, object]:
-        return self.Project(op, prep=prep)
-
-    def ProjectReorder(self, op:'Ops.ProjectReorder', prep:bool=True) -> tuple[object, object]:
-        return self.Project(op, prep=prep)
-
-    def ProjectRename(self, op:'Ops.ProjectRename', prep:bool=True) -> tuple[object, object]:
-        return self.Project(op, prep=prep)
-
-    def Take(self, op:'Ops.Take', prep:bool=True) -> tuple[object, object]:
-        if prep:
-            if op.tables:
-                return None, op
-            return op, None
-
-        out = 'take '
-        val, _ = self.compile_expr(op.expr, prep=False)
-        assert isinstance(val, str)
-        return out + val, None
-
-    def Count(self, op:'Ops.Count', prep:bool=True) -> tuple[object, object]:
-        if prep:
-            if op.name:
-                return None, op
-            return op, None
-        out = 'count'
-        return out, None
-
-    def Extend(self, op:'Ops.Extend', prep:bool=True) -> tuple[object, object]:
-        if prep:
-            exprs = []
-            for i in op.exprs:
-                expr, rej = self.compile_expr(i)
-                if rej:
-                    return None, op
-                exprs.append(expr)
-            op.exprs = exprs
-            return op, None
-
-        out = f'extend '
-        exprs = []
-        for i in op.exprs:
-            expr, _ = self.compile_expr(i, prep=False)
-            exprs.append(expr)
-        out += ', '.join(exprs)
-        return out, None
-
-    def Range(self, op:'Ops.Range', prep:bool=True) -> tuple[object, object]:
-        return None, op
-        
-        if prep:
-            return op, None
-        out = op.decompile(Context(Data(None)))
-        return out, None
-
-    def Top(self, op:'Ops.Top', prep:bool=True) -> tuple[object, object]:
-        if prep:
-            return op, None
-
-        out = 'top ' + 
-        return out, None
-
-    def Unnest(self, op:'Ops.Unnest', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-    def Union(self, op:'Ops.Union', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-        from Hql.Context import Context
-        from Hql.Data import Data
-        
-        if prep:
-            return op, None
-        out = op.decompile(Context(Data(None)))
-        return out, None
-
-    def Summarize(self, op:'Ops.Summarize', prep:bool=True) -> tuple[object, object]:
-
-        return None, op
-
-    def Datatable(self, op:'Ops.Datatable', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-    def Join(self, op:'Ops.Join', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-    def MvExpand(self, op:'Ops.MvExpand', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-    def Sort(self, op:'Ops.Sort', prep:bool=True) -> tuple[object, object]:
-        return None, op
-
-    def Rename(self, op:'Ops.Rename', prep:bool=True) -> tuple[object, object]:
-        return None, op
+        return acc, rej
 
     '''
-    Expressions
+    Logic
     '''
 
-    def OpParameter(self, expr:'Hql.Expressions.OpParameter', prep:bool=True) -> tuple[object, object]:
+    def BinaryLogic(self, expr: Logic.BinaryLogic, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Logic import BinaryLogic
+
+        if prep:
+            rejs = []
+            accs = []
+            for i in expr:
+                acc, rej = self.compile(i)
+
+                if isinstance(i, BinaryLogic) and rej:
+                    rejs.append(i)
+                    continue
+
+                if acc:
+                    accs.append(acc)
+                if rej:
+                    rejs.append(rej)
+
+            # Cannot salvage
+            if rejs and not expr.logic_and:
+                return None, expr
+
+            acc = None
+            if accs:
+                acc = BinaryLogic(accs, logic_and=expr.logic_and)
+
+            rej = None
+            if rejs:
+                rej = BinaryLogic(rejs, logic_and=expr.logic_and)
+
+            return acc, rej
+
+        exprs = []
+        for i in expr.exprs:
+            acc, _ = self.compile(i, prep=prep)
+            if isinstance(i, BinaryLogic) and i.logic_and != expr.logic_and:
+                acc = f'({acc})'
+            exprs.append(acc)
+
+        bitok = ' and ' if expr.logic_and else ' or '
+        return bitok.join(exprs), None
+
+    def Not(self, expr: Logic.Not, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Not, Logic
+        from Hql.Expressions.References import Reference
+        from Hql.Functions import Function
+
+        if prep:
+            acc, rej = self.compile(expr.expr)
+            if rej:
+                return None, expr
+            assert isinstance(acc, (Logic, Reference, Function))
+            return Not(acc), None
+
+        inner, _ = self.compile(expr.expr, prep=prep)
+        return f'not({inner})', None
+
+    def Equality(self, expr: Logic.Equality, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Equality
+        from Hql.Expressions.Literals import StringLiteral
+
+        if prep:
+            rh = []
+            for i in expr.rh:
+                acc, rej = self.compile(i)
+                if rej:
+                    return None, expr
+
+                # handles multivalues
+                if isinstance(acc, list):
+                    rh += acc
+                else:
+                    rh.append(acc)
+
+            return Equality(expr.lh, rh, expr.cs, expr.neq), None
+
+        lh, _ = self.compile(expr.lh, prep=prep)
+
+        rh = []
+        for i in expr.rh:
+            acc, rej = self.compile(i, prep=prep)
+            if rej:
+                raise hqle.CompilerException('Compiling invalid expression, forgot to preprocess?')
+            rh.append(acc)
+
+        # =~ and in~ only apply to strings
+        ci = not expr.cs and all(isinstance(x, StringLiteral) for x in expr.rh)
+
+        if len(rh) == 1:
+            op = ('!' if expr.neq else '=') + ('~' if ci else '=')
+            return f'{lh} {op} {rh[0]}', None
+
+        op = ('!in' if expr.neq else 'in') + ('~' if ci else '')
+        return f'{lh} {op} ({", ".join(rh)})', None
+
+    def Substring(self, expr: Logic.Substring, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            for i in expr.rh:
+                _, rej = self.compile(i)
+                if rej:
+                    return None, expr
+            return expr, None
+
+        lh, _ = self.compile(expr.lh, prep=prep)
+
+        if expr.term:
+            op = 'hasprefix' if expr.startswith else 'hassuffix' if expr.endswith else 'has'
+        else:
+            op = 'startswith' if expr.startswith else 'endswith' if expr.endswith else 'contains'
+
+        if expr.cs:
+            op += '_cs'
+
+        rhs = []
+        for i in expr.rh:
+            rh, _ = self.compile(i, prep=prep)
+            rhs.append(rh)
+
+        if len(rhs) == 1:
+            neg = '!' if expr.neq else ''
+            return f'{lh} {neg}{op} {rhs[0]}', None
+
+        exprs = [f'{lh} {op} {x}' for x in rhs]
+        bitok = ' and ' if expr.logic_and else ' or '
+        ret = bitok.join(exprs)
+        return (f'not({ret})' if expr.neq else f'({ret})'), None
+
+    def Relational(self, expr: Logic.Relational, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Logic import Relational, Expression
+
+        if prep:
+            acc, rej = self.compile(expr.rh[0])
+            if rej:
+                return None, expr
+            rh = acc
+            assert isinstance(rh, Expression)
+
+            return Relational(expr.lh, rh, expr.gt, expr.eq), None
+
+        lh, _ = self.compile(expr.lh, prep=prep)
+        rh, _ = self.compile(expr.rh[0], prep=prep)
+
+        op =  '>' if expr.gt else '<'
+        op += '=' if expr.eq else ''
+
+        return f'{lh} {op} {rh}', None
+
+    def BetweenEquality(self, expr: Logic.BetweenEquality, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            for i in (expr.start, expr.end):
+                _, rej = self.compile(i)
+                if rej:
+                    return None, expr
+            return expr, None
+
+        lh, _ = self.compile(expr.lh, prep=prep)
+        start, _ = self.compile(expr.start, prep=prep)
+        end, _ = self.compile(expr.end, prep=prep)
+
+        op = '!between' if expr.neq else 'between'
+        return f'{lh} {op} ({start} .. {end})', None
+
+    def Regex(self, expr: Logic.Regex, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            # global has no meaning for a match
+            if expr.g:
+                return None, expr
+            return expr, None
+
+        lh, _ = self.compile(expr.lh, prep=prep)
+
+        # RE2 inline flags
+        flags = ''.join(f for f, on in (('i', expr.i), ('m', expr.m), ('s', expr.s)) if on)
+        pattern = expr.rh.value.decode('utf-8')
+        if flags:
+            pattern = f'(?{flags}){pattern}'
+
+        return f'{lh} matches regex {self.quote(pattern)}', None
+
+    # only executes static functions on preprocess and sees if we can handle the result
+    def Function(self, expr:Function, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.References import Reference
+
+        if expr.name == 'isnull':
+            lh = expr.args[0]
+            if not isinstance(lh, Reference):
+                return None, expr
+            if prep:
+                return expr, None
+
+            # Kusto strings are empty rather than null
+            name, _ = self.compile(lh, prep=prep)
+            return f'isempty({name})', None
+
         return None, expr
 
-    def ToClause(self, expr:'Hql.Expressions.ToClause', prep:bool=True) -> tuple[object, object]:
+    '''
+    Literals
+    '''
+
+    def StringLiteral(self, expr: Literals.StringLiteral, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return self.quote(expr.value.decode('utf-8')), None
+
+    def MultiString(self, expr: Literals.MultiString, prep:bool=True) -> tuple[object, object]:
+        return self.StringLiteral(expr, prep=prep)
+
+    def Integer(self, expr: Literals.Integer, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return f'{expr.value}', None
+
+    def Float(self, expr: Literals.Float, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return f'real({expr.value})', None
+
+    def Bool(self, expr: Literals.Bool, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return ('true' if expr.value else 'false'), None
+
+    def Datetime(self, expr: Literals.Datetime, prep:bool=True) -> tuple[object, object]:
+        import datetime
+
+        if prep:
+            return expr, None
+        dt = expr.value.astimezone(datetime.timezone.utc)
+        return f'datetime({dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")})', None
+
+    def Multivalue(self, expr: Literals.Multivalue, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Literals import Multivalue
+
+        exprs = []
+        for i in expr.value:
+            acc, rej = self.compile(i, prep=prep)
+            if rej:
+                return None, expr
+            exprs.append(acc)
+
+        if prep:
+            return Multivalue(exprs), None
+
+        return exprs, None
+
+    '''
+    References
+    '''
+
+    def NamedReference(self, expr: References.NamedReference, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return self.name(expr.name), None
+
+    def EscapedNamedReference(self, expr: References.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            return expr, None
+        return self.name(expr.name, escape=True), None
+
+    # Kusto has no wildcard column matching in predicates
+    def Wildcard(self, expr: References.Wildcard, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
-    def OrderedExpression(self, expr:'Hql.Expressions.OrderedExpression', prep:bool=True) -> tuple[object, object]:
-        return None, expr
+    def Path(self, expr: References.Path, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.References import EscapedNamedReference
 
-    def ByExpression(self, expr:'Hql.Expressions.ByExpression', prep:bool=True) -> tuple[object, object]:
-        return None, expr
+        if prep:
+            for i in expr.path:
+                _, rej = self.compile(i)
+                if rej:
+                    return None, expr
+            return expr, None
 
-    def Function(self, expr:'Hql.Functions.Function', prep:bool=True) -> tuple[object, object]:
-        return None, expr
+        head, _ = self.compile(expr.path[0], prep=prep)
+        out = str(head)
+        for i in expr.path[1:]:
+            part = self.name(i.name, escape=isinstance(i, EscapedNamedReference))
+            out += part if part.startswith('[') else f'.{part}'
 
-    def FuncExpr(self, expr:'Hql.Expressions.FuncExpr', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def DotCompositeFunction(self, expr:'Hql.Expressions.DotCompositeFunction', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Equality(self, expr:'Hql.Expressions.Equality', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Substring(self, expr:'Hql.Expressions.Substring', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Relational(self, expr:'Hql.Expressions.Relational', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def BetweenEquality(self, expr:'Hql.Expressions.BetweenEquality', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def BinaryLogic(self, expr:'Hql.Expressions.BinaryLogic', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Not(self, expr:'Hql.Expressions.Not', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def BasicRange(self, expr:'Hql.Expressions.BasicRange', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Regex(self, expr:'Hql.Expressions.Regex', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def TypeExpression(self, expr:'Hql.Expressions.TypeExpression', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def StringLiteral(self, expr:'Hql.Expressions.StringLiteral', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-    
-    def MultiString(self, expr:'Hql.Expressions.MultiString', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Integer(self, expr:'Hql.Expressions.Integer', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def IP4(self, expr:'Hql.Expressions.IP4', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Float(self, expr:'Hql.Expressions.Float', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Bool(self, expr:'Hql.Expressions.Bool', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Multivalue(self, expr:'Hql.Expressions.Multivalue', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def Datetime(self, expr:'Hql.Expressions.Datetime', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-    
-    def NamedReference(self, expr:'Hql.Expressions.NamedReference', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def EscapedNamedReference(self, expr:'Hql.Expressions.EscapedNamedReference', prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Keyword(self, expr:'Hql.Expressions.Keyword', prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Identifier(self, expr:'Hql.Expressions.Identifier', prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Wildcard(self, expr:'Hql.Expressions.Wildcard', prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
-
-    def Path(self, expr:'Hql.Expressions.Path', prep:bool=True) -> tuple[object, object]:
-        return None, expr
-
-    def NamedExpression(self, expr:'Hql.Expressions.NamedExpression', prep:bool=True) -> tuple[object, object]:
-        return None, expr
+        return out, None
