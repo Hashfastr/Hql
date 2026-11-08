@@ -115,13 +115,13 @@ class Kusto(Database):
             op = op.get_op()
 
         # Nothing to append to
-        if self._raw_query is None or not isinstance(op, (Where, Take)):
+        if self.compiler.tabular is None or not isinstance(op, (Where, Take)):
             return None, op
 
         return self.compiler.add_op(op)
 
     def compile(self) -> str:
-        if self._raw_query is None:
+        if self.compiler.tabular is None:
             raise hqle.QueryException(f'{self.type} database requires a raw query or an index')
 
         query, _ = self.compiler.compile(None, prep=False)
@@ -132,12 +132,13 @@ class Kusto(Database):
         if not query.strip():
             raise hqle.QueryException('Kusto raw query cannot be empty')
         self._raw_query = query
+        self.compiler.add_raw(query)
 
     def add_index(self, index:str) -> None:
         # An index is a table, queried whole as if given as raw KQL
         if not index.strip():
             raise hqle.QueryException('Kusto index cannot be empty')
-        self.compiler.index = index
+        self.compiler.add_index(index)
 
     def add_timebound(self, start: datetime.datetime, end: datetime.datetime) -> tuple[Database, Union[None, Operator]]:
         if self._raw_query:
@@ -225,7 +226,7 @@ class Kusto(Database):
             **super().to_dict(),
             'name': self.name,
             'database': self.database,
-            'query': self.compile() if self._raw_query is not None else None,
+            'query': self.compile() if self.compiler.tabular is not None else None,
         }
 
     def _table_exists(self, table: str) -> bool:

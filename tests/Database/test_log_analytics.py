@@ -230,3 +230,34 @@ def test_index_queries_the_table_and_pushes_take(monkeypatch):
 
     assert client.calls == [('workspace-id', 'SigninLogs\n| take 1', None)]
     assert out['la'].to_dicts() == [{'id': 1}]
+
+
+def test_auth_defaults_to_azcli_without_app_credentials():
+    config = la_config()
+    for key in ('client_id', 'client_secret', 'tenant_id'):
+        del config['conf'][key]
+
+    assert LogAnalytics(config, query_client=FakeClient(None)).auth == 'azcli'
+
+
+def test_auth_defaults_to_secret_with_app_credentials():
+    assert LogAnalytics(la_config(), query_client=FakeClient(None)).auth == 'secret'
+
+
+def test_secret_auth_requires_app_credentials():
+    config = la_config()
+    del config['conf']['client_secret']
+
+    with pytest.raises(hqle.ConfigException, match='missing required config: client_secret'):
+        LogAnalytics(config, query_client=FakeClient(None))
+
+
+def test_explicit_azcli_ignores_app_credentials():
+    adapter = LogAnalytics(la_config(auth='azcli', client_secret=''), query_client=FakeClient(None))
+
+    assert adapter.auth == 'azcli'
+
+
+def test_unknown_auth_is_rejected():
+    with pytest.raises(hqle.ConfigException, match='auth must be one of secret, azcli'):
+        LogAnalytics(la_config(auth='password'), query_client=FakeClient(None))

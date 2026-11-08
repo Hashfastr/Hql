@@ -40,6 +40,7 @@ dependencies = [
     # "dfir_iris_client",
     "azure-kusto-data",
     "azure-monitor-query",
+    "azure-identity",
     "sqlalchemy"
 ]
 

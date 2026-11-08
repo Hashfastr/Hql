@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from Hql.Expressions import Expression
     from Hql.Expressions.Literals import StringLiteral
     from Hql.Query import Statement
+    from Hql.Compiler import BranchDescriptor
     import Hql.Expressions.Logic as Logic
     from Hql.Expressions import Literals
     from Hql.Functions import Function
@@ -33,10 +34,13 @@ class KustoCompiler(Compiler):
             'regex_global': False
         }
 
-        self.tabular:References.Reference|Operators.Union|None = None
+        # What the ops are piped onto: a table, or raw KQL as given
+        self.tabular:str|References.Reference|Operators.Union|None = None
         self.ops:list[Operators.Operator] = []
 
     def add_index(self, name:str|StringLiteral|References.Reference):
+        from Hql.Expressions.Literals import StringLiteral
+
         if isinstance(name, StringLiteral):
             name = name.str()
         if isinstance(name, str):
@@ -44,17 +48,32 @@ class KustoCompiler(Compiler):
 
         self.tabular = name
 
+    def add_raw(self, query:str):
+        self.tabular = query
+
     def compile(self, src: Union[Expression, Operators.Operator, Statement, Function, None], prep: bool = True) -> tuple[Optional[object], Optional[object]]:
         # root compile case
         if not prep and src is None:
             assert self.tabular is not None
 
-            ops = []
+            query = self.tabular if isinstance(self.tabular, str) else self.tabular.deparse()
             for i in self.ops:
-                ops.append(self.compile(i, prep=prep))
-            return self.tabular.deparse() + '\n' + '|\n'.join(ops), None
+                acc, _ = self.compile(i, prep=prep)
+                query += f'\n| {acc}'
+            return query, None
 
-        return self.compile(src, prep=prep)
+        return Compiler.compile(self, src, prep=prep)
+
+    def add_op(self, op:Union[Operators.Operator, BranchDescriptor]) -> tuple[Optional[Operators.Operator], Optional[Operators.Operator]]:
+        from Hql.Compiler import BranchDescriptor
+        from Hql.Operators.Operator import Operator
+
+        if isinstance(op, BranchDescriptor):
+            op = op.get_op()
+        acc, rej = super().compile_op(op)
+
+        assert isinstance(acc, (type(None), Operator))
+        return acc, rej
 
     def simple_compile(self) -> str:
         acc, _ = self.compile(None, prep=False)
@@ -73,7 +92,7 @@ class KustoCompiler(Compiler):
 
         if not prep:
             assert isinstance(acc, str)
-            acc = 'where ' + acc
+            return 'where ' + acc, None
 
         if acc is not None:
             assert isinstance(acc, Logic)
@@ -88,7 +107,7 @@ class KustoCompiler(Compiler):
 
     def Take(self, op:Operators.Take, prep:bool=True) -> tuple[object, object]:
         if not prep:
-            limit = self.compile(op.expr, prep=prep)
+            limit, _ = self.compile(op.expr, prep=prep)
             return f'take {limit}', None
 
         if op.tables:

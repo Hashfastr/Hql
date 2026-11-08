@@ -9,8 +9,10 @@ def _():
     import marimo as mo
     import json
     import logging
+    import shutil
     import socket
     import sys
+    import tempfile
     import threading
     import time
     import uvicorn
@@ -36,10 +38,13 @@ def _():
         SPLCompiler,
         SigmaParser,
         json,
+        logging,
         mo,
         run_query,
+        shutil,
         socket,
         sys,
+        tempfile,
         threading,
         time,
         uvicorn,
@@ -58,9 +63,12 @@ def _(mo):
     2. **One config, two backends**: route one Sigma rule to Elastic and another to Splunk, mapping fields on the way.
     3. **Run Sigma against the databases**: same rules, actual results.
     4. **Hql as Code (HaC)**: Hql's Sigma alternative. Convert rules, then do what Sigma can't.
+    5. **The HaC engine on the static dataset**: schedule the detections and manage them in a web UI.
+    6. **The HaC engine on a Log Analytics workspace**: the same engine against your own Sentinel data.
 
-    Everything runs offline against small fake databases in `data/`.
+    Sections 1 to 5 run offline against small fake databases in `data/`.
     Put your real Splunk/Elastic in `config/splunk.yml` / `config/elastic.yml` (see `README.md`).
+    Section 6 needs a workspace in `config/loganalytics.yml` and an `az login`.
     """)
     return
 
@@ -72,6 +80,7 @@ def _(Path, mo):
     RULES = HERE / "rules"
     DATA = HERE / "data"
     HAC = HERE / "hac"
+    HAC_LA = HERE / "hac-loganalytics"
 
     CURL_UPLOAD = "proc_creation_lnx_susp_curl_fileupload.yml"
     ENCODED_PS = "proc_creation_win_powershell_base64_encoded_cmd.yml"
@@ -81,7 +90,7 @@ def _(Path, mo):
         not CONFIG.is_dir(),
         mo.md(f"**No config found at `{CONFIG}`.**").callout(kind="danger"),
     )
-    return CONFIG, CURL_UPLOAD, DATA, ENCODED_PS, HAC, KERBEROAST, RULES
+    return CONFIG, CURL_UPLOAD, DATA, ENCODED_PS, HAC, HAC_LA, KERBEROAST, RULES
 
 
 @app.cell
@@ -94,8 +103,8 @@ def _(CONFIG, Config, DATA, HqlCompiler, RULES, SigmaParser, mo):
     def code(text, lang="sql"):
         return mo.ui.code_editor(value=text.strip(), language=lang, disabled=True)
 
-    def load_config(header=None):
-        conf = Config(CONFIG)
+    def load_config(header=None, path=CONFIG):
+        conf = Config(path)
         # local-base is relative to the working directory, pin it to this folder
         for _name in ("fake-elastic", "fake-splunk"):
             conf.get_database(_name)["conf"]["local-base"] = str(DATA)
@@ -307,14 +316,82 @@ def _(Detection, HAC, code, conf, mo, show):
     return
 
 
+@app.cell
+def _(
+    CONFIG,
+    HacEngine,
+    logging,
+    mo,
+    socket,
+    sys,
+    threading,
+    time,
+    uvicorn,
+    webbrowser,
+):
+    # Logging goes to marimo's stderr, which only takes writes from the thread running a cell.
+    # Detections run in engine threads, send their records to the terminal instead.
+    class EngineLogs(logging.StreamHandler):
+        def __init__(self, cell_thread):
+            super().__init__()
+            self.cell_thread = cell_thread
+
+        def emit(self, record):
+            self.setStream(sys.stderr if record.thread == self.cell_thread else sys.__stderr__)
+            super().emit(record)
+
+    # Starts an engine over every detection in directory, with configs from make_conf
+    def launch_engine(directory, make_conf, port):
+        _root = logging.getLogger()
+        if not any(isinstance(_h, EngineLogs) for _h in _root.handlers):
+            _root.addHandler(EngineLogs(threading.get_ident()))
+
+        class DemoEngine(HacEngine):
+            def load_conf(self):
+                return make_conf()
+
+        engine = DemoEngine(directory, True, CONFIG)
+        if engine.apiserver is None:
+            return mo.md("The web UI needs free-threaded Python (`3.14t`).").callout(kind="warn")
+        # one port per engine, so both can run at once
+        engine.apiserver.port = port
+
+        # the web server logs from its own thread, which marimo can't capture: send it to the terminal
+        for _handler in uvicorn.config.LOGGING_CONFIG["handlers"].values():
+            _handler["stream"] = sys.__stderr__
+
+        for _detection in engine.detections.values():
+            engine.run_detection(_detection)
+        threading.Thread(target=engine.run, daemon=True).start()
+
+        # wait up to 5s for the server to accept connections, then open the UI in a new tab
+        _url = f"http://localhost:{port}"
+        for _ in range(50):
+            try:
+                socket.create_connection(("localhost", port), timeout=0.1).close()
+                break
+            except OSError:
+                time.sleep(0.1)
+        webbrowser.open_new_tab(_url)
+
+        return mo.md(
+            f"HaC engine running {len(engine.detections)} detections from `{directory.name}/`: [{_url}]({_url})"
+        )
+
+    return (launch_engine,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### The HaC engine
+    ## 5. The HaC engine on the static dataset
 
     The engine loads every detection in `hac/`, fires each on its `@schedule`,
     and serves a web UI for managing, running and viewing them.
     Each detection runs once on start so the UI has results right away.
+
+    This engine uses the same offline config as sections 3 and 4: the fake Elastic and Splunk
+    databases in `data/`. Nothing connects anywhere.
 
     The web UI needs free-threaded Python (`3.14t`) and a built `Hql-Interface/dist`.
     """)
@@ -323,57 +400,97 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    start_engine = mo.ui.run_button(label="Start the HaC engine")
-    start_engine
-    return (start_engine,)
+    start_static_engine = mo.ui.run_button(label="Start the HaC engine on the static dataset")
+    start_static_engine
+    return (start_static_engine,)
+
+
+@app.cell
+def _(HAC, launch_engine, load_config, mo, start_static_engine):
+    mo.stop(not start_static_engine.value)
+
+    # fake databases pinned to data/
+    launch_engine(HAC, load_config, 8080)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## 6. The HaC engine on a Log Analytics workspace
+
+    The same engine, pointed at a Log Analytics workspace (Microsoft Sentinel's tables live here).
+    It loads the detections in `hac-loganalytics/`, which import `maps.azure`:
+    Sigma logsources over the Azure Monitor tables, with Sigma field names.
+
+    - `azurehound_signin.hql`: sign-ins with AzureHound's user agent, from `SigninLogs`.
+    - `password_spray.hql`: many failed sign-ins from one IP address, a threshold Sigma can't express.
+
+    The where clauses run in the workspace as KQL, and each run's time window is sent as the query timespan.
+
+    To set it up:
+
+    1. Put the Workspace ID from the workspace's Overview blade in `config/loganalytics.yml`.
+    2. Run `az login` as someone with Log Analytics Reader on the workspace. Hql uses that session, no secret needed.
+
+    This engine's web UI is on port 8081, so it can run next to the static one.
+    """)
+    return
+
+
+@app.cell
+def _(CONFIG, HAC_LA, code, mo):
+    mo.ui.tabs({
+        "loganalytics.yml": code((CONFIG / "loganalytics.yml").read_text(), "yaml"),
+        **{_path.name: code(_path.read_text()) for _path in sorted(HAC_LA.glob("*.hql"))},
+    })
+    return
+
+
+@app.cell
+def _(mo):
+    start_la_engine = mo.ui.run_button(label="Start the HaC engine on Log Analytics")
+    start_la_engine
+    return (start_la_engine,)
 
 
 @app.cell
 def _(
     CONFIG,
-    HAC,
-    HacEngine,
+    HAC_LA,
+    Path,
+    launch_engine,
     load_config,
     mo,
-    socket,
-    start_engine,
-    sys,
-    threading,
-    time,
-    uvicorn,
-    webbrowser,
+    shutil,
+    start_la_engine,
+    tempfile,
 ):
-    mo.stop(not start_engine.value)
+    mo.stop(not start_la_engine.value)
 
-    class DemoEngine(HacEngine):
-        def load_conf(self):
-            return load_config()  # fake databases pinned to data/
+    # maps/azure_fields.hql queries Azure Data Explorer by default. Run on a copy of
+    # config/ that queries Log Analytics instead, recopied on every load to pick up edits.
+    _la_dir = Path(tempfile.mkdtemp(prefix="hql-loganalytics-"))
 
-    engine = DemoEngine(HAC, True, CONFIG)
+    def la_config():
+        shutil.copytree(CONFIG, _la_dir, dirs_exist_ok=True)
+        _fields = _la_dir / "maps" / "azure_fields.hql"
+        _fields.write_text(
+            _fields.read_text().replace("let azure_db = 'kusto';", "let azure_db = 'loganalytics';")
+        )
+        return load_config("import maps.azure", _la_dir)
+
+    _workspace = la_config().get_database("loganalytics")["conf"].get("workspace_id", "")
     mo.stop(
-        engine.apiserver is None,
-        mo.md("The web UI needs free-threaded Python (`3.14t`).").callout(kind="warn"),
+        not _workspace or _workspace.startswith("<"),
+        mo.md("Put your Workspace ID in `config/loganalytics.yml` first.").callout(kind="warn"),
+    )
+    mo.stop(
+        shutil.which("az") is None,
+        mo.md("The Azure CLI (`az`) isn't on `PATH`. Install it and run `az login`.").callout(kind="warn"),
     )
 
-    # the web server logs from its own thread, which marimo can't capture: send it to the terminal
-    for _handler in uvicorn.config.LOGGING_CONFIG["handlers"].values():
-        _handler["stream"] = sys.__stderr__
-
-    for _detection in engine.detections.values():
-        engine.run_detection(_detection)
-    threading.Thread(target=engine.run, daemon=True).start()
-
-    # wait up to 5s for the server to accept connections, then open the UI in a new tab
-    _url = f"http://localhost:{engine.apiserver.port}"
-    for _ in range(50):
-        try:
-            socket.create_connection(("localhost", engine.apiserver.port), timeout=0.1).close()
-            break
-        except OSError:
-            time.sleep(0.1)
-    webbrowser.open_new_tab(_url)
-
-    mo.md(f"HaC engine running {len(engine.detections)} detections from `hac/`: [{_url}]({_url})")
+    launch_engine(HAC_LA, la_config, 8081)
     return
 
 

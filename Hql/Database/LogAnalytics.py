@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 '''
-Example configuration:
+Example configuration, authenticating as an app registration:
 
 database:
   name: 'sentinel'
@@ -32,8 +32,23 @@ database:
     # endpoint: 'https://api.loganalytics.us'
     # authority: 'login.microsoftonline.us'
 
-workspace_id is the Workspace ID GUID from the workspace's Overview blade. The app
-needs the Log Analytics Reader role on the workspace.
+Or reusing the session from `az login`:
+
+database:
+  name: 'sentinel'
+  type: 'LogAnalytics'
+  conf:
+    workspace_id: '<WORKSPACE_ID>'
+    auth: 'azcli'
+    # Optional, query a tenant other than the CLI's default:
+    # tenant_id: '<AZURE_TENANT_ID>'
+
+auth is 'secret' or 'azcli'. Left out, it is 'azcli' when no client_id or
+client_secret is configured, and 'secret' otherwise. With azcli, sovereign clouds
+come from `az cloud set`, so authority is ignored.
+
+workspace_id is the Workspace ID GUID from the workspace's Overview blade. The app,
+or the signed in user, needs the Log Analytics Reader role on the workspace.
 
 Inject client_secret from a secret manager; never commit a usable secret.
 '''
@@ -45,7 +60,9 @@ TIMESPAN = re.compile(r'^(-)?(?:(\d+)\.)?(\d+):(\d{2}):(\d{2})(?:\.(\d+))?$')
 class LogAnalytics(Kusto):
     """Execute native KQL against a Log Analytics workspace, pushing supported where predicates and takes onto it."""
 
-    REQUIRED_CONFIG = ('workspace_id', 'client_id', 'client_secret', 'tenant_id')
+    REQUIRED_CONFIG = ('workspace_id',)
+    SECRET_CONFIG = ('client_id', 'client_secret', 'tenant_id')
+    AUTH_METHODS = ('secret', 'azcli')
 
     def __init__(
         self,
@@ -57,6 +74,9 @@ class LogAnalytics(Kusto):
 
         conf = self._require_conf(self.config, self.REQUIRED_CONFIG, 'Log Analytics')
         self.workspace_id = conf['workspace_id']
+        self.auth = self._auth_method(conf)
+        if self.auth == 'secret':
+            self._require_conf(self.config, self.SECRET_CONFIG, 'Log Analytics')
         self._raw_query:Optional[str] = None
         self._timespan:Optional[tuple[datetime.datetime, datetime.datetime]] = None
         self.compiler = KustoCompiler()
@@ -69,23 +89,65 @@ class LogAnalytics(Kusto):
             self.query_client = query_client
         else:
             try:
-                from azure.identity import ClientSecretCredential
                 from azure.monitor.query import LogsQueryClient
             except ImportError as exc:
                 raise hqle.ConfigException(
                     'Log Analytics queries require the azure-monitor-query package'
                 ) from exc
 
-            cred_kwargs = {'authority': conf['authority']} if conf.get('authority') else {}
-            # Raises on a malformed tenant_id, such as an unfilled placeholder
-            try:
-                credential = ClientSecretCredential(
-                    conf['tenant_id'], conf['client_id'], conf['client_secret'], **cred_kwargs
-                )
-            except ValueError as exc:
-                raise hqle.ConfigException(f'Log Analytics database {name}: {exc}') from exc
+            credential = self._credential(conf, name)
             client_kwargs = {'endpoint': conf['endpoint']} if conf.get('endpoint') else {}
             self.query_client = LogsQueryClient(credential, **client_kwargs)
+
+    @classmethod
+    def _auth_method(cls, conf:dict) -> str:
+        auth = conf.get('auth')
+        if auth is None:
+            return 'secret' if conf.get('client_id') or conf.get('client_secret') else 'azcli'
+        if auth not in cls.AUTH_METHODS:
+            raise hqle.ConfigException(
+                f"Log Analytics auth must be one of {', '.join(cls.AUTH_METHODS)}, got {auth!r}"
+            )
+        return auth
+
+    def _credential(self, conf:dict, name:str) -> Any:
+        try:
+            from azure.identity import AzureCliCredential, ClientSecretCredential
+        except ImportError as exc:
+            raise hqle.ConfigException(
+                'Log Analytics queries require the azure-identity package'
+            ) from exc
+
+        # Both raise ValueError on a malformed tenant_id, such as an unfilled placeholder
+        try:
+            if self.auth == 'azcli':
+                # Shells out to az for a token on each refresh, so a later az login is picked up
+                cred_kwargs = {'tenant_id': conf['tenant_id']} if conf.get('tenant_id') else {}
+                return AzureCliCredential(**cred_kwargs)
+
+            cred_kwargs = {'authority': conf['authority']} if conf.get('authority') else {}
+            return ClientSecretCredential(
+                conf['tenant_id'], conf['client_id'], conf['client_secret'], **cred_kwargs
+            )
+        except ValueError as exc:
+            raise hqle.ConfigException(f'Log Analytics database {name}: {exc}') from exc
+
+    def _query(self) -> Any:
+        try:
+            from azure.core.exceptions import ClientAuthenticationError
+        except ImportError:
+            # Only an injected client runs without the Azure SDK, it raises nothing to translate
+            ClientAuthenticationError = ()  # type: ignore[assignment,misc]
+
+        try:
+            return self.query_client.query_workspace(
+                self.workspace_id, self.compile(), timespan=self._timespan
+            )
+        except ClientAuthenticationError as exc:
+            hint = ', run `az login` and retry' if self.auth == 'azcli' else ''
+            raise hqle.QueryException(
+                f'Log Analytics database {self.name} failed to authenticate{hint}: {exc.message}'
+            ) from exc
 
     def add_timebound(self, start: datetime.datetime, end: datetime.datetime) -> tuple[Database, None]:
         # The API bounds the query server side, on top of any time filter in the KQL
@@ -161,9 +223,7 @@ class LogAnalytics(Kusto):
     def eval(self, ctx:Context) -> Context:
         from Hql.Data import Data, Schema, Table
 
-        response = self.query_client.query_workspace(
-            self.workspace_id, self.compile(), timespan=self._timespan
-        )
+        response = self._query()
 
         # Partial results come back when the query hits a limit, keep what was returned
         if hasattr(response, 'partial_data'):
@@ -189,5 +249,5 @@ class LogAnalytics(Kusto):
             **Database.to_dict(self),
             'name': self.name,
             'workspace_id': self.workspace_id,
-            'query': self.compile() if self._raw_query is not None else None,
+            'query': self.compile() if self.compiler.tabular is not None else None,
         }
