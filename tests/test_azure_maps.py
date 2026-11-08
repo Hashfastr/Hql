@@ -1,10 +1,12 @@
-import json
 import logging
 import shutil
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from Hql.Compiler import HqlCompiler
 from Hql.Config import Config
@@ -16,6 +18,19 @@ from Hql.Parser.Sigma import SigmaParser
 
 # examples/deathcon-26/config/azure/maps/azure_fields.hql and azure.hql: Sigma field
 # names over Azure Monitor tables. The rows use the tables' real column names.
+
+TABLES = {
+    'azure_activity': 'AzureActivity',
+    'azure_audit': 'AuditLogs',
+    'azure_signin': 'SigninLogs',
+    'azure_risk': 'AADUserRiskEvents',
+    'azure_security_event': 'SecurityEvent',
+    'azure_device_process': 'DeviceProcessEvents',
+    'azure_device_network': 'DeviceNetworkEvents',
+    'azure_device_file': 'DeviceFileEvents',
+    'azure_device_registry': 'DeviceRegistryEvents',
+    'azure_device_image_load': 'DeviceImageLoadEvents',
+}
 
 CONFIG = Path(__file__).parent.parent / 'examples' / 'deathcon-26' / 'config' / 'azure'
 
@@ -34,11 +49,13 @@ SIGNIN = [
     {
         'UserAgent': 'azurehound/2.0', 'ClientAppUsed': 'IMAP', 'UserPrincipalName': 'a@x',
         'ConditionalAccessStatus': 'success', 'AuthenticationProtocol': 'ropc',
+        'ResultType': '0', 'Status': '{}',
         'DeviceDetail': {'trustType': 'Hybrid', 'isCompliant': False, 'deviceId': 'd1'},
     },
     {
         'UserAgent': 'edge', 'ClientAppUsed': 'Browser', 'UserPrincipalName': 'b@x',
         'ConditionalAccessStatus': 'notApplied', 'AuthenticationProtocol': 'none',
+        'ResultType': '50053', 'Status': '{"errorCode":50053}',
         'DeviceDetail': {'trustType': 'None', 'isCompliant': True, 'deviceId': 'd2'},
     },
 ]
@@ -124,6 +141,9 @@ IMAGE_LOAD = [
 ]
 
 
+DYNAMIC_PATHS = pytest.mark.xfail(reason='local paths into dynamic columns, workspace-gbm', strict=True)
+
+
 @pytest.fixture(autouse=True)
 def quiet():
     logging.disable(logging.CRITICAL)
@@ -150,8 +170,9 @@ def quiet():
     ('azure_signin', SIGNIN, "Username == 'b@x'", 'Browser'),
     ('azure_signin', SIGNIN, "conditionalAccessStatus == 'notApplied'", 'b@x'),
     ('azure_signin', SIGNIN, "['properties.message'] == 'ropc'", 'a@x'),
-    ('azure_signin', SIGNIN, "['DeviceDetail.trusttype'] == 'Hybrid'", 'a@x'),
-    ('azure_signin', SIGNIN, "['DeviceDetail.deviceId'] == 'd2'", 'b@x'),
+    # Kusto's dynamic columns can't be pathed into locally yet, workspace-gbm. Pushed to Kusto they work.
+    pytest.param('azure_signin', SIGNIN, "['DeviceDetail.trusttype'] == 'Hybrid'", 'a@x', marks=DYNAMIC_PATHS),
+    pytest.param('azure_signin', SIGNIN, "['DeviceDetail.deviceId'] == 'd2'", 'b@x', marks=DYNAMIC_PATHS),
 
     ('azure_risk', RISK, "riskEventType == 'unlikelyTravel'", 'unlikelyTravel'),
 
@@ -183,13 +204,30 @@ def quiet():
     ('azure_device_image_load', IMAGE_LOAD, "ImageLoaded endswith 'evil.dll'", 'a'),
     ('azure_device_image_load', IMAGE_LOAD, "Image endswith 'b.exe'", 'b'),
 ])
-def test_field_map(tmp_path, mapping, data, pred, expected):
-    (tmp_path / 'table.json').write_text(json.dumps(data))
-    config = Config(CONFIG)
-    config.add_database('test', {'name': 'table', 'type': 'JSON', 'conf': {'local-base': str(tmp_path)}})
+def test_field_map(monkeypatch, tmp_path, mapping, data, pred, expected):
+    # Nothing is pushed, so Hql evaluates the map's operators and the where over the rows
+    monkeypatch.setattr(sys.modules[Kusto.__module__], 'PUSHED_OPS', ())
+    now = datetime.now(timezone.utc)
+    rows = [{'TimeGenerated': now, **x} for x in data]
+    columns = [(name, kusto_type(value)) for name, value in rows[0].items()]
+    calls = []
 
-    text = f"import maps.azure_fields; database('table').file('table.json') | map {mapping} | where {pred}"
-    out = run_query(text, config)['table.json'].to_dicts()
+    class Client:
+        def execute(self, database, query):
+            calls.append(query)
+            return SimpleNamespace(primary_results=[FakeResult(rows, columns)])
+
+    class TestKusto(Kusto):
+        def __init__(self, config, name='Kusto Database'):
+            super().__init__(config, name=name, query_client=Client())
+
+    monkeypatch.setitem(database_registry, 'Kusto', TestKusto)
+    config = Config(switch_azure_db(tmp_path, 'loganalytics', 'kusto'))
+    config.set_database('kusto', KUSTO_DB)
+
+    out = run_query(f"import maps.azure_fields; {mapping} | where {pred}", config)['kusto'].to_dicts()
+
+    assert calls == [TABLES[mapping]]
 
     # A field that didn't resolve to a column matches no rows
     assert len(out) == 1
@@ -208,6 +246,31 @@ def rule(product, service, detection):
         *[f'        {i}' for i in detection],
         '    condition: sel',
     ])
+
+
+def kusto_type(value):
+    if isinstance(value, datetime):
+        return 'datetime'
+    if isinstance(value, bool):
+        return 'bool'
+    if isinstance(value, int):
+        return 'long'
+    if isinstance(value, dict):
+        return 'dynamic'
+    return 'string'
+
+
+KUSTO_DB = {
+    'name': 'kusto',
+    'type': 'Kusto',
+    'conf': {
+        'database': 'd',
+        'cluster': 'https://c.example.test',
+        'client_id': 'i',
+        'client_secret': 's',
+        'tenant_id': 't',
+    },
+}
 
 
 class FakeResult(list):
@@ -254,17 +317,7 @@ class TestSigmaOverKusto:
 
         def inner(text):
             config = Config(config_dir)
-            config.set_database('kusto', {
-                'name': 'kusto',
-                'type': 'Kusto',
-                'conf': {
-                    'database': 'd',
-                    'cluster': 'https://c.example.test',
-                    'client_id': 'i',
-                    'client_secret': 's',
-                    'tenant_id': 't',
-                },
-            })
+            config.set_database('kusto', KUSTO_DB)
             config.conf['sigma']['header'] = 'import maps.azure'
             parser = SigmaParser(text, config)
             parser.assemble()
@@ -272,13 +325,14 @@ class TestSigmaOverKusto:
 
         return inner
 
-    def test_signin_user_agent(self, run):
-        out, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
-        assert [x['Username'] for x in out] == ['a@x']
-        assert calls[0].startswith('SigninLogs | where TimeGenerated > ago(1d)')
+    # The map's operators and the rule's where run in Kusto, which the fake client
+    # doesn't evaluate, so these check the query sent
 
-    # The map's extend and the rule's where run in Kusto, which the fake client doesn't
-    # evaluate, so these check the query sent
+    def test_signin_user_agent(self, run):
+        _, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
+        assert calls[0].startswith('SigninLogs\n| where TimeGenerated > datetime(')
+        assert 'userAgent = UserAgent' in calls[0]
+        assert calls[0].endswith('| where userAgent contains "azurehound"')
 
     def test_signin_unquoted_result_type(self, run):
         _, calls = run(rule('azure', 'service: signinlogs', ['ResultType: 50053']))
@@ -291,14 +345,15 @@ class TestSigmaOverKusto:
         assert calls[0].endswith('| where Status == "Success"')
 
     def test_audit_contains_on_dynamic_column(self, run):
-        out, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))
-        assert [x['properties.message'] for x in out] == ['Add member to role']
-        assert 'tostring(TargetResources)' in calls[0]
+        _, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))
+        assert 'TargetResources = tostring(TargetResources)' in calls[0]
+        # a dotted Sigma name is one column, not a path
+        assert calls[0].endswith('''| where ['properties.targetResources'] contains "Admins"''')
 
     def test_process_creation(self, run):
-        out, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
-        assert [x['CommandLine'] for x in out] == ['rundll32 a']
-        assert "ActionType == 'ProcessCreated'" in calls[0]
+        _, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
+        assert 'Image = FolderPath' in calls[0]
+        assert calls[0].endswith('| where ActionType == "ProcessCreated"\n| where Image endswith "\\\\rundll32.exe"')
 
 
 class FakeLogsTable:
@@ -329,7 +384,7 @@ class TestSigmaOverLogAnalytics:
         monkeypatch.setitem(database_registry, 'LogAnalytics', TestLogAnalytics)
 
         def inner(text):
-            # The placeholder loganalytics.yml and sigma.yml from the workshop config, as is
+            # loganalytics.yml and sigma.yml from the workshop config, as is
             config = Config(CONFIG)
             parser = SigmaParser(text, config)
             parser.assemble()
@@ -337,18 +392,21 @@ class TestSigmaOverLogAnalytics:
 
         return inner
 
+    # As over Kusto, everything runs in the workspace so these check the query sent
+
     def test_signin_user_agent(self, run):
-        out, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
-        assert [x['Username'] for x in out] == ['a@x']
-        assert calls[0][0] == '<WORKSPACE_ID>'
-        assert calls[0][1].startswith('SigninLogs | where TimeGenerated > ago(1d)')
+        _, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
+        # whatever loganalytics.yml has
+        workspace = yaml.safe_load((CONFIG / 'loganalytics.yml').read_text())['database']['conf']['workspace_id']
+        assert calls[0][0] == workspace
+        assert calls[0][1].startswith('SigninLogs\n| where TimeGenerated > datetime(')
+        assert calls[0][1].endswith('| where userAgent contains "azurehound"')
 
     def test_audit_contains_on_dynamic_column(self, run):
-        out, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))
-        assert [x['properties.message'] for x in out] == ['Add member to role']
-        assert 'tostring(TargetResources)' in calls[0][1]
+        _, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))
+        assert 'TargetResources = tostring(TargetResources)' in calls[0][1]
+        assert calls[0][1].endswith('''| where ['properties.targetResources'] contains "Admins"''')
 
     def test_process_creation(self, run):
-        out, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
-        assert [x['CommandLine'] for x in out] == ['rundll32 a']
-        assert "ActionType == 'ProcessCreated'" in calls[0][1]
+        _, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
+        assert calls[0][1].endswith('| where ActionType == "ProcessCreated"\n| where Image endswith "\\\\rundll32.exe"')

@@ -55,7 +55,7 @@ class InstructionSet():
 
         for i in val:
             logging.debug(f'{self.id}: Added upstream {i}')
-            if not isinstance(i, Union[Database, InstructionSet]):
+            if not isinstance(i, (Database, InstructionSet)):
                 raise hqle.CompilerException(f'InstructionSet upstream not given Database or InstructionSet, got: {type(i)}')
 
         self._upstream = val
@@ -265,7 +265,8 @@ class InstructionSet():
 
         pool = InstructionPool(auto_run=False)
         for i in self.upstream:
-            pool.add_instruction(i, ctx.copy())
+            # A child cache per upstream, merged back into ours when it finishes
+            pool.add_instruction(i, ctx.fork())
 
         pool.start()
 

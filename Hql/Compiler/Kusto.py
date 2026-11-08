@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from Hql.Functions import Function
 
 import ipaddress
+import re
 
 # Where Kusto's ipv6 functions place IPv4 addresses
 KUSTO_IPV4_MAPPED = ipaddress.ip_network('::ffff:0:0/96')
@@ -36,6 +37,15 @@ KUSTO_ESCAPES = {'\\': '\\\\', '"': '\\"', '\n': '\\n', '\r': '\\r', '\t': '\\t'
 
 def kql_string(value:str) -> str:
     return '"' + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + '"'
+
+# Names that need no quoting, anything else goes in ['...']
+KQL_IDENTIFIER = re.compile(r'[A-Za-z_][A-Za-z0-9_]*')
+
+def kql_quoted_name(name:str) -> str:
+    return "['" + name.replace('\\', '\\\\').replace("'", "\\'") + "']"
+
+def kql_name(name:str) -> str:
+    return name if KQL_IDENTIFIER.fullmatch(name) else kql_quoted_name(name)
 
 def kql_verbatim(value:str) -> str:
     # In @"..." only a quote needs escaping, by doubling it
@@ -87,7 +97,12 @@ class KustoCompiler(Compiler):
         if not prep and src is None:
             assert self.tabular is not None
 
-            query = self.tabular if isinstance(self.tabular, str) else self.tabular.deparse()
+            if isinstance(self.tabular, str):
+                query = self.tabular
+            elif isinstance(self.tabular, References.NamedReference):
+                query = kql_name(self.tabular.name)
+            else:
+                query = self.tabular.deparse()
             for i in self.ops:
                 acc, _ = self.compile(i, prep=prep)
                 query += f'\n| {acc}'
@@ -192,9 +207,11 @@ class KustoCompiler(Compiler):
         A KQL column name for an assignment target or rename source, None if it isn't one.
         Paths into dynamic columns can be read but not assigned or renamed.
         '''
-        if not isinstance(ref, (References.NamedReference, References.EscapedNamedReference)):
+        if not isinstance(ref, References.NamedReference) or isinstance(ref, References.Wildcard):
             return None
-        return ref.deparse()
+        name, _ = self.compile(ref, prep=False)
+        assert isinstance(name, str)
+        return name
 
     def assignments(self, exprs, allow_bare:bool, prep:bool) -> Optional[list[str]]:
         '''
@@ -547,10 +564,13 @@ class KustoCompiler(Compiler):
             if not self.available(expr.name):
                 return None, expr
             return expr, None
-        return expr.deparse(), None
+        return kql_name(expr.name), None
 
     def EscapedNamedReference(self, expr: References.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
-        return self.NamedReference(expr, prep=prep)
+        if prep:
+            return self.NamedReference(expr, prep=prep)
+        # Escaped in Hql for a reason, possibly a KQL keyword too
+        return kql_quoted_name(expr.name), None
 
     # Kusto has no wildcard column matching in predicates
     def Wildcard(self, expr: References.Wildcard, prep:bool=True) -> tuple[object, object]:
@@ -564,4 +584,15 @@ class KustoCompiler(Compiler):
                     return None, expr
             return expr, None
 
-        return expr.deparse(), None
+        # The first name is the column, the rest index into it
+        out = ''
+        for i in expr.path:
+            name, _ = self.compile(i, prep=prep)
+            assert isinstance(name, str)
+            if not out:
+                out = name
+            elif name.startswith('['):
+                out += name
+            else:
+                out += '.' + name
+        return out, None

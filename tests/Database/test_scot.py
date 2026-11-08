@@ -433,13 +433,16 @@ def test_alertgroup_result_supports_datetime_extend():
         ]
     )
 
-    result = extend.eval(ctx).data["alertgroup"].to_dicts()
+    table = extend.eval(ctx).data["alertgroup"]
+    result = table.to_dicts()
 
     assert len(result) == 1
     assert result[0]["id"] == 42
     assert result[0]["created"] == "2026-08-31T12:34:56Z"
     assert result[0]["subject"] == "Example alertgroup"
-    assert isinstance(result[0]["TimeGenerated"], datetime.datetime)
+    # to_dicts presents datetimes as ISO strings, the column itself is a datetime
+    assert result[0]["TimeGenerated"] == "2026-08-31T12:34:56"
+    assert isinstance(table.df["TimeGenerated"][0], datetime.datetime)
 
 
 def test_alertgroup_to_alert_join_without_where_clause(monkeypatch):

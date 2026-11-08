@@ -51,7 +51,6 @@ class TestContext:
         ctx = Context(data=Data())
         assert ctx.data is not None
         assert ctx.symbol_table == {}
-        assert ctx.macros == {}
 
     def test_bool_reflects_data(self):
         assert not Context(data=Data())

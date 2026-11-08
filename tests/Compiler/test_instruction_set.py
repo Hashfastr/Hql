@@ -11,9 +11,9 @@ from Hql.Operators.Count import Count
 from Hql.Operators.Take import Take
 
 
-class _FakeUpstream:
+class _FakeUpstream(Database):
     def __init__(self, name="fake"):
-        self.name = name
+        super().__init__({}, name=name)
 
     def to_dict(self):
         return {"type": "fake", "name": self.name}
@@ -33,6 +33,10 @@ class TestInstructionSetInit:
     def test_empty_upstream_raises(self):
         with pytest.raises(hqle.CompilerException):
             InstructionSet([])
+
+    def test_non_database_upstream_raises(self):
+        with pytest.raises(hqle.CompilerException):
+            InstructionSet(object())
 
     def test_single_non_sequence_wraps(self):
         iset = InstructionSet(_FakeUpstream())
@@ -88,11 +92,10 @@ class TestIsEmpty:
         iset = InstructionSet(_FakeUpstream())
         assert not iset.is_empty()
 
-    def test_reports_empty_when_both_cleared(self):
+    def test_upstream_cannot_be_cleared(self):
         iset = InstructionSet(_FakeUpstream())
-        iset.upstream = []
-        iset.ops = []
-        assert iset.is_empty()
+        with pytest.raises(hqle.CompilerException):
+            iset.upstream = []
 
 
 class TestAddOp:

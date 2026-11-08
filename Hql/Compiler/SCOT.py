@@ -290,7 +290,9 @@ class SCOTCompiler(Compiler):
 
         if self.endpoint is None or not self.endpoint.supports_limit:
             return None, op
-        if not isinstance(op.expr, Integer) or op.expr.value < 0:
+        # Take.expr asserts an Integer, an unresolved or invalid limit just stays local
+        limit = getattr(op, '_expr', None)
+        if not isinstance(limit, Integer) or limit.value < 0:
             return None, op
 
         targets = [table.str() for table in op.tables]
@@ -300,7 +302,7 @@ class SCOTCompiler(Compiler):
         if not applies:
             return None, op
 
-        requested = op.expr.value
+        requested = limit.value
         self.limit = requested if self.limit is None else min(self.limit, requested)
         return op, None
 

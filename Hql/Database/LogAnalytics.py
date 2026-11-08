@@ -141,7 +141,7 @@ class LogAnalytics(Kusto):
 
         try:
             return self.query_client.query_workspace(
-                self.workspace_id, self.compiler(), timespan=self._timespan
+                self.workspace_id, self.compile(), timespan=self._timespan
             )
         except ClientAuthenticationError as exc:
             hint = ', run `az login` and retry' if self.auth == 'azcli' else ''

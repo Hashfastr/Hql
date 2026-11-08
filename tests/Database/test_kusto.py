@@ -108,30 +108,31 @@ def test_where_and_take_are_pushed(monkeypatch):
 
     query, take = calls[0][1].rsplit('\n', 1)
     assert query.startswith('Events\n| where ')
-    assert sorted(query.split('| where ')[1].split(' and ')) == ["id == 2", "name contains 'a'"]
+    assert sorted(query.split('| where ')[1].split(' and ')) == ["id == 2", 'name contains "a"']
     assert take == '| take 1'
     assert rows == [{'id': 2, 'name': 'ab'}]
 
 
-def test_where_after_a_take_is_not_pushed(monkeypatch):
+def test_where_after_a_take_is_pushed_in_order(monkeypatch):
+    # KQL pipes run in order like Hql's, the where still applies to the taken rows
     calls, rows = run_kusto(
         monkeypatch,
         "database('kusto').raw('Events')\n| take 2\n| where id == 2",
-        [[1, 'a'], [2, 'b']],
+        [[2, 'b']],
     )
 
-    assert calls == [('test-database', 'Events\n| take 2')]
+    assert calls == [('test-database', 'Events\n| take 2\n| where id == 2')]
     assert rows == [{'id': 2, 'name': 'b'}]
 
 
-def test_consecutive_takes_push_the_smallest(monkeypatch):
+def test_consecutive_takes_are_pushed_in_order(monkeypatch):
     calls, _ = run_kusto(
         monkeypatch,
         "database('kusto').raw('Events')\n| take 5\n| take 3\n| take 4",
         [],
     )
 
-    assert calls == [('test-database', 'Events\n| take 3')]
+    assert calls == [('test-database', 'Events\n| take 5\n| take 3\n| take 4')]
 
 
 def test_take_from_tables_is_not_pushed():
@@ -290,7 +291,8 @@ def test_result_metadata_preserves_datetime_after_null_values():
 
     assert len(table) == 2
     assert table.to_dicts()[0]['EventTime'] is None
-    assert table.to_dicts()[1]['EventTime'] == event_time.replace(tzinfo=None)
+    # to_dicts presents datetimes as ISO strings
+    assert table.to_dicts()[1]['EventTime'] == event_time.replace(tzinfo=None).isoformat()
     assert isinstance(table.schema.schema.schema['EventTime'], hqlt.datetime)
 
 

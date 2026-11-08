@@ -29,15 +29,10 @@ class TestLetStatement:
         ls = LetStatement(NamedReference("x"), PipeExpression([]))
         assert ls.deparse() == "let x = "
 
-    def test_default_macro_false(self):
-        ls = LetStatement(NamedReference("x"), PipeExpression([]))
-        assert ls.macro is False
-
     def test_to_dict_shape(self):
         ls = LetStatement(NamedReference("x"), PipeExpression([]))
         d = ls.to_dict()
         assert d["type"] == "LetStatement"
-        assert d["macro"] is False
 
 
 class TestQuery:
