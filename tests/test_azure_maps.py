@@ -277,13 +277,18 @@ class TestSigmaOverKusto:
         assert [x['Username'] for x in out] == ['a@x']
         assert calls[0].startswith('SigninLogs | where TimeGenerated > ago(1d)')
 
+    # The map's extend and the rule's where run in Kusto, which the fake client doesn't
+    # evaluate, so these check the query sent
+
     def test_signin_unquoted_result_type(self, run):
-        out, _ = run(rule('azure', 'service: signinlogs', ['ResultType: 50053']))
-        assert [x['Username'] for x in out] == ['b@x']
+        _, calls = run(rule('azure', 'service: signinlogs', ['ResultType: 50053']))
+        assert 'ResultType = toint(ResultType)' in calls[0]
+        assert calls[0].endswith('| where ResultType == 50053')
 
     def test_signin_status_success(self, run):
-        out, _ = run(rule('azure', 'service: signinlogs', ['Status: Success']))
-        assert [x['Username'] for x in out] == ['a@x']
+        _, calls = run(rule('azure', 'service: signinlogs', ['Status: Success']))
+        assert 'Status = iff(ResultType == "0", "Success", tostring(Status))' in calls[0]
+        assert calls[0].endswith('| where Status == "Success"')
 
     def test_audit_contains_on_dynamic_column(self, run):
         out, calls = run(rule('azure', 'service: auditlogs', ['properties.targetResources|contains: Admins']))

@@ -16,6 +16,21 @@ if TYPE_CHECKING:
     from Hql.Expressions import Literals
     from Hql.Functions import Function
 
+import ipaddress
+
+# Where Kusto's ipv6 functions place IPv4 addresses
+KUSTO_IPV4_MAPPED = ipaddress.ip_network('::ffff:0:0/96')
+
+# Hql functions with the same semantics in KQL, by their KQL name.
+# Each converts what it can't parse to null, as Hql's do.
+KUSTO_FUNCTIONS = {
+    'iff': 'iff',
+    'toint': 'toint',
+    'tostring': 'tostring',
+    'todouble': 'todouble',
+    'tofloat': 'toreal',
+}
+
 # Escapes for a regular (non-verbatim) KQL string literal
 KUSTO_ESCAPES = {'\\': '\\\\', '"': '\\"', '\n': '\\n', '\r': '\\r', '\t': '\\t'}
 
@@ -48,6 +63,12 @@ class KustoCompiler(Compiler):
         self.tabular:str|References.Reference|Operators.Union|None = None
         self.ops:list[Operators.Operator] = []
 
+        # Columns the pushed operators have taken away. KQL fails on a reference to one,
+        # where Hql sees a missing field, so anything that references one stays local.
+        self.removed:set[str] = set()
+        # The only columns left after a pushed project, None before one
+        self.kept:Optional[set[str]] = None
+
     def add_index(self, name:str|StringLiteral|References.Reference):
         from Hql.Expressions.Literals import StringLiteral
 
@@ -71,6 +92,13 @@ class KustoCompiler(Compiler):
                 acc, _ = self.compile(i, prep=prep)
                 query += f'\n| {acc}'
             return query, None
+
+        # Comparisons only preprocess their right hand side, check the field they read too
+        lh = getattr(src, 'lh', None)
+        if prep and isinstance(lh, References.Reference):
+            _, rej = self.compile(lh)
+            if rej is not None:
+                return None, src
 
         return Compiler.compile(self, src, prep=prep)
 
@@ -125,6 +153,108 @@ class KustoCompiler(Compiler):
 
         self.ops.append(op)
         return op, None
+
+    def available(self, name:str) -> bool:
+        return name not in self.removed and (self.kept is None or name in self.kept)
+
+    def provide(self, name:str):
+        self.removed.discard(name)
+        if self.kept is not None:
+            self.kept.add(name)
+
+    def track(self, op:Operators.Operator):
+        '''Updates the columns left after a pushed operator.'''
+        from Hql.Expressions.References import NamedExpression
+
+        if op.type == 'Project':
+            self.kept = set()
+            self.removed = set()
+
+        new = set()
+        old = set()
+        for i in getattr(op, 'exprs'):
+            if isinstance(i, NamedExpression):
+                new.add(getattr(i.paths[0], 'name'))
+                if op.type == 'ProjectRename':
+                    old.add(getattr(i.value, 'name'))
+            elif op.type == 'Project':
+                new.add(getattr(i, 'name'))
+
+        for i in old - new:
+            self.removed.add(i)
+            if self.kept is not None:
+                self.kept.discard(i)
+        for i in new:
+            self.provide(i)
+
+    def column(self, ref:object) -> Optional[str]:
+        '''
+        A KQL column name for an assignment target or rename source, None if it isn't one.
+        Paths into dynamic columns can be read but not assigned or renamed.
+        '''
+        if not isinstance(ref, (References.NamedReference, References.EscapedNamedReference)):
+            return None
+        return ref.deparse()
+
+    def assignments(self, exprs, allow_bare:bool, prep:bool) -> Optional[list[str]]:
+        '''
+        Compiles name = value pairs, and bare columns when allowed.
+        None if any of them can't be expressed, the whole operator then stays local.
+        '''
+        from Hql.Expressions.References import NamedExpression
+
+        out = []
+        for i in exprs:
+            if not isinstance(i, NamedExpression):
+                name = self.column(i)
+                if not allow_bare or name is None:
+                    return None
+                if prep and not self.available(getattr(i, 'name')):
+                    return None
+                out.append(name)
+                continue
+
+            if len(i.paths) != 1:
+                return None
+            name = self.column(i.paths[0])
+            if name is None:
+                return None
+
+            # Checked against the columns before this operator, only while preprocessing
+            if prep:
+                _, rej = self.compile(i.value)
+                if rej is not None:
+                    return None
+            value, _ = self.compile(i.value, prep=False)
+            out.append(f'{name} = {value}')
+        return out
+
+    def assigning_op(self, op:Operators.Operator, optok:str, allow_bare:bool, prep:bool) -> tuple[object, object]:
+        exprs = self.assignments(getattr(op, 'exprs'), allow_bare, prep)
+        if exprs is None or not exprs:
+            return None, op
+
+        if not prep:
+            return f'{optok} ' + ', '.join(exprs), None
+
+        self.track(op)
+        self.ops.append(op)
+        return op, None
+
+    def Extend(self, op:Operators.Extend, prep:bool=True) -> tuple[object, object]:
+        return self.assigning_op(op, 'extend', False, prep)
+
+    def Project(self, op:Operators.Project, prep:bool=True) -> tuple[object, object]:
+        return self.assigning_op(op, 'project', True, prep)
+
+    def ProjectRename(self, op:Operators.ProjectRename, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.References import NamedExpression
+
+        # KQL renames columns only, not values or paths into dynamic columns
+        for i in op.exprs:
+            if isinstance(i, NamedExpression) and self.column(i.value) is None:
+                return None, op
+        return self.assigning_op(op, 'project-rename', True, prep)
 
     '''
     Logic
@@ -314,7 +444,7 @@ class KustoCompiler(Compiler):
 
         if expr.name == 'isnull':
             lh = expr.args[0]
-            if not isinstance(lh, Reference):
+            if not isinstance(lh, Reference) or (prep and self.compile(lh)[1] is not None):
                 return None, expr
             if prep:
                 return expr, None
@@ -322,6 +452,38 @@ class KustoCompiler(Compiler):
             # Kusto strings are empty rather than null
             name, _ = self.compile(lh, prep=prep)
             return f'isempty({name})', None
+
+        if expr.name in KUSTO_FUNCTIONS:
+            if prep:
+                for i in expr.args:
+                    _, rej = self.compile(i)
+                    if rej is not None:
+                        return None, expr
+                return expr, None
+
+            args = [str(self.compile(x, prep=prep)[0]) for x in expr.args]
+            return f'{KUSTO_FUNCTIONS[expr.name]}({", ".join(args)})', None
+
+        from Hql.Functions.ip_range import ip_is_in_range
+        if isinstance(expr, ip_is_in_range):
+            from Hql.Expressions.Literals import StringLiteral
+
+            lh, cidr = expr.args
+            if not isinstance(lh, Reference) or not isinstance(cidr, StringLiteral):
+                return None, expr
+            if prep and self.compile(lh)[1] is not None:
+                return None, expr
+            # Kusto reads IPv4 addresses as IPv4-mapped IPv6, so they'd match ranges over ::ffff:0:0/96
+            if expr.version == 6 and expr.network.overlaps(KUSTO_IPV4_MAPPED):
+                return None, expr
+            if prep:
+                return expr, None
+
+            name, _ = self.compile(lh, prep=prep)
+            rh, _ = self.compile(cidr, prep=prep)
+            # Kusto gives null for a value that isn't an address of that version, Hql gives false.
+            # A bare null would null out a surrounding not() or 'or' and drop the row.
+            return f'coalesce({expr.name}({name}, {rh}), false)', None
 
         return None, expr
 
@@ -382,13 +544,13 @@ class KustoCompiler(Compiler):
 
     def NamedReference(self, expr: References.NamedReference, prep:bool=True) -> tuple[object, object]:
         if prep:
+            if not self.available(expr.name):
+                return None, expr
             return expr, None
         return expr.deparse(), None
 
     def EscapedNamedReference(self, expr: References.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
-        if prep:
-            return expr, None
-        return expr.deparse(), None
+        return self.NamedReference(expr, prep=prep)
 
     # Kusto has no wildcard column matching in predicates
     def Wildcard(self, expr: References.Wildcard, prep:bool=True) -> tuple[object, object]:

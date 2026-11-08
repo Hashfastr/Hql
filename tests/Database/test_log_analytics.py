@@ -302,10 +302,11 @@ class windows = {
 
         return inner
 
-    def test_where_is_pushed_past_project_rename(self, run):
-        # renamed names are mapped back to the table's columns
+    def test_where_is_pushed_after_project_rename(self, run):
+        # the rename is pushed too, so the where uses the renamed names
         assert run(r"TargetObject|endswith: '\Run'") == [
-            'DeviceRegistryEvents\n| where ActionType == "RegistryValueSet"\n| where RegistryKey endswith "\\\\Run"'
+            'DeviceRegistryEvents\n| project-rename TargetObject = RegistryKey, EventType = ActionType'
+            '\n| where EventType == "RegistryValueSet"\n| where TargetObject endswith "\\\\Run"'
         ]
 
     def test_lets_on_one_table_keep_their_own_filters(self, run):
@@ -318,5 +319,6 @@ class windows = {
         # the term on the removed name has to stay local
         query, = run("TargetObject: x\n        ActionType: y")
         assert query == (
-            'DeviceRegistryEvents\n| where ActionType == "RegistryValueSet"\n| where RegistryKey == "x"'
+            'DeviceRegistryEvents\n| project-rename TargetObject = RegistryKey, EventType = ActionType'
+            '\n| where EventType == "RegistryValueSet"\n| where TargetObject == "x"'
         )

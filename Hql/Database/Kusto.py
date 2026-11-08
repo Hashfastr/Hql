@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     from Hql.Data import Schema
     import datetime
 
+# Operators KustoCompiler can push into the native query
+PUSHED_OPS = ('Where', 'Take', 'Extend', 'ProjectRename', 'Project')
 
 '''
 Example configuration:
@@ -107,15 +109,12 @@ class Kusto(Database):
         return copied
 
     def add_op(self, op:Union[Operator, BranchDescriptor]) -> tuple[Optional[Operator], Optional[Operator]]:
-        """Push where and take onto the native query, everything else executes locally."""
-        from Hql.Operators.Take import Take
-        from Hql.Operators.Where import Where
-
+        """Push the operators KQL can express onto the native query, everything else executes locally."""
         if not isinstance(op, Operator):
             op = op.get_op()
 
-        # Nothing to append to
-        if self.compiler.tabular is None or not isinstance(op, (Where, Take)):
+        # Nothing to append to. Matched by type so project-away and friends stay local.
+        if self.compiler.tabular is None or op.type not in PUSHED_OPS:
             return None, op
 
         return self.compiler.add_op(op)

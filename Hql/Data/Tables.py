@@ -86,7 +86,8 @@ class Table():
             self.schema = Schema(data=self.df)
 
         elif schema:
-            logging.warning('Schema defined in table without data')
+            # A query with no matches still knows its columns
+            logging.debug('Schema defined in table without data')
             self.schema = schema
 
         else:

@@ -20,7 +20,7 @@ def compile_sigma(detection):
     where = parser.assembly.statements[-1].root.pipes[0]
     desc, _ = HqlCompiler(Config()).compile(where)
     compiler = KustoCompiler()
-    compiler.set_index('Events')
+    compiler.add_index('Events')
     _, rej = compiler.add_op(desc)
     query = compiler.simple_compile()
     assert query.startswith('Events\n| where ')
@@ -34,7 +34,7 @@ def clauses(query):
 
 def test_index_without_operators_is_the_table():
     compiler = KustoCompiler()
-    compiler.set_index('Events')
+    compiler.add_index('Events')
     assert compiler.simple_compile() == 'Events'
 
 
@@ -129,3 +129,85 @@ def test_escaped_names_and_paths():
 
     acc, _ = compiler.compile(EscapedNamedReference('where'), prep=False)
     assert acc == "['where']"
+
+
+def test_cidr_is_pushed_down_null_safe():
+    query, rej = compile_sigma(r'''    selection:
+        EventID: 4624
+    filter:
+        IpAddress|cidr:
+            - '10.0.0.0/8'
+            - 'fe80::/10'
+    condition: selection and not filter''')
+    assert rej is None
+    # Kusto's null for an address of the other version is coalesced to Hql's false,
+    # or not() would drop the public addresses this is meant to keep
+    assert "not(" in query
+    assert "coalesce(ipv4_is_in_range(IpAddress, \"10.0.0.0/8\"), false)" in query
+    assert "coalesce(ipv6_is_in_range(IpAddress, \"fe80::/10\"), false)" in query
+
+
+def test_ipv4_mapped_range_stays_local():
+    # Kusto puts IPv4 addresses in ::ffff:0:0/96, Hql doesn't
+    query, rej = compile_sigma(r'''    selection:
+        EventID: 4624
+        IpAddress|cidr: '::ffff:0:0/96'
+    condition: selection''')
+    assert query == 'EventID == 4624'
+    assert rej is not None
+
+
+def compile_pipes(hql):
+    from Hql.Parser import Parser
+
+    parser = Parser(hql, 'test')
+    parser.assemble(target='emptyPipedExpression')
+    compiler = KustoCompiler()
+    compiler.add_index('Events')
+
+    rejected = []
+    for op in parser.assembly.pipes:
+        desc, _ = HqlCompiler(Config()).compile(op)
+        # Like the database, everything after a rejection stays local
+        if rejected:
+            rejected.append(desc.get_op())
+            continue
+        _, rej = compiler.add_op(desc)
+        if rej is not None:
+            rejected.append(rej)
+    return compiler.simple_compile().removeprefix('Events'), rejected
+
+
+def test_table_map_operators_are_pushed():
+    query, rej = compile_pipes(
+        "| extend Status = iff(ResultType == '0', 'Success', tostring(Status)), ResultType = toint(ResultType)"
+        "| extend ['DeviceDetail.trusttype'] = DeviceDetail.trustType"
+        "| project-rename userAgent = UserAgent"
+        "| project TimeGenerated, Agent = userAgent, Status"
+    )
+    assert rej == []
+    assert query.split('\n| ')[1:] == [
+        'extend Status = iff(ResultType == "0", "Success", tostring(Status)), ResultType = toint(ResultType)',
+        "extend ['DeviceDetail.trusttype'] = DeviceDetail.trustType",
+        'project-rename userAgent = UserAgent',
+        'project TimeGenerated, Agent = userAgent, Status',
+    ]
+
+
+def test_inexpressible_operators_stay_local():
+    # A function KQL isn't given, assigning into a dynamic column, and renaming a path
+    for hql in (
+        "| extend a = base64(b)",
+        "| extend DeviceDetail.trustType = 'x'",
+        "| project-rename a = DeviceDetail.trustType",
+        "| project-away a",
+    ):
+        query, rej = compile_pipes(hql)
+        assert query == '', hql
+        assert len(rej) == 1, hql
+
+
+def test_operators_after_a_local_one_stay_local():
+    query, rej = compile_pipes("| extend a = toint(b) | summarize count() by a | project a")
+    assert query == '\n| extend a = toint(b)'
+    assert [x.type for x in rej] == ['Summarize', 'Project']

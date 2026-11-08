@@ -343,20 +343,25 @@ def _(
 ):
     # Logging goes to marimo's stderr, which only takes writes from the thread running a cell.
     # Detections run in engine threads, send their records to the terminal instead.
+    # Compared as Thread objects: an ident is reused once its thread exits, and an engine
+    # thread given the cell's old ident would write to marimo outside of any cell.
     class EngineLogs(logging.StreamHandler):
         def __init__(self, cell_thread):
             super().__init__()
             self.cell_thread = cell_thread
 
         def emit(self, record):
-            self.setStream(sys.stderr if record.thread == self.cell_thread else sys.__stderr__)
+            in_cell = threading.current_thread() is self.cell_thread
+            self.setStream(sys.stderr if in_cell else sys.__stderr__)
             super().emit(record)
 
     # Starts an engine over every detection in directory, with configs from make_conf
     def launch_engine(directory, config_dir, make_conf, port):
+        # Re-running this cell redefines EngineLogs, so match the old handler by name
         _root = logging.getLogger()
-        if not any(isinstance(_h, EngineLogs) for _h in _root.handlers):
-            _root.addHandler(EngineLogs(threading.get_ident()))
+        for _h in [x for x in _root.handlers if type(x).__name__ == 'EngineLogs']:
+            _root.removeHandler(_h)
+        _root.addHandler(EngineLogs(threading.current_thread()))
 
         class DemoEngine(HacEngine):
             def load_conf(self):
