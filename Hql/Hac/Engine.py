@@ -156,6 +156,8 @@ class Detection():
         self.schedule:Optional[Schedule] = None
         self.id = ''
         self.sigma = False
+        # Why text that is a Sigma rule failed to parse as one
+        self.sigma_error:Optional[Exception] = None
         self.no_hac = no_hac
 
         self.hac:Optional[Hac] = None
@@ -171,7 +173,7 @@ class Detection():
             self.id = self.hac.id
             self.schedule = Schedule(self.hac.schedule)
 
-        elif no_hac:
+        elif no_hac or self.sigma_error:
             self.id = str(uuid.uuid4())
 
     def to_dict(self) -> dict:
@@ -188,10 +190,11 @@ class Detection():
 
     def gen_hac(self) -> tuple[Optional[Hac], Optional[SigmaParser]]:
         from Hql.Hac.Parser import Parser as HaCParser
-        from Hql.Parser.Sigma import SigmaParser
+        from Hql.Parser.Sigma import SigmaParser, is_sigma_text
 
         parser = None
         hac = None
+        self.sigma_error = None
 
         try:
             # Only keep the sigma parser if it's a valid rule, plenty of Hql is valid yaml
@@ -199,7 +202,13 @@ class Detection():
             hac = sigma.gen_hac()
             parser = sigma
             self.sigma = True
-        except Exception:
+        except Exception as e:
+            # A Sigma rule that failed shouldn't be parsed as Hql, that only hides why
+            if is_sigma_text(self.txt):
+                logging.error(f'Invalid Sigma rule {self.src}: {e}')
+                self.sigma_error = e
+                return None, None
+
             # We're just skipping over to HaC Parsing then
             try:
                 hac = HaCParser.parse_text(self.txt, self.src)
@@ -234,6 +243,8 @@ class Detection():
 
         if parser:
             self.parser = parser
+        elif self.sigma_error:
+            self.parser = None
         else:
             self.parser = Parser(self.txt, self.src, paths=self.config.get_import_paths())
 
@@ -245,6 +256,8 @@ class Detection():
         logging.debug(f'Compiling {self.src}')
 
         self.reparse()
+        if self.sigma_error:
+            raise hqle.QueryException(f'Invalid Sigma rule: {self.sigma_error}') from self.sigma_error
         if self.parser == None:
             raise hqle.QueryException(f'Failed to parse query for {self.id}')
 

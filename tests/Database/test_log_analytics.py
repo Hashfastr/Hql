@@ -261,3 +261,62 @@ def test_explicit_azcli_ignores_app_credentials():
 def test_unknown_auth_is_rejected():
     with pytest.raises(hqle.ConfigException, match='auth must be one of secret, azcli'):
         LogAnalytics(la_config(auth='password'), query_client=FakeClient(None))
+
+
+class TestSigmaPushdown:
+    '''Sigma through a class of lets over one Log Analytics table, as maps/azure.hql does.'''
+
+    HEADER = '''
+let base = database('la').index('DeviceRegistryEvents')
+    | project-rename TargetObject = RegistryKey, EventType = ActionType;
+class windows = {
+    let registry_add = base | where EventType == 'RegistryKeyCreated';
+    let registry_set = base | where EventType == 'RegistryValueSet';
+};
+'''
+
+    @pytest.fixture
+    def run(self, monkeypatch):
+        client = FakeClient(result([], [('TargetObject', 'string'), ('EventType', 'string')]))
+
+        class TestLogAnalytics(LogAnalytics):
+            def __init__(self, config, name='Log Analytics Database'):
+                super().__init__(config, name=name, query_client=client)
+
+        monkeypatch.setitem(database_registry, 'LogAnalytics', TestLogAnalytics)
+
+        def inner(detection):
+            from Hql.Parser.Sigma import SigmaParser
+
+            config = Config()
+            config.set_database('la', la_config())
+            config.load_sigma('test', {'header': self.HEADER})
+            text = (
+                'title: t\nlogsource:\n    product: windows\n    category: registry_set\n'
+                f'detection:\n    selection:\n        {detection}\n    condition: selection\n'
+            )
+            parser = SigmaParser(text, config)
+            parser.assemble()
+            HqlCompiler(config, parser.assembly, time=False).run()
+            return [query for _, query, _ in client.calls]
+
+        return inner
+
+    def test_where_is_pushed_past_project_rename(self, run):
+        # renamed names are mapped back to the table's columns
+        assert run(r"TargetObject|endswith: '\Run'") == [
+            'DeviceRegistryEvents\n| where ActionType == "RegistryValueSet"\n| where RegistryKey endswith "\\\\Run"'
+        ]
+
+    def test_lets_on_one_table_keep_their_own_filters(self, run):
+        # registry_add's where used to be pushed into the shared database too
+        query, = run("TargetObject: x")
+        assert 'RegistryKeyCreated' not in query
+
+    def test_where_on_a_renamed_away_name_is_split(self, run):
+        # EventType is the rename's new name, ActionType the old one it removes; only
+        # the term on the removed name has to stay local
+        query, = run("TargetObject: x\n        ActionType: y")
+        assert query == (
+            'DeviceRegistryEvents\n| where ActionType == "RegistryValueSet"\n| where RegistryKey == "x"'
+        )

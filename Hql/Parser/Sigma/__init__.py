@@ -14,14 +14,27 @@ if TYPE_CHECKING:
     from Hql.Hac import Hac
     from Hql.Query import Statement
 
+def is_sigma_text(txt:str) -> bool:
+    '''
+    Whether text is meant as a Sigma rule: it has the top level keys every rule does.
+    Found even when the YAML is invalid, so a broken rule isn't mistaken for Hql.
+    '''
+    import re
+    return all(re.search(rf'^{x}\s*:', txt, re.MULTILINE) for x in ('logsource', 'detection'))
+
 class SigmaParser():
     def __init__(self, txt:str, config:Config):
         from Hql.Query import Query
         import yaml
 
         self.config = config
-        self.loaded = yaml.load(txt, yaml.SafeLoader)
-        if isinstance(self.loaded, str):
+        try:
+            self.loaded = yaml.load(txt, yaml.SafeLoader)
+        except yaml.composer.ComposerError as e:
+            raise hqle.QueryException('Multi-document Sigma rules, such as correlations, are not supported') from e
+        except yaml.YAMLError as e:
+            raise hqle.QueryException(f'Sigma rule is not valid YAML: {e}') from e
+        if not isinstance(self.loaded, dict):
             raise hqle.QueryException('Invalid sigma supplied to parser')
 
         self.assembly:Optional[Query] = None
@@ -139,9 +152,17 @@ class SigmaParser():
 
         selections = []
         for i in dac:
-            if i in ('condition', 'posthql'):
+            if i in ('condition', 'posthql', 'timeframe'):
                 continue
 
             selections.append(Selection(dac[i], name=i))
 
-        return Condition(dac['condition'], selections)
+        if 'condition' not in dac:
+            raise hqle.QueryException('Sigma detection has no condition')
+
+        # A list of conditions matches if any of them do
+        condition = dac['condition']
+        if isinstance(condition, list):
+            condition = ' or '.join(f'({x})' for x in condition)
+
+        return Condition(str(condition), selections)

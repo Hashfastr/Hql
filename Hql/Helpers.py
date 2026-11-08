@@ -17,7 +17,7 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
     from Hql.Exceptions import HqlExceptions as hqle
     from Hql.Exceptions import HacExceptions as hace
     from Hql.Parser import Parser
-    from Hql.Parser.Sigma import SigmaParser
+    from Hql.Parser.Sigma import SigmaParser, is_sigma_text
     from Hql.Compiler import HqlCompiler
     from Hql.Hac.Parser import Parser as HaCParser
     from Hql.Query import Query
@@ -38,6 +38,9 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
         hac = sigma.gen_hac()
         parser = sigma
     except Exception as e:
+        # A Sigma rule that failed shouldn't be parsed as Hql, that only hides why
+        if is_sigma_text(text):
+            raise hqle.QueryException(f'Invalid Sigma rule: {e}') from e
         logging.warning(e)
         logging.info('Failed Sigma, using Hql')
         # We're just skipping over to HaC Parsing then

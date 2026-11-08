@@ -1,13 +1,23 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from antlr4 import CommonTokenStream, InputStream
+from antlr4.error.ErrorListener import ErrorListener
 from .grammar.SigmaLexer import SigmaLexer
 from .grammar.SigmaParser import SigmaParser
 from .grammar.SigmaVisitor import SigmaVisitor
 from fnmatch import fnmatch
 
+from Hql.Exceptions import HqlExceptions as hqle
+
 if TYPE_CHECKING:
     from Hql.Parser.Sigma.Selection import Selection
+
+class ConditionErrorListener(ErrorListener):
+    def __init__(self, text:str):
+        self.text = text
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise hqle.QueryException(f'Invalid Sigma condition {self.text!r} at column {column}: {msg}')
 
 class Condition():
     def __init__(self, text:str, selections:list[Selection]):
@@ -24,10 +34,16 @@ class Condition():
         return matches
 
     def parse(self):
+        listener = ConditionErrorListener(self.text)
+
         lexer = SigmaLexer(InputStream(self.text))
-        token_stream = CommonTokenStream(lexer)
-        parser = SigmaParser(token_stream)
-         
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(listener)
+
+        parser = SigmaParser(CommonTokenStream(lexer))
+        parser.removeErrorListeners()
+        parser.addErrorListener(listener)
+
         return parser.condition()
 
     def assemble(self):
@@ -70,19 +86,26 @@ class Visitor(SigmaVisitor):
         return self.visit(ctx.Statement)
 
     def visitOfStatement(self, ctx: SigmaParser.OfStatementContext):
+        from itertools import combinations
         from Hql.Expressions.Logic import BinaryLogic
 
         specifier = self.visit(ctx.Specifier)
-
-        if specifier == '1':
-            logic_and = False
-        elif specifier == 'all':
-            logic_and = True
-        else:
-            raise Exception(f'Invalid of specifier {specifier}')
-
         target = [x.build_selection() for x in self.visit(ctx.Target)]
-        return BinaryLogic(target, logic_and)
+
+        if specifier == 'all':
+            return BinaryLogic(target, logic_and=True)
+
+        count = int(specifier)
+        if count < 1 or count > len(target):
+            raise hqle.QueryException(f'{count} of matches {len(target)} selections')
+        if count == 1:
+            return BinaryLogic(target, logic_and=False)
+
+        # At least count of them: any combination of count selections all matching
+        return BinaryLogic(
+            [BinaryLogic(list(x), logic_and=True) for x in combinations(target, count)],
+            logic_and=False,
+        )
 
     def visitOfSpecifier(self, ctx: SigmaParser.OfSpecifierContext):
         if ctx.Int:
@@ -102,14 +125,17 @@ class Visitor(SigmaVisitor):
         target = self.condition.get_sel(pat)
 
         if not target:
-            raise Exception(f'Specifier {pat} matches nothing')
+            raise hqle.QueryException(f'Sigma condition pattern {pat} matches no selection')
 
         return target
 
     def visitSelectionIdentifier(self, ctx: SigmaParser.SelectionIdentifierContext):
         if ctx.Basic:
             identifier = self.visit(ctx.Basic)
-            return self.condition.get_sel(identifier)[0].build_selection()
+            matches = self.condition.get_sel(identifier)
+            if not matches:
+                raise hqle.QueryException(f'Sigma condition references undefined selection {identifier}')
+            return matches[0].build_selection()
         else:
             return None
 

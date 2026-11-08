@@ -129,6 +129,10 @@ class Hac():
                 elif i == 'id':
                     self.asm['id'] = self.id
 
+                # Optional in Sigma
+                elif i == 'description' and self.src == 'sigma':
+                    self.asm['description'] = ''
+
                 else:
                     raise hace.HacException(f'Missing required field {i} in {self.src}')
 

@@ -15,6 +15,11 @@ class CacheSession(Session):
         self.cache:Cache = Cache() if cache is None else cache
         self.session = session
 
+    # requests.Session only pickles its own __attrs__, so a copy would lose cache and
+    # session. Share it instead, a copied database keeps using the same connection pool.
+    def __deepcopy__(self, memo:dict) -> CacheSession:
+        return self
+
     def get(
         self,
         url: _t.UriType,

@@ -56,7 +56,8 @@ class HqlCompiler(Compiler):
             self.Query(query)
 
     def compile(self, src:Union[Operators.Operator, Expression, Statement, None], prep:bool=True) -> tuple[BranchDescriptor, None]:
-        if not src:
+        # is None, an empty string literal is falsy but still an expression
+        if src is None:
             logging.error('Access Hql root via HqlCompiler.root not default compiler')
             raise hqle.CompilerException('Hql compiler with default parameter')
         return self.from_name(src.type)(src)
@@ -168,6 +169,7 @@ class HqlCompiler(Compiler):
         return None
 
     def Tabular(self, expr:PrepipeType) -> tuple[Optional[InstructionSet], Optional[Expression]]:
+        from copy import deepcopy
         from Hql.Database import Database, Static
         from Hql.Hac.Sources import Source
 
@@ -191,13 +193,15 @@ class HqlCompiler(Compiler):
         elif isinstance(expr, Functions.DotCompositeFunction):
             acc, _ = self.DotCompositeFunction(expr)
 
+        # Copies of declared tabulars: piping onto one pushes ops into its database,
+        # which mustn't leak into the declaration or the other lets built on it
         elif isinstance(expr, References.Path):
-            acc = self.get_member(expr)
+            acc = deepcopy(self.get_member(expr))
             if not isinstance(acc, (Database, InstructionSet)):
                 raise hqle.CompilerException(f'{expr.deparse()} is not a tabular class member')
 
         elif isinstance(expr, NamedReference):
-            acc = self.ctx.symbol_table[expr]
+            acc = deepcopy(self.ctx.symbol_table[expr])
 
             if not isinstance(acc, (Database, InstructionSet)):
                 acc = self.ctx.get_func('database')([]).eval(self.ctx)
@@ -393,6 +397,18 @@ class HqlCompiler(Compiler):
                         continue
 
                     if can_map == 2:
+                        # The terms of a where that don't need the blocked names can still move,
+                        # so one term on a renamed field doesn't keep the whole filter local
+                        split = self.split_where(optimized[i], op)
+                        if split:
+                            movable, stuck = split
+                            logging.debug(f'{op.get_op().id} split, part stays below {optimized[i].get_op().id}')
+                            optimized.insert(len(optimized) + i + 1, stuck)
+                            op = movable
+                            # optimized[i] moved down one with the insert after it
+                            i -= 1
+                            continue
+
                         logging.debug(f'{op.get_op().id} references names provided by {optimized[i].get_op().id}')
                         break
 
@@ -415,19 +431,62 @@ class HqlCompiler(Compiler):
 
         return optimized
 
+    @staticmethod
+    def and_terms(expr:Expression) -> list[Expression]:
+        '''The terms of a conjunction, through nested and single term BinaryLogic'''
+        if isinstance(expr, Logic.BinaryLogic) and (expr.logic_and or len(expr.exprs) == 1):
+            terms = []
+            for i in expr.exprs:
+                terms += HqlCompiler.and_terms(i)
+            return terms
+        return [expr]
+
+    def split_where(self, upstream:BranchDescriptor, integrating:BranchDescriptor) -> Optional[tuple[BranchDescriptor, BranchDescriptor]]:
+        '''
+        Splits a where that can't move past upstream into the terms that can and
+        the terms that can't, or None if it doesn't split.
+        '''
+        op = integrating.get_op()
+        if not isinstance(op, Operators.Where):
+            return None
+
+        movable, stuck = [], []
+        for term in self.and_terms(op.expr):
+            acc, _ = self.compile(Operators.Where(term, op.parameters))
+            can_map, _ = self.apply_map(upstream, acc)
+            (stuck if can_map == 2 else movable).append(term)
+
+        if not movable or not stuck:
+            return None
+
+        def where(terms:list) -> BranchDescriptor:
+            expr = terms[0] if len(terms) == 1 else Logic.BinaryLogic(terms, logic_and=True)
+            acc, _ = self.compile(Operators.Where(expr, op.parameters))
+            return acc
+
+        return where(movable), where(stuck)
+
     def apply_map(self, upstream:BranchDescriptor, integrating:BranchDescriptor) -> tuple[int, BranchDescriptor]:
         from copy import deepcopy
 
         if not upstream.mapping:
             return 0, integrating
 
+        # ProjectRename subclasses Project but keeps every column it doesn't rename,
+        # so only a reference to a name it renames away can't move past it
+        if type(upstream.op) is Operators.ProjectRename:
+            renamed_away = [x for x in upstream.mapping.values() if x not in upstream.mapping]
+            for i in integrating.references:
+                if i in renamed_away:
+                    return 2, integrating
+
         # Should use this to do allow for more more error checking here
-        if isinstance(upstream.op, Operators.Project):
+        elif isinstance(upstream.op, Operators.Project):
             for i in integrating.references:
                 if i not in upstream.mapping and i not in upstream.symmetric and i not in self.ctx.symbol_table:
                     return 2, integrating
 
-        elif type(upstream.op) in (Operators.Extend, Operators.ProjectRename):
+        elif type(upstream.op) is Operators.Extend:
             ...
             
         else:

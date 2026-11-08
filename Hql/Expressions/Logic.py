@@ -24,6 +24,25 @@ def lh_polars(expr:Expression) -> pl.Expr:
     from Hql.Expressions.References import Reference
     return expr.polars_value() if isinstance(expr, Reference) else expr.polars()
 
+def literal_equals(series:pl.Series, value) -> pl.Series:
+    '''
+    series == value, converting value to the series' type rather than failing,
+    such as a quoted '0' against an int field or 12345 against a string field.
+    '''
+    import polars as pl
+
+    if series.dtype.is_numeric() and isinstance(value, str):
+        try:
+            value = float(value) if series.dtype.is_float() else int(value)
+        except ValueError:
+            return pl.Series([False] * len(series), dtype=pl.Boolean)
+        return series == value
+
+    if series.dtype == pl.String and not isinstance(value, str):
+        return series == str(value)
+
+    return series == value
+
 # descriptive class
 class Logic(Expression):
     """Base class for expressions that evaluate as predicates."""
@@ -247,15 +266,22 @@ class Equality(Comparator):
         if len(reduced.rh) > 1:
             return reduced.expand_rh().polars()
 
-        lh = lh_polars(reduced.lh)
-        rh = reduced.rh[0].polars()
+        from Hql.Expressions.Literals import Float, Integer, StringLiteral
 
-        if reduced.cs:
+        lh = lh_polars(reduced.lh)
+        lit = reduced.rh[0]
+        rh = lit.polars()
+
+        if reduced.cs and isinstance(lit, (StringLiteral, Integer, Float)):
+            # The field's type is only known at runtime, compare '0' to 0 as Sigma does
+            value = lit.str() if isinstance(lit, StringLiteral) else lit.value
+            new = lh.map_batches(lambda x: literal_equals(x, value), return_dtype=pl.Boolean)
+        elif reduced.cs:
             new = (lh == rh)
         else:
             rh = pl.select(rh.str.escape_regex()).item()
             regex = f'(?i)^{rh}$'
-            new = lh.str.contains(regex)
+            new = lh.cast(pl.String).str.contains(regex)
 
         if reduced.neq:
             new = ~new
@@ -472,11 +498,22 @@ class Substring(Comparator):
         if len(self.rh) > 1:
             return self.expand_rh().polars()
         
-        lh = lh_polars(self.lh)
+        import polars as pl
+        from Hql.Expressions.References import Wildcard
+
+        # * matches if any string column does, as for a Sigma keyword
+        if isinstance(self.lh, Wildcard):
+            lh = pl.col(pl.String)
+        else:
+            lh = lh_polars(self.lh)
+
         if self.startswith or self.endswith:
             expr = self.prefix(lh, self.rh[0])
         else:
             expr = self.has(lh, self.rh[0])
+
+        if isinstance(self.lh, Wildcard):
+            expr = pl.any_horizontal(expr)
 
         return ~expr if self.neq else expr
 

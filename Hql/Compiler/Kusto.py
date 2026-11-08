@@ -16,6 +16,16 @@ if TYPE_CHECKING:
     from Hql.Expressions import Literals
     from Hql.Functions import Function
 
+# Escapes for a regular (non-verbatim) KQL string literal
+KUSTO_ESCAPES = {'\\': '\\\\', '"': '\\"', '\n': '\\n', '\r': '\\r', '\t': '\\t'}
+
+def kql_string(value:str) -> str:
+    return '"' + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + '"'
+
+def kql_verbatim(value:str) -> str:
+    # In @"..." only a quote needs escaping, by doubling it
+    return '@"' + value.replace('"', '""') + '"'
+
 class KustoCompiler(Compiler):
     """Compile supported HQL predicates into a Kusto where predicate."""
 
@@ -283,8 +293,6 @@ class KustoCompiler(Compiler):
         return f'{lh} {op} ({start} .. {end})', None
 
     def Regex(self, expr: Logic.Regex, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.Literals import StringLiteral
-
         if prep:
             # global has no meaning for a match
             if expr.g:
@@ -298,9 +306,7 @@ class KustoCompiler(Compiler):
         pattern = expr.rh.value.decode('utf-8')
         if flags:
             pattern = f'(?{flags}){pattern}'
-        pattern = StringLiteral(pattern).quote('"')
-
-        return f'{lh} matches regex @{pattern}', None
+        return f'{lh} matches regex {kql_verbatim(pattern)}', None
 
     # only executes static functions on preprocess and sees if we can handle the result
     def Function(self, expr:Function, prep:bool=True) -> tuple[object, object]:
@@ -326,7 +332,8 @@ class KustoCompiler(Compiler):
     def StringLiteral(self, expr: Literals.StringLiteral, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
-        return expr.quote('"'), None
+        # The literal's own quoting escapes for Hql, not KQL
+        return kql_string(expr.value.decode('utf-8')), None
 
     def MultiString(self, expr: Literals.MultiString, prep:bool=True) -> tuple[object, object]:
         return self.StringLiteral(expr, prep=prep)
