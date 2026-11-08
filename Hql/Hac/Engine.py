@@ -219,6 +219,7 @@ class Detection():
 
     def deparse(self) -> str:
         from Hql.Query import Query
+        from Hql.Parser.Sigma import SigmaParser
 
         deparse = ''
 
@@ -228,6 +229,9 @@ class Detection():
 
         if not self.parser:
             raise hqle.CompilerException(f'Attempting to deparse an unparsed query {self.id}')
+
+        if isinstance(self.parser, SigmaParser):
+            return deparse + "\n" + self.parser.deparse()
 
         self.parser.assemble()
         if not isinstance(self.parser.assembly, Query):

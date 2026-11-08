@@ -109,6 +109,9 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
             deparse += hac.render(target='decompile')
             deparse += '\n'
 
+        if isinstance(parser, SigmaParser):
+            return deparse + "\n" + parser.deparse()
+
         if not isinstance(parser.assembly, Query):
             raise hqle.CompilerException(f'Attempting to compile non-Query assembly {type(parser.assembly)}')
 

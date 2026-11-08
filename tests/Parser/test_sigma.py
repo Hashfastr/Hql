@@ -260,3 +260,28 @@ condition: selection
         detection = Detection(text, 'api', conf, no_hac=True)
         assert detection.sigma
         assert detection.hac.asm['description'] == ''
+
+
+class TestDeparse:
+    TEXT = rule(indent('''
+selection:
+    id: 1
+condition: selection
+'''))
+    HEADER = "class test = { let events = database('json').file('t.json') }"
+
+    def check(self, out):
+        # Header as written, not its assembled statements, then only the rule body
+        header, body = out.split('*/\n\n', 1)[1].split('\n', 1)
+        assert header == self.HEADER + ';'
+        assert body == "product('test').service('events')\n| where id == 1"
+
+    def test_run_query_keeps_header_unexpanded(self, conf):
+        self.check(run_query(self.TEXT, conf, deparse=True))
+
+    def test_detection_keeps_header_unexpanded(self, conf):
+        self.check(Detection(self.TEXT, 'api', conf).deparse())
+
+    def test_deparse_compiles_back(self, conf):
+        out = run_query(self.TEXT, conf, deparse=True)
+        assert sorted(i['id'] for i in run_query(out, conf)['t.json'].to_dicts()) == [1]

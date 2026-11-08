@@ -6,6 +6,7 @@ from Hql.Exceptions import HqlExceptions as hqle
 if TYPE_CHECKING:
     from Hql.Config import Config
     from Hql.Parser.Sigma.Condition import Condition
+    from Hql.Query import Query, QueryStatement
 
 import logging
 
@@ -24,7 +25,6 @@ def is_sigma_text(txt:str) -> bool:
 
 class SigmaParser():
     def __init__(self, txt:str, config:Config):
-        from Hql.Query import Query
         import yaml
 
         self.config = config
@@ -38,6 +38,7 @@ class SigmaParser():
             raise hqle.QueryException('Invalid sigma supplied to parser')
 
         self.assembly:Optional[Query] = None
+        self.body:Optional[QueryStatement] = None
 
         if self.loaded.get('status', '') == 'deprecated':
             raise hqle.QueryException(f'Sigma rule is deprecated')
@@ -87,12 +88,27 @@ class SigmaParser():
                 raise hqle.ConfigException(f'Posthql definition does not compile to an empty piped operator')
             expr.pipes += asm.pipes
 
-        stmts = self.gen_header()
-        # for i in condition.selections:
-        #     stmts.append(i.gen_let())
+        self.body = QueryStatement(expr)
+        self.assembly = Query(self.gen_header() + [self.body])
 
-        stmts += [QueryStatement(expr)]
-        self.assembly = Query(stmts)
+    def deparse(self) -> str:
+        '''
+        The configured sigma header as written, then the deparsed rule body.
+        Deparsing the assembled header would expand its imports in place.
+        '''
+        self.assemble()
+        if not self.body:
+            raise hqle.CompilerException('Sigma rule assembled without a body')
+
+        body = self.body.deparse()
+        header = self.config.get_sigma_header().strip()
+        if not header:
+            return body
+
+        # The header is its own statement, so it needs a separator before the body
+        if not header.endswith(';'):
+            header += ';'
+        return f'{header}\n{body}'
 
     '''
     Statements from the configured sigma header, prepended to every rule
