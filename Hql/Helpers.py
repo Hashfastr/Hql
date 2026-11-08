@@ -7,6 +7,29 @@ if TYPE_CHECKING:
     from Hql.Config import Config
     from Hql.Context import Context
 
+def config_logging(level:int):
+    import sys
+
+    logging.basicConfig(
+        stream=sys.stderr,
+        format="%(levelname)s - %(filename)s:%(lineno)d - %(message)s"
+    )
+
+    if level == 5:
+        logging.getLogger().setLevel(logging.DEBUG)
+    elif level == 4:
+        logging.getLogger().setLevel(logging.INFO)
+    elif level == 3:
+        logging.getLogger().setLevel(logging.WARNING)
+    elif level == 2:
+        logging.getLogger().setLevel(logging.ERROR)
+    elif level == 1:
+        logging.getLogger().setLevel(logging.CRITICAL)
+    else:
+        logging.error(f"Invalid verbosity level {level}")
+        logging.error(f"Default is WARNING (3), but I'm exiting...")
+        raise Exception(f'Invalid verbosity {level}')
+
 def can_thread():
     import sys
     if hasattr(sys, '_is_gil_enabled') and not sys._is_gil_enabled():

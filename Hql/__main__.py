@@ -3,6 +3,7 @@ from Hql.Config import Config
 from Hql.Data import Data
 from Hql.Threading import QueryPool
 from Hql.Hac.Engine import HacEngine
+from Hql.Helpers import config_logging
 
 import json
 import time
@@ -10,27 +11,6 @@ import logging
 import argparse, sys
 import cProfile, pstats
 from pathlib import Path
-
-def config_logging(level:int):
-    logging.basicConfig(
-        stream=sys.stderr,
-        format="%(levelname)s - %(filename)s:%(lineno)d - %(message)s"
-    )
-    
-    if level == 5:
-        logging.getLogger().setLevel(logging.DEBUG)
-    elif level == 4:
-        logging.getLogger().setLevel(logging.INFO)
-    elif level == 3:
-        logging.getLogger().setLevel(logging.WARNING)
-    elif level == 2:
-        logging.getLogger().setLevel(logging.ERROR)    
-    elif level == 1:
-        logging.getLogger().setLevel(logging.CRITICAL)
-    else:
-        logging.error(f"Invalid verbosity level {level}")
-        logging.error(f"Default is WARNING (3), but I'm exiting...")
-        raise Exception(f'Invalid verbosity {level}')
 
 def main():
     parser = argparse.ArgumentParser(prog=sys.argv[0])

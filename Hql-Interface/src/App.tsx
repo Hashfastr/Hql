@@ -38,6 +38,7 @@ export default function App() {
           <div style={{ height: editorHeight }} className="shrink-0">
             <Editor
               tabId={tab.id}
+              title={tab.title}
               value={tab.query}
               editRev={tab.editRev}
               isDark={state.theme === 'dark'}

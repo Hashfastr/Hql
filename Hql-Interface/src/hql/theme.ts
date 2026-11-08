@@ -53,7 +53,7 @@ export function gruvboxTheme(isDark: boolean): Extension {
       '.cm-activeLineGutter': { backgroundColor: c.bg1 },
       '.cm-tooltip': { backgroundColor: c.bg1, color: c.fg, border: `1px solid ${c.bg2}` },
       '.cm-tooltip-autocomplete ul li[aria-selected]': { backgroundColor: c.bg2, color: c.fg },
-      // Token classes applied by the hql highlighter
+      // Token classes applied by the hql highlighter (and the YAML mode in Editor.tsx)
       '.hql-keyword': { color: c.red },
       '.hql-type': { color: c.yellow },
       '.hql-literal': { color: c.purple },
