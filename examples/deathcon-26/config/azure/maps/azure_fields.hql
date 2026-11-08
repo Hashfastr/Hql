@@ -20,9 +20,9 @@
 // query timespan for Log Analytics, Kusto has no equivalent for a table.
 
 // Where the tables are queried:
-//   'kusto'         Azure Data Explorer cluster, fill in config/kusto.yml
-//   'loganalytics'  Log Analytics workspace (Sentinel), fill in config/loganalytics.yml
-let azure_db = 'kusto';
+//   'loganalytics'  Log Analytics workspace (Sentinel), fill in loganalytics.yml
+//   'kusto'         Azure Data Explorer cluster, fill in kusto.yml
+let azure_db = 'loganalytics';
 
 // product: azure, service: activitylogs. Rules compare operationName against
 // MICROSOFT.NETWORK/DNSZONES/WRITE, the identifier form, OperationName holds the

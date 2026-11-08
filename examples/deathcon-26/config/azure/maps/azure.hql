@@ -1,5 +1,5 @@
-// Sigma logsources over Azure Monitor / Microsoft Sentinel tables. To point raw
-// Sigma here, set the header in config/sigma.yml to: import maps.azure
+// Sigma logsources over Azure Monitor / Microsoft Sentinel tables. sigma.yml in
+// this folder points raw Sigma here.
 //
 // Only logsources with a table are defined, the rest fail with "No source resolved".
 //

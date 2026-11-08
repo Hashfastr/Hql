@@ -1,0 +1,5 @@
+# Prepended to every Sigma rule. logsource product/service/category resolve
+# against the Azure Monitor / Sentinel tables in maps/azure.hql, queried in the
+# database azure_db names in maps/azure_fields.hql.
+sigma:
+  header: import maps.azure

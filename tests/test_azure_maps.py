@@ -14,10 +14,21 @@ from Hql.Helpers import run_query
 from Hql.Parser.Sigma import SigmaParser
 
 
-# examples/deathcon-26/config/maps/azure_fields.hql and azure.hql: Sigma field names
-# over Azure Monitor tables. The rows use the tables' real column names.
+# examples/deathcon-26/config/azure/maps/azure_fields.hql and azure.hql: Sigma field
+# names over Azure Monitor tables. The rows use the tables' real column names.
 
-CONFIG = Path(__file__).parent.parent / 'examples' / 'deathcon-26' / 'config'
+CONFIG = Path(__file__).parent.parent / 'examples' / 'deathcon-26' / 'config' / 'azure'
+
+
+def switch_azure_db(tmp_path, old, new):
+    '''A copy of CONFIG with azure_db switched from old to new.'''
+    config_dir = tmp_path / 'config'
+    shutil.copytree(CONFIG, config_dir)
+    fields = config_dir / 'maps' / 'azure_fields.hql'
+    text = fields.read_text()
+    assert f"let azure_db = '{old}';" in text
+    fields.write_text(text.replace(f"let azure_db = '{old}';", f"let azure_db = '{new}';"))
+    return config_dir
 
 SIGNIN = [
     {
@@ -224,9 +235,10 @@ class TestSigmaOverKusto:
     }
 
     @pytest.fixture
-    def run(self, monkeypatch):
+    def run(self, monkeypatch, tmp_path):
         calls = []
         tables = self.TABLES
+        config_dir = switch_azure_db(tmp_path, 'loganalytics', 'kusto')
 
         class Client:
             def execute(self, database, query):
@@ -241,7 +253,7 @@ class TestSigmaOverKusto:
         monkeypatch.setitem(database_registry, 'Kusto', TestKusto)
 
         def inner(text):
-            config = Config(CONFIG)
+            config = Config(config_dir)
             config.set_database('kusto', {
                 'name': 'kusto',
                 'type': 'Kusto',
@@ -292,10 +304,10 @@ class FakeLogsTable:
 
 
 class TestSigmaOverLogAnalytics:
-    '''The same rules with azure_db switched to the loganalytics workspace config.'''
+    '''The same rules against the loganalytics workspace config, azure_db's default.'''
 
     @pytest.fixture
-    def run(self, monkeypatch, tmp_path):
+    def run(self, monkeypatch):
         calls = []
         tables = TestSigmaOverKusto.TABLES
 
@@ -311,17 +323,9 @@ class TestSigmaOverLogAnalytics:
 
         monkeypatch.setitem(database_registry, 'LogAnalytics', TestLogAnalytics)
 
-        config_dir = tmp_path / 'config'
-        shutil.copytree(CONFIG, config_dir)
-        azure = config_dir / 'maps' / 'azure.hql'
-        text = azure.read_text()
-        assert "let azure_db = 'kusto';" in text
-        azure.write_text(text.replace("let azure_db = 'kusto';", "let azure_db = 'loganalytics';"))
-
         def inner(text):
-            # The placeholder loganalytics.yml from the workshop config, as is
-            config = Config(config_dir)
-            config.conf['sigma']['header'] = 'import maps.azure'
+            # The placeholder loganalytics.yml and sigma.yml from the workshop config, as is
+            config = Config(CONFIG)
             parser = SigmaParser(text, config)
             parser.assemble()
             return HqlCompiler(config, parser.assembly).run().data['loganalytics'].to_dicts(), calls

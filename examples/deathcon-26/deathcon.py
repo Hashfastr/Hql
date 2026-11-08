@@ -12,7 +12,6 @@ def _():
     import shutil
     import socket
     import sys
-    import tempfile
     import threading
     import time
     import uvicorn
@@ -44,7 +43,6 @@ def _():
         shutil,
         socket,
         sys,
-        tempfile,
         threading,
         time,
         uvicorn,
@@ -66,9 +64,11 @@ def _(mo):
     5. **The HaC engine on the static dataset**: schedule the detections and manage them in a web UI.
     6. **The HaC engine on a Log Analytics workspace**: the same engine against your own Sentinel data.
 
-    Sections 1 to 5 run offline against small fake databases in `data/`.
-    Put your real Splunk/Elastic in `config/splunk.yml` / `config/elastic.yml` (see `README.md`).
-    Section 6 needs a workspace in `config/loganalytics.yml` and an `az login`.
+    There are two configs:
+
+    - `config/static/`: sections 1 to 5. They run offline against small fake databases in `data/`.
+      Put your real Splunk/Elastic in `config/static/splunk.yml` / `elastic.yml` (see `README.md`).
+    - `config/azure/`: section 6. It needs a workspace in `config/azure/loganalytics.yml` and an `az login`.
     """)
     return
 
@@ -76,7 +76,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(Path, mo):
     HERE = Path(__file__).resolve().parent
-    CONFIG = HERE / "config"
+    STATIC_CONFIG = HERE / "config" / "static"
+    AZURE_CONFIG = HERE / "config" / "azure"
     RULES = HERE / "rules"
     DATA = HERE / "data"
     HAC = HERE / "hac"
@@ -86,15 +87,26 @@ def _(Path, mo):
     ENCODED_PS = "proc_creation_win_powershell_base64_encoded_cmd.yml"
     KERBEROAST = "win_security_kerberoasting_activity.yml"
 
+    _missing = [_c for _c in (STATIC_CONFIG, AZURE_CONFIG) if not _c.is_dir()]
     mo.stop(
-        not CONFIG.is_dir(),
-        mo.md(f"**No config found at `{CONFIG}`.**").callout(kind="danger"),
+        bool(_missing),
+        mo.md(f"**No config found at `{_missing[0] if _missing else ''}`.**").callout(kind="danger"),
     )
-    return CONFIG, CURL_UPLOAD, DATA, ENCODED_PS, HAC, HAC_LA, KERBEROAST, RULES
+    return (
+        AZURE_CONFIG,
+        CURL_UPLOAD,
+        DATA,
+        ENCODED_PS,
+        HAC,
+        HAC_LA,
+        KERBEROAST,
+        RULES,
+        STATIC_CONFIG,
+    )
 
 
 @app.cell
-def _(CONFIG, Config, DATA, HqlCompiler, RULES, SigmaParser, mo):
+def _(Config, DATA, HqlCompiler, RULES, STATIC_CONFIG, SigmaParser, mo):
     def rule(name):
         return (RULES / name).read_text()
 
@@ -103,13 +115,14 @@ def _(CONFIG, Config, DATA, HqlCompiler, RULES, SigmaParser, mo):
     def code(text, lang="sql"):
         return mo.ui.code_editor(value=text.strip(), language=lang, disabled=True)
 
-    def load_config(header=None, path=CONFIG):
-        conf = Config(path)
+    # config/static, with the header in its sigma.yml (TF11) unless one is given
+    def load_config(header=None):
+        conf = Config(STATIC_CONFIG)
         # local-base is relative to the working directory, pin it to this folder
         for _name in ("fake-elastic", "fake-splunk"):
             conf.get_database(_name)["conf"]["local-base"] = str(DATA)
-        # config/sigma.yml points raw Sigma at TF11, this notebook stays offline
-        conf.conf["sigma"]["header"] = header or "import maps.sources"
+        if header:
+            conf.conf["sigma"]["header"] = header
         return conf
 
     # Sigma -> one backend language. No config, no database, no field mapping.
@@ -203,10 +216,10 @@ def _(mo):
 
 
 @app.cell
-def _(CONFIG, code, mo):
+def _(STATIC_CONFIG, code, mo):
     mo.ui.tabs({
-        _f: code((CONFIG / _f).read_text(), "yaml" if _f.endswith(".yml") else "sql")
-        for _f in ("sigma.yml", "maps/fields.hql", "maps/live.hql", "elastic.yml", "splunk.yml")
+        _f: code((STATIC_CONFIG / _f).read_text(), "yaml" if _f.endswith(".yml") else "sql")
+        for _f in ("maps/fields.hql", "maps/live.hql", "elastic.yml", "splunk.yml")
     })
     return
 
@@ -253,10 +266,10 @@ def _(mo):
 
 
 @app.cell
-def _(CONFIG, DATA, code, mo):
+def _(DATA, STATIC_CONFIG, code, mo):
     mo.ui.tabs({
-        "maps/sources.hql": code((CONFIG / "maps/sources.hql").read_text()),
-        "maps/fake.hql": code((CONFIG / "maps/fake.hql").read_text()),
+        "maps/sources.hql": code((STATIC_CONFIG / "maps/sources.hql").read_text()),
+        "maps/fake.hql": code((STATIC_CONFIG / "maps/fake.hql").read_text()),
         "windows-process.ndjson": code((DATA / "windows-process.ndjson").read_text(), "json"),
         "windows-security.ndjson": code((DATA / "windows-security.ndjson").read_text(), "json"),
     })
@@ -265,7 +278,7 @@ def _(CONFIG, DATA, code, mo):
 
 @app.cell
 def _(ENCODED_PS, KERBEROAST, load_config, mo, rule, run_query, show):
-    conf = load_config()
+    conf = load_config("import maps.sources")
     mo.ui.tabs({_name: show(run_query(rule(_name), conf)) for _name in (ENCODED_PS, KERBEROAST)})
     return (conf,)
 
@@ -318,7 +331,6 @@ def _(Detection, HAC, code, conf, mo, show):
 
 @app.cell
 def _(
-    CONFIG,
     HacEngine,
     logging,
     mo,
@@ -341,7 +353,7 @@ def _(
             super().emit(record)
 
     # Starts an engine over every detection in directory, with configs from make_conf
-    def launch_engine(directory, make_conf, port):
+    def launch_engine(directory, config_dir, make_conf, port):
         _root = logging.getLogger()
         if not any(isinstance(_h, EngineLogs) for _h in _root.handlers):
             _root.addHandler(EngineLogs(threading.get_ident()))
@@ -350,7 +362,7 @@ def _(
             def load_conf(self):
                 return make_conf()
 
-        engine = DemoEngine(directory, True, CONFIG)
+        engine = DemoEngine(directory, True, config_dir)
         if engine.apiserver is None:
             return mo.md("The web UI needs free-threaded Python (`3.14t`).").callout(kind="warn")
         # one port per engine, so both can run at once
@@ -390,8 +402,10 @@ def _(mo):
     and serves a web UI for managing, running and viewing them.
     Each detection runs once on start so the UI has results right away.
 
-    This engine uses the same offline config as sections 3 and 4: the fake Elastic and Splunk
-    databases in `data/`. Nothing connects anywhere.
+    This engine uses `config/static/`. Its `sigma.yml` points raw Sigma rules at the TF11
+    mappings (`maps/tf11.hql`), so a SigmaHQ rule dropped into `hac/` hunts the TF11 datasets.
+    The HaC files in `hac/` import `maps.sources` themselves, so they keep running on the fake
+    Elastic and Splunk databases in `data/`.
 
     The web UI needs free-threaded Python (`3.14t`) and a built `Hql-Interface/dist`.
     """)
@@ -406,11 +420,11 @@ def _(mo):
 
 
 @app.cell
-def _(HAC, launch_engine, load_config, mo, start_static_engine):
+def _(HAC, STATIC_CONFIG, launch_engine, load_config, mo, start_static_engine):
     mo.stop(not start_static_engine.value)
 
-    # fake databases pinned to data/
-    launch_engine(HAC, load_config, 8080)
+    # fake databases pinned to data/, raw Sigma on TF11
+    launch_engine(HAC, STATIC_CONFIG, load_config, 8080)
     return
 
 
@@ -419,9 +433,10 @@ def _(mo):
     mo.md(r"""
     ## 6. The HaC engine on a Log Analytics workspace
 
-    The same engine, pointed at a Log Analytics workspace (Microsoft Sentinel's tables live here).
-    It loads the detections in `hac-loganalytics/`, which import `maps.azure`:
+    The same engine, pointed at a Log Analytics workspace (Microsoft Sentinel's tables live here)
+    with `config/azure/`. Its `sigma.yml` points raw Sigma rules at the Azure mappings (`maps/azure.hql`):
     Sigma logsources over the Azure Monitor tables, with Sigma field names.
+    It loads the detections in `hac-loganalytics/`, which import `maps.azure` too.
 
     - `azurehound_signin.hql`: sign-ins with AzureHound's user agent, from `SigninLogs`.
     - `password_spray.hql`: many failed sign-ins from one IP address, a threshold Sigma can't express.
@@ -430,7 +445,7 @@ def _(mo):
 
     To set it up:
 
-    1. Put the Workspace ID from the workspace's Overview blade in `config/loganalytics.yml`.
+    1. Put the Workspace ID from the workspace's Overview blade in `config/azure/loganalytics.yml`.
     2. Run `az login` as someone with Log Analytics Reader on the workspace. Hql uses that session, no secret needed.
 
     This engine's web UI is on port 8081, so it can run next to the static one.
@@ -439,9 +454,10 @@ def _(mo):
 
 
 @app.cell
-def _(CONFIG, HAC_LA, code, mo):
+def _(AZURE_CONFIG, HAC_LA, code, mo):
     mo.ui.tabs({
-        "loganalytics.yml": code((CONFIG / "loganalytics.yml").read_text(), "yaml"),
+        "loganalytics.yml": code((AZURE_CONFIG / "loganalytics.yml").read_text(), "yaml"),
+        "sigma.yml": code((AZURE_CONFIG / "sigma.yml").read_text(), "yaml"),
         **{_path.name: code(_path.read_text()) for _path in sorted(HAC_LA.glob("*.hql"))},
     })
     return
@@ -455,42 +471,23 @@ def _(mo):
 
 
 @app.cell
-def _(
-    CONFIG,
-    HAC_LA,
-    Path,
-    launch_engine,
-    load_config,
-    mo,
-    shutil,
-    start_la_engine,
-    tempfile,
-):
+def _(AZURE_CONFIG, Config, HAC_LA, launch_engine, mo, shutil, start_la_engine):
     mo.stop(not start_la_engine.value)
 
-    # maps/azure_fields.hql queries Azure Data Explorer by default. Run on a copy of
-    # config/ that queries Log Analytics instead, recopied on every load to pick up edits.
-    _la_dir = Path(tempfile.mkdtemp(prefix="hql-loganalytics-"))
-
     def la_config():
-        shutil.copytree(CONFIG, _la_dir, dirs_exist_ok=True)
-        _fields = _la_dir / "maps" / "azure_fields.hql"
-        _fields.write_text(
-            _fields.read_text().replace("let azure_db = 'kusto';", "let azure_db = 'loganalytics';")
-        )
-        return load_config("import maps.azure", _la_dir)
+        return Config(AZURE_CONFIG)
 
     _workspace = la_config().get_database("loganalytics")["conf"].get("workspace_id", "")
     mo.stop(
         not _workspace or _workspace.startswith("<"),
-        mo.md("Put your Workspace ID in `config/loganalytics.yml` first.").callout(kind="warn"),
+        mo.md("Put your Workspace ID in `config/azure/loganalytics.yml` first.").callout(kind="warn"),
     )
     mo.stop(
         shutil.which("az") is None,
         mo.md("The Azure CLI (`az`) isn't on `PATH`. Install it and run `az login`.").callout(kind="warn"),
     )
 
-    launch_engine(HAC_LA, la_config, 8081)
+    launch_engine(HAC_LA, AZURE_CONFIG, la_config, 8081)
     return
 
 
