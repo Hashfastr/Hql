@@ -1,5 +1,6 @@
-# Placeholder: fill in your Azure Monitor / Sentinel cluster here. Don't commit a
-# real secret. Used by maps/azure.hql.
+# Placeholder: fill in your Azure Data Explorer cluster here. Don't commit a real
+# secret. Used by maps/azure.hql when azure_db is 'kusto'. For a Log Analytics
+# workspace use loganalytics.yml instead.
 database:
   name: kusto
   type: Kusto

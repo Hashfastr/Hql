@@ -17,7 +17,8 @@ deathcon-26/
 │   ├── fake.yml             # fake-elastic, fake-splunk (JSON databases over data/)
 │   ├── elastic.yml          # live Elasticsearch placeholder
 │   ├── splunk.yml           # live Splunk placeholder
-│   ├── kusto.yml            # live Azure Monitor / Sentinel placeholder
+│   ├── kusto.yml            # live Azure Data Explorer placeholder
+│   ├── loganalytics.yml     # live Log Analytics / Sentinel workspace placeholder
 │   └── maps/
 │       ├── fields.hql       # Sigma field names -> ECS / Splunk TA fields
 │       ├── fake.hql         # class windows -> fake databases
@@ -36,7 +37,13 @@ deathcon-26/
 
 `config/sigma.yml` points raw Sigma at the TF11 datasets (`maps/tf11.hql`, field maps in `maps/tf11_fields.hql`). The notebook sets its own header, so it stays on the offline fake data.
 
-`maps/azure.hql` does the same for Azure Monitor and Sentinel tables, field maps in `maps/azure_fields.hql`. To use it, fill in `config/kusto.yml` and set the header in `config/sigma.yml` to `import maps.azure`.
+`maps/azure.hql` does the same for Azure Monitor and Sentinel tables, field maps in `maps/azure_fields.hql`. The tables can be queried in an Azure Data Explorer cluster or a Log Analytics workspace. To use them:
+
+1. Fill in `config/kusto.yml` for Azure Data Explorer, or `config/loganalytics.yml` for a Log Analytics workspace (Sentinel's tables live here). The workspace needs its Workspace ID from the Overview blade and an app registration with Log Analytics Reader.
+2. Set `let azure_db` at the top of `maps/azure.hql` to `'kusto'` or `'loganalytics'` to match.
+3. Set the header in `config/sigma.yml` to `import maps.azure`.
+
+Either database also works without the maps, e.g. `database('loganalytics').raw('SecurityEvent | where TimeGenerated > ago(1h)') | where EventID == 4769`. Under HaC, a Log Analytics query is also bounded server side by the run's time window.
 
 ## Running
 

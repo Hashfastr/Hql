@@ -20,8 +20,11 @@ def compile_sigma(detection):
     where = parser.assembly.statements[-1].root.pipes[0]
     desc, _ = HqlCompiler(Config()).compile(where)
     compiler = KustoCompiler()
+    compiler.set_index('Events')
     _, rej = compiler.add_op(desc)
-    return compiler.simple_compile(), rej
+    query = compiler.simple_compile()
+    assert query.startswith('Events\n| where ')
+    return query.removeprefix('Events\n| where '), rej
 
 
 # BinaryLogic doesn't preserve order
@@ -29,8 +32,10 @@ def clauses(query):
     return sorted(query.split(' and '))
 
 
-def test_empty_root_matches_everything():
-    assert KustoCompiler().simple_compile() == 'true'
+def test_index_without_operators_is_the_table():
+    compiler = KustoCompiler()
+    compiler.set_index('Events')
+    assert compiler.simple_compile() == 'Events'
 
 
 def test_endswith_escapes_backslash():

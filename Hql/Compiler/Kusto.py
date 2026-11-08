@@ -2,22 +2,18 @@ from __future__ import annotations
 
 from Hql.Exceptions import HqlExceptions as hqle
 from typing import Union, Optional, TYPE_CHECKING
-import re
+import Hql.Expressions.References as References
 
 from . import Compiler
 
 if TYPE_CHECKING:
     import Hql.Operators as Operators
     from Hql.Expressions import Expression
+    from Hql.Expressions.Literals import StringLiteral
     from Hql.Query import Statement
-    from Hql.Compiler import BranchDescriptor
     import Hql.Expressions.Logic as Logic
-    import Hql.Expressions.References as References
     from Hql.Expressions import Literals
     from Hql.Functions import Function
-
-# KUSTO_IDENTIFIER = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
-# KUSTO_ESCAPES = {'\\': '\\\\', "'": "\\'", '\n': '\\n', '\r': '\\r', '\t': '\\t'}
 
 class KustoCompiler(Compiler):
     """Compile supported HQL predicates into a Kusto where predicate."""
@@ -37,28 +33,26 @@ class KustoCompiler(Compiler):
             'regex_global': False
         }
 
-        self.index:str = ''
+        self.tabular:References.Reference|Operators.Union|None = None
         self.ops:list[Operators.Operator] = []
 
-    # @staticmethod
-    # def quote(value:str) -> str:
-    #     return "'" + ''.join(KUSTO_ESCAPES.get(c, c) for c in value) + "'"
+    def add_index(self, name:str|StringLiteral|References.Reference):
+        if isinstance(name, StringLiteral):
+            name = name.str()
+        if isinstance(name, str):
+            name = References.NamedReference(name)
 
-    # @staticmethod
-    # def name(value:str, escape:bool=False) -> str:
-    #     if not escape and KUSTO_IDENTIFIER.match(value):
-    #         return value
-    #     return f'[{KustoCompiler.quote(value)}]'
+        self.tabular = name
 
     def compile(self, src: Union[Expression, Operators.Operator, Statement, Function, None], prep: bool = True) -> tuple[Optional[object], Optional[object]]:
         # root compile case
         if not prep and src is None:
-            assert self.index != ''
+            assert self.tabular is not None
 
             ops = []
             for i in self.ops:
                 ops.append(self.compile(i, prep=prep))
-            return self.index + '\n' + '|\n'.join(ops), None
+            return self.tabular.deparse() + '\n' + '|\n'.join(ops), None
 
         return self.compile(src, prep=prep)
 
@@ -270,6 +264,8 @@ class KustoCompiler(Compiler):
         return f'{lh} {op} ({start} .. {end})', None
 
     def Regex(self, expr: Logic.Regex, prep:bool=True) -> tuple[object, object]:
+        from Hql.Expressions.Literals import StringLiteral
+
         if prep:
             # global has no meaning for a match
             if expr.g:
@@ -283,8 +279,9 @@ class KustoCompiler(Compiler):
         pattern = expr.rh.value.decode('utf-8')
         if flags:
             pattern = f'(?{flags}){pattern}'
+        pattern = StringLiteral(pattern).quote('"')
 
-        return f'{lh} matches regex {self.quote(pattern)}', None
+        return f'{lh} matches regex @{pattern}', None
 
     # only executes static functions on preprocess and sees if we can handle the result
     def Function(self, expr:Function, prep:bool=True) -> tuple[object, object]:
@@ -310,7 +307,7 @@ class KustoCompiler(Compiler):
     def StringLiteral(self, expr: Literals.StringLiteral, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
-        return self.quote(expr.value.decode('utf-8')), None
+        return expr.quote('"'), None
 
     def MultiString(self, expr: Literals.MultiString, prep:bool=True) -> tuple[object, object]:
         return self.StringLiteral(expr, prep=prep)
@@ -360,20 +357,18 @@ class KustoCompiler(Compiler):
     def NamedReference(self, expr: References.NamedReference, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
-        return self.name(expr.name), None
+        return expr.deparse(), None
 
     def EscapedNamedReference(self, expr: References.EscapedNamedReference, prep:bool=True) -> tuple[object, object]:
         if prep:
             return expr, None
-        return self.name(expr.name, escape=True), None
+        return expr.deparse(), None
 
     # Kusto has no wildcard column matching in predicates
     def Wildcard(self, expr: References.Wildcard, prep:bool=True) -> tuple[object, object]:
-        return None, expr
+        return expr.deparse(), None
 
     def Path(self, expr: References.Path, prep:bool=True) -> tuple[object, object]:
-        from Hql.Expressions.References import EscapedNamedReference
-
         if prep:
             for i in expr.path:
                 _, rej = self.compile(i)
@@ -381,10 +376,4 @@ class KustoCompiler(Compiler):
                     return None, expr
             return expr, None
 
-        head, _ = self.compile(expr.path[0], prep=prep)
-        out = str(head)
-        for i in expr.path[1:]:
-            part = self.name(i.name, escape=isinstance(i, EscapedNamedReference))
-            out += part if part.startswith('[') else f'.{part}'
-
-        return out, None
+        return expr.deparse(), None

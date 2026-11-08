@@ -306,7 +306,11 @@ class TestMapping:
         compiler.ctx.symbol_table[NamedReference('db')] = db
         compiler.Query(parser.assembly)
 
-        assert [x.deparse() for x in db.compiler.ops] == ['where event.id == 4624']
+        # The query runs a copy of db, the registered one stays untouched
+        upstream = compiler.root.upstream[0]
+        assert upstream is not db
+        assert db.compiler.ops == []
+        assert [x.deparse() for x in upstream.compiler.ops] == ['where event.id == 4624']
         assert [x.deparse() for x in compiler.root.ops] == ['project-rename EventID=event.id, Action=event.action']
 
 

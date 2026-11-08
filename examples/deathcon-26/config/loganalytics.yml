@@ -1,0 +1,14 @@
+# Placeholder: fill in your Log Analytics (Sentinel) workspace here. Don't commit a
+# real secret. Used by maps/azure.hql when azure_db is 'loganalytics'.
+# workspace_id is the Workspace ID on the workspace's Overview blade, the app
+# registration needs Log Analytics Reader on the workspace.
+database:
+  name: loganalytics
+  type: LogAnalytics
+  # HaC's time window is sent as the query timespan
+  timeseries: true
+  conf:
+    workspace_id: '<WORKSPACE_ID>'
+    client_id: '<APPLICATION_CLIENT_ID>'
+    client_secret: '<INJECT_CLIENT_SECRET>'
+    tenant_id: '<AZURE_TENANT_ID>'
