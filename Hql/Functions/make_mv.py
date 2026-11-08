@@ -26,7 +26,6 @@ OR
 // Joins the field in to a group of generic non-directional IPs
 | extend ips = make_mv(source.ip, destination.ip)
 '''
-@register_func('make_list')
 @register_func('make_mv')
 class make_mv(Function):
     """Combine fields or aggregation values into a multivalue field."""

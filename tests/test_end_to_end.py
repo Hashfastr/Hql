@@ -103,6 +103,13 @@ class TestSummarize:
     def test_repeated_unnamed_aggregates(self, conf):
         assert rows(conf, f'{T} | summarize count(), count()') == [{'count_': 4, 'count_1': 4}]
 
+    def test_named_make_list(self, conf):
+        out = rows(conf, f'{T} | summarize m = make_list(a) by b')
+        assert sorted((i['b'] or '', i['m']) for i in out) == [('', [2]), ('x', [1]), ('y', [3]), ('z', [])]
+
+    def test_unnamed_make_list_with_max_size(self, conf):
+        assert rows(conf, f'{T} | summarize make_list(a, 2)') == [{'list_a': [1, 3]}]
+
     def test_named_make_mv(self, conf):
         out = rows(conf, f'{T} | summarize m = make_mv(a) by b')
         assert sorted(i['m'][0] for i in out if i['m'][0] is not None) == [1, 2, 3]
