@@ -5,6 +5,7 @@ python3 -m Hql.Sigma: run and convert Sigma rules.
   run-dir DIR           run every rule under DIR
 
 Runs search the last hour, --lookback widens or narrows that, e.g. -b 7d.
+Findings are json unless --format says ndjson or csv.
   convert FILE          convert one rule, to Hql unless told otherwise
   convert-dir DIR       convert every rule under DIR
 '''
@@ -43,8 +44,17 @@ def lookback(text:str) -> datetime.timedelta:
         raise argparse.ArgumentTypeError(f'lookback must be positive, got {text!r}')
     return delta
 
+def threads(text:str) -> int:
+    try:
+        count = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f'invalid thread count {text!r}, expected a whole number')
+    if count < 1:
+        raise argparse.ArgumentTypeError(f'thread count must be at least 1, got {count}')
+    return count
+
 def build_parser() -> argparse.ArgumentParser:
-    from Hql.Sigma import FORCED_LANGUAGES, DEFAULT_TABLE
+    from Hql.Sigma import FORCED_LANGUAGES, DEFAULT_TABLE, OUTPUT_FORMATS
 
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument('-c', '--config', help='Location of the config file or directory, default ./conf', default='./conf')
@@ -52,6 +62,10 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument('-l', '--logging-level', help='Verbosity level 1-5, where 5 is debug, 1 is critical, default is 3, warning.', type=int)
 
     running = argparse.ArgumentParser(add_help=False)
+    running.add_argument('-f', '--format', choices=list(OUTPUT_FORMATS), default='json',
+        help='How findings are written: json, the data and schema per rule as before; '
+             'ndjson, one finding per line; csv, one finding per row. ndjson and csv '
+             'lead each finding with _rule and _table, default json')
     running.add_argument('-b', '--lookback', type=lookback, default='1h',
         help='How far back to search, e.g. 30m, 1h, 7d, default 1h')
 
@@ -69,7 +83,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser('run-dir', parents=[common, running], help='Run every Sigma rule (*.yml, *.yaml) under a directory')
     p.add_argument('directory', type=Path, help='Directory of Sigma rules, searched recursively')
-    p.add_argument('-o', '--output', type=Path, help='Write each rule\'s results as JSON here, mirroring the directory, otherwise stdout')
+    p.add_argument('-o', '--output', type=Path, help='Write each rule\'s findings here, mirroring the directory, in the --format, otherwise stdout')
+    p.add_argument('-t', '--threads', type=threads,
+        help='Rules run at once, default the config\'s hacengine max_threads, or 16')
 
     p = sub.add_parser('convert', parents=[common, convert], help='Convert a single Sigma rule, to Hql by default')
     p.add_argument('file', type=Path, help='Sigma rule file')
@@ -94,9 +110,10 @@ def setup(args:argparse.Namespace) -> Config:
 
     return Config(Path(args.config))
 
-def run_rule(path:Path, conf:Config, lookback:datetime.timedelta) -> str:
-    from Hql.Sigma import run
-    return json.dumps(run(path.read_text(), conf, name=str(path), lookback=lookback).to_dict(), indent=2)
+def run_rule(path:Path, conf:Config, lookback:datetime.timedelta, fmt:str='json') -> str:
+    from Hql.Sigma import run, format_findings
+    data = run(path.read_text(), conf, name=str(path), lookback=lookback)
+    return format_findings(data, fmt, rule=str(path))
 
 def convert_rule(path:Path, conf:Config, args:argparse.Namespace) -> str:
     from Hql.Sigma import convert, force_convert
@@ -119,7 +136,9 @@ def convert_suffix(args:argparse.Namespace) -> str:
 
 def write(out:str, dest:Optional[Path]) -> None:
     if dest is None:
-        print(out)
+        # ndjson and csv with no findings are empty, not a blank line
+        if out:
+            print(out)
         return
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(out if out.endswith('\n') else out + '\n')
@@ -322,14 +341,14 @@ def directory(root:Path, out_dir:Optional[Path], suffix:str, op:Callable[[Path],
 # How often the run loop checks on its threads
 POLL_SECONDS = 0.05
 
-def run_directory(root:Path, out_dir:Optional[Path], conf:Config, lookback:Optional[datetime.timedelta]=None) -> int:
+def run_directory(root:Path, out_dir:Optional[Path], conf:Config, lookback:Optional[datetime.timedelta]=None, fmt:str='json', threads:Optional[int]=None) -> int:
     '''
     Run every rule under root through the HaC engine's pool, up to the config's
-    hacengine max_threads at once. Rules that match nothing aren't written.
+    threads, or the config's hacengine max_threads, at once. Rules that match nothing aren't written.
     '''
     from collections import deque
     from Hql.Hac.Engine import Detection
-    from Hql.Sigma import DEFAULT_LOOKBACK
+    from Hql.Sigma import DEFAULT_LOOKBACK, OUTPUT_FORMATS, format_findings
     from Hql.Helpers import can_thread
     from Hql.Threading import HacPool
 
@@ -340,7 +359,11 @@ def run_directory(root:Path, out_dir:Optional[Path], conf:Config, lookback:Optio
     if lookback is None:
         lookback = DEFAULT_LOOKBACK
     rules = sigma_rules(root)
-    max_threads = max(int(conf.get_engine().get('max_threads', 16)), 1)
+    if threads is None:
+        threads = int(conf.get_engine().get('max_threads', 16))
+    max_threads = max(threads, 1)
+    if max_threads > 1 and not can_thread():
+        logging.warning(f'This Python has the GIL, rules run one at a time despite {max_threads} threads')
     pool = HacPool(max_threads=max_threads)
     pending = deque(rules)
 
@@ -365,11 +388,15 @@ def run_directory(root:Path, out_dir:Optional[Path], conf:Config, lookback:Optio
             return
 
         if t.output:
-            out = json.dumps(t.output.to_dict(), indent=2)
-            if out_dir is None:
-                bar.emit(f'==> {path} <==\n{out}')
+            out = format_findings(t.output, fmt, rule=str(path))
+            if out_dir is not None:
+                write(out, (out_dir / path.relative_to(root)).with_suffix(OUTPUT_FORMATS[fmt]))
+            # Every ndjson line names its rule, so the stream stays one valid file
+            elif fmt == 'ndjson':
+                bar.emit(out)
+            # A rule's json or csv only parses on its own, mark where each starts
             else:
-                write(out, (out_dir / path.relative_to(root)).with_suffix('.json'))
+                bar.emit(f'==> {path} <==\n{out}')
         bar.finish(True, bool(t.output), took=t.duration, name=name)
 
     with StatusBar(len(rules), results=True) as bar:
@@ -407,10 +434,10 @@ def main(argv:Optional[list[str]]=None) -> int:
     conf = setup(args)
 
     if args.command == 'run':
-        return single(args.file, None, lambda p: run_rule(p, conf, args.lookback))
+        return single(args.file, None, lambda p: run_rule(p, conf, args.lookback, args.format))
 
     if args.command == 'run-dir':
-        return run_directory(args.directory, args.output, conf, lookback=args.lookback)
+        return run_directory(args.directory, args.output, conf, lookback=args.lookback, fmt=args.format, threads=args.threads)
 
     if args.force_language:
         print(FORCE_WARNING, file=sys.stderr)

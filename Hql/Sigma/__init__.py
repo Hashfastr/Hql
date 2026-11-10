@@ -7,7 +7,7 @@ A forced language skips all of that and compiles the detection straight to one
 backend, with the field names exactly as the rule wrote them.
 '''
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, Union
 from pathlib import Path
 from datetime import timedelta
 
@@ -62,6 +62,61 @@ FORCED_LANGUAGES:dict[str, tuple[Callable[[str], Compiler], str]] = {
     'kusto': (_kusto, 'kusto'),
     'postgres': (_postgres, 'sql'),
 }
+
+# Formats a run's findings can be written in, and the file extension for each
+OUTPUT_FORMATS = {
+    'json': '.json',
+    'ndjson': '.ndjson',
+    'csv': '.csv',
+}
+
+def finding_rows(data:Data, rule:str='') -> Iterator[dict]:
+    '''
+    Each row of each table as one finding, led by the rule that found it and the
+    table it came from, so rows from many rules can share one stream.
+    '''
+    for table in data:
+        for row in table.to_dicts():
+            yield {'_rule': rule, '_table': table.name, **row}
+
+def _csv_cell(value:Any) -> Any:
+    import json
+    # Nested values have no CSV form, JSON keeps them readable and parseable
+    if isinstance(value, (dict, list, tuple)):
+        return json.dumps(value, default=str)
+    if isinstance(value, bool):
+        return 'true' if value else 'false'
+    return value
+
+def format_findings(data:Data, fmt:str='json', rule:str='') -> str:
+    '''
+    A run's findings as text, without a trailing newline and empty when there are
+    none, except json, which always shows the data and schema as Data.to_dict does.
+    '''
+    import csv
+    import io
+    import json
+
+    if fmt not in OUTPUT_FORMATS:
+        raise hqle.ArgumentException(f'Unknown output format {fmt}, expected one of {", ".join(OUTPUT_FORMATS)}')
+
+    if fmt == 'json':
+        return json.dumps(data.to_dict(), indent=2, default=str)
+
+    rows = list(finding_rows(data, rule))
+    if fmt == 'ndjson':
+        return '\n'.join(json.dumps(x, default=str) for x in rows)
+
+    if not rows:
+        return ''
+    # Every column any row has, in the order they first appear
+    columns = list(dict.fromkeys(k for row in rows for k in row))
+    out = io.StringIO()
+    writer = csv.DictWriter(out, fieldnames=columns, lineterminator='\n')
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({k: _csv_cell(v) for k, v in row.items()})
+    return out.getvalue().removesuffix('\n')
 
 def collect_rules(path:Path) -> list[Path]:
     '''Every YAML file under a directory, recursively, in a stable order.'''

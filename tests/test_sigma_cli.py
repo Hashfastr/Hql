@@ -237,3 +237,111 @@ def test_hac_lookback_overrides_schedule():
 
     with pytest.raises(hace.HacException):
         hac.set_lookback(timedelta(0))
+
+
+def findings():
+    import polars as pl
+    from Hql.Data import Data, Table
+    return Data([
+        Table(df=pl.DataFrame({'user': ['a', 'b'], 'detail': [{'ip': '1.2.3.4'}, {'ip': None}], 'ok': [True, False]}), name='signin'),
+        Table(df=pl.DataFrame({'user': ['c'], 'roles': [['admin', 'reader']]}), name='audit'),
+    ])
+
+
+def test_json_format_is_unchanged():
+    from Hql.Sigma import format_findings
+    data = findings()
+    assert json.loads(format_findings(data, 'json')) == json.loads(json.dumps(data.to_dict(), default=str))
+
+
+def test_ndjson_is_one_finding_per_line():
+    from Hql.Sigma import format_findings
+    lines = format_findings(findings(), 'ndjson', rule='r.yml').split('\n')
+    assert [json.loads(x) for x in lines] == [
+        {'_rule': 'r.yml', '_table': 'signin', 'user': 'a', 'detail': {'ip': '1.2.3.4'}, 'ok': True},
+        {'_rule': 'r.yml', '_table': 'signin', 'user': 'b', 'detail': {'ip': None}, 'ok': False},
+        {'_rule': 'r.yml', '_table': 'audit', 'user': 'c', 'roles': ['admin', 'reader']},
+    ]
+
+
+def test_csv_has_every_column_and_json_cells():
+    import csv
+    from Hql.Sigma import format_findings
+    text = format_findings(findings(), 'csv', rule='r.yml')
+    assert not text.endswith('\n')
+    rows = list(csv.DictReader(io.StringIO(text)))
+    assert list(rows[0]) == ['_rule', '_table', 'user', 'detail', 'ok', 'roles']
+    assert rows[0] == {'_rule': 'r.yml', '_table': 'signin', 'user': 'a', 'detail': '{"ip": "1.2.3.4"}', 'ok': 'true', 'roles': ''}
+    assert rows[2]['roles'] == '["admin", "reader"]' and rows[2]['detail'] == ''
+
+
+@pytest.mark.parametrize('fmt', ['ndjson', 'csv'])
+def test_no_findings_is_empty(fmt):
+    from Hql.Data import Data
+    from Hql.Sigma import format_findings
+    assert format_findings(Data(), fmt) == ''
+
+
+def test_unknown_format():
+    from Hql.Data import Data
+    from Hql.Sigma import format_findings
+    with pytest.raises(Exception, match='Unknown output format'):
+        format_findings(Data(), 'xml')
+
+
+@pytest.mark.parametrize('fmt,suffix', [('json', '.json'), ('ndjson', '.ndjson'), ('csv', '.csv')])
+def test_run_directory_writes_the_format(tmp_path, fake_detections, fmt, suffix):
+    rules, out = tmp_path / 'rules', tmp_path / 'out'
+    make_rules(rules, ['hit.yml', 'empty.yml'])
+    cli.run_directory(rules, out, Config(), fmt=fmt)
+    assert [p.name for p in out.iterdir()] == ['hit' + suffix]
+
+
+def test_ndjson_stdout_is_one_stream(tmp_path, capsys, fake_detections):
+    make_rules(tmp_path, ['hit1.yml', 'hit2.yml', 'empty.yml'])
+    cli.run_directory(tmp_path, None, Config(), fmt='ndjson')
+    lines = capsys.readouterr().out.splitlines()
+    # No ==> headers, each line parses and names its rule
+    rules = sorted(json.loads(x)['_rule'] for x in lines)
+    assert rules == [str(tmp_path / 'hit1.yml'), str(tmp_path / 'hit2.yml')]
+
+
+def test_format_option():
+    assert cli.build_parser().parse_args(['run', 'r.yml']).format == 'json'
+    assert cli.build_parser().parse_args(['run-dir', 'd', '-f', 'csv']).format == 'csv'
+    with pytest.raises(SystemExit):
+        cli.build_parser().parse_args(['run', 'r.yml', '-f', 'xml'])
+
+
+def peak_concurrency(monkeypatch):
+    from Hql.Threading import HacPool
+    seen = []
+    add = HacPool.add_detection
+    def tracked(self, *args, **kwargs):
+        tid = add(self, *args, **kwargs)
+        seen.append(len(self.pool) + len(self.queue))
+        return tid
+    monkeypatch.setattr(HacPool, 'add_detection', tracked)
+    return seen
+
+
+@pytest.mark.parametrize('threads,peak', [(1, 1), (2, 2)])
+def test_threads_option_beats_the_config(tmp_path, monkeypatch, fake_detections, threads, peak):
+    seen = peak_concurrency(monkeypatch)
+    make_rules(tmp_path, [f'hit{i}.yml' for i in range(6)])
+    conf = Config()
+    conf.conf['general']['hacengine'] = {'max_threads': 5}
+
+    assert cli.run_directory(tmp_path, tmp_path / 'out', conf, threads=threads) == 0
+    assert len(list((tmp_path / 'out').glob('*.json'))) == 6
+    assert len(seen) == 6 and max(seen) <= peak
+
+
+def test_threads_option():
+    parse = cli.build_parser().parse_args
+    assert parse(['run-dir', 'd']).threads is None
+    assert parse(['run-dir', 'd', '-t', '4']).threads == 4
+    assert parse(['run-dir', 'd', '--threads', '1']).threads == 1
+    for bad in ('0', '-2', 'many'):
+        with pytest.raises(SystemExit):
+            parse(['run-dir', 'd', '-t', bad])
