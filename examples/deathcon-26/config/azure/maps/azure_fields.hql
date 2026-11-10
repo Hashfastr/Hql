@@ -16,8 +16,14 @@
 // Sigma name, or a Sigma name for a field inside a dynamic column, is copied with
 // an extend before it.
 //
-// The time bound is a where on TimeGenerated. HaC's time window is also sent as the
-// query timespan for Log Analytics, Kusto has no equivalent for a table.
+// The time bound is HaC's time window, so a rule's lookback decides it: Log Analytics
+// gets it as the query timespan, Kusto as a where on TimeGenerated. A Sigma run looks
+// back an hour unless given --lookback. Nothing here bounds time itself, a fixed
+// window would cap a longer lookback, so a query without HaC reads every row the
+// table keeps. Bound one yourself:
+//
+//   azure_signin
+//   | where TimeGenerated > ago(1h) and userAgent contains 'azurehound'
 
 // Where the tables are queried:
 //   'loganalytics'  Log Analytics workspace (Sentinel), fill in loganalytics.yml
@@ -28,7 +34,6 @@ let azure_db = 'loganalytics';
 // MICROSOFT.NETWORK/DNSZONES/WRITE, the identifier form, OperationName holds the
 // display name.
 let azure_activity = database(azure_db).index('AzureActivity')
-    | where TimeGenerated > ago(1d)
     | project-rename operationName = OperationNameValue, category = CategoryValue,
         resourceId = ResourceId, ['properties.message'] = OperationName;
 
@@ -36,26 +41,33 @@ let azure_activity = database(azure_db).index('AzureActivity')
 // string matching fails on objects and arrays. A field inside one is then only
 // reachable by contains, TargetResources is an array of objects so its members have
 // no single path anyway.
+//
+// Rules name OperationName, Category, ActivityDisplayName and TargetResources both as
+// the column and in another case or form, so those are copied, never renamed. A
+// renamed column is gone: a where on it can't be pushed, so the whole table comes
+// back to be filtered locally, where the field is missing and nothing matches.
+//
+// targetResources.type is read before TargetResources becomes a string. Role
+// assignments list the assignee first, then the role, so it's the first entry's.
 let azure_audit = database(azure_db).index('AuditLogs')
-    | where TimeGenerated > ago(1d)
+    | extend ['targetResources.type'] = tostring(TargetResources[0].type)
     | extend TargetResources = tostring(TargetResources), InitiatedBy = tostring(InitiatedBy),
         AdditionalDetails = tostring(AdditionalDetails)
     | extend ['properties.message'] = OperationName, ['properties.result'] = Result,
-        ActivityType = ActivityDisplayName, ['properties.targetResources'] = TargetResources,
+        operationName = OperationName, category = Category,
+        ActivityType = ActivityDisplayName, activityType = ActivityDisplayName,
+        Target = TargetResources, ['properties.targetResources'] = TargetResources,
         ['TargetResources.modifiedProperties'] = TargetResources,
         ['TargetResources.modifiedProperties.newValue'] = TargetResources,
         ['TargetResources.ModifiedProperties.NewValue'] = TargetResources
-    | project-rename operationName = OperationName, category = Category, Status = Result,
-        activityType = ActivityDisplayName, failure_status_reason = ResultReason,
-        Initiatedby = InitiatedBy, Target = TargetResources,
-        ['additionalDetails.additionalInfo'] = AdditionalDetails;
+    | project-rename Status = Result, failure_status_reason = ResultReason,
+        Initiatedby = InitiatedBy, ['additionalDetails.additionalInfo'] = AdditionalDetails;
 
 // product: azure, service: signinlogs. Also fits AADNonInteractiveUserSignInLogs.
 //   - Status gets the Success rules compare it to, the column itself only holds an
 //     error code and failure details. It's set before ResultType is cast.
 //   - ResultType becomes an int, as rules write it unquoted.
 let azure_signin = database(azure_db).index('SigninLogs')
-    | where TimeGenerated > ago(1d)
     | extend Status = iff(ResultType == '0', 'Success', tostring(Status)), ResultType = toint(ResultType)
     | extend ['DeviceDetail.trusttype'] = DeviceDetail.trustType,
         ['DeviceDetail.isCompliant'] = DeviceDetail.isCompliant,
@@ -66,13 +78,11 @@ let azure_signin = database(azure_db).index('SigninLogs')
 
 // product: azure, service: riskdetection
 let azure_risk = database(azure_db).index('AADUserRiskEvents')
-    | where TimeGenerated > ago(1d)
     | project-rename riskEventType = RiskEventType;
 
 // product: windows, service: security. Image, ParentImage and User are for
 // process_creation over event 4688.
 let azure_security_event = database(azure_db).index('SecurityEvent')
-    | where TimeGenerated > ago(1d)
     | project-rename Provider_Name = EventSourceName, Image = NewProcessName,
         ParentImage = ParentProcessName, User = SubjectUserName;
 
@@ -81,7 +91,6 @@ let azure_security_event = database(azure_db).index('SecurityEvent')
 
 // product: windows, category: process_creation
 let azure_device_process = database(azure_db).index('DeviceProcessEvents')
-    | where TimeGenerated > ago(1d)
     | project-rename Image = FolderPath, CommandLine = ProcessCommandLine,
         OriginalFileName = ProcessVersionInfoOriginalFileName,
         Description = ProcessVersionInfoFileDescription, Product = ProcessVersionInfoProductName,
@@ -94,7 +103,6 @@ let azure_device_process = database(azure_db).index('DeviceProcessEvents')
 // product: windows, category: network_connection. In the tables below the process
 // is the initiating one, and the parent's column is a file name without a path.
 let azure_device_network = database(azure_db).index('DeviceNetworkEvents')
-    | where TimeGenerated > ago(1d)
     | extend SourceHostname = DeviceName
     | project-rename Image = InitiatingProcessFolderPath, CommandLine = InitiatingProcessCommandLine,
         ParentImage = InitiatingProcessParentFileName, ProcessId = InitiatingProcessId,
@@ -104,7 +112,6 @@ let azure_device_network = database(azure_db).index('DeviceNetworkEvents')
 
 // product: windows, category: file_event and friends
 let azure_device_file = database(azure_db).index('DeviceFileEvents')
-    | where TimeGenerated > ago(1d)
     | project-rename TargetFilename = FolderPath, Image = InitiatingProcessFolderPath,
         CommandLine = InitiatingProcessCommandLine, ParentImage = InitiatingProcessParentFileName,
         ProcessId = InitiatingProcessId, User = InitiatingProcessAccountName, Computer = DeviceName;
@@ -112,7 +119,6 @@ let azure_device_file = database(azure_db).index('DeviceFileEvents')
 // product: windows, category: registry_*. Sysmon's TargetObject ends in the value
 // name, Defender splits that into RegistryValueName. ActionType becomes EventType.
 let azure_device_registry = database(azure_db).index('DeviceRegistryEvents')
-    | where TimeGenerated > ago(1d)
     | extend NewName = RegistryKey
     | project-rename TargetObject = RegistryKey, Details = RegistryValueData, EventType = ActionType,
         Image = InitiatingProcessFolderPath, ProcessId = InitiatingProcessId,
@@ -122,7 +128,6 @@ let azure_device_registry = database(azure_db).index('DeviceRegistryEvents')
 // Product and Description describe the loaded DLL. The table only has version info
 // for the initiating process, so pairing them would match the wrong file.
 let azure_device_image_load = database(azure_db).index('DeviceImageLoadEvents')
-    | where TimeGenerated > ago(1d)
     | project-rename ImageLoaded = FolderPath, Image = InitiatingProcessFolderPath,
         CommandLine = InitiatingProcessCommandLine, ProcessId = InitiatingProcessId,
         User = InitiatingProcessAccountName, Computer = DeviceName;

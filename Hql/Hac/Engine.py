@@ -144,7 +144,7 @@ class Schedule():
         return out_set
 
 class Detection():
-    def __init__(self, txt:str, src:str, config:Config, no_hac:bool=False) -> None:
+    def __init__(self, txt:str, src:str, config:Config, no_hac:bool=False, lookback:Optional[datetime.timedelta]=None) -> None:
         import uuid
         from Hql.Parser import Parser as HqlParser
         from Hql.Parser.Sigma import SigmaParser
@@ -159,6 +159,8 @@ class Detection():
         # Why text that is a Sigma rule failed to parse as one
         self.sigma_error:Optional[Exception] = None
         self.no_hac = no_hac
+        # How far back each run looks, None for the schedule's interval
+        self.lookback = lookback
 
         self.hac:Optional[Hac] = None
         self.parser:Union[None, HqlParser, SigmaParser] = None
@@ -270,9 +272,10 @@ class Detection():
         if not isinstance(self.parser.assembly, Query):
             raise hqle.CompilerException(f'Attempting to compile non-Query assembly {type(self.parser.assembly)}')
 
-        if self.hac and query_now:
+        if self.hac and (query_now or self.lookback is not None):
             hac = copy.deepcopy(self.hac)
-            hac.set_query_now(query_now)
+            hac.lookback = self.lookback
+            hac.set_query_now(query_now or datetime.datetime.now())
         else:
             hac = self.hac
 

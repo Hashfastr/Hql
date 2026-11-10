@@ -58,6 +58,7 @@ class KustoCompiler(Compiler):
         Compiler.__init__(self)
         self.attrs = {
             'nested_objects': True,
+            'indexing': True,
             'wildcards': False,
             'wildcard_names': False,
             'complex_names': True,
@@ -110,7 +111,7 @@ class KustoCompiler(Compiler):
 
         # Comparisons only preprocess their right hand side, check the field they read too
         lh = getattr(src, 'lh', None)
-        if prep and isinstance(lh, References.Reference):
+        if prep and isinstance(lh, (References.Reference, References.Element)):
             _, rej = self.compile(lh)
             if rej is not None:
                 return None, src
@@ -596,3 +597,23 @@ class KustoCompiler(Compiler):
             else:
                 out += '.' + name
         return out, None
+
+    def Element(self, expr: References.Element, prep:bool=True) -> tuple[object, object]:
+        if prep:
+            _, rej = self.compile(expr.base)
+            if rej is not None:
+                return None, expr
+            try:
+                expr.index()
+            except hqle.QueryException:
+                return None, expr
+            return expr, None
+
+        base, _ = self.compile(expr.base, prep=prep)
+        assert isinstance(base, str)
+        idx = expr.index()
+        if isinstance(idx, int):
+            return f'{base}[{idx}]', None
+        if KQL_IDENTIFIER.fullmatch(idx):
+            return f'{base}.{idx}', None
+        return base + kql_quoted_name(idx), None

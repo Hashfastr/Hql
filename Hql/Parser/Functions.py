@@ -3,8 +3,12 @@ from Hql.Parser.grammar.HqlVisitor import HqlVisitor
 from Hql.Parser.grammar.HqlParser import HqlParser
 
 from Hql.Exceptions import HqlExceptions as hqle
+from typing import TYPE_CHECKING, Optional
 
 import logging
+
+if TYPE_CHECKING:
+    from Hql.Expressions.References import Element
 
 class Functions(HqlVisitor):
     def __init__(self):
@@ -16,10 +20,13 @@ class Functions(HqlVisitor):
     myfunc().Name
     '''
     def visitFunctionCallOrPathPathExpression(self, ctx: HqlParser.FunctionCallOrPathPathExpressionContext):
-        from Hql.Expressions.References import Path
+        from Hql.Expressions.References import Path, NamedReference, EscapedNamedReference, Element
         from Hql.Expressions.Functions import FuncExpr, ReceiverFuncExpr
+        from Hql.Expressions.Literals import StringLiteral
         path = []
-        
+        # Set once an index leaves what a field path can name, R[0]
+        element:Optional[Element] = None
+
         expr = self.visit(ctx.Expression)
         if expr == None:
             logging.error('Path expression given NoneType root expression')
@@ -28,10 +35,45 @@ class Functions(HqlVisitor):
                 ctx.start.line,
                 ctx.start.column
             )
-                
+
         path.append(expr)
         for i in ctx.Operations:
+            # R[key] and the legacy R.[key]
+            index = i.getChild(0)
+            if isinstance(index, (
+                HqlParser.FunctionCallOrPathElementOperationContext,
+                HqlParser.LegacyFunctionCallOrPathElementOperationContext,
+            )):
+                key = self.visit(index.Element)
+                if key is None:
+                    raise hqle.SemanticException('Empty index in path expression', ctx.start.line, ctx.start.column)
+                if isinstance(path[-1], ReceiverFuncExpr) and element is None:
+                    raise hqle.SemanticException(
+                        'Indexing the result of a receiver function call is unsupported',
+                        ctx.start.line,
+                        ctx.start.column
+                    )
+
+                if element is not None:
+                    element = Element(element, key)
+                # A field name in brackets is just a field, R['a'] is R.a
+                elif isinstance(key, StringLiteral):
+                    path.append(EscapedNamedReference(key.str()))
+                else:
+                    element = Element(Path(path), key)
+                continue
+
             op = self.visit(i)
+
+            if element is not None:
+                if not isinstance(op, NamedReference):
+                    raise hqle.SemanticException(
+                        'Only field names can follow an index in a path expression',
+                        ctx.start.line,
+                        ctx.start.column
+                    )
+                element = Element(element, StringLiteral(op.name), dotted=True)
+                continue
 
             # short cut if there is a function
             if isinstance(op, FuncExpr):
@@ -45,7 +87,9 @@ class Functions(HqlVisitor):
                     ctx.start.column
                 )
             path.append(op)
-        
+
+        if element is not None:
+            return element
         return Path(path)
 
     def visitScopedFunctionCallExpression(self, ctx: HqlParser.ScopedFunctionCallExpressionContext):

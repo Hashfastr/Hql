@@ -3,13 +3,13 @@ from __future__ import annotations
 from .__proto__ import Expression
 from Hql.Exceptions import HqlExceptions as hqle
 
-from typing import TYPE_CHECKING, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Sequence, Union
 import logging
 
 if TYPE_CHECKING:
     from Hql.Context import Context
     from Hql.Functions import Function
-    from Hql.Data import Data
+    from Hql.Data import Data, Table
     from polars import Expr as plExpr
 
 class Reference(Expression):
@@ -229,6 +229,113 @@ class Path(Reference):
             ctx.data = ctx.data.select(self)
         return ctx
     
+class Element(Expression):
+    '''
+    One step into a value that a field path can't name: a list position, R[0],
+    or a field reached through one, the type in R[0].type. Fields reached by name
+    alone stay a Path, R['type'] is R.type.
+    '''
+
+    def __init__(self, base:Expression, key:Expression, dotted:bool=False):
+        Expression.__init__(self)
+        self.base = base
+        self.key = key
+        # Written as .name rather than ['name'], only kept so deparse round trips
+        self.dotted = dotted
+
+    def __reduce__(self):
+        return (self.__class__, (self.base, self.key, self.dotted))
+
+    def __eq__(self, value: object, /) -> bool:
+        if not isinstance(value, Element):
+            return False
+        return self.base == value.base and self.key == value.key
+
+    def __hash__(self):
+        return hash(('element', hash(self.base), hash(self.key)))
+
+    def index(self) -> Union[int, str]:
+        '''A list position or a field name, nothing else indexes yet.'''
+        from Hql.Expressions.Literals import Integer, StringLiteral
+        from Hql.Expressions.Arithmetic import Negate
+
+        key = self.key
+        if isinstance(key, Integer):
+            return key.value
+        if isinstance(key, Negate) and isinstance(key.expr, Integer):
+            return -key.expr.value
+        if isinstance(key, StringLiteral):
+            return key.str()
+        raise hqle.QueryException(f'Unsupported index {key.deparse()} in {self.deparse()}, expected a whole number or a field name')
+
+    def to_dict(self) -> dict:
+        return {
+            'type': self.type,
+            'base': self.base.to_dict(),
+            'key': self.key.to_dict(),
+        }
+
+    def deparse(self) -> str:
+        from Hql.Expressions.Literals import StringLiteral
+        if self.dotted and isinstance(self.key, StringLiteral):
+            return f'{self.base.deparse()}.{self.key.str()}'
+        return f'{self.base.deparse()}[{self.key.deparse()}]'
+
+    def str(self) -> str:
+        return self.deparse()
+
+    def list(self) -> list[str]:
+        # Names the value when it's stored, e.g. by a function evaluated over it
+        return [self.deparse()]
+
+    def __iter__(self):
+        return iter(self.list())
+
+    def select(self, table:Table) -> Optional[Table]:
+        '''
+        The indexed value as a one column table, None when the table can't be indexed
+        like this, e.g. a missing field, as a missing field matches nothing in Hql.
+        '''
+        import polars as pl
+        from Hql.Data import Table
+
+        try:
+            df = table.df.select(self.polars().alias(self.deparse()))
+        except (pl.exceptions.ColumnNotFoundError, pl.exceptions.StructFieldNotFoundError,
+                pl.exceptions.InvalidOperationError, pl.exceptions.SchemaError) as e:
+            logging.warning(f'Could not index {self.deparse()} in {table.name}: {e}')
+            return None
+        return Table(df=df, name=table.name)
+
+    def eval(self, ctx:Context, **kwargs) -> Context:
+        from Hql.Data import Data, Series, Table
+
+        ctx = ctx.copy()
+        tables = []
+        for table in ctx.data:
+            value = self.select(table)
+            if value is not None:
+                tables.append(Table(name=table.name, series=Series(value.df.to_series())))
+        ctx.data = Data(tables)
+        return ctx
+
+    def references(self) -> list[Reference]:
+        '''The field this indexes into, at the bottom of the chain.'''
+        base = self.base
+        while isinstance(base, Element):
+            base = base.base
+        return [base] if isinstance(base, Reference) else []
+
+    def polars(self) -> plExpr:
+        base = self.base.polars_value() if isinstance(self.base, (Reference, Element)) else self.base.polars()
+        idx = self.index()
+        if isinstance(idx, str):
+            return base.struct.field(idx)
+        return base.list.get(idx, null_on_oob=True)
+
+    def polars_value(self) -> plExpr:
+        return self.polars()
+
 '''
 Sets a name a value
 

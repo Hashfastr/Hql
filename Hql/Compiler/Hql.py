@@ -51,6 +51,9 @@ class HqlCompiler(Compiler):
 
         # track to see if we already added hac time bound
         self.bounded = False
+        # Only the query statement's source is bounded. Lets compile first, bounding
+        # the first of them bounded a table the query may not even read.
+        self.querying = False
 
         if query:
             self.Query(query)
@@ -90,7 +93,11 @@ class HqlCompiler(Compiler):
             logging.debug('Attempt to compile already compiled QueryStatement, just passing through')
             return statement.root
 
-        acc, _ = self.compile(statement.root)
+        self.querying = True
+        try:
+            acc, _ = self.compile(statement.root)
+        finally:
+            self.querying = False
 
         if isinstance(acc, InstructionSet):
             self.root = acc
@@ -252,7 +259,7 @@ class HqlCompiler(Compiler):
             raise hqle.CompilerException(f'Tabular compilation resulted in {type(acc)} not InstructionSet')
 
         # Add hac timebound
-        if self.hac and self.time and not self.bounded:
+        if self.hac and self.time and self.querying and not self.bounded:
             start, end = self.hac.get_timerange()
             acc, _ = acc.add_timebound(start, end)
             self.bounded = True
@@ -1138,7 +1145,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(expr.lh)
         desc.merge(acc)
         lh = acc.get_expr()
-        assert isinstance(lh, References.Reference)
+        assert isinstance(lh, (References.Reference, References.Element))
 
         rh = []
         for i in expr.rh:
@@ -1160,7 +1167,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(expr.lh)
         desc.merge(acc)
         lh = acc.get_expr()
-        assert isinstance(lh, References.Reference)
+        assert isinstance(lh, (References.Reference, References.Element))
 
         rh = []
         for i in expr.rh:
@@ -1196,7 +1203,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(expr.lh)
         desc.merge(acc)
         lh = acc.get_expr()
-        assert isinstance(lh, References.Reference)
+        assert isinstance(lh, (References.Reference, References.Element))
 
         acc, _ = self.compile(expr.start)
         desc.merge(acc)
@@ -1262,7 +1269,7 @@ class HqlCompiler(Compiler):
         acc, _ = self.compile(expr.lh)
         desc.merge(acc)
         lh = acc.get_expr()
-        assert isinstance(lh, References.Reference)
+        assert isinstance(lh, (References.Reference, References.Element))
         
         acc, _ = self.compile(expr.rh)
         desc.merge(acc)
@@ -1405,6 +1412,23 @@ class HqlCompiler(Compiler):
 
         desc.expr = References.Path(path)
         desc.references = [desc.expr]
+        return desc, None
+
+    def Element(self, expr:References.Element, prep:bool=True) -> tuple[BranchDescriptor, None]:
+        desc = BranchDescriptor()
+        # Only a database that can index into lists takes these
+        desc.set_attr('nested_objects')
+        desc.set_attr('indexing')
+
+        acc, _ = self.compile(expr.base)
+        desc.merge(acc)
+        base = acc.get_expr()
+
+        acc, _ = self.compile(expr.key)
+        desc.merge(acc)
+        key = acc.get_expr()
+
+        desc.expr = References.Element(base, key, dotted=expr.dotted)
         return desc, None
 
     def NamedExpression(self, expr:Hql.Expressions.NamedExpression, prep:bool=True) -> tuple[BranchDescriptor, None]:

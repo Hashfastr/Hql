@@ -72,6 +72,10 @@ def run_query(text:str, conf:Config, name:str='', ctx:Optional[Context]=None, **
         except (hace.LexerException, hace.HacException):
             hac = None
 
+    # How far back the HaC time window reaches, rather than the schedule's interval
+    if hac and kwargs.get('lookback') is not None:
+        hac.set_lookback(kwargs['lookback'])
+
     if kwargs.get('render_hac', ''):
         if not hac:
             logging.critical('Hql file does not contain a valid HaC comment!')

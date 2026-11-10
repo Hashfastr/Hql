@@ -9,6 +9,7 @@ backend, with the field names exactly as the rule wrote them.
 from __future__ import annotations
 from typing import TYPE_CHECKING, Callable, Optional, Union
 from pathlib import Path
+from datetime import timedelta
 
 from Hql.Exceptions import HqlExceptions as hqle
 
@@ -18,6 +19,10 @@ if TYPE_CHECKING:
     from Hql.Data import Data
 
 RULE_SUFFIXES = ('.yml', '.yaml')
+
+# How far back a Sigma rule looks unless told otherwise. Rules carry no schedule,
+# so this is the window, not one derived from how often they run.
+DEFAULT_LOOKBACK = timedelta(hours=1)
 
 # Placeholder table for languages whose queries must name one
 DEFAULT_TABLE = 'events'
@@ -69,12 +74,13 @@ def check_rule(text:str) -> None:
     if not is_sigma_text(text):
         raise hqle.QueryException('Not a Sigma rule, missing a top level logsource or detection')
 
-def run(text:str, conf:Config, name:str='') -> Data:
+def run(text:str, conf:Config, name:str='', lookback:timedelta=DEFAULT_LOOKBACK) -> Data:
+    '''Run a rule over the last lookback of data.'''
     from Hql.Data import Data
     from Hql.Helpers import run_query
 
     check_rule(text)
-    out = run_query(text, conf, name=name)
+    out = run_query(text, conf, name=name, lookback=lookback)
     if not isinstance(out, Data):
         raise hqle.QueryException(f'Running {name} gave {type(out)}, not Data')
     return out

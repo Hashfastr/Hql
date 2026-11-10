@@ -15,6 +15,9 @@ if TYPE_CHECKING:
     from Hql.Cache import Cache
 
 class Database(Operator):
+    # The field HaC's time window bounds, a database's config can name another as timestamp
+    default_timestamp = '_hqltimestamp'
+
     def __init__(self, config:dict, name:str='unnamed-database', cache:Optional[Cache]=None):
         from Hql.Compiler import Compiler
         from Hql.Context import Context
@@ -75,7 +78,7 @@ class Database(Operator):
         _, rej = self.add_op(
             Where(
                 BetweenEquality(
-                    NamedReference('_hqltimestamp'),
+                    NamedReference(self.config.get('timestamp', self.default_timestamp)),
                     Datetime(start),
                     Datetime(end),
                     False

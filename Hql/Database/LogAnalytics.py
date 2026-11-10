@@ -152,8 +152,14 @@ class LogAnalytics(Kusto):
     def add_timebound(self, start: datetime.datetime, end: datetime.datetime) -> tuple[Database, None]:
         # The API bounds the query server side, on top of any time filter in the KQL
         if self.config.get('timeseries', True):
-            self._timespan = (start, end)
+            self._timespan = (self._utc(start), self._utc(end))
         return self, None
+
+    @staticmethod
+    def _utc(value: datetime.datetime) -> datetime.datetime:
+        # Hql's naive datetimes are local time, as the Kusto compiler reads them. The
+        # SDK would take them as UTC, off by the UTC offset, and warn on every query.
+        return value.astimezone(datetime.timezone.utc)
 
     @staticmethod
     def _timedelta(value:str) -> Any:
@@ -249,5 +255,7 @@ class LogAnalytics(Kusto):
             **Database.to_dict(self),
             'name': self.name,
             'workspace_id': self.workspace_id,
+            # Sent beside the query, not in it, so a plan shows the window here
+            'timespan': [x.isoformat() for x in self._timespan] if self._timespan else None,
             'query': self.compile() if self.compiler.tabular is not None else None,
         }

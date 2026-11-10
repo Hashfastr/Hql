@@ -42,6 +42,9 @@ class Kusto(Database):
 
     REQUIRED_CONFIG = ('database', 'cluster', 'client_id', 'client_secret', 'tenant_id')
 
+    # Azure Monitor tables' ingestion time, set timestamp in the config for other tables
+    default_timestamp = 'TimeGenerated'
+
     def __init__(
         self,
         config:dict,

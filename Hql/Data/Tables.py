@@ -16,7 +16,7 @@ import logging
 import json
 
 if TYPE_CHECKING:
-    from Hql.Expressions.References import Reference
+    from Hql.Expressions.References import Reference, Element
     from .Schema import Schema
 
 '''
@@ -76,7 +76,7 @@ class Table():
         elif init_data and schema:
             self.schema = schema
             pl_schema = schema.gen_pl_schema()
-            self.df = pl.from_dicts(init_data, schema=pl_schema)
+            self.df = self.from_dicts(init_data, pl_schema)
         
         elif self.df.width and schema:
             self.schema = schema
@@ -92,6 +92,24 @@ class Table():
 
         else:
             self.schema = Schema()
+
+    @staticmethod
+    def from_dicts(rows:list[dict], pl_schema:pl.Schema) -> pl.DataFrame:
+        '''
+        Rows into a frame of a known schema. Polars still infers inside Object columns
+        built from dicts and fails on mixed shapes, e.g. a dynamic column holding a
+        string in one row and a struct in the next, so those columns are built whole.
+        '''
+        if not any(dtype == pl.Object for dtype in pl_schema.values()):
+            return pl.from_dicts(rows, schema=pl_schema)
+
+        rest = pl.Schema({k: v for k, v in pl_schema.items() if v != pl.Object})
+        typed = pl.from_dicts([{k: row.get(k) for k in rest} for row in rows], schema=rest)
+        return pl.DataFrame([
+            pl.Series(name, [row.get(name) for row in rows], dtype=pl.Object)
+            if dtype == pl.Object else typed[name]
+            for name, dtype in pl_schema.items()
+        ])
 
     def __len__(self):
         if hasattr(self.df, '__len__'):
@@ -333,7 +351,14 @@ class Table():
     Returns a Table with just the data of that path
     If not found then it returns an empty table with the parent name.
     '''
-    def select(self, field:Reference):
+    def select(self, field:Union[Reference, Element]):
+        from Hql.Expressions.References import Element
+
+        # An index into a list isn't a field the schema can name, polars evaluates it
+        if isinstance(field, Element):
+            value = field.select(self)
+            return value if value is not None else Table(name=self.name)
+
         if not self.assert_field(field):
             return Table(name=self.name)
         

@@ -11,7 +11,7 @@ from .Logic import Relational, BetweenEquality, BinaryLogic
 from .Logic import BasicRange, Regex, Not
 
 from .References import Reference, NamedReference, Wildcard
-from .References import EscapedNamedReference, Path, NamedExpression
+from .References import EscapedNamedReference, Path, NamedExpression, Element
 
 from .Literals import Literal, TypeExpression, StringLiteral
 from .Literals import MultiString, Integer, IP4, Float, Bool

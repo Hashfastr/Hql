@@ -283,5 +283,9 @@ class Compiler():
     def Path(self, expr:Hql.Expressions.Path, prep:bool=True) -> tuple[object, object]:
         return None, expr
 
+    # Indexing into a list, R[0]. Left to Hql unless a backend says otherwise
+    def Element(self, expr:Hql.Expressions.Element, prep:bool=True) -> tuple[object, object]:
+        return None, expr
+
     def NamedExpression(self, expr:Hql.Expressions.NamedExpression, prep:bool=True) -> tuple[object, object]:
         return None, expr

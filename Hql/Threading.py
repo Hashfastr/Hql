@@ -289,7 +289,8 @@ class HacPool():
 
     def clear_queue(self):
         count = 0
-        for t in self.queue:
+        # Copied, removing from a list while iterating it skips the next item
+        for t in list(self.queue):
             if self.semaphore.acquire(blocking=False):
                 self.pool.append(t)
                 self.queue.remove(t)
@@ -312,7 +313,7 @@ class HacPool():
                 self.completed.append(t)
                 self.ctx.cache.merge(t.ctx.cache)
         
-        for t in self.pool:
+        for t in list(self.pool):
             try:
                 join_thread(t)
             except Exception as e:
@@ -344,6 +345,7 @@ class HacThread():
         self.thread = None
         self._output:Data = Data()
         self.failed = False
+        self.error:Optional[Exception] = None
         self.num_results = 0
 
         self.id = '%08x' % random.getrandbits(32)
@@ -397,21 +399,21 @@ class HacThread():
     # Runs the query, function that is threaded
     def run(self) -> None:
         from Hql.Data import Data
+        start = time.perf_counter()
         try:
-            start = time.perf_counter()
             self.output = self.detection.run(self.query_now, ctx=self.ctx).data
-            end = time.perf_counter()
-            
-            self.duration = end - start
+            self.duration = time.perf_counter() - start
             self.completed = True
             self.num_results = len(self.output) if isinstance(self.output, Data) else 0
 
             logging.info(f'{self.detection.id} - {self.duration} - {len(self.output)} results')
         except Exception as e:
-            import traceback
-            logging.critical(e)
-            logging.critical(traceback.format_exc())
+            logging.error(f'Detection {self.detection.src} failed: {e}')
+            logging.debug('', exc_info=True)
+            self.error = e
             self.failed = True
+            # Failures take time too, a query can run long before it errors
+            self.duration = time.perf_counter() - start
         finally:
             self.ctx.cache.write_back()
 

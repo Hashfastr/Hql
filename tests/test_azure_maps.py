@@ -1,7 +1,7 @@
 import logging
 import shutil
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -164,6 +164,10 @@ def quiet():
     ('azure_audit', AUDIT, "['properties.result'] == 'success'", 'RoleManagement'),
     ('azure_audit', AUDIT, "activityType contains 'member'", 'RoleManagement'),
     ('azure_audit', AUDIT, "failure_status_reason == 'blocked'", 'UserManagement'),
+    # Rules also name the columns themselves, they're copied not renamed so both work
+    ('azure_audit', AUDIT, "OperationName == 'Delete user'", 'UserManagement'),
+    ('azure_audit', AUDIT, "Category == 'RoleManagement'", ''),
+    ('azure_audit', AUDIT, "ActivityDisplayName contains 'member'", 'RoleManagement'),
 
     ('azure_signin', SIGNIN, "userAgent contains 'azurehound'", 'a@x'),
     ('azure_signin', SIGNIN, "ClientApp == 'IMAP'", 'a@x'),
@@ -330,7 +334,9 @@ class TestSigmaOverKusto:
 
     def test_signin_user_agent(self, run):
         _, calls = run(rule('azure', 'service: signinlogs', ['userAgent|contains: azurehound']))
-        assert calls[0].startswith('SigninLogs\n| where TimeGenerated > datetime(')
+        # No HaC here, so no time bound, the map sets none of its own
+        assert calls[0].startswith('SigninLogs\n| extend ')
+        assert 'TimeGenerated' not in calls[0]
         assert 'userAgent = UserAgent' in calls[0]
         assert calls[0].endswith('| where userAgent contains "azurehound"')
 
@@ -399,7 +405,7 @@ class TestSigmaOverLogAnalytics:
         # whatever loganalytics.yml has
         workspace = yaml.safe_load((CONFIG / 'loganalytics.yml').read_text())['database']['conf']['workspace_id']
         assert calls[0][0] == workspace
-        assert calls[0][1].startswith('SigninLogs\n| where TimeGenerated > datetime(')
+        assert calls[0][1].startswith('SigninLogs\n| extend ')
         assert calls[0][1].endswith('| where userAgent contains "azurehound"')
 
     def test_audit_contains_on_dynamic_column(self, run):
@@ -410,3 +416,89 @@ class TestSigmaOverLogAnalytics:
     def test_process_creation(self, run):
         _, calls = run(rule('windows', 'category: process_creation', ['Image|endswith: \\rundll32.exe']))
         assert calls[0][1].endswith('| where ActionType == "ProcessCreated"\n| where Image endswith "\\\\rundll32.exe"')
+
+
+AUDIT_RULES = Path(__file__).parent.parent / 'examples' / 'sigma' / 'rules' / 'cloud' / 'azure' / 'audit_logs'
+
+
+@pytest.mark.parametrize('rule', [
+    'azure_guest_to_member.yml',
+    'azure_federation_modified.yml',
+    'azure_ad_users_added_to_device_admin_roles.yml',
+    'azure_app_role_added.yml',
+])
+def test_audit_rules_are_fully_pushed(rule):
+    # A where on a column the map renamed away stays local, which pulls the whole
+    # table back to filter it. These rules name OperationName, Category,
+    # ActivityDisplayName and TargetResources as the columns are.
+    import json
+    from Hql.Sigma import convert
+
+    path = AUDIT_RULES / rule
+    plan = json.loads(convert(path.read_text(), Config(CONFIG), name=str(path), plan=True))
+    assert plan['ops'] == []
+
+
+def test_target_type_reads_the_first_target():
+    # The parser used to drop [0], which compiled to TargetResources.type, null on an array
+    import json
+    from Hql.Sigma import convert
+
+    path = AUDIT_RULES / 'azure_app_role_added.yml'
+    plan = json.loads(convert(path.read_text(), Config(CONFIG), name=str(path), plan=True))
+    assert "['targetResources.type'] = tostring(TargetResources[0].type)" in plan['upstream'][0]['query']
+
+
+SIGNIN_RULE = Path(__file__).parent.parent / 'examples' / 'sigma' / 'rules' / 'cloud' / 'azure' / 'signin_logs' / 'azure_ad_azurehound_discovery.yml'
+
+
+@pytest.mark.parametrize('lookback', [timedelta(hours=1), timedelta(days=7)])
+def test_sigma_lookback_is_the_log_analytics_timespan(monkeypatch, lookback):
+    # The window reaches the table the rule reads. It used to bound the first table
+    # the map declares, AzureActivity, and leave the rule's own table unbounded.
+    from Hql.Sigma import run
+
+    seen = []
+    def query(self):
+        seen.append((self.compile(), self._timespan))
+        return SimpleNamespace(tables=[])
+    monkeypatch.setattr(LogAnalytics, '_query', query)
+
+    run(SIGNIN_RULE.read_text(), Config(CONFIG), name=str(SIGNIN_RULE), lookback=lookback)
+
+    (kql, (start, end)), = seen
+    assert kql.startswith('SigninLogs\n')
+    assert end - start == lookback
+    assert abs(datetime.now(timezone.utc) - end) < timedelta(minutes=1)
+
+
+def test_sigma_defaults_to_an_hour():
+    import inspect
+    from Hql.Sigma import DEFAULT_LOOKBACK, run
+    assert DEFAULT_LOOKBACK == timedelta(hours=1)
+    assert inspect.signature(run).parameters['lookback'].default == DEFAULT_LOOKBACK
+
+
+def test_sigma_lookback_bounds_kusto_on_time_generated(monkeypatch, tmp_path):
+    from Hql.Sigma import run
+
+    calls = []
+
+    class Client:
+        def execute(self, database, query):
+            calls.append(query)
+            return SimpleNamespace(primary_results=[FakeResult([], [('TimeGenerated', 'datetime')])])
+
+    class TestKusto(Kusto):
+        def __init__(self, config, name='Kusto Database'):
+            super().__init__(config, name=name, query_client=Client())
+
+    monkeypatch.setitem(database_registry, 'Kusto', TestKusto)
+    config = Config(switch_azure_db(tmp_path, 'loganalytics', 'kusto'))
+    config.set_database('kusto', KUSTO_DB)
+
+    run(SIGNIN_RULE.read_text(), config, name=str(SIGNIN_RULE), lookback=timedelta(days=2))
+
+    query, = calls
+    assert query.startswith('SigninLogs\n')
+    assert '| where TimeGenerated between (datetime(' in query

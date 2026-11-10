@@ -1,4 +1,5 @@
 from copy import deepcopy
+import json
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
@@ -111,6 +112,25 @@ def test_dynamic_and_timespan_strings_match_the_kusto_sdk():
     assert rows[0]['Raw'] == 'plain'
 
 
+def test_dynamic_values_of_mixed_shapes_load():
+    # AADUserRiskEvents.AdditionalInfo: Value is a string, a list or an object by Key
+    info = [
+        [{'Key': 'userAgent', 'Value': 'curl'}, {'Key': 'relatedLocation', 'Value': {'clientIP': '1.2.3.4', 'latitude': None}}],
+        [{'Key': 'riskReasons', 'Value': ['UnfamiliarASN', 'UnfamiliarBrowser']}],
+    ]
+    client = FakeClient(result(
+        [[json.dumps(x), 'r'] for x in info],
+        [('AdditionalInfo', 'dynamic'), ('RiskEventType', 'string')],
+    ))
+    adapter = LogAnalytics(la_config(), query_client=client)
+    adapter.set_raw_query('AADUserRiskEvents')
+
+    rows = adapter.eval(Context(Data())).data[adapter.name].to_dicts()
+
+    assert [x['AdditionalInfo'] for x in rows] == info
+    assert [x['RiskEventType'] for x in rows] == ['r', 'r']
+
+
 def test_result_types_come_from_column_metadata():
     event_time = datetime(2026, 9, 1, 21, 31, 10, tzinfo=timezone.utc)
     client = FakeClient(result([[None, 1], [event_time, 2]], [('TimeGenerated', 'datetime'), ('EventID', 'int')]))
@@ -167,7 +187,26 @@ def test_timebound_becomes_the_query_timespan():
     acc.eval(Context(Data()))
 
     assert rej is None
-    assert client.calls == [('workspace-id', 'Events', (start, end))]
+    # Naive bounds are local time, sent as UTC so the SDK neither shifts nor warns
+    utc = timezone.utc
+    assert client.calls == [('workspace-id', 'Events', (start.astimezone(utc), end.astimezone(utc)))]
+    assert all(x.tzinfo == utc for x in client.calls[0][2])
+
+
+def test_naive_timebound_is_local_time(monkeypatch):
+    import time
+    # Hql's datetime.now() is local, taking it as UTC shifted the window by the offset
+    monkeypatch.setenv('TZ', 'America/Los_Angeles')
+    time.tzset()
+    try:
+        adapter = LogAnalytics(la_config(), query_client=FakeClient(None))
+        adapter.add_timebound(datetime(2026, 1, 1, 10), datetime(2026, 1, 1, 11))
+        start, end = adapter._timespan
+        assert start == datetime(2026, 1, 1, 18, tzinfo=timezone.utc)
+        assert end == datetime(2026, 1, 1, 19, tzinfo=timezone.utc)
+    finally:
+        monkeypatch.undo()
+        time.tzset()
 
 
 def test_timebound_ignored_when_not_timeseries():
