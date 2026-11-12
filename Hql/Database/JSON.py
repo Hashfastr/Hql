@@ -163,8 +163,9 @@ class JSON(Database):
             return Table(init_data=data, name=name)
 
         files:list[Path] = []
+        # Patterns are relative to local-base and may cross directories, e.g. '**/*.ndjson'
         for i in self.files:
-            files += list((self.local_base / i).parent.glob(i))
+            files += sorted(self.local_base.glob(i))
         
         tables:list[Table] = []
         for file in files:

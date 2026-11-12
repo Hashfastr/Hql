@@ -48,6 +48,21 @@ class TestFile:
         out = db.eval(ctx).data
         assert out['d.json'].df['n'].to_list() == [1, 2]
 
+    def test_glob_crosses_directories(self, ctx, tmp_path):
+        # Sigma run-dir mirrors the rules' directories, e.g. audit_logs/rule.ndjson
+        (tmp_path / 'audit_logs').mkdir()
+        (tmp_path / 'audit_logs' / 'a.ndjson').write_text('{"n": 3}\n{"n": 4}\n')
+        (tmp_path / 'signin_logs').mkdir()
+        (tmp_path / 'signin_logs' / 'b.ndjson').write_text('{"n": 5}\n')
+
+        db = json_db(ctx)
+        db.files = ['**/*.ndjson']
+        assert sorted(t.name for t in db.eval(ctx).data) == ['a.ndjson', 'b.ndjson']
+
+        db = json_db(ctx)
+        db.files = ['signin_logs/*.ndjson']
+        assert db.eval(ctx).data['b.ndjson'].df['n'].to_list() == [5]
+
     def test_falls_back_to_default_db(self, ctx):
         db = file([StringLiteral('d.json')]).eval(ctx)
         assert isinstance(db, JSON)

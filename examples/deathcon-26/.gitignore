@@ -6,3 +6,5 @@ hac/*.log
 # CTF answer key and hunt notes, players must not get these from the repo
 ctf/answers/
 ctf
+
+sigma-results/

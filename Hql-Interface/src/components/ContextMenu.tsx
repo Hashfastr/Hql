@@ -42,11 +42,12 @@ export function ContextMenu({
     top: Math.min(y, window.innerHeight - items.length * 32 - 8),
   }
 
+  // Portaled to <body>, outside the app root that sets the text color, so set it here too
   return createPortal(
     <div
       ref={ref}
       style={style}
-      className="fixed z-50 min-w-[180px] rounded border border-gruvbox-light-bg3 dark:border-gruvbox-dark-bg3 bg-gruvbox-light-bg0 dark:bg-gruvbox-dark-bg0 py-1 shadow-lg text-sm"
+      className="fixed z-50 min-w-[180px] rounded border border-gruvbox-light-bg3 dark:border-gruvbox-dark-bg3 bg-gruvbox-light-bg0 dark:bg-gruvbox-dark-bg0 text-gruvbox-light-fg dark:text-gruvbox-dark-fg font-sans py-1 shadow-lg text-sm"
     >
       {items.map((item) => (
         <button

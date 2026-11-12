@@ -70,7 +70,7 @@ def _(mo):
     - `config/static/`: sections 1 to 5. They run offline against small fake databases in `data/`.
       Put your real Splunk/Elastic in `config/static/splunk.yml` / `elastic.yml` (see `README.md`).
     - `config/azure/`: section 6. It needs a workspace in `config/azure/loganalytics.yml` and an `az login`.
-    
+
     Let's show mapping, routing, and breaking down heartache associated with sigma.
     Future is possible, future is now!
     """)
@@ -86,6 +86,7 @@ def _(Path, mo):
     DATA = HERE / "data"
     HAC = HERE / "hac"
     HAC_LA = HERE / "hac-loganalytics"
+    SIGMA_RESULTS = HERE / "sigma-results"
 
     CURL_UPLOAD = "proc_creation_lnx_susp_curl_fileupload.yml"
     ENCODED_PS = "proc_creation_win_powershell_base64_encoded_cmd.yml"
@@ -105,6 +106,7 @@ def _(Path, mo):
         HAC_LA,
         KERBEROAST,
         RULES,
+        SIGMA_RESULTS,
         STATIC_CONFIG,
     )
 
@@ -151,12 +153,13 @@ def _(Config, DATA, HqlCompiler, RULES, STATIC_CONFIG, SigmaParser, mo):
 
     return code, load_config, precompile, raw_compile, rule, show
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r'''
+    mo.md(r"""
     ## Hql configuration
     Some Hql configuration remains in yaml format, but for anything code related it's treated as code to import.
-    
+
     For example a database can be defined as:
 
     ```
@@ -174,7 +177,7 @@ def _(mo):
             database('json').http('tf11-so-network.json')
     ```
 
-    Then referenced as 
+    Then referenced as
 
     ```
     database('json').http('tf11-so-network.json')
@@ -239,8 +242,9 @@ def _(mo):
     This creats that multi-source, single output schema, that can allow for full organization detections.
 
     Now that you know how it works, some demos!
-    ''')
+    """)
     return
+
 
 @app.cell(hide_code=True)
 def _(mo):
@@ -253,6 +257,8 @@ def _(mo):
     Anything a language can't express is *left for Hql*: it runs on the results instead.
     Kibana-QL has no regex, for example, so regex processing is passed to Hql as part of the dataframe interpreter.
     This is what separates Hql, and how it's able to break out of sigma limitations, it can expand any structured dataset.
+
+    Since Hql is also a library, it can be easily used as a fast and configurable sigma pipeline with built in language.
     """)
     return
 
@@ -424,7 +430,7 @@ def _(Detection, HAC, code, conf, mo, show):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(
     HacEngine,
     logging,
@@ -492,6 +498,7 @@ def _(
 
     return (launch_engine,)
 
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -514,7 +521,7 @@ def _(mo):
     ---
 
     For these next sections I've split things up into two different configurations.
-    The first one will use a static tf11 dataset hosted online as a json file, this will be cacached by HaC.
+    The first one will use a static tf11 dataset hosted online as a json file, this will be cached by HaC.
     The second one will connect to the death azure environment using your credentials.
 
     Both of these will use traffic, some of the sigma files can create large queries back.
@@ -524,6 +531,8 @@ def _(mo):
     Ideally for HaC you should have some sort of destination for the data to go to, like a SOAR.
     I don't have that for this workshop, so while they will run on a schedule still, get results from manually running.
     """)
+    return
+
 
 @app.cell(hide_code=True)
 def _(mo):
@@ -580,14 +589,30 @@ def _(mo):
     To set it up:
 
     1. Put the Workspace ID from the workspace's Overview blade in `config/azure/loganalytics.yml`.
-    2. Run `az login` as someone with Log Analytics Reader on the workspace. Hql uses that session, no secret needed.
+    2. Install the Azure CLI (`az`), if `az version` doesn't already work:
+
+        | Platform | Command |
+        |---|---|
+        | Fedora / RHEL | `sudo dnf install azure-cli` |
+        | Debian / Ubuntu | `curl -sL https://aka.ms/InstallAzureCLIDeb \| sudo bash` |
+        | macOS | `brew install azure-cli` |
+        | Windows | `winget install --exact --id Microsoft.AzureCLI` |
+        | Anywhere with uv | `uv tool install azure-cli` |
+
+        Other platforms and details: [Install the Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
+        Open a new terminal afterwards so `az` is on `PATH`, then restart marimo from it.
+
+    3. Run `az login` as someone with Log Analytics Reader on the workspace. Hql uses that session, no secret needed.
+       With no browser on the machine (SSH, container), use `az login --use-device-code`.
+       For an account in several tenants, add `--tenant <TENANT_ID>`.
+       `az account show` confirms who you're logged in as.
 
     This engine's web UI is on port 8081, so it can run next to the static one.
     """)
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(AZURE_CONFIG, HAC_LA, code, mo):
     mo.ui.tabs({
         "loganalytics.yml": code((AZURE_CONFIG / "loganalytics.yml").read_text(), "yaml"),
@@ -604,12 +629,24 @@ def _(mo):
     return (start_la_engine,)
 
 
-@app.cell
-def _(AZURE_CONFIG, Config, HAC_LA, launch_engine, mo, shutil, start_la_engine):
+@app.cell(hide_code=True)
+def _(
+    AZURE_CONFIG,
+    Config,
+    HAC_LA,
+    SIGMA_RESULTS,
+    launch_engine,
+    mo,
+    shutil,
+    start_la_engine,
+):
     mo.stop(not start_la_engine.value)
 
     def la_config():
-        return Config(AZURE_CONFIG)
+        conf = Config(AZURE_CONFIG)
+        # local-base is relative to the working directory, pin it to section 7's output
+        conf.get_database("sigma-results")["conf"]["local-base"] = str(SIGMA_RESULTS)
+        return conf
 
     _workspace = la_config().get_database("loganalytics")["conf"].get("workspace_id", "")
     mo.stop(
@@ -618,35 +655,95 @@ def _(AZURE_CONFIG, Config, HAC_LA, launch_engine, mo, shutil, start_la_engine):
     )
     mo.stop(
         shutil.which("az") is None,
-        mo.md("The Azure CLI (`az`) isn't on `PATH`. Install it and run `az login`.").callout(kind="warn"),
+        mo.md(
+            "The Azure CLI (`az`) isn't on `PATH`. Install it (see the steps above, or "
+            "[Install the Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)), "
+            "run `az login`, then restart marimo from that terminal."
+        ).callout(kind="warn"),
     )
 
     launch_engine(HAC_LA, AZURE_CONFIG, la_config, 8081)
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r'''
-    7. Mass sigma death
+    mo.md(r"""
+    ## 7. Mass sigma death
 
     Here I will show you how to absolutely spray sigma rules against a configured environment.
     Each result is stored in a file after the name of the rule as ndjson.
     Sometimes sigma can be really noisy, a big problem for death.
     So along with running sigma, we will also use hql to analyze and hunt on the results of sigma.
+
+    From the repo root, run every SigmaHQ Azure rule under `examples/sigma/rules/cloud/azure`,
+    recursively, against the workspace from section 6, 32 at a time:
+
+    ```bash
+    uv run python -m Hql.Sigma run-dir \
+        -c examples/deathcon-26/config/azure \
+        -o examples/deathcon-26/sigma-results \
+        -f ndjson -t 32 -b 7d \
+        ./examples/sigma/rules/cloud/azure
+    ```
+
+    `-b` is how far back each rule looks (default `1h`).
+    Rules that match nothing aren't written. The rest land in `sigma-results/`, mirroring
+    the rules' folders, e.g. `sigma-results/signin_logs/<rule>.ndjson`.
+    Every line is one finding, with `_rule` (the rule's path) and `_table` (the Azure table it came from).
+
+    To find a json file you would like to use try this:
+
+    ```bash
+    ╭─hashfastr@xanadu ~/git/Hql ‹main●›
+    ╰─$ ls examples/deathcon-26/sigma-results/signin_logs/azure_mfa_interrupted.ndjson
+    examples/deathcon-26/sigma-results/signin_logs/azure_mfa_interrupted.ndjson
+
+    # paths are relative to sigma-results
+    # value to put into the hql file function will then be
+    # 'signin_logs/azure_mfa_interrupted.ndjson'
+    ```
+
+    `config/azure/sigma-results.yml` defines those files as a static JSON database, `sigma-results`,
+    so the section 6 engine can query them. Open its web UI ([localhost:8081](http://localhost:8081))
+    and try:
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(code):
+    code('''
+    // every finding from every rule
+    database('sigma-results').file('**/*.ndjson')
+
+    // just the sign-in rules
+    database('sigma-results').file('signin_logs/*.ndjson')
+
+    // which rules are the noisiest?
+    database('sigma-results').file('**/*.ndjson')
+    | summarize Findings = count() by _rule
+    | sort by Findings desc
+
+    // specific rule
+    database('sigma-results').file('signin_logs/azure_mfa_interrupted.ndjson')
+    | project TimeGenerated, Username
     ''')
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r'''
-    8. CTF
+    mo.md(r"""
+    ## 8. CTF
 
     So, you can sigma in Hql.
     I have some CTFd questions if you are a deathcon26 participant.
     All questions can be answered using sigmaHQ detections.
     Use your new skills and detections to hunt for these answers.
-    ''')
+    """)
     return
+
 
 if __name__ == "__main__":
     app.run()

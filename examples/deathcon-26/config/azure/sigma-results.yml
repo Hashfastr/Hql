@@ -1,0 +1,12 @@
+# Findings from section 7's `Hql.Sigma run-dir`, one ndjson file per rule that
+# matched, mirroring the rules' directories. Query them from the HaC web UI with
+#   database('sigma-results').file('**/*.ndjson')
+# local-base is relative to the CWD (repo root for the CLI); the notebook
+# overrides it with an absolute path.
+database:
+  name: sigma-results
+  type: JSON
+  # Findings are already bounded by run-dir's --lookback, HaC's time window would hide them
+  timeseries: false
+  conf:
+    local-base: examples/deathcon-26/sigma-results
