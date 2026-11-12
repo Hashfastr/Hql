@@ -55,20 +55,24 @@ def _(mo):
     mo.md(r"""
     # Hql @ DEATHCon 2026
 
-    One query language from Sigma rule to results:
+    Using Hql to improve sigma conversion and usage.
+    This workshop will show compilation to a few query languages we currently support, along with directly running sigma against backend targets.
 
-    1. **Sigma in, four languages out**: compile Sigma to Lucene, Elastic DSL, KQL and SPL with no database at all.
-    2. **One config, two backends**: route one Sigma rule to Elastic and another to Splunk, mapping fields on the way.
-    3. **Run Sigma against the databases**: same rules, actual results.
-    4. **Hql as Code (HaC)**: Hql's Sigma alternative. Convert rules, then do what Sigma can't.
-    5. **The HaC engine on the static dataset**: schedule the detections and manage them in a web UI.
-    6. **The HaC engine on a Log Analytics workspace**: the same engine against your own Sentinel data.
+    1. Compile Sigma to Lucene, Elastic DSL, Kibana-QL and SPL with no database at all.
+    2. Route one Sigma rule to Elastic and another to Splunk, mapping fields on the way.
+    3. Run Sigma directly against the databases
+    4. Hql as Code (HaC): Hql's Sigma alternative, expand what's possible with sigma
+    5. Demo HaC on a static dataset using the web UI.
+    6. Demo HaC on the conference Log Analytics workspace!
 
     There are two configs:
 
     - `config/static/`: sections 1 to 5. They run offline against small fake databases in `data/`.
       Put your real Splunk/Elastic in `config/static/splunk.yml` / `elastic.yml` (see `README.md`).
     - `config/azure/`: section 6. It needs a workspace in `config/azure/loganalytics.yml` and an `az login`.
+    
+    Let's show mapping, routing, and breaking down heartache associated with sigma.
+    Future is possible, future is now!
     """)
     return
 
@@ -105,7 +109,7 @@ def _(Path, mo):
     )
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(Config, DATA, HqlCompiler, RULES, STATIC_CONFIG, SigmaParser, mo):
     def rule(name):
         return (RULES / name).read_text()
@@ -147,17 +151,108 @@ def _(Config, DATA, HqlCompiler, RULES, STATIC_CONFIG, SigmaParser, mo):
 
     return code, load_config, precompile, raw_compile, rule, show
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r'''
+    ## Hql configuration
+    Some Hql configuration remains in yaml format, but for anything code related it's treated as code to import.
+    
+    For example a database can be defined as:
+
+    ```
+    database:
+      name: 'json'
+      type: 'JSON'
+      # Static 2022 datasets, HaC's time window would filter out every row
+      timeseries: false
+      conf:
+        local-base: './local-data'
+        http-base:  'https://hql.dev/datasets/'
+      macro:
+        network:
+          hql: |
+            database('json').http('tf11-so-network.json')
+    ```
+
+    Then referenced as 
+
+    ```
+    database('json').http('tf11-so-network.json')
+
+    // or the macro
+
+    database('json').macro('network')
+    ```
+
+    For Mapping it is handled as a compiler preprocessing operation.
+    Backend fields are converted and passed to the database, then remapped on return.
+
+    ```
+    import maps.tf11;
+    import maps.tf11_fields;
+
+    let tf11_beats = database('json').http('tf11-so-beats-large.json');
+    let tf11_sysmon_events = tf11_beats | where winlog.channel == 'Microsoft-Windows-Sysmon/Operational';
+
+    map tf11_sysmon = {
+        EventID: winlog.event_id,
+        Channel: winlog.channel,
+        Computer: winlog.computer_name,
+        Provider_Name: winlog.provider_name,
+        // truncated
+    };
+
+    class windows = {
+        let process_creation = tf11_sysmon_events | where winlog.event_id == '1' | map tf11_sysmon;
+    };
+    ```
+
+    So now windows process creation effectively resolves to
+
+    ```
+    database('json').http('tf11-so-beats-large.json')
+    | where winlog.channel == 'Microsoft-Windows-Sysmon/Operational'
+    | where winlog.event_id == '1'
+    // Only necessary maps are handled
+    | project-rename EventID=winlog.event_id, Channel=winlog.channel, ...
+    ```
+
+    The ability to build maps and source query destinations is great.
+    While not shown in this workshop, this is possible, multi-source  sigma querying.
+
+    ```
+    //pseudo
+
+    let tf11_beats = database('json').http('tf11-so-beats-large.json');
+    let tf11_sysmon_events = tf11_beats | where winlog.channel == 'Microsoft-Windows-Sysmon/Operational';
+    let tf11_creation = tf11_sysmon_events | where winlog.event_id == '1' | map tf11_sysmon;
+
+    let splunk_sysmon = database('splunk').index('sysmon');
+    let splunk_creation = splunk_sysmon | where event_id == 1 | map splunk_sysmon;
+
+    class windows = {
+        let process_creation = union tf11_creation, splunk_creation;
+    };
+    ```
+
+    Each source is treated as a dependency tree, compiled to, and joined when needed.
+    This creats that multi-source, single output schema, that can allow for full organization detections.
+
+    Now that you know how it works, some demos!
+    ''')
+    return
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## 1. Sigma in, four languages out
+    ## 1. Plain compilation
 
     A SigmaHQ rule, compiled straight to each backend's language.
-    There's no config and no database here, so field names stay as Nextron wrote them.
+    There's no config and no database here, so field names stay as the sigma has them.
 
     Anything a language can't express is *left for Hql*: it runs on the results instead.
-    KQL has no regex, for example, so the `|re` part of this rule stays in Hql.
+    Kibana-QL has no regex, for example, so regex processing is passed to Hql as part of the dataframe interpreter.
+    This is what separates Hql, and how it's able to break out of sigma limitations, it can expand any structured dataset.
     """)
     return
 
@@ -397,6 +492,38 @@ def _(
 
     return (launch_engine,)
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## The Hac Engine
+    Another Hql concept, Hql can run as a multi-threaded detection server running queries on a cronjob interval from just about anywhere.
+    Heavy development continues but features such as retro-hunting allows you to just haul back detections back in time.
+    Hql is time bound aware so it's able to inject time bounding into any query.
+
+    It has an API, performs caching, and more.
+
+    - Reduce API costs caching custom api call functions.
+    - Reduce query times by caching data you already have.
+      - PCAP
+      - Big CSV, JSON, text
+      - Long SQL lookups
+    - instead of requerying last 7 days, query the last 5 minutes, use cached results.
+
+    Some of these features are roadmapped but proven to be possible.
+
+    ---
+
+    For these next sections I've split things up into two different configurations.
+    The first one will use a static tf11 dataset hosted online as a json file, this will be cacached by HaC.
+    The second one will connect to the death azure environment using your credentials.
+
+    Both of these will use traffic, some of the sigma files can create large queries back.
+
+    ---
+
+    Ideally for HaC you should have some sort of destination for the data to go to, like a SOAR.
+    I don't have that for this workshop, so while they will run on a schedule still, get results from manually running.
+    """)
 
 @app.cell(hide_code=True)
 def _(mo):
@@ -413,6 +540,8 @@ def _(mo):
     Elastic and Splunk databases in `data/`.
 
     The web UI needs free-threaded Python (`3.14t`) and a built `Hql-Interface/dist`.
+
+    (button below will start the server)
     """)
     return
 
@@ -495,6 +624,29 @@ def _(AZURE_CONFIG, Config, HAC_LA, launch_engine, mo, shutil, start_la_engine):
     launch_engine(HAC_LA, AZURE_CONFIG, la_config, 8081)
     return
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r'''
+    7. Mass sigma death
+
+    Here I will show you how to absolutely spray sigma rules against a configured environment.
+    Each result is stored in a file after the name of the rule as ndjson.
+    Sometimes sigma can be really noisy, a big problem for death.
+    So along with running sigma, we will also use hql to analyze and hunt on the results of sigma.
+    ''')
+    return
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r'''
+    8. CTF
+
+    So, you can sigma in Hql.
+    I have some CTFd questions if you are a deathcon26 participant.
+    All questions can be answered using sigmaHQ detections.
+    Use your new skills and detections to hunt for these answers.
+    ''')
+    return
 
 if __name__ == "__main__":
     app.run()
