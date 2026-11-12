@@ -677,15 +677,17 @@ def _(mo):
     So along with running sigma, we will also use hql to analyze and hunt on the results of sigma.
 
     From the repo root, run every SigmaHQ Azure rule under `examples/sigma/rules/cloud/azure`,
-    recursively, against the workspace from section 6, 32 at a time:
+    recursively, against the workspace from section 6, 8 at a time:
 
     ```bash
     uv run python -m Hql.Sigma run-dir \
         -c examples/deathcon-26/config/azure \
         -o examples/deathcon-26/sigma-results \
-        -f ndjson -t 32 -b 7d \
+        -f ndjson -t 8 -b 7d \
         ./examples/sigma/rules/cloud/azure
     ```
+
+    If you would like to go faster, toy with the `-t` parameter.
 
     `-b` is how far back each rule looks (default `1h`).
     Rules that match nothing aren't written. The rest land in `sigma-results/`, mirroring
