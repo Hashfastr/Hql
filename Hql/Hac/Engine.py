@@ -282,6 +282,13 @@ class Detection():
         comp = HqlCompiler(self.config, query=self.parser.assembly, hac=hac)
         return comp
 
+    def timerange(self, query_now:datetime.datetime) -> Optional[tuple[datetime.datetime, datetime.datetime]]:
+        '''The window a run at query_now searches, None without HaC as nothing bounds it.'''
+        if not self.hac:
+            return None
+        delta = self.lookback if self.lookback is not None else Schedule(self.hac.schedule).delta()
+        return query_now - delta, query_now
+
     def should_fire(self, time_parts:tuple[int, int, int, int, int]):
         if self.no_hac or not self.schedule:
             return False

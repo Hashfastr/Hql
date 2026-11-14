@@ -17,6 +17,8 @@ export interface HqlRun {
   results?: Partial<HqlResults>
   str_out?: string
   hac?: unknown
+  /** Window the run searched; only present for HaC/Sigma (time-bounded) runs */
+  timerange?: { start: string; end: string }
 }
 
 // GET /api/detections returns HAC asm dicts; every field is author-supplied
@@ -45,7 +47,17 @@ export interface RunState {
   strOut?: string
   duration?: number
   numResults?: number
+  timerange?: { start: string; end: string }
 }
+
+/**
+ * Search window for HaC and Sigma runs (plain Hql isn't time-bounded).
+ * Absolute start/end are `datetime-local` values in the viewer's local time.
+ */
+export type TimeRange =
+  | { mode: 'default' }
+  | { mode: 'lookback'; lookback: string }
+  | { mode: 'absolute'; start: string; end: string }
 
 export interface QueryTab {
   id: string
@@ -57,6 +69,7 @@ export interface QueryTab {
    * lags the document during typing and would overwrite user input.
    */
   editRev: number
+  timeRange: TimeRange
   run: RunState
   activeResultTable?: string
 }

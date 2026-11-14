@@ -1,5 +1,6 @@
 import { useActiveTab, useAppDispatch } from '../state/store'
 import { ResultsTable } from './ResultsTable'
+import { describeSearched } from '../lib/timeRange'
 
 export function ResultsPane() {
   const tab = useActiveTab()
@@ -37,6 +38,7 @@ export function ResultsPane() {
     return (
       <div className="flex h-full items-center justify-center text-sm text-gruvbox-light-gray dark:text-gruvbox-dark-gray">
         Query completed with no results
+        {run.timerange && ` between ${describeSearched(run.timerange).replace(' → ', ' and ')}`}
       </div>
     )
   }
@@ -71,6 +73,14 @@ export function ResultsPane() {
           {run.numResults || tables.reduce((n, t) => n + (run.results!.data[t]?.length ?? 0), 0)}{' '}
           results
           {run.duration !== undefined && ` · ${run.duration.toFixed(2)}s`}
+          {run.timerange ? (
+            <span title="Window the run searched (server local time)">
+              {' · '}
+              {describeSearched(run.timerange)}
+            </span>
+          ) : (
+            <span title="Only HaC and Sigma queries are time-bounded">{' · not time-bounded'}</span>
+          )}
         </span>
       </div>
       <div className="min-h-0 flex-1">

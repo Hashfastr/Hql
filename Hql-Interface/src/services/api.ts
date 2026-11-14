@@ -4,7 +4,8 @@
 // - POST /api/detections takes a RAW TEXT body, not JSON
 // - failed runs put the Python traceback in `str_out`
 // - num_results is 0 for plain (non-detection) runs even when rows exist
-import type { DetectionDetail, DetectionMeta, HqlRun } from '../types'
+import type { DetectionDetail, DetectionMeta, HqlRun, TimeRange } from '../types'
+import { DEFAULT_TIME_RANGE, timeRangeParams } from '../lib/timeRange'
 
 const BASE = '/api'
 
@@ -42,8 +43,18 @@ function postJson<T>(path: string, body: unknown, signal?: AbortSignal): Promise
   })
 }
 
-export function startRun(hql: string, signal?: AbortSignal): Promise<{ id: string }> {
-  return postJson('/hql/runs', { hql, run: true, save: false, plan: false }, signal)
+// The time range bounds HaC and Sigma runs; the backend 400s a bad one with
+// a readable detail, which surfaces as the run's failure message
+export function startRun(
+  hql: string,
+  timeRange: TimeRange = DEFAULT_TIME_RANGE,
+  signal?: AbortSignal,
+): Promise<{ id: string }> {
+  return postJson(
+    '/hql/runs',
+    { hql, run: true, save: false, plan: false, ...timeRangeParams(timeRange) },
+    signal,
+  )
 }
 
 export function getRun(id: string, signal?: AbortSignal): Promise<HqlRun> {

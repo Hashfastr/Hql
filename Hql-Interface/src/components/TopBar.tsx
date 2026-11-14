@@ -6,6 +6,7 @@ import { useTheme } from '../hooks/useTheme'
 import * as api from '../services/api'
 import { QueryTabs } from './QueryTabs'
 import { RetroHuntModal } from './RetroHuntModal'
+import { TimeRangePicker } from './TimeRangePicker'
 // Must be a bundler import: the backend statically serves ONLY /assets and
 // index.html, so any asset referenced by absolute URL 404s in production.
 import lainGif from '../../lain.gif'
@@ -46,7 +47,7 @@ export function TopBar() {
         <button
           className="btn btn-run"
           disabled={isRunning || !canAct}
-          onClick={() => void run(tab.id, tab.query)}
+          onClick={() => void run(tab.id, tab.query, tab.timeRange)}
           title="Run query (active tab)"
         >
           ▶ Run
@@ -59,6 +60,10 @@ export function TopBar() {
         >
           ■ Stop
         </button>
+        <TimeRangePicker
+          value={tab.timeRange}
+          onChange={(timeRange) => dispatch({ type: 'setTimeRange', tabId: tab.id, timeRange })}
+        />
         {/* Always mounted, toggled via visibility: reserves the slot so the
             toolbar doesn't shift when a run starts, and pre-loads the gif */}
         <img
@@ -137,6 +142,7 @@ export function TopBar() {
       </div>
       {retroOpen && (
         <RetroHuntModal
+          initial={tab.timeRange.mode === 'absolute' ? tab.timeRange : undefined}
           onClose={() => setRetroOpen(false)}
           onSubmit={(start, end) =>
             void withBusy(async () => {

@@ -23,9 +23,47 @@ class HqlRequest(BaseModel):
     run: bool = True
     save: bool = False
     plan: bool = False
-    start:datetime = datetime.now() - timedelta(hours=1)
-    end:datetime = datetime.now()
+    # The window HaC and Sigma runs search, a lookback like 1h or 7d, or an
+    # absolute start and end. Neither keeps the HaC schedule's interval.
+    lookback: Optional[str] = None
+    start: Optional[datetime] = None
+    end: Optional[datetime] = None
     retro: bool = False
+
+def local_naive(value:datetime) -> datetime:
+    '''Hql's naive datetimes are local time, so convert ones that carry a zone.'''
+    if value.tzinfo is None:
+        return value
+    return value.astimezone().replace(tzinfo=None)
+
+def resolve_window(req:HqlRequest) -> tuple[Optional[timedelta], Optional[datetime]]:
+    '''
+    The lookback and query time a run uses, from a lookback or a start and end.
+    None for either keeps the detection's default, its schedule's interval up to now.
+    '''
+    from Hql.Functions.time import parse_timespan
+    from Hql.Exceptions import HqlExceptions as hqle
+
+    if req.start is not None or req.end is not None:
+        if req.lookback:
+            raise ValueError('Give either a lookback or a start and end, not both')
+        if req.start is None or req.end is None:
+            raise ValueError('A time range needs both a start and an end')
+        start, end = local_naive(req.start), local_naive(req.end)
+        if start >= end:
+            raise ValueError(f'Start {start.isoformat()} must be before end {end.isoformat()}')
+        return end - start, end
+
+    if req.lookback:
+        try:
+            lookback = parse_timespan(req.lookback)
+        except hqle.ArgumentException:
+            raise ValueError(f'Invalid lookback {req.lookback!r}, expected e.g. 30m, 1h or 7d')
+        if lookback <= timedelta(0):
+            raise ValueError(f'Lookback must be positive, got {req.lookback!r}')
+        return lookback, None
+
+    return None, None
 
 class Apiserver():
     def __init__(self, hacengine:HacEngine, host='0.0.0.0', port=8080):
@@ -113,8 +151,9 @@ class Apiserver():
             if not det.hac or not det.schedule:
                 return {'id': ''}
 
-            start:datetime = hql.start
-            end:datetime = hql.end
+            # Default to the last hour, worked out per request rather than at import
+            end:datetime = local_naive(hql.end) if hql.end else datetime.now()
+            start:datetime = local_naive(hql.start) if hql.start else end - timedelta(hours=1)
             delta = det.schedule.delta()
 
             ids = []
@@ -159,8 +198,13 @@ class Apiserver():
             if not hql.run:
                 return {'id': ''}
 
-            det = Detection(hql.hql, 'api', self.hacengine.config, no_hac=True)
-            rid = self.hacengine.run_detection(det)
+            try:
+                lookback, query_now = resolve_window(hql)
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+
+            det = Detection(hql.hql, 'api', self.hacengine.config, no_hac=True, lookback=lookback)
+            rid = self.hacengine.run_detection(det, query_now=query_now)
             return {'id': rid}
 
         @self.app.post('/api/hql/deparse')

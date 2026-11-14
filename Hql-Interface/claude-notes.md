@@ -147,6 +147,19 @@ One context + `useReducer`. Key invariants:
   every asset must go through the bundler (`import lainGif from
   '../../lain.gif'`), never absolute URLs. The favicon is an inline data URI
   for the same reason.
+- **Time windows** (`lib/timeRange.ts`, `components/TimeRangePicker.tsx`):
+  each tab carries a `timeRange` — `default` (send nothing: the HaC
+  schedule's interval up to now), `lookback` (`{lookback: '7d'}`, parsed by
+  `parse_timespan` like `ago()`), or `absolute` (`{start, end}` as UTC ISO;
+  the backend converts zoned datetimes to its local naive time, Hql's
+  convention). Bad values 400 with a readable `detail`. Only queries with
+  HaC are time-bounded (the compiler bounds via `hac.get_timerange()`; Sigma
+  rules always generate HaC), so the window is a no-op for plain Hql. Run
+  dicts carry `timerange: {start, end}` (server-local naive ISO, shown
+  verbatim in the results status line) only when HaC bounded the run.
+  `timeRange` is persisted per tab as an optional field inside the v1 blob
+  (validated by `parseTimeRange` on load) — no version bump, so saved tabs
+  survive.
 - `vite.config.ts`: dev server on **5173** proxying `/api` → 8080. (It used
   to be 8080→8080, which proxied to itself and collided with the backend.)
 

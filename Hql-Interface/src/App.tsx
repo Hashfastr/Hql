@@ -44,7 +44,7 @@ export default function App() {
               isDark={state.theme === 'dark'}
               onChange={(query) => dispatch({ type: 'setQuery', tabId: tab.id, query })}
               onRun={() => {
-                if (!isRunning && tab.query.trim()) void run(tab.id, tab.query)
+                if (!isRunning && tab.query.trim()) void run(tab.id, tab.query, tab.timeRange)
               }}
             />
           </div>

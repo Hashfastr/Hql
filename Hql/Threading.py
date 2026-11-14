@@ -377,6 +377,10 @@ class HacThread():
 
         if self.detection.hac:
             d['hac'] = self.detection.hac.asm
+            # The window HaC bounded the search to, plain Hql has none
+            window = self.detection.timerange(self.query_now)
+            if window:
+                d['timerange'] = {'start': window[0].isoformat(), 'end': window[1].isoformat()}
 
         # On failure self.output is the traceback string, not a Context
         d['results'] = self.output.to_dict()

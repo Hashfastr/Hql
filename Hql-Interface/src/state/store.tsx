@@ -6,8 +6,9 @@
 //   invalidates the inspected row must route through resetInspectorFor.
 // - Results live only in memory; persist.ts saves tab titles/queries only.
 import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from 'react'
-import type { AppState, DetectionMeta, HqlResults, QueryTab } from '../types'
+import type { AppState, DetectionMeta, HqlResults, QueryTab, TimeRange } from '../types'
 import { loadPersisted } from '../lib/persist'
+import { DEFAULT_TIME_RANGE } from '../lib/timeRange'
 
 export type Action =
   | { type: 'addTab'; query?: string; title?: string }
@@ -16,8 +17,16 @@ export type Action =
   | { type: 'setActiveTab'; tabId: string }
   | { type: 'setQuery'; tabId: string; query: string }
   | { type: 'replaceQuery'; tabId: string; query: string }
+  | { type: 'setTimeRange'; tabId: string; timeRange: TimeRange }
   | { type: 'runStarted'; tabId: string; runId: string }
-  | { type: 'runDone'; tabId: string; results: HqlResults; duration?: number; numResults?: number }
+  | {
+      type: 'runDone'
+      tabId: string
+      results: HqlResults
+      duration?: number
+      numResults?: number
+      timerange?: { start: string; end: string }
+    }
   | { type: 'runFailed'; tabId: string; strOut: string }
   | { type: 'runStopped'; tabId: string }
   | { type: 'setActiveResultTable'; tabId: string; table: string }
@@ -30,13 +39,14 @@ export type Action =
   | { type: 'detectionsError'; error: string }
 
 let tabCounter = 0
-export function newTab(query = '', title?: string): QueryTab {
+export function newTab(query = '', title?: string, timeRange: TimeRange = DEFAULT_TIME_RANGE): QueryTab {
   tabCounter += 1
   return {
     id: `tab-${Date.now()}-${tabCounter}`,
     title: title ?? `Query ${tabCounter}`,
     query,
     editRev: 0,
+    timeRange,
     run: { status: 'idle' },
   }
 }
@@ -93,6 +103,8 @@ export function reducer(state: AppState, action: Action): AppState {
             : t,
         ),
       }
+    case 'setTimeRange':
+      return updateTab(state, action.tabId, { timeRange: action.timeRange })
     case 'runStarted':
       return resetInspectorFor(
         updateTab(state, action.tabId, { run: { status: 'running', runId: action.runId } }),
@@ -106,6 +118,7 @@ export function reducer(state: AppState, action: Action): AppState {
           results: action.results,
           duration: action.duration,
           numResults: action.numResults,
+          timerange: action.timerange,
         },
         activeResultTable: tables[0],
       })
@@ -148,7 +161,7 @@ export function reducer(state: AppState, action: Action): AppState {
 export function initialState(): AppState {
   const persisted = loadPersisted()
   const tabs = persisted?.tabs?.length
-    ? persisted.tabs.map((t) => ({ ...newTab(t.query, t.title), id: t.id }))
+    ? persisted.tabs.map((t) => ({ ...newTab(t.query, t.title, t.timeRange), id: t.id }))
     : [newTab()]
   const activeTabId = tabs.some((t) => t.id === persisted?.activeTabId)
     ? (persisted?.activeTabId as string)

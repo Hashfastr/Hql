@@ -1,19 +1,20 @@
 import { useState } from 'react'
-
-function toLocalInput(d: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
+import { toLocalInput } from '../lib/timeRange'
 
 export function RetroHuntModal({
+  initial,
   onClose,
   onSubmit,
 }: {
+  /** Seeds the fields, e.g. from the tab's absolute time range */
+  initial?: { start: string; end: string }
   onClose: () => void
   onSubmit: (startIso: string, endIso: string) => void
 }) {
-  const [start, setStart] = useState(() => toLocalInput(new Date(Date.now() - 3600_000)))
-  const [end, setEnd] = useState(() => toLocalInput(new Date()))
+  const [start, setStart] = useState(
+    () => initial?.start ?? toLocalInput(new Date(Date.now() - 3600_000)),
+  )
+  const [end, setEnd] = useState(() => initial?.end ?? toLocalInput(new Date()))
   const [error, setError] = useState('')
 
   const submit = () => {
